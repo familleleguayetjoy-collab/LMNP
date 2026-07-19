@@ -134,8 +134,16 @@
 
 /* Field */
 .field{display:flex;flex-direction:column;gap:6px;min-width:0}
-.field label{font-size:.82rem;font-weight:700;color:var(--ink-2);display:flex;align-items:center;gap:6px}
+.field label{font-size:.82rem;font-weight:700;color:var(--ink-2);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .field .hint{font-size:.72rem;color:var(--muted);font-weight:500;line-height:1.35}
+/* Info (i) buttons + expandable regulatory detail */
+.info-btn{flex:0 0 auto;width:18px;height:18px;padding:0;border:0;border-radius:50%;background:var(--gold-soft);color:var(--gold-deep);cursor:pointer;display:inline-grid;place-items:center;transition:.15s;line-height:0}
+.info-btn:hover{background:var(--gold);color:#fff}
+.info-btn.active{background:var(--gold-deep);color:#fff}
+.info-btn svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.info-box{grid-column:1/-1;font-size:.78rem;line-height:1.5;color:var(--ink-2);background:var(--gold-soft);border:1px solid var(--gold);border-left:3px solid var(--gold-deep);border-radius:var(--radius-xs);padding:11px 13px;margin-top:2px}
+.info-box b{color:var(--ink);font-weight:700}
+.toggle-field{gap:4px}
 .input-wrap{position:relative;display:flex;align-items:center}
 .input-wrap input,.input-wrap select{width:100%;background:var(--field-bg);border:1px solid var(--field-line);border-radius:var(--radius-xs);padding:11px 12px;font-size:.95rem;transition:border .15s,box-shadow .15s;font-variant-numeric:tabular-nums}
 .input-wrap.suffix input{padding-right:34px}
@@ -352,7 +360,7 @@ table.data .rowlabel{font-weight:600;color:var(--ink-2)}
       <p class="fcopy"><strong>Sud Alpes Audit</strong> — Cabinet d'expertise comptable et de commissariat aux comptes à Nice &amp; Allos, depuis 1998. Avancer. Décider. Réussir.</p>
     </div>
     <div class="wrap">
-      <p class="disclaimer">Outil d'aide à la décision à vocation pédagogique. Les résultats sont des estimations établies à partir des hypothèses saisies et de la réglementation en vigueur (dont la réintégration des amortissements dans la plus-value LMNP issue de la loi de finances 2025). Ils ne constituent ni un conseil fiscal personnalisé, ni un engagement du cabinet. Chaque situation doit être validée avec votre interlocuteur S2A avant toute décision.</p>
+      <p class="disclaimer">Outil d'aide à la décision à vocation pédagogique, à jour des règles applicables en 2026 : prélèvements sociaux sur les loyers meublés portés à 18,6 % (LFSS 2026, revenus 2025), plus-values immobilières maintenues à 17,2 %, et réintégration des amortissements dans la plus-value LMNP (loi de finances 2025). Les résultats sont des estimations établies à partir des hypothèses saisies ; ils ne constituent ni un conseil fiscal personnalisé, ni un engagement du cabinet. Chaque situation doit être validée avec votre interlocuteur S2A avant toute décision.</p>
     </div>
   </footer>
 
@@ -389,40 +397,66 @@ var BIEN_GROUPS = [
     {k:'recettes', label:'Recettes annuelles', unit:'€', type:'euro', hint:'Total des loyers encaissés sur l’année.'}
   ]},
   { title:'Charges annuelles', icon:'<path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>', fields:[
-    {k:'interets', label:'Intérêts d’emprunt', unit:'€', type:'euro'},
-    {k:'assuranceEmpr', label:'Assurance emprunteur', unit:'€', type:'euro'},
-    {k:'taxeFonciere', label:'Taxe foncière (+ TH)', unit:'€', type:'euro', hint:'Hors TEOM récupérable.'},
-    {k:'cfe', label:'CFE', unit:'€', type:'euro', hint:'Obligatoire dès la 2ᵉ année.'},
-    {k:'chargesCopro', label:'Charges copro non récupérables', unit:'€', type:'euro'},
-    {k:'fraisGestion', label:'Frais de gestion / agence', unit:'€', type:'euro', auto7:true, hint:'Calcul auto à 7 % des recettes.'},
-    {k:'honoraires', label:'Honoraires comptables', unit:'€', type:'euro', hint:'Déductibles au régime réel.'},
-    {k:'assurancesPNO', label:'Assurances (PNO, GLI…)', unit:'€', type:'euro'},
-    {k:'entretien', label:'Entretien / réparations', unit:'€', type:'euro'},
-    {k:'autres', label:'Autres charges', unit:'€', type:'euro'}
+    {k:'interets', label:'Intérêts d’emprunt', unit:'€', type:'euro',
+      info:'Déductibles en totalité au régime réel. <b>⚠️ Seuls les intérêts (et l’assurance emprunteur) sont déductibles : le remboursement du capital de l’emprunt n’est jamais une charge.</b>'},
+    {k:'assuranceEmpr', label:'Assurance emprunteur', unit:'€', type:'euro',
+      info:'Assurance décès-invalidité adossée au prêt : déductible au régime réel.'},
+    {k:'taxeFonciere', label:'Taxe foncière (+ TH)', unit:'€', type:'euro', hint:'Hors TEOM récupérable.',
+      info:'Taxe foncière déductible, hors part d’enlèvement des ordures ménagères (TEOM) refacturée au locataire. La taxe d’habitation n’est déductible que si elle reste à votre charge (logement gardé à votre disposition) ; sinon elle incombe à l’occupant.'},
+    {k:'cfe', label:'CFE', unit:'€', type:'euro', hint:'Obligatoire dès la 2ᵉ année.',
+      info:'Cotisation Foncière des Entreprises : déductible. Exonérée la 1ʳᵉ année d’activité, puis due chaque année. Exonération de plein droit si les recettes annuelles sont inférieures à 5 000 €.'},
+    {k:'chargesCopro', label:'Charges copro non récupérables', unit:'€', type:'euro',
+      info:'Uniquement la part des charges de copropriété <b>non récupérable</b> sur le locataire. La part récupérable, refacturée au locataire, n’est pas déductible.'},
+    {k:'fraisGestion', label:'Frais de gestion / agence', unit:'€', type:'euro', auto7:true, hint:'Calcul auto à 7 % des recettes.',
+      info:'Frais d’agence, honoraires de gérance locative et de mise en location : déductibles. Le forfait de 7 % est une simple commodité de saisie ; renseignez le montant réel si vous le connaissez.'},
+    {k:'honoraires', label:'Honoraires comptables', unit:'€', type:'euro', hint:'Déductibles au régime réel.',
+      info:'Honoraires de l’expert-comptable : déductibles. La réduction d’impôt pour frais de comptabilité liée à l’adhésion à un OGA a été supprimée : ces honoraires ne sont plus qu’une charge déductible.'},
+    {k:'assurancesPNO', label:'Assurances (PNO, GLI…)', unit:'€', type:'euro',
+      info:'Assurance propriétaire non occupant (PNO), garantie loyers impayés (GLI), assurance carence locative : déductibles.'},
+    {k:'entretien', label:'Entretien / réparations', unit:'€', type:'euro',
+      info:'Dépenses d’entretien, de réparation et de petit équipement : déductibles. <b>⚠️ Les travaux d’agrandissement, de construction ou de reconstruction ne sont pas déductibles :</b> ils s’immobilisent et s’amortissent (bloc Acquisition).'},
+    {k:'autres', label:'Autres charges', unit:'€', type:'euro',
+      info:'Autres charges déductibles : frais bancaires, frais de procédure, petit mobilier de moins de 600 € HT passé en charges, cotisations, frais de dossier… <b>⚠️ À ne pas inclure : le capital de l’emprunt, le prix du bien, les travaux immobilisés</b> (amortis, pas déduits).'}
   ]},
   { title:'Acquisition & amortissement', icon:'<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>', fields:[
-    {k:'prix', label:'Prix d’acquisition', unit:'€', type:'euro', hint:'Frais de notaire inclus.'},
-    {k:'pctTerrain', label:'Quote-part terrain', unit:'%', type:'pct', def:15, hint:'Non amortissable — généralement 10 à 20 %.'},
-    {k:'mobilier', label:'Mobilier / équipements', unit:'€', type:'euro'},
-    {k:'travaux', label:'Travaux immobilisés', unit:'€', type:'euro'},
-    {k:'dureeImm', label:'Durée amort. immeuble', unit:'ans', type:'int', def:30, hint:'25 à 30 ans.'},
+    {k:'prix', label:'Valeur d’acquisition (base amortissable)', unit:'€', type:'euro', hint:'Frais de notaire inclus.',
+      info:'Prix d’acquisition, frais de notaire et d’acquisition inclus. <b>⚠️ Bien acheté il y a longtemps et passé au meublé plus tard ?</b> Retenez la <b>valeur vénale du bien à la date de mise en location meublée</b> : c’est elle qui sert de base d’amortissement. L’amortissement démarre à l’entrée dans l’activité LMNP — <b>aucun rattrapage</b> des années non amorties n’est possible.'},
+    {k:'pctTerrain', label:'Quote-part terrain', unit:'%', type:'pct', def:15, hint:'Non amortissable — généralement 10 à 20 %.',
+      info:'Le terrain n’est pas amortissable et doit être isolé de la base. À défaut d’élément précis (acte, avis de valeur), une ventilation forfaitaire est admise, souvent 10 à 20 % (davantage en zone tendue).'},
+    {k:'mobilier', label:'Mobilier / équipements', unit:'€', type:'euro',
+      info:'Meubles et équipements (électroménager, literie, cuisine équipée, luminaires…) amortis séparément, en général sur 5 à 10 ans.'},
+    {k:'travaux', label:'Travaux immobilisés', unit:'€', type:'euro',
+      info:'Travaux d’amélioration ou de rénovation immobilisés, amortis sur leur durée. Les simples réparations et l’entretien vont, eux, directement en charges déductibles (bloc Charges).'},
+    {k:'dureeImm', label:'Durée amort. immeuble', unit:'ans', type:'int', def:30, hint:'25 à 30 ans.',
+      info:'En pratique l’immeuble se décompose par composants (gros œuvre 40-50 ans, toiture, façade, agencements, etc.). Ce simulateur retient une durée moyenne unique ; affinez la décomposition avec votre comptable.'},
     {k:'dureeMob', label:'Durée amort. mobilier', unit:'ans', type:'int', def:7, hint:'5 à 10 ans.'},
     {k:'dureeTrav', label:'Durée amort. travaux', unit:'ans', type:'int', def:12, hint:'10 à 15 ans.'}
   ]},
-  { title:'Financement — cash-flow', icon:'<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/>', fields:[
-    {k:'capitalRembourse', label:'Capital remboursé dans l’année', unit:'€', type:'euro', hint:'Part de capital de vos mensualités (hors intérêts, déjà saisis en charges). Sert au calcul du cash-flow réel.'}
+  { title:'Financement & trésorerie (optionnel)', icon:'<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/>', fields:[
+    {k:'capitalRembourse', label:'Capital d’emprunt remboursé dans l’année', unit:'€', type:'euro', hint:'Uniquement en cas de prêt bancaire.',
+      info:'Sert <b>seulement</b> à calculer la trésorerie (cash-flow) — ce n’est pas une charge déductible. <b>⚠️ Pas d’emprunt bancaire ?</b> Si le bien est financé par les apports des associés / de l’exploitant (compte courant d’associé, compte 108), <b>laissez ce champ vide</b> : la trésorerie est alors simplement Loyers − Charges − Impôt.'}
   ]},
   { title:'Impact à la revente', icon:'<path d="M3 3v18h18"/><path d="M19 9l-5 5-4-4-4 4"/>', fields:[
-    {k:'prixRevente', label:'Prix de revente estimé', unit:'€', type:'euro', hint:'Valeur nette vendeur envisagée.'},
-    {k:'dureeDetention', label:'Durée de détention à la vente', unit:'ans', type:'int', def:15, hint:'Années écoulées entre l’achat et la revente.'},
-    {k:'amortCumul', label:'Amortissements déduits cumulés', unit:'€', type:'euro', hint:'Laissez vide pour une estimation automatique.'},
-    {k:'amortReintegration', label:'Réintégrer les amortissements (LFI 2025)', type:'toggle', def:true, hint:'Depuis 2025, les amortissements déduits majorent la plus-value imposable.', full:true},
-    {k:'fraisForfait', label:'Majoration forfaitaire frais 7,5 %', type:'toggle', def:false, full:true},
-    {k:'travauxForfait', label:'Majoration forfaitaire travaux 15 % (si +5 ans)', type:'toggle', def:false, full:true}
+    {k:'prixRevente', label:'Prix de revente estimé', unit:'€', type:'euro', hint:'Valeur nette vendeur envisagée.',
+      info:'Prix net vendeur envisagé, déduction faite des frais d’agence éventuellement à votre charge.'},
+    {k:'dureeDetention', label:'Durée de détention à la vente', unit:'ans', type:'int', def:15, hint:'Comptée depuis l’acquisition.',
+      info:'Durée comptée <b>depuis la date d’acquisition</b> — même si vous n’avez opté pour le réel que récemment. Elle fixe les abattements pour durée de détention : exonération d’<b>IR au bout de 22 ans</b>, de <b>prélèvements sociaux au bout de 30 ans</b>.'},
+    {k:'anneesAmorties', label:'Années d’amortissement déjà pratiquées', unit:'ans', type:'int', hint:'Sous le réel. Vide = durée de détention.',
+      info:'Nombre d’années où vous avez réellement amorti sous le régime réel. <b>Exemple :</b> bien détenu depuis 20 ans mais passé au réel il y a 3 ans → saisissez <b>3</b>. Seuls les amortissements effectivement déduits sont réintégrés dans la plus-value.'},
+    {k:'amortCumul', label:'Amortissements déduits cumulés', unit:'€', type:'euro', hint:'Vide = estimation automatique.',
+      info:'Total des amortissements réellement déduits depuis l’option au réel. Laissé vide, il est estimé = amortissement annuel × années amorties, plafonné à la base amortissable.'},
+    {k:'amortReintegration', label:'Réintégrer les amortissements (réforme 2025)', type:'toggle', def:true,
+      info:'Depuis la loi de finances 2025, les amortissements déduits pendant la location minorent le prix d’acquisition retenu pour la plus-value — ce qui augmente la plus-value imposable. Certaines résidences services (étudiantes, seniors, EHPAD) en sont exclues, sous conditions.', full:true},
+    {k:'fraisForfait', label:'Majoration forfaitaire frais 7,5 %', type:'toggle', def:false,
+      info:'Plus-value des particuliers : à défaut de justificatifs, le prix d’acquisition peut être majoré d’un forfait de <b>7,5 %</b> au titre des frais d’acquisition (art. 150 VB du CGI). Alternative aux frais réels, non cumulable avec eux.', full:true},
+    {k:'travauxForfait', label:'Majoration forfaitaire travaux 15 % (si +5 ans)', type:'toggle', def:false,
+      info:'À défaut de justificatifs et pour un bien détenu depuis plus de 5 ans, le prix d’acquisition peut être majoré d’un forfait de <b>15 %</b> au titre des travaux (art. 150 VB du CGI). Non cumulable avec des travaux réels ni avec des travaux déjà déduits ou amortis.', full:true}
   ]},
   { title:'Reports N-1 (optionnel)', icon:'<path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/>', fields:[
-    {k:'stockDiffN1', label:'Stock amortissements différés N-1', unit:'€', type:'euro', hint:'Report illimité à reprendre chaque année.'},
-    {k:'deficitN1', label:'Déficits LMNP reportables N-1', unit:'€', type:'euro', hint:'Reportables 10 ans.'}
+    {k:'stockDiffN1', label:'Stock amortissements différés N-1', unit:'€', type:'euro', hint:'Report illimité à reprendre chaque année.',
+      info:'Amortissements non déduits les années précédentes (car plafonnés par le résultat). Reportables <b>sans limite de durée</b> et déductibles dès que le résultat le permet.'},
+    {k:'deficitN1', label:'Déficits LMNP reportables N-1', unit:'€', type:'euro', hint:'Reportables 10 ans.',
+      info:'Déficits BIC issus des charges (hors amortissements) constatés antérieurement. Reportables sur les bénéfices de même nature pendant <b>10 ans</b>.'}
   ]}
 ];
 
@@ -444,7 +478,7 @@ function blankBien(){
   b._open = true;
   return b;
 }
-function defaultState(){ return { tmi:'30', ps:'17.2', biens:[ blankBien() ] }; }
+function defaultState(){ return { tmi:'30', ps:'18.6', biens:[ blankBien() ] }; }
 
 function load(){
   try{ var raw = localStorage.getItem(STORE); if(raw){ var s=JSON.parse(raw); if(s&&s.biens&&s.biens.length) return s; } }catch(e){}
@@ -549,12 +583,14 @@ function computeBien(b, g){
   r.rdtNetNet = P>0 ? r.netReel/P : 0;
 
   // ---- REVENTE / plus-value ----
-  var Y = Math.max(0, Math.round(num(b.dureeDetention)));
+  var Y = Math.max(0, Math.round(num(b.dureeDetention)));      // détention depuis l'acquisition (abattements)
   var PV = num(b.prixRevente);
-  var amortCumul = b.amortCumul!=='' && b.amortCumul!=null ? num(b.amortCumul)
-                    : Math.min(baseAmort, amortAnnuel*Y);
-  r.amortCumulEstime = Math.min(baseAmort, amortAnnuel*Y);
-  r.amortCumul = amortCumul;
+  // années réellement amorties sous le réel : champ dédié, sinon = durée de détention
+  var anAmort = (b.anneesAmorties!=='' && b.anneesAmorties!=null && num(b.anneesAmorties)>0) ? Math.round(num(b.anneesAmorties)) : Y;
+  var amortEstime = Math.min(baseAmort, amortAnnuel*anAmort);
+  var amortCumul = (b.amortCumul!=='' && b.amortCumul!=null) ? num(b.amortCumul) : amortEstime;
+  r.amortCumulEstime = amortEstime;
+  r.amortCumul = amortCumul; r.anneesAmorties = anAmort;
   r.dureeDetention = Y; r.prixRevente = PV;
 
   function plusValue(reintegrate){
@@ -606,11 +642,20 @@ function computeAll(){
 /* ------------------------------------------------------------------ *
  *  5. Rendu du formulaire
  * ------------------------------------------------------------------ */
+function infoBtn(key){
+  return '<button type="button" class="info-btn" data-info="'+key+'" aria-label="Détail réglementaire" title="Détail réglementaire"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></button>';
+}
+function infoBox(key, html){
+  return '<div class="info-box" data-infobox="'+key+'" hidden>'+html+'</div>';
+}
+
 function fieldHTML(f, val, path){
   var full = f.full ? ' style="grid-column:1/-1"' : '';
+  var info = f.info ? infoBtn(path) : '';
+  var box  = f.info ? infoBox(path, f.info) : '';
   if(f.type==='toggle'){
-    return '<label class="toggle-line" '+full+'><input type="checkbox" data-path="'+path+'" '+(val?'checked':'')+'/> '
-      + '<span>'+esc(f.label)+(f.hint?' <span class="hint" style="display:inline">— '+esc(f.hint)+'</span>':'')+'</span></label>';
+    return '<div class="field toggle-field"'+full+'><label class="toggle-line"><input type="checkbox" data-path="'+path+'" '+(val?'checked':'')+'/> '
+      + '<span>'+esc(f.label)+'</span>'+info+'</label></div>'+box;
   }
   var inner;
   if(f.type==='select'){
@@ -630,8 +675,8 @@ function fieldHTML(f, val, path){
     var checked = pathGet(path.replace(/\.[^.]+$/, '.fraisGestionAuto'));
     auto7 = '<label class="toggle-line"><input type="checkbox" data-auto7="'+path.replace(/\.[^.]+$/, '')+'" '+(checked?'checked':'')+'/> Calcul automatique (7 %)</label>';
   }
-  return '<div class="field"'+full+'><label>'+esc(f.label)+'</label>'+inner
-    + (auto7||'') + (f.hint?'<span class="hint">'+esc(f.hint)+'</span>':'') + '</div>';
+  return '<div class="field"'+full+'><label>'+esc(f.label)+info+'</label>'+inner
+    + (auto7||'') + (f.hint?'<span class="hint">'+esc(f.hint)+'</span>':'') + '</div>' + box;
 }
 
 function pathGet(path){
@@ -647,10 +692,12 @@ function pathSet(path,v){
 
 function renderGlobals(){
   var host = document.getElementById('globalFields');
-  var tmiSel = '<div class="field"><label>Tranche marginale d’imposition (TMI)</label><div class="input-wrap"><select data-path="tmi">'
+  var tmiInfo = 'Tranche marginale d’imposition = la tranche la plus élevée de votre foyer (0, 11, 30, 41 ou 45 %). Il n’existe pas de « taux de prélèvement à la source » propre au LMNP : le résultat s’ajoute à vos revenus et est imposé au barème. Le prélèvement à la source n’est qu’un acompte, calculé sur votre taux moyen d’imposition.';
+  var psInfo = '<b>LFSS 2026 :</b> les prélèvements sociaux sur les loyers meublés (LMNP) passent de 17,2 % à <b>18,6 %</b> (CSG 10,6 % + CRDS 0,5 % + solidarité 7,5 %), dès l’imposition des revenus 2025. <b>⚠️ Les plus-values immobilières, elles, restent à 17,2 %</b> — c’est le taux appliqué au bloc « Impact à la revente ».';
+  var tmiSel = '<div class="field"><label>Tranche marginale d’imposition (TMI)'+infoBtn('g-tmi')+'</label><div class="input-wrap"><select data-path="tmi">'
     + TMI_OPTIONS.map(function(o){return '<option value="'+o[0]+'"'+(state.tmi===o[0]?' selected':'')+'>'+o[1]+'</option>';}).join('')
-    + '</select></div><span class="hint">Taux d’imposition de la dernière tranche de revenus du foyer.</span></div>';
-  var psField = '<div class="field"><label>Taux de prélèvements sociaux</label><div class="input-wrap suffix"><input type="text" inputmode="decimal" data-path="ps" data-num="1" value="'+esc(state.ps)+'"/><span class="unit">%</span></div><span class="hint">17,2 % par défaut.</span></div>';
+    + '</select></div><span class="hint">Taux d’imposition de la dernière tranche de revenus du foyer.</span></div>'+infoBox('g-tmi',tmiInfo);
+  var psField = '<div class="field"><label>Prélèvements sociaux — loyers'+infoBtn('g-ps')+'</label><div class="input-wrap suffix"><input type="text" inputmode="decimal" data-path="ps" data-num="1" value="'+esc(state.ps)+'"/><span class="unit">%</span></div><span class="hint">18,6 % depuis 2026 (loyers meublés).</span></div>'+infoBox('g-ps',psInfo);
   host.innerHTML = tmiSel + psField;
 }
 
@@ -813,18 +860,27 @@ function rowFn(label, per, fn, opt){
 
 function cashflowPanel(t, per){
   var mensuel = t.cashflowReel/12;
+  var avecEmprunt = t.capital>0;
   var cls = t.cashflowReel>=0?'ok':'warn';
-  var msg = t.cashflowReel>=0
-    ? 'Votre patrimoine s’autofinance : le cash-flow mensuel est positif de <strong>'+fmt(mensuel)+'</strong>, capital d’emprunt remboursé et impôts payés.'
-    : 'Un effort d’épargne d’environ <strong>'+fmt(Math.abs(mensuel))+' / mois</strong> est nécessaire pour couvrir mensualités et impôts — compensé par la constitution de patrimoine (capital remboursé : '+fmt(t.capital)+' / an).';
-  return '<div class="card panel"><h3>'+ic('<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/>')+'Trésorerie — cash-flow réel</h3>'
-    +'<p class="p-sub">Loyers − charges − impôt (régime réel) − capital remboursé.</p>'
-    +'<div class="kpis" style="margin-top:0">'
+  var msg;
+  if(!avecEmprunt){
+    msg = 'Aucun capital d’emprunt saisi : la trésorerie correspond à <strong>Loyers − Charges − Impôt</strong>, soit <strong>'+fmt(mensuel)+' / mois</strong>. C’est le cas d’un bien financé par les associés (apports en compte courant / compte 108) plutôt que par une banque : les apports ne sont pas des charges, seules les sorties réelles de trésorerie comptent.';
+  } else if(t.cashflowReel>=0){
+    msg = 'Le bien s’autofinance : cash-flow positif de <strong>'+fmt(mensuel)+' / mois</strong>, capital d’emprunt remboursé et impôts payés. À cela s’ajoute le capital remboursé ('+fmt(t.capital)+' / an), qui constitue du patrimoine.';
+  } else {
+    msg = 'Un effort d’épargne d’environ <strong>'+fmt(Math.abs(mensuel))+' / mois</strong> couvre mensualités et impôts — compensé par la constitution de patrimoine (capital remboursé : '+fmt(t.capital)+' / an).';
+  }
+  var k = '<div class="kpis" style="margin-top:0">'
     + kpi('Cash-flow annuel', fmt(t.cashflowReel), t.cashflowReel>=0?'pos':'neg', '')
-    + kpi('Cash-flow mensuel', (mensuel>=0?'+':'')+fmt(mensuel), t.cashflowReel>=0?'pos':'neg', '')
-    + kpi('Capital remboursé / an', fmt(t.capital), '', 'patrimoine constitué')
-    + kpi('Enrichissement net / an', fmt(t.cashflowReel + t.capital), (t.cashflowReel+t.capital)>=0?'pos':'neg', 'cash-flow + capital')
-    +'</div>'
+    + kpi('Cash-flow mensuel', (mensuel>=0?'+':'')+fmt(mensuel), t.cashflowReel>=0?'pos':'neg', '');
+  if(avecEmprunt){
+    k += kpi('Capital remboursé / an', fmt(t.capital), '', 'patrimoine constitué')
+       + kpi('Enrichissement net / an', fmt(t.cashflowReel + t.capital), (t.cashflowReel+t.capital)>=0?'pos':'neg', 'cash-flow + capital');
+  }
+  k += '</div>';
+  return '<div class="card panel"><h3>'+ic('<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/>')+'Trésorerie — cash-flow réel</h3>'
+    +'<p class="p-sub">Loyers − charges − impôt (régime réel)'+(avecEmprunt?' − capital d’emprunt remboursé':'')+'.</p>'
+    + k
     +'<div class="notes" style="margin-top:16px"><div class="note '+cls+'"><span class="ni"><svg viewBox="0 0 24 24"><path d="M12 8v5M12 16h.01"/><circle cx="12" cy="12" r="9"/></svg></span><div class="nt">'+msg+'</div></div></div></div>';
 }
 
@@ -855,7 +911,7 @@ function resalePanel(t, per){
   var bilan = cumulAvantage - t.surcoutRevente;
   var bigMsg;
   if(t.gain>0){
-    bigMsg = 'Sur environ <strong>'+Ymax+' ans</strong> de détention, l’économie d’impôt du régime réel représente <strong>'+fmt(cumulAvantage)+'</strong>. À la revente, la réintégration des amortissements alourdit la plus-value de <strong>'+fmt(t.surcoutRevente)+'</strong>. Bilan net de la stratégie d’amortissement : <strong>'+fmt(bilan)+'</strong>'+(bilan>=0?' en faveur du régime réel.':', à surveiller selon l’horizon de revente.');
+    bigMsg = 'En projetant l’avantage annuel actuel sur <strong>'+Ymax+' ans</strong> de détention (à paramètres constants), l’économie d’impôt du régime réel représenterait <strong>'+fmt(cumulAvantage)+'</strong>. À la revente, la réintégration des amortissements alourdit la plus-value de <strong>'+fmt(t.surcoutRevente)+'</strong>. Bilan net indicatif de la stratégie d’amortissement : <strong>'+fmt(bilan)+'</strong>'+(bilan>=0?' en faveur du régime réel.':', à surveiller selon l’horizon de revente.');
   } else {
     bigMsg = 'Le régime micro étant ici plus favorable à l’exploitation, la question de la réintégration des amortissements ne se pose pas de la même manière. Coût fiscal estimé de la plus-value : <strong>'+fmt(t.pvTotalReel)+'</strong>.';
   }
@@ -953,11 +1009,19 @@ document.addEventListener('change', function(e){
   if(t.dataset && t.dataset.path && t.tagName==='SELECT'){ refreshHeads(); updateRecap(); save(); }
 });
 document.addEventListener('click', function(e){
+  var inf=e.target.closest('.info-btn');
+  if(inf){ e.preventDefault(); e.stopPropagation();
+    var key=inf.dataset.info;
+    var box=document.querySelector('[data-infobox="'+cssEsc(key)+'"]');
+    if(box){ var open=box.hasAttribute('hidden'); if(open){ box.removeAttribute('hidden'); } else { box.setAttribute('hidden',''); } inf.classList.toggle('active', open); }
+    return;
+  }
   var tgl=e.target.closest('[data-toggle]');
   if(tgl){ var i=+tgl.dataset.toggle; if(!e.target.closest('[data-remove]')){ state.biens[i]._open=!state.biens[i]._open; tgl.parentNode.classList.toggle('open'); save(); } return; }
   var rm=e.target.closest('[data-remove]');
   if(rm){ e.stopPropagation(); var j=+rm.dataset.remove; if(state.biens.length>1){ state.biens.splice(j,1); renderBiens(); save(); toast('Bien supprimé'); } return; }
 });
+function cssEsc(s){ return (''+s).replace(/["\\]/g,'\\$&'); }
 function refreshHeads(){
   document.querySelectorAll('.bien').forEach(function(card){
     var i=+card.dataset.i, b=state.biens[i];

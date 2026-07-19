@@ -10,12 +10,20 @@ téléphone ou ordinateur et rempli en quelques minutes.
   puis on lance le calcul avec « Simuler ».
 - **Comparaison Micro-BIC vs Réel** : résultat fiscal, IR, prélèvements sociaux, coût fiscal
   et **net dans la poche**, par bien et consolidé, avec recommandation automatique.
-- **Cash-flow réel** : loyers − charges − impôt − capital remboursé, en annuel et mensuel,
-  plus l'enrichissement net (cash-flow + capital constitué).
-- **Impact à la revente (plus-value LMNP)** : calcul de la plus-value imposable, des
-  abattements pour durée de détention (IR/PS), de la surtaxe, et surtout de la
-  **réintégration des amortissements** introduite par la **loi de finances 2025** —
-  la « big picture » qui met l'avantage fiscal annuel en regard du coût à la revente.
+  Prélèvements sociaux sur les loyers meublés à **18,6 %** (LFSS 2026, revenus 2025).
+- **Info-bulles réglementaires** : chaque poste de charge et champ sensible dispose d'un
+  bouton **(i)** rappelant ce qui est déductible / non déductible et les règles à jour,
+  pour ne rien oublier ni intégrer par erreur.
+- **Cash-flow réel** : loyers − charges − impôt − capital remboursé (si emprunt bancaire).
+  Prend en charge le cas fréquent d'un bien financé par les associés (compte courant /
+  compte 108) sans emprunt : la trésorerie devient simplement loyers − charges − impôt.
+- **Impact à la revente (plus-value LMNP)** : calcul de la plus-value imposable (PS à
+  **17,2 %**, taux maintenu pour les plus-values immobilières), des abattements pour durée
+  de détention (IR/PS), de la surtaxe, et surtout de la **réintégration des amortissements**
+  introduite par la **loi de finances 2025** — la « big picture » qui met l'avantage fiscal
+  annuel en regard du coût à la revente. La durée de détention (depuis l'acquisition) et les
+  années réellement amorties sont distinguées, pour traiter le cas d'un bien détenu de longue
+  date et passé au réel récemment (sans rattrapage des amortissements antérieurs).
 - **Points de vigilance** : dépassement des seuils micro (77 700 € / 15 000 €), bascule
   possible en LMP (> 23 000 €), rendements brut/net/net-net, et rappel des éléments à
   intégrer (revalorisation, vacance, IFI, transmission…).
