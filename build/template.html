@@ -1,0 +1,1029 @@
+<style>
+/* ===================================================================
+   SIMULATEUR LMNP — S2A · Sud Alpes Audit
+   Identité de marque reprise du site du cabinet (couleurs, typographies, logo)
+   =================================================================== */
+
+@font-face{font-family:'Poppins';font-weight:500;font-style:normal;font-display:swap;src:url("__POPPINS500__") format('woff2');}
+@font-face{font-family:'Poppins';font-weight:600;font-style:normal;font-display:swap;src:url("__POPPINS600__") format('woff2');}
+@font-face{font-family:'Poppins';font-weight:700;font-style:normal;font-display:swap;src:url("__POPPINS700__") format('woff2');}
+@font-face{font-family:'Montserrat';font-weight:100 900;font-style:normal;font-display:swap;src:url("__MONTVAR__") format('woff2');}
+
+:root{
+  --navy:#0f1e2e; --navy-2:#1e3a52; --ink:#0f1e2e; --ink-2:#1e3a52;
+  --gold:#c8a57a; --gold-deep:#9c7a48; --gold-soft:#efe7d9;
+  --paper:#e9eef4; --paper-2:#f7f9fb; --surface:#ffffff;
+  --muted:#64747b; --line:#d5dce4; --line-2:#e4e8ee;
+  --pos:#37725d; --pos-2:#4e7d68; --pos-soft:#e2f0e8;
+  --neg:#a85d54; --neg-soft:#f5e6e3;
+  --warn:#9c7a48; --warn-soft:#f6edda;
+  --field-bg:#ffffff; --field-line:#cdd6e0;
+  --shadow:0 22px 70px rgba(15,30,46,.12);
+  --shadow-soft:0 12px 40px rgba(15,30,46,.08);
+  --radius:22px; --radius-sm:14px; --radius-xs:10px;
+  --sans:'Montserrat','Segoe UI',Roboto,Arial,sans-serif;
+  --display:'Poppins','Montserrat',sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --navy:#0a1622; --navy-2:#16304a; --ink:#eaf0f6; --ink-2:#c6d3df;
+    --gold:#d4b587; --gold-deep:#c8a57a; --gold-soft:#2a2417;
+    --paper:#0d1a28; --paper-2:#0a1420; --surface:#132437;
+    --muted:#94a6b4; --line:#22384c; --line-2:#1c3145;
+    --pos:#6cbf9d; --pos-2:#4e7d68; --pos-soft:#14312a;
+    --neg:#d98a80; --neg-soft:#33201d;
+    --warn:#d4b587; --warn-soft:#2c2617;
+    --field-bg:#0e1e2e; --field-line:#2a415a;
+    --shadow:0 22px 70px rgba(0,0,0,.45); --shadow-soft:0 12px 40px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="light"]{
+  --navy:#0f1e2e; --navy-2:#1e3a52; --ink:#0f1e2e; --ink-2:#1e3a52;
+  --gold:#c8a57a; --gold-deep:#9c7a48; --gold-soft:#efe7d9;
+  --paper:#e9eef4; --paper-2:#f7f9fb; --surface:#ffffff;
+  --muted:#64747b; --line:#d5dce4; --line-2:#e4e8ee;
+  --pos:#37725d; --pos-2:#4e7d68; --pos-soft:#e2f0e8;
+  --neg:#a85d54; --neg-soft:#f5e6e3; --warn:#9c7a48; --warn-soft:#f6edda;
+  --field-bg:#ffffff; --field-line:#cdd6e0;
+  --shadow:0 22px 70px rgba(15,30,46,.12); --shadow-soft:0 12px 40px rgba(15,30,46,.08);
+}
+:root[data-theme="dark"]{
+  --navy:#0a1622; --navy-2:#16304a; --ink:#eaf0f6; --ink-2:#c6d3df;
+  --gold:#d4b587; --gold-deep:#c8a57a; --gold-soft:#2a2417;
+  --paper:#0d1a28; --paper-2:#0a1420; --surface:#132437;
+  --muted:#94a6b4; --line:#22384c; --line-2:#1c3145;
+  --pos:#6cbf9d; --pos-2:#4e7d68; --pos-soft:#14312a;
+  --neg:#d98a80; --neg-soft:#33201d; --warn:#d4b587; --warn-soft:#2c2617;
+  --field-bg:#0e1e2e; --field-line:#2a415a;
+  --shadow:0 22px 70px rgba(0,0,0,.45); --shadow-soft:0 12px 40px rgba(0,0,0,.35);
+}
+
+*{box-sizing:border-box}
+.lmnp{
+  font-family:var(--sans); color:var(--ink); background:var(--paper-2);
+  line-height:1.55; -webkit-font-smoothing:antialiased;
+  min-height:100vh; font-size:16px;
+}
+.lmnp h1,.lmnp h2,.lmnp h3,.lmnp h4{font-family:var(--display);font-weight:500;letter-spacing:-.02em;line-height:1.12;margin:0}
+.lmnp p{margin:0}
+.lmnp button,.lmnp input,.lmnp select{font:inherit;color:inherit}
+.lmnp :focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:4px}
+.num{font-variant-numeric:tabular-nums}
+
+.wrap{width:min(1140px,calc(100% - 32px));margin-inline:auto}
+
+/* ---------- Header ---------- */
+.app-header{position:sticky;top:0;z-index:50;background:var(--navy);color:#eef3f8;box-shadow:0 6px 30px rgba(15,30,46,.18)}
+.app-header .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:70px;padding:10px 0}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brand-mark{width:42px;height:42px;border-radius:12px;flex:0 0 auto;display:block}
+.brand-txt{display:flex;flex-direction:column;line-height:1.15;min-width:0}
+.brand-txt strong{font-family:var(--display);font-weight:600;font-size:.98rem;letter-spacing:.01em;color:#fff;white-space:nowrap}
+.brand-txt small{font-size:.6rem;text-transform:uppercase;letter-spacing:.14em;color:#9fb2c2;margin-top:3px}
+.header-actions{display:flex;align-items:center;gap:8px}
+.icon-btn{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:11px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:#dbe6f0;cursor:pointer;transition:.2s}
+.icon-btn:hover{background:rgba(255,255,255,.16)}
+.icon-btn svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- Hero / intro ---------- */
+.hero{background:linear-gradient(180deg,var(--navy) 0%,var(--navy-2) 100%);color:#eef3f8;padding:34px 0 84px;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;right:-120px;top:-80px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(200,165,122,.28),transparent 66%);pointer-events:none}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:.7rem;text-transform:uppercase;letter-spacing:.16em;font-weight:800;color:var(--gold);margin-bottom:14px}
+.eyebrow:before{content:"";width:26px;height:1px;background:currentColor}
+.hero h1{font-size:clamp(1.9rem,4.4vw,3rem);color:#fff;margin-bottom:12px;max-width:16ch;text-wrap:balance}
+.hero-lead{font-size:1.05rem;color:#c3d1de;max-width:60ch}
+.hero-tag{margin-top:18px;font-family:var(--display);font-style:italic;font-weight:500;color:var(--gold);font-size:1.02rem}
+
+/* ---------- Layout of main ---------- */
+.main{position:relative;z-index:2;margin-top:-58px;padding-bottom:130px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-soft)}
+.section-lead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:34px 4px 14px}
+.section-lead h2{font-size:1.45rem}
+.section-lead span{font-size:.82rem;color:var(--muted)}
+
+/* Global params card */
+.globals{padding:22px 22px 6px;margin-bottom:22px}
+.globals .card-title{display:flex;align-items:center;gap:11px;margin-bottom:6px}
+.globals .card-title .ic{width:38px;height:38px;border-radius:11px;background:var(--gold-soft);color:var(--gold-deep);display:grid;place-items:center;flex:0 0 auto}
+.globals .card-title .ic svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.globals .card-title h3{font-size:1.1rem}
+.globals .card-title p{font-size:.8rem;color:var(--muted);margin-top:2px}
+.grid-fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px 18px;padding:16px 0 18px}
+
+/* Bien cards */
+.biens{display:flex;flex-direction:column;gap:18px}
+.bien{overflow:hidden}
+.bien-head{display:flex;align-items:center;gap:14px;padding:16px 18px;cursor:pointer;user-select:none;background:linear-gradient(180deg,var(--surface),var(--surface))}
+.bien-head:hover{background:var(--paper-2)}
+.bien-badge{width:40px;height:40px;border-radius:12px;background:var(--navy);color:#fff;display:grid;place-items:center;font-family:var(--display);font-weight:600;font-size:1rem;flex:0 0 auto}
+.bien-head .titles{flex:1;min-width:0}
+.bien-head .titles strong{display:block;font-family:var(--display);font-weight:600;font-size:1.02rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bien-head .titles small{font-size:.78rem;color:var(--muted)}
+.chev{width:22px;height:22px;color:var(--muted);flex:0 0 auto;transition:transform .25s;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.bien.open .chev{transform:rotate(180deg)}
+.bien-remove{background:none;border:0;color:var(--muted);cursor:pointer;padding:6px;border-radius:8px;flex:0 0 auto}
+.bien-remove:hover{color:var(--neg);background:var(--neg-soft)}
+.bien-remove svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;display:block}
+.bien-body{display:none;padding:4px 18px 22px;border-top:1px solid var(--line-2)}
+.bien.open .bien-body{display:block}
+
+.fieldset{padding:18px 0 4px;border-top:1px dashed var(--line);margin-top:4px}
+.fieldset:first-child{border-top:0}
+.fieldset > .fs-title{display:flex;align-items:center;gap:9px;font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;font-weight:800;color:var(--gold-deep);margin-bottom:4px}
+.fieldset > .fs-title svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* Field */
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field label{font-size:.82rem;font-weight:700;color:var(--ink-2);display:flex;align-items:center;gap:6px}
+.field .hint{font-size:.72rem;color:var(--muted);font-weight:500;line-height:1.35}
+.input-wrap{position:relative;display:flex;align-items:center}
+.input-wrap input,.input-wrap select{width:100%;background:var(--field-bg);border:1px solid var(--field-line);border-radius:var(--radius-xs);padding:11px 12px;font-size:.95rem;transition:border .15s,box-shadow .15s;font-variant-numeric:tabular-nums}
+.input-wrap.suffix input{padding-right:34px}
+.input-wrap input:focus,.input-wrap select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(200,165,122,.18)}
+.input-wrap input:disabled{background:var(--paper);color:var(--muted)}
+.input-wrap .unit{position:absolute;right:12px;font-size:.85rem;color:var(--muted);pointer-events:none;font-weight:600}
+select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2714%27%20height%3D%2714%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27%2364747b%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M6%209l6%206%206-6%27%2F%3E%3C%2Fsvg%3E");background-repeat:no-repeat;background-position:right 11px center;padding-right:32px!important}
+.toggle-line{display:flex;align-items:center;gap:9px;font-size:.8rem;color:var(--ink-2);font-weight:600;cursor:pointer;padding:2px 0}
+.toggle-line input{width:17px;height:17px;accent-color:var(--gold-deep);flex:0 0 auto;cursor:pointer}
+.field-auto{font-size:.74rem;color:var(--pos);font-weight:700}
+
+/* Add bien */
+.add-bien{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;margin-top:18px;padding:15px;border:1.5px dashed var(--gold);background:var(--gold-soft);color:var(--gold-deep);border-radius:var(--radius-sm);font-weight:800;font-size:.92rem;cursor:pointer;transition:.2s}
+.add-bien:hover{background:var(--gold);color:#fff;border-color:var(--gold)}
+.add-bien svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
+/* Sticky action bar */
+.actionbar{position:sticky;bottom:14px;z-index:40;margin-top:26px}
+.actionbar-inner{background:var(--navy);color:#fff;border-radius:18px;box-shadow:var(--shadow);padding:13px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.actionbar-inner .recap{font-size:.82rem;color:#b9c8d6;flex:1;min-width:150px}
+.actionbar-inner .recap b{color:#fff;font-weight:700}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;border:0;border-radius:999px;font-weight:800;font-size:.94rem;cursor:pointer;transition:transform .2s,box-shadow .2s,background .2s;padding:0 22px;min-height:50px;white-space:nowrap}
+.btn svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn-primary{background:var(--gold);color:#22160a;box-shadow:0 10px 26px rgba(200,165,122,.4)}
+.btn-primary:hover{transform:translateY(-2px);background:#d8b78d}
+.btn-ghost{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2)}
+.btn-ghost:hover{background:rgba(255,255,255,.18)}
+
+/* ---------- Results ---------- */
+.results{display:none;scroll-margin-top:82px}
+.results.show{display:block;animation:fade .4s ease}
+@keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.results.show{animation:none}}
+
+.reco{padding:24px;border-radius:var(--radius);color:#fff;display:flex;gap:18px;align-items:flex-start;box-shadow:var(--shadow)}
+.reco.reel{background:linear-gradient(135deg,#2f6d58,#37725d)}
+.reco.micro{background:linear-gradient(135deg,#315566,var(--navy))}
+.reco .rmark{width:52px;height:52px;border-radius:14px;background:rgba(255,255,255,.16);display:grid;place-items:center;flex:0 0 auto}
+.reco .rmark svg{width:27px;height:27px;fill:none;stroke:#fff;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.reco .rlabel{font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;font-weight:800;color:rgba(255,255,255,.75)}
+.reco h3{font-size:1.5rem;color:#fff;margin:4px 0 8px}
+.reco p{font-size:.95rem;color:rgba(255,255,255,.92);line-height:1.5}
+.reco .gain{margin-top:12px;display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.16);padding:8px 14px;border-radius:999px;font-weight:800;font-size:.92rem}
+
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-top:18px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);padding:16px 17px;position:relative;overflow:hidden}
+.kpi:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--gold)}
+.kpi.pos:before{background:var(--pos)} .kpi.neg:before{background:var(--neg)}
+.kpi .k-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:800}
+.kpi .k-val{font-family:var(--display);font-weight:600;font-size:1.55rem;margin-top:8px;line-height:1.1;font-variant-numeric:tabular-nums}
+.kpi .k-val.pos{color:var(--pos)} .kpi .k-val.neg{color:var(--neg)}
+.kpi .k-sub{font-size:.74rem;color:var(--muted);margin-top:5px}
+
+.panel{margin-top:18px;padding:22px}
+.panel > h3{font-size:1.15rem;display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.panel > h3 .ic{width:34px;height:34px;border-radius:10px;background:var(--gold-soft);color:var(--gold-deep);display:grid;place-items:center;flex:0 0 auto}
+.panel > h3 .ic svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.panel > .p-sub{font-size:.82rem;color:var(--muted);margin:2px 0 16px 44px}
+
+/* comparison chart */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:end;margin:6px 0 4px;max-width:440px}
+.bar-col{display:flex;flex-direction:column;align-items:center;gap:10px}
+.bar-track{height:180px;width:74px;display:flex;align-items:flex-end}
+.bar{width:100%;border-radius:10px 10px 4px 4px;min-height:8px;position:relative;transition:height .6s cubic-bezier(.2,.8,.2,1)}
+.bar.micro{background:linear-gradient(180deg,#4d6b82,var(--navy))}
+.bar.reel{background:linear-gradient(180deg,#7fab96,#4e7d68)}
+.bar .bv{position:absolute;top:-24px;left:50%;transform:translateX(-50%);font-size:.82rem;font-weight:800;white-space:nowrap;color:var(--ink)}
+.bar-col .bl{font-size:.78rem;font-weight:800;color:var(--ink-2);text-align:center}
+.bar-col .bl small{display:block;font-weight:600;color:var(--muted);font-size:.68rem}
+
+/* table */
+.tbl-scroll{overflow-x:auto;margin-top:4px;border-radius:var(--radius-sm);border:1px solid var(--line)}
+table.data{width:100%;border-collapse:collapse;font-size:.86rem;min-width:520px}
+table.data th,table.data td{padding:11px 13px;text-align:right;border-bottom:1px solid var(--line-2);white-space:nowrap;font-variant-numeric:tabular-nums}
+table.data th:first-child,table.data td:first-child{text-align:left;white-space:normal}
+table.data thead th{background:var(--paper);font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);position:sticky;top:0}
+table.data tbody tr:last-child td{border-bottom:0}
+table.data tr.sub td:first-child{padding-left:26px;color:var(--muted);font-weight:500;font-size:.8rem}
+table.data tr.total td{background:var(--paper-2);font-weight:800}
+table.data td.pos{color:var(--pos);font-weight:700} table.data td.neg{color:var(--neg);font-weight:700}
+table.data .rowlabel{font-weight:600;color:var(--ink-2)}
+
+/* notes / advisory */
+.notes{display:grid;gap:12px;margin-top:4px}
+.note{display:flex;gap:12px;padding:14px 15px;border-radius:var(--radius-sm);background:var(--paper-2);border:1px solid var(--line-2)}
+.note .ni{width:30px;height:30px;border-radius:9px;flex:0 0 auto;display:grid;place-items:center;color:#fff}
+.note .ni svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.note.info .ni{background:var(--gold-deep)} .note.warn .ni{background:var(--warn)} .note.ok .ni{background:var(--pos)} .note.alert .ni{background:var(--neg)}
+.note .nt{font-size:.86rem;line-height:1.5;color:var(--ink-2)}
+.note .nt strong{color:var(--ink)}
+.chip{display:inline-block;padding:3px 9px;border-radius:999px;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+.chip.warn{background:var(--warn-soft);color:var(--warn)} .chip.alert{background:var(--neg-soft);color:var(--neg)} .chip.ok{background:var(--pos-soft);color:var(--pos)}
+
+/* explanation blocks (client-facing) */
+.explain{display:grid;gap:14px}
+.exp{padding:16px 18px;border-radius:var(--radius-sm);border-left:4px solid var(--gold);background:var(--paper-2)}
+.exp h4{font-size:.9rem;font-family:var(--display);font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.exp p{font-size:.87rem;color:var(--ink-2);line-height:1.55}
+
+/* per-bien resale cards */
+.rv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-top:4px}
+.rv-card{border:1px solid var(--line);border-radius:var(--radius-sm);padding:16px;background:var(--paper-2)}
+.rv-card h4{font-size:.95rem;font-family:var(--display);font-weight:600;margin-bottom:10px}
+.rv-line{display:flex;justify-content:space-between;gap:12px;font-size:.82rem;padding:5px 0;border-bottom:1px dashed var(--line);font-variant-numeric:tabular-nums}
+.rv-line:last-child{border-bottom:0}
+.rv-line span{color:var(--muted)} .rv-line b{color:var(--ink);font-weight:700}
+.rv-line.hl{margin-top:4px;padding-top:9px;border-top:1px solid var(--line);border-bottom:0}
+.rv-line.hl b{color:var(--neg)}
+
+/* footer */
+.app-footer{background:var(--navy);color:#aebfce;padding:34px 0 40px;margin-top:40px}
+.app-footer .wrap{display:flex;flex-wrap:wrap;gap:22px;justify-content:space-between;align-items:center}
+.app-footer .fbrand{display:flex;align-items:center;gap:12px}
+.app-footer img{height:40px;width:auto}
+.app-footer .fcopy{font-size:.78rem;line-height:1.5;max-width:52ch}
+.app-footer .fcopy strong{color:#fff;font-family:var(--display);font-weight:600}
+.disclaimer{font-size:.72rem;color:#7f93a4;margin-top:16px;line-height:1.5;max-width:none;border-top:1px solid rgba(255,255,255,.1);padding-top:16px}
+
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--navy);color:#fff;padding:12px 20px;border-radius:12px;font-size:.86rem;font-weight:700;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.28s;z-index:200}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media (max-width:640px){
+  .hero h1{font-size:1.7rem}
+  .compare{max-width:none}
+  .actionbar-inner{padding:11px 12px}
+  .btn{padding:0 16px;min-height:46px;font-size:.88rem}
+  .brand-txt small{display:none}
+}
+@media print{
+  .app-header,.actionbar,.add-bien,.hero-lead,.hero-tag,.header-actions,.form-zone,.eyebrow{display:none!important}
+  .lmnp{background:#fff}
+  .main{margin-top:20px}
+  .results{display:block!important}
+  .card,.panel,.reco{box-shadow:none;break-inside:avoid}
+  .hero{background:var(--navy)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:20px 0}
+}
+</style>
+
+<div class="lmnp" id="top">
+
+  <header class="app-header">
+    <div class="wrap">
+      <div class="brand">
+        <img class="brand-mark" alt="S2A" src="__FAVICON__"/>
+        <span class="brand-txt"><strong>S2A · Sud Alpes Audit</strong><small>Simulateur LMNP</small></span>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="btnTheme" title="Thème clair / sombre" aria-label="Basculer le thème">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+        <button class="icon-btn" id="btnPrint" title="Imprimer / PDF" aria-label="Imprimer ou exporter en PDF">
+          <svg viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M6 14h12v7H6z"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="wrap">
+      <span class="eyebrow">Expertise comptable · Audit · Conseil</span>
+      <h1>Simulateur d'investissement LMNP</h1>
+      <p class="hero-lead">Comparez le régime <b>Micro-BIC</b> et le régime <b>Réel</b> sur l'ensemble de votre patrimoine locatif meublé, mesurez le cash-flow réel et l'impact fiscal à la revente. Renseignez un premier bien, ajoutez les suivants, puis lancez la simulation.</p>
+      <p class="hero-tag">« À vos côtés, aujourd'hui, demain, toujours. »</p>
+    </div>
+  </section>
+
+  <main class="main">
+    <div class="wrap">
+
+      <div class="form-zone" id="formZone">
+        <!-- Global parameters -->
+        <div class="card globals">
+          <div class="card-title">
+            <span class="ic"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 4-5"/></svg></span>
+            <div><h3>Hypothèses du foyer fiscal</h3><p>Paramètres communs à tous les biens.</p></div>
+          </div>
+          <div class="grid-fields" id="globalFields"></div>
+        </div>
+
+        <div class="section-lead"><h2>Vos biens</h2><span id="bienCount"></span></div>
+        <div class="biens" id="biens"></div>
+
+        <button class="add-bien" id="addBien" type="button">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          Ajouter un bien
+        </button>
+
+        <div class="actionbar">
+          <div class="actionbar-inner">
+            <div class="recap" id="recap">Renseignez vos biens puis lancez la simulation.</div>
+            <button class="btn btn-ghost" id="btnReset" type="button">
+              <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+              Réinitialiser
+            </button>
+            <button class="btn btn-primary" id="btnSimulate" type="button">
+              <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+              Simuler
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== RESULTS ===================== -->
+      <div class="results" id="results"></div>
+
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    <div class="wrap">
+      <div class="fbrand">
+        <img alt="S2A — Sud Alpes Audit" src="__LOGO_LIGHT__"/>
+      </div>
+      <p class="fcopy"><strong>Sud Alpes Audit</strong> — Cabinet d'expertise comptable et de commissariat aux comptes à Nice &amp; Allos, depuis 1998. Avancer. Décider. Réussir.</p>
+    </div>
+    <div class="wrap">
+      <p class="disclaimer">Outil d'aide à la décision à vocation pédagogique. Les résultats sont des estimations établies à partir des hypothèses saisies et de la réglementation en vigueur (dont la réintégration des amortissements dans la plus-value LMNP issue de la loi de finances 2025). Ils ne constituent ni un conseil fiscal personnalisé, ni un engagement du cabinet. Chaque situation doit être validée avec votre interlocuteur S2A avant toute décision.</p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ------------------------------------------------------------------ *
+ *  1. Configuration du modèle (champs du formulaire)
+ * ------------------------------------------------------------------ */
+var TYPE_OPTIONS = [
+  ['classique','Location meublée classique — abattement 50 %'],
+  ['tourisme_classe','Meublé de tourisme classé — abattement 71 %'],
+  ['tourisme_non_classe','Meublé de tourisme non classé — abattement 30 %']
+];
+
+// Abattement micro-BIC & seuil de recettes micro par type
+var TYPE_META = {
+  classique:          {ab:0.50, seuil:77700,  label:'meublé classique'},
+  tourisme_classe:    {ab:0.71, seuil:77700,  label:'tourisme classé'},
+  tourisme_non_classe:{ab:0.30, seuil:15000,  label:'tourisme non classé'}
+};
+
+var TMI_OPTIONS = [['0','0 %'],['11','11 %'],['30','30 %'],['41','41 %'],['45','45 %']];
+
+// Groupes de champs d'un bien
+var BIEN_GROUPS = [
+  { title:'Identité & régime', icon:'<path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/>', fields:[
+    {k:'nom',  label:'Nom du bien', type:'text', ph:'Ex : Studio Nice Californie', full:true},
+    {k:'type', label:'Type de location LMNP', type:'select', options:TYPE_OPTIONS, full:true},
+    {k:'recettes', label:'Recettes annuelles', unit:'€', type:'euro', hint:'Total des loyers encaissés sur l’année.'}
+  ]},
+  { title:'Charges annuelles', icon:'<path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>', fields:[
+    {k:'interets', label:'Intérêts d’emprunt', unit:'€', type:'euro'},
+    {k:'assuranceEmpr', label:'Assurance emprunteur', unit:'€', type:'euro'},
+    {k:'taxeFonciere', label:'Taxe foncière (+ TH)', unit:'€', type:'euro', hint:'Hors TEOM récupérable.'},
+    {k:'cfe', label:'CFE', unit:'€', type:'euro', hint:'Obligatoire dès la 2ᵉ année.'},
+    {k:'chargesCopro', label:'Charges copro non récupérables', unit:'€', type:'euro'},
+    {k:'fraisGestion', label:'Frais de gestion / agence', unit:'€', type:'euro', auto7:true, hint:'Calcul auto à 7 % des recettes.'},
+    {k:'honoraires', label:'Honoraires comptables', unit:'€', type:'euro', hint:'Déductibles au régime réel.'},
+    {k:'assurancesPNO', label:'Assurances (PNO, GLI…)', unit:'€', type:'euro'},
+    {k:'entretien', label:'Entretien / réparations', unit:'€', type:'euro'},
+    {k:'autres', label:'Autres charges', unit:'€', type:'euro'}
+  ]},
+  { title:'Acquisition & amortissement', icon:'<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>', fields:[
+    {k:'prix', label:'Prix d’acquisition', unit:'€', type:'euro', hint:'Frais de notaire inclus.'},
+    {k:'pctTerrain', label:'Quote-part terrain', unit:'%', type:'pct', def:15, hint:'Non amortissable — généralement 10 à 20 %.'},
+    {k:'mobilier', label:'Mobilier / équipements', unit:'€', type:'euro'},
+    {k:'travaux', label:'Travaux immobilisés', unit:'€', type:'euro'},
+    {k:'dureeImm', label:'Durée amort. immeuble', unit:'ans', type:'int', def:30, hint:'25 à 30 ans.'},
+    {k:'dureeMob', label:'Durée amort. mobilier', unit:'ans', type:'int', def:7, hint:'5 à 10 ans.'},
+    {k:'dureeTrav', label:'Durée amort. travaux', unit:'ans', type:'int', def:12, hint:'10 à 15 ans.'}
+  ]},
+  { title:'Financement — cash-flow', icon:'<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/>', fields:[
+    {k:'capitalRembourse', label:'Capital remboursé dans l’année', unit:'€', type:'euro', hint:'Part de capital de vos mensualités (hors intérêts, déjà saisis en charges). Sert au calcul du cash-flow réel.'}
+  ]},
+  { title:'Impact à la revente', icon:'<path d="M3 3v18h18"/><path d="M19 9l-5 5-4-4-4 4"/>', fields:[
+    {k:'prixRevente', label:'Prix de revente estimé', unit:'€', type:'euro', hint:'Valeur nette vendeur envisagée.'},
+    {k:'dureeDetention', label:'Durée de détention à la vente', unit:'ans', type:'int', def:15, hint:'Années écoulées entre l’achat et la revente.'},
+    {k:'amortCumul', label:'Amortissements déduits cumulés', unit:'€', type:'euro', hint:'Laissez vide pour une estimation automatique.'},
+    {k:'amortReintegration', label:'Réintégrer les amortissements (LFI 2025)', type:'toggle', def:true, hint:'Depuis 2025, les amortissements déduits majorent la plus-value imposable.', full:true},
+    {k:'fraisForfait', label:'Majoration forfaitaire frais 7,5 %', type:'toggle', def:false, full:true},
+    {k:'travauxForfait', label:'Majoration forfaitaire travaux 15 % (si +5 ans)', type:'toggle', def:false, full:true}
+  ]},
+  { title:'Reports N-1 (optionnel)', icon:'<path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/>', fields:[
+    {k:'stockDiffN1', label:'Stock amortissements différés N-1', unit:'€', type:'euro', hint:'Report illimité à reprendre chaque année.'},
+    {k:'deficitN1', label:'Déficits LMNP reportables N-1', unit:'€', type:'euro', hint:'Reportables 10 ans.'}
+  ]}
+];
+
+/* ------------------------------------------------------------------ *
+ *  2. État & persistance
+ * ------------------------------------------------------------------ */
+var STORE = 'lmnp_s2a_v4';
+var state = null;
+
+function blankBien(){
+  var b = {};
+  BIEN_GROUPS.forEach(function(g){ g.fields.forEach(function(f){
+    if(f.type==='toggle') b[f.k] = (f.def!==undefined? f.def : false);
+    else if(f.def!==undefined) b[f.k] = f.def;
+    else b[f.k] = '';
+  }); });
+  b.type = 'classique';
+  b.fraisGestionAuto = true;
+  b._open = true;
+  return b;
+}
+function defaultState(){ return { tmi:'30', ps:'17.2', biens:[ blankBien() ] }; }
+
+function load(){
+  try{ var raw = localStorage.getItem(STORE); if(raw){ var s=JSON.parse(raw); if(s&&s.biens&&s.biens.length) return s; } }catch(e){}
+  return defaultState();
+}
+var saveTimer=null;
+function save(){ clearTimeout(saveTimer); saveTimer=setTimeout(function(){ try{ localStorage.setItem(STORE, JSON.stringify(state)); }catch(e){} },250); }
+
+/* ------------------------------------------------------------------ *
+ *  3. Utilitaires
+ * ------------------------------------------------------------------ */
+function num(v){ if(v===''||v===null||v===undefined) return 0; var n=parseFloat((''+v).replace(',','.').replace(/\s/g,'')); return isNaN(n)?0:n; }
+function fmt(v){ var n=Math.round(num(v)); var s=Math.abs(n).toLocaleString('fr-FR'); return (n<0?'−':'')+s+' €'; }
+function fmt0(v){ var n=Math.round(num(v)); return (n<0?'−':'')+Math.abs(n).toLocaleString('fr-FR'); }
+function pct(v){ return (Math.round(num(v)*1000)/10).toLocaleString('fr-FR')+' %'; }
+function esc(s){ return (''+s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+function el(html){ var d=document.createElement('div'); d.innerHTML=html.trim(); return d.firstChild; }
+function toast(msg){ var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(function(){t.classList.remove('show');},2200); }
+
+/* ------------------------------------------------------------------ *
+ *  4. Moteur fiscal
+ * ------------------------------------------------------------------ */
+function abattementIR(y){ if(y<6) return 0; if(y<=21) return 0.06*(y-5); if(y===22) return 1; return 1; }
+function abattementPS(y){
+  if(y<6) return 0;
+  if(y<=21) return 0.0165*(y-5);
+  if(y===22) return 0.28;
+  if(y<30) return 0.28 + 0.09*(y-22);
+  return 1;
+}
+function surtaxePV(pv){
+  if(pv<=50000) return 0;
+  if(pv<=60000)  return 0.02*pv - (60000-pv)*0.05;
+  if(pv<=100000) return 0.02*pv;
+  if(pv<=110000) return 0.03*pv - (110000-pv)*0.10;
+  if(pv<=150000) return 0.03*pv;
+  if(pv<=160000) return 0.04*pv - (160000-pv)*0.15;
+  if(pv<=200000) return 0.04*pv;
+  if(pv<=210000) return 0.05*pv - (210000-pv)*0.20;
+  if(pv<=250000) return 0.05*pv;
+  if(pv<=260000) return 0.06*pv - (260000-pv)*0.25;
+  return 0.06*pv;
+}
+
+function computeBien(b, g){
+  var r = {};
+  var R = num(b.recettes);
+  var meta = TYPE_META[b.type] || TYPE_META.classique;
+  var ab = meta.ab;
+
+  // ---- charges ----
+  var fraisGestion = b.fraisGestionAuto ? R*0.07 : num(b.fraisGestion);
+  r.fraisGestion = fraisGestion;
+  var charges = num(b.interets)+num(b.assuranceEmpr)+num(b.taxeFonciere)+num(b.cfe)
+    + num(b.chargesCopro)+fraisGestion+num(b.honoraires)+num(b.assurancesPNO)
+    + num(b.entretien)+num(b.autres);
+  r.charges = charges;
+
+  // ---- immobilisation ----
+  var P = num(b.prix);
+  var terrain = P*(num(b.pctTerrain)/100);
+  var immeuble = P - terrain;
+  var mob = num(b.mobilier), trav = num(b.travaux);
+  var baseAmort = immeuble + mob + trav;
+  r.terrain=terrain; r.immeuble=immeuble; r.baseAmort=baseAmort; r.prix=P;
+  var dImm=num(b.dureeImm), dMob=num(b.dureeMob), dTrav=num(b.dureeTrav);
+  var amortAnnuel = (dImm>0?immeuble/dImm:0)+(dMob>0?mob/dMob:0)+(dTrav>0?trav/dTrav:0);
+  r.amortAnnuel = amortAnnuel;
+  var stockN1 = num(b.stockDiffN1);
+
+  // ---- MICRO-BIC ----
+  var resMicro = R*(1-ab);
+  var irMicro = resMicro*g.tmi, psMicro = resMicro*g.ps;
+  r.resMicro=resMicro; r.irMicro=irMicro; r.psMicro=psMicro; r.coutMicro=irMicro+psMicro;
+  r.ab=ab;
+
+  // ---- RÉEL ----
+  var resAvantAmort = R - charges;
+  var amortDeductible = resAvantAmort>0 ? Math.min(amortAnnuel+stockN1, resAvantAmort) : 0;
+  var resReel = resAvantAmort - amortDeductible;
+  var deficit = resAvantAmort<0 ? resAvantAmort : 0;
+  var stockNew = (amortAnnuel+stockN1) - amortDeductible;
+  var irReel = resReel>0 ? resReel*g.tmi : 0;
+  var psReel = resReel>0 ? resReel*g.ps : 0;
+  r.resAvantAmort=resAvantAmort; r.amortDeductible=amortDeductible; r.resReel=resReel;
+  r.deficit=deficit; r.stockNew=stockNew; r.irReel=irReel; r.psReel=psReel; r.coutReel=irReel+psReel;
+
+  // ---- net dans la poche ----
+  r.netMicro = R - charges - r.coutMicro;
+  r.netReel  = R - charges - r.coutReel;
+  r.gain = r.netReel - r.netMicro;
+
+  // ---- cash-flow (régime réel = référence d'exploitation) ----
+  var capital = num(b.capitalRembourse);
+  r.capital = capital;
+  r.cashflowReel  = R - charges - r.coutReel  - capital;
+  r.cashflowMicro = R - charges - r.coutMicro - capital;
+
+  // ---- rendements ----
+  r.rdtBrut = P>0 ? R/P : 0;
+  r.rdtNet  = P>0 ? (R-charges)/P : 0;
+  r.rdtNetNet = P>0 ? r.netReel/P : 0;
+
+  // ---- REVENTE / plus-value ----
+  var Y = Math.max(0, Math.round(num(b.dureeDetention)));
+  var PV = num(b.prixRevente);
+  var amortCumul = b.amortCumul!=='' && b.amortCumul!=null ? num(b.amortCumul)
+                    : Math.min(baseAmort, amortAnnuel*Y);
+  r.amortCumulEstime = Math.min(baseAmort, amortAnnuel*Y);
+  r.amortCumul = amortCumul;
+  r.dureeDetention = Y; r.prixRevente = PV;
+
+  function plusValue(reintegrate){
+    var base = P;
+    if(b.fraisForfait) base += P*0.075;
+    if(b.travauxForfait && Y>5) base += P*0.15;
+    if(reintegrate) base -= amortCumul;
+    var brute = Math.max(0, PV - base);
+    var abIR = abattementIR(Y), abPS = abattementPS(Y);
+    var impIR = brute*(1-abIR), impPS = brute*(1-abPS);
+    var ir = impIR*0.19, ps = impPS*0.172, sur = surtaxePV(impIR);
+    return { base:base, brute:brute, abIR:abIR, abPS:abPS, ir:ir, ps:ps, surtaxe:sur, total:ir+ps+sur, netVendeur:PV - (ir+ps+sur) };
+  }
+  r.pvReel  = plusValue(!!b.amortReintegration);
+  r.pvSans  = plusValue(false);
+  r.surcoutRevente = r.pvReel.total - r.pvSans.total; // coût fiscal des amortissements à la revente
+
+  return r;
+}
+
+function computeAll(){
+  var g = { tmi:num(state.tmi)/100, ps:num(state.ps)/100 };
+  var per = state.biens.map(function(b){ return computeBien(b,g); });
+  var t = { R:0, charges:0, coutMicro:0, coutReel:0, netMicro:0, netReel:0,
+    resMicro:0, resReel:0, irMicro:0, irReel:0, psMicro:0, psReel:0,
+    cashflowReel:0, cashflowMicro:0, capital:0, deficit:0, stockNew:0,
+    amortDeductible:0, cfe:0, honoraires:0, taxeFonciere:0, fraisGestion:0,
+    pvTotalReel:0, pvTotalSans:0, surcoutRevente:0, pvBruteReel:0, prixRevente:0 };
+  per.forEach(function(r,i){
+    var b = state.biens[i];
+    t.R+=num(b.recettes); t.charges+=r.charges;
+    t.coutMicro+=r.coutMicro; t.coutReel+=r.coutReel;
+    t.netMicro+=r.netMicro; t.netReel+=r.netReel;
+    t.resMicro+=r.resMicro; t.resReel+=r.resReel;
+    t.irMicro+=r.irMicro; t.irReel+=r.irReel; t.psMicro+=r.psMicro; t.psReel+=r.psReel;
+    t.cashflowReel+=r.cashflowReel; t.cashflowMicro+=r.cashflowMicro; t.capital+=r.capital;
+    t.deficit+=r.deficit; t.stockNew+=r.stockNew; t.amortDeductible+=r.amortDeductible;
+    t.cfe+=num(b.cfe); t.honoraires+=num(b.honoraires); t.taxeFonciere+=num(b.taxeFonciere);
+    t.fraisGestion+=r.fraisGestion;
+    t.pvTotalReel+=r.pvReel.total; t.pvTotalSans+=r.pvSans.total;
+    t.pvBruteReel+=r.pvReel.brute; t.prixRevente+=r.prixRevente;
+    t.surcoutRevente+=r.surcoutRevente;
+  });
+  t.gain = t.netReel - t.netMicro;
+  t.reel = t.netReel >= t.netMicro;
+  return { g:g, per:per, t:t };
+}
+
+/* ------------------------------------------------------------------ *
+ *  5. Rendu du formulaire
+ * ------------------------------------------------------------------ */
+function fieldHTML(f, val, path){
+  var full = f.full ? ' style="grid-column:1/-1"' : '';
+  if(f.type==='toggle'){
+    return '<label class="toggle-line" '+full+'><input type="checkbox" data-path="'+path+'" '+(val?'checked':'')+'/> '
+      + '<span>'+esc(f.label)+(f.hint?' <span class="hint" style="display:inline">— '+esc(f.hint)+'</span>':'')+'</span></label>';
+  }
+  var inner;
+  if(f.type==='select'){
+    inner = '<div class="input-wrap"><select data-path="'+path+'">'
+      + f.options.map(function(o){ return '<option value="'+o[0]+'"'+(val===o[0]?' selected':'')+'>'+esc(o[1])+'</option>'; }).join('')
+      + '</select></div>';
+  } else if(f.type==='text'){
+    inner = '<div class="input-wrap"><input type="text" data-path="'+path+'" value="'+esc(val||'')+'" placeholder="'+esc(f.ph||'')+'"/></div>';
+  } else {
+    var mode = f.type==='int'?'numeric':'decimal';
+    var suf = f.unit ? ' suffix':'';
+    inner = '<div class="input-wrap'+suf+'"><input type="text" inputmode="'+mode+'" data-path="'+path+'" data-num="1" value="'+esc(val===''||val==null?'':val)+'" placeholder="0"/>'
+      + (f.unit?'<span class="unit">'+f.unit+'</span>':'') + '</div>';
+  }
+  var auto7 = '';
+  if(f.auto7){
+    var checked = pathGet(path.replace(/\.[^.]+$/, '.fraisGestionAuto'));
+    auto7 = '<label class="toggle-line"><input type="checkbox" data-auto7="'+path.replace(/\.[^.]+$/, '')+'" '+(checked?'checked':'')+'/> Calcul automatique (7 %)</label>';
+  }
+  return '<div class="field"'+full+'><label>'+esc(f.label)+'</label>'+inner
+    + (auto7||'') + (f.hint?'<span class="hint">'+esc(f.hint)+'</span>':'') + '</div>';
+}
+
+function pathGet(path){
+  var parts=path.split('.'), o=state;
+  for(var i=0;i<parts.length;i++){ o = o[parts[i].match(/^\d+$/)?parseInt(parts[i]):parts[i]]; if(o===undefined) return undefined; }
+  return o;
+}
+function pathSet(path,v){
+  var parts=path.split('.'), o=state;
+  for(var i=0;i<parts.length-1;i++){ o=o[parts[i].match(/^\d+$/)?parseInt(parts[i]):parts[i]]; }
+  o[parts[parts.length-1]] = v;
+}
+
+function renderGlobals(){
+  var host = document.getElementById('globalFields');
+  var tmiSel = '<div class="field"><label>Tranche marginale d’imposition (TMI)</label><div class="input-wrap"><select data-path="tmi">'
+    + TMI_OPTIONS.map(function(o){return '<option value="'+o[0]+'"'+(state.tmi===o[0]?' selected':'')+'>'+o[1]+'</option>';}).join('')
+    + '</select></div><span class="hint">Taux d’imposition de la dernière tranche de revenus du foyer.</span></div>';
+  var psField = '<div class="field"><label>Taux de prélèvements sociaux</label><div class="input-wrap suffix"><input type="text" inputmode="decimal" data-path="ps" data-num="1" value="'+esc(state.ps)+'"/><span class="unit">%</span></div><span class="hint">17,2 % par défaut.</span></div>';
+  host.innerHTML = tmiSel + psField;
+}
+
+function bienSummary(b){
+  var meta = TYPE_META[b.type]||TYPE_META.classique;
+  var parts=[];
+  if(num(b.recettes)) parts.push(fmt0(b.recettes)+' € de loyers');
+  if(num(b.prix)) parts.push(fmt0(b.prix)+' € d’acquisition');
+  parts.push(meta.label);
+  return parts.join(' · ');
+}
+
+function renderBiens(){
+  var host = document.getElementById('biens');
+  host.innerHTML='';
+  state.biens.forEach(function(b,i){
+    var groups = BIEN_GROUPS.map(function(g){
+      var fields = g.fields.map(function(f){ return fieldHTML(f, b[f.k], 'biens.'+i+'.'+f.k); }).join('');
+      return '<div class="fieldset"><div class="fs-title"><svg viewBox="0 0 24 24">'+g.icon+'</svg>'+esc(g.title)+'</div><div class="grid-fields">'+fields+'</div></div>';
+    }).join('');
+    var card = el(
+      '<div class="bien'+(b._open?' open':'')+'" data-i="'+i+'">'
+      +  '<div class="bien-head" data-toggle="'+i+'">'
+      +    '<span class="bien-badge">'+(i+1)+'</span>'
+      +    '<span class="titles"><strong>'+esc(b.nom||('Bien '+(i+1)))+'</strong><small>'+esc(bienSummary(b))+'</small></span>'
+      +    (state.biens.length>1?'<button class="bien-remove" data-remove="'+i+'" title="Supprimer ce bien" aria-label="Supprimer ce bien"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></button>':'')
+      +    '<svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>'
+      +  '</div>'
+      +  '<div class="bien-body">'+groups+'</div>'
+      +'</div>'
+    );
+    host.appendChild(card);
+    // sync auto7 disabled state
+    var fg = card.querySelector('input[data-path="biens.'+i+'.fraisGestion"]');
+    if(fg && b.fraisGestionAuto){ fg.disabled=true; fg.value = fmt0(num(b.recettes)*0.07); }
+  });
+  document.getElementById('bienCount').textContent = state.biens.length>1 ? (state.biens.length+' biens') : '1 bien';
+  updateRecap();
+}
+
+function updateRecap(){
+  var c = computeAll();
+  var el = document.getElementById('recap');
+  if(c.t.R<=0){ el.innerHTML='Renseignez au moins les loyers d’un bien pour lancer la simulation.'; return; }
+  el.innerHTML = '<b>'+state.biens.length+'</b> bien'+(state.biens.length>1?'s':'')+' · Loyers <b>'+fmt(c.t.R)+'</b> · Régime conseillé : <b>'+(c.t.reel?'Réel':'Micro-BIC')+'</b>';
+}
+
+/* ------------------------------------------------------------------ *
+ *  6. Rendu des résultats
+ * ------------------------------------------------------------------ */
+function ic(p){ return '<span class="ic"><svg viewBox="0 0 24 24">'+p+'</svg></span>'; }
+
+function renderResults(){
+  var c = computeAll(), t=c.t, per=c.per;
+  var out=[];
+
+  // ---- Recommandation ----
+  var reco = t.reel
+    ? { cls:'reel', label:'Régime recommandé', title:'Régime Réel',
+        txt:'Après impôts et charges payées, il resterait <b>'+fmt(t.netReel)+'</b> dans la poche sur l’ensemble du patrimoine — soit <b>'+fmt(Math.abs(t.gain))+'</b> de plus qu’au micro-BIC chaque année.',
+        gain:'Gain annuel réel : '+fmt(t.gain) }
+    : { cls:'micro', label:'Régime recommandé', title:'Régime Micro-BIC',
+        txt:'Le micro-BIC laisse <b>'+fmt(t.netMicro)+'</b> dans la poche, soit <b>'+fmt(Math.abs(t.gain))+'</b> de plus que le régime réel dans cette configuration.',
+        gain:'Écart annuel : '+fmt(Math.abs(t.gain)) };
+  out.push('<div class="reco '+reco.cls+'"><div class="rmark"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div>'
+    +'<div><div class="rlabel">'+reco.label+'</div><h3>'+reco.title+'</h3><p>'+reco.txt+'</p>'
+    +'<span class="gain"><svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M3 17l6-6 4 4 8-8"/><path d="M21 7v6h-6"/></svg>'+reco.gain+'</span></div></div>');
+
+  // ---- KPIs ----
+  var cfCls = t.cashflowReel>=0?'pos':'neg';
+  out.push('<div class="kpis">'
+    + kpi('Loyers annuels', fmt(t.R), '', '')
+    + kpi('Net dans la poche — '+(t.reel?'Réel':'Micro'), fmt(t.reel?t.netReel:t.netMicro), (t.reel?t.netReel:t.netMicro)>=0?'pos':'neg', 'après charges & impôts')
+    + kpi('Coût fiscal '+(t.reel?'Réel':'Micro'), fmt(t.reel?t.coutReel:t.coutMicro), '', 'IR + prélèvements sociaux')
+    + kpi('Cash-flow réel', fmt(t.cashflowReel), cfCls, (t.cashflowReel/12>=0?'+':'')+fmt(t.cashflowReel/12)+' / mois')
+    + kpi('Impôt de plus-value à la revente', fmt(t.pvTotalReel), t.pvTotalReel>0?'neg':'', 'sur '+fmt(t.prixRevente)+' de revente')
+    + '</div>');
+
+  // ---- Comparatif Micro vs Réel ----
+  var mx = Math.max(1, Math.abs(t.netMicro), Math.abs(t.netReel));
+  var hM = Math.max(8, Math.round(Math.abs(t.netMicro)/mx*180));
+  var hR = Math.max(8, Math.round(Math.abs(t.netReel)/mx*180));
+  out.push('<div class="card panel"><h3>'+ic('<path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="7"/><rect x="14" y="6" width="3" height="11"/>')+'Micro-BIC vs Réel</h3>'
+    +'<p class="p-sub">Ce qui reste réellement dans la poche chaque année, après charges et impôts.</p>'
+    +'<div style="display:flex;gap:34px;flex-wrap:wrap;align-items:center">'
+    +'<div class="compare"><div class="bar-col"><div class="bar-track"><div class="bar micro" style="height:'+hM+'px"><span class="bv">'+fmt(t.netMicro)+'</span></div></div><div class="bl">Micro-BIC<small>abattement forfaitaire</small></div></div>'
+    +'<div class="bar-col"><div class="bar-track"><div class="bar reel" style="height:'+hR+'px"><span class="bv">'+fmt(t.netReel)+'</span></div></div><div class="bl">Réel<small>charges + amortissements</small></div></div></div>'
+    + comparisonTable(t)
+    +'</div></div>');
+
+  // ---- Détail par bien ----
+  out.push(perBienTable(per));
+
+  // ---- Cash-flow ----
+  out.push(cashflowPanel(t, per));
+
+  // ---- Revente / plus-value ----
+  out.push(resalePanel(t, per));
+
+  // ---- Suivi amortissements & déficits ----
+  out.push(trackingPanel(t, per));
+
+  // ---- Points de vigilance ----
+  out.push(advisoryPanel(t, per));
+
+  // ---- Explication client ----
+  out.push(explainPanel(t));
+
+  var host=document.getElementById('results');
+  host.innerHTML = '<div class="section-lead" style="margin-top:40px"><h2>Résultats de la simulation</h2><span>Régime, cash-flow &amp; revente — vision globale</span></div>' + out.join('');
+  host.classList.add('show');
+}
+
+function kpi(label,val,cls,sub){
+  return '<div class="kpi '+(cls||'')+'"><div class="k-label">'+esc(label)+'</div><div class="k-val '+(cls||'')+'">'+val+'</div>'+(sub?'<div class="k-sub">'+esc(sub)+'</div>':'')+'</div>';
+}
+
+function comparisonTable(t){
+  function row(l,m,r,cls){ return '<tr><td class="rowlabel">'+l+'</td><td>'+fmt(m)+'</td><td>'+fmt(r)+'</td></tr>'; }
+  var ecartCout = t.coutReel - t.coutMicro;
+  return '<div style="flex:1;min-width:280px"><div class="tbl-scroll"><table class="data">'
+    +'<thead><tr><th>Indicateur</th><th>Micro-BIC</th><th>Réel</th></tr></thead><tbody>'
+    + row('Recettes',t.R,t.R)
+    + row('Charges réelles',t.charges,t.charges)
+    + row('Résultat fiscal',t.resMicro,t.resReel)
+    + row('Impôt sur le revenu',t.irMicro,t.irReel)
+    + row('Prélèvements sociaux',t.psMicro,t.psReel)
+    +'<tr class="total"><td>Coût fiscal total</td><td>'+fmt(t.coutMicro)+'</td><td>'+fmt(t.coutReel)+'</td></tr>'
+    +'<tr class="total"><td>Net dans la poche</td><td>'+fmt(t.netMicro)+'</td><td>'+fmt(t.netReel)+'</td></tr>'
+    +'</tbody></table></div></div>';
+}
+
+function perBienTable(per){
+  var head='<th>Indicateur</th>';
+  per.forEach(function(r,i){ head+='<th>'+esc(state.biens[i].nom||('Bien '+(i+1)))+'</th>'; });
+  head+='<th>Total</th>';
+  var rows='';
+  rows += rowFn('Recettes', per, function(r,i){return num(state.biens[i].recettes);});
+  rows += rowFn('Charges réelles', per, function(r){return r.charges;});
+  rows += rowFn('dont taxe foncière', per, function(r,i){return num(state.biens[i].taxeFonciere);}, {sub:1});
+  rows += rowFn('dont CFE', per, function(r,i){return num(state.biens[i].cfe);}, {sub:1});
+  rows += rowFn('dont frais de gestion', per, function(r){return r.fraisGestion;}, {sub:1});
+  rows += rowFn('dont honoraires comptables', per, function(r,i){return num(state.biens[i].honoraires);}, {sub:1});
+  rows += rowFn('Amortissement déduit (réel)', per, function(r){return r.amortDeductible;});
+  rows += rowFn('Résultat fiscal — Réel', per, function(r){return r.resReel;}, {color:1});
+  rows += rowFn('Coût fiscal — Micro', per, function(r){return r.coutMicro;});
+  rows += rowFn('Coût fiscal — Réel', per, function(r){return r.coutReel;});
+  rows += rowFn('Net dans la poche — Réel', per, function(r){return r.netReel;}, {color:1, total:1});
+
+  return '<div class="card panel"><h3>'+ic('<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>')+'Détail par bien — vue conseiller</h3>'
+    +'<p class="p-sub">Contribution de chaque bien au régime réel.</p>'
+    +'<div class="tbl-scroll"><table class="data"><thead><tr>'+head+'</tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+}
+function rowFn(label, per, fn, opt){
+  opt=opt||{}; var cells='', sum=0;
+  per.forEach(function(r,i){ var v=fn(r,i); sum+=v; cells+='<td'+(opt.color&&v?(v>0?' class="pos"':' class="neg"'):'')+'>'+fmt(v)+'</td>'; });
+  cells+='<td'+(opt.color&&sum?(sum>0?' class="pos"':' class="neg"'):'')+'>'+fmt(sum)+'</td>';
+  return '<tr'+(opt.sub?' class="sub"':'')+(opt.total?' class="total"':'')+'><td>'+label+'</td>'+cells+'</tr>';
+}
+
+function cashflowPanel(t, per){
+  var mensuel = t.cashflowReel/12;
+  var cls = t.cashflowReel>=0?'ok':'warn';
+  var msg = t.cashflowReel>=0
+    ? 'Votre patrimoine s’autofinance : le cash-flow mensuel est positif de <strong>'+fmt(mensuel)+'</strong>, capital d’emprunt remboursé et impôts payés.'
+    : 'Un effort d’épargne d’environ <strong>'+fmt(Math.abs(mensuel))+' / mois</strong> est nécessaire pour couvrir mensualités et impôts — compensé par la constitution de patrimoine (capital remboursé : '+fmt(t.capital)+' / an).';
+  return '<div class="card panel"><h3>'+ic('<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/>')+'Trésorerie — cash-flow réel</h3>'
+    +'<p class="p-sub">Loyers − charges − impôt (régime réel) − capital remboursé.</p>'
+    +'<div class="kpis" style="margin-top:0">'
+    + kpi('Cash-flow annuel', fmt(t.cashflowReel), t.cashflowReel>=0?'pos':'neg', '')
+    + kpi('Cash-flow mensuel', (mensuel>=0?'+':'')+fmt(mensuel), t.cashflowReel>=0?'pos':'neg', '')
+    + kpi('Capital remboursé / an', fmt(t.capital), '', 'patrimoine constitué')
+    + kpi('Enrichissement net / an', fmt(t.cashflowReel + t.capital), (t.cashflowReel+t.capital)>=0?'pos':'neg', 'cash-flow + capital')
+    +'</div>'
+    +'<div class="notes" style="margin-top:16px"><div class="note '+cls+'"><span class="ni"><svg viewBox="0 0 24 24"><path d="M12 8v5M12 16h.01"/><circle cx="12" cy="12" r="9"/></svg></span><div class="nt">'+msg+'</div></div></div></div>';
+}
+
+function resalePanel(t, per){
+  if(t.prixRevente<=0){
+    return '<div class="card panel"><h3>'+ic('<path d="M3 3v18h18"/><path d="M19 9l-5 5-4-4-4 4"/>')+'Impact à la revente — plus-value</h3>'
+      +'<p class="p-sub">Renseignez un prix de revente et une durée de détention dans le bloc « Impact à la revente » d’au moins un bien pour visualiser cette analyse.</p></div>';
+  }
+  var cards = per.map(function(r,i){
+    if(r.prixRevente<=0) return '';
+    var b=state.biens[i];
+    return '<div class="rv-card"><h4>'+esc(b.nom||('Bien '+(i+1)))+' — détention '+r.dureeDetention+' ans</h4>'
+      +'<div class="rv-line"><span>Prix de revente</span><b>'+fmt(r.prixRevente)+'</b></div>'
+      +'<div class="rv-line"><span>Amortissements réintégrés</span><b>'+(b.amortReintegration?fmt(r.amortCumul):'—')+'</b></div>'
+      +'<div class="rv-line"><span>Plus-value brute</span><b>'+fmt(r.pvReel.brute)+'</b></div>'
+      +'<div class="rv-line"><span>Abattement IR / PS</span><b>'+pct(r.pvReel.abIR)+' / '+pct(r.pvReel.abPS)+'</b></div>'
+      +'<div class="rv-line"><span>IR (19 %)</span><b>'+fmt(r.pvReel.ir)+'</b></div>'
+      +'<div class="rv-line"><span>Prélèvements sociaux</span><b>'+fmt(r.pvReel.ps)+'</b></div>'
+      +(r.pvReel.surtaxe>0?'<div class="rv-line"><span>Surtaxe plus-value</span><b>'+fmt(r.pvReel.surtaxe)+'</b></div>':'')
+      +'<div class="rv-line hl"><span>Impôt total à la revente</span><b>'+fmt(r.pvReel.total)+'</b></div>'
+      +'<div class="rv-line"><span>Dont surcoût amortissements</span><b>'+fmt(r.surcoutRevente)+'</b></div>'
+      +'</div>';
+  }).join('');
+
+  // vision "big picture"
+  var Ymax = Math.max.apply(null, per.map(function(r){return r.dureeDetention||0;}));
+  var cumulAvantage = t.gain * (Ymax||0); // avantage réel cumulé sur la durée (hypothèse stable)
+  var bilan = cumulAvantage - t.surcoutRevente;
+  var bigMsg;
+  if(t.gain>0){
+    bigMsg = 'Sur environ <strong>'+Ymax+' ans</strong> de détention, l’économie d’impôt du régime réel représente <strong>'+fmt(cumulAvantage)+'</strong>. À la revente, la réintégration des amortissements alourdit la plus-value de <strong>'+fmt(t.surcoutRevente)+'</strong>. Bilan net de la stratégie d’amortissement : <strong>'+fmt(bilan)+'</strong>'+(bilan>=0?' en faveur du régime réel.':', à surveiller selon l’horizon de revente.');
+  } else {
+    bigMsg = 'Le régime micro étant ici plus favorable à l’exploitation, la question de la réintégration des amortissements ne se pose pas de la même manière. Coût fiscal estimé de la plus-value : <strong>'+fmt(t.pvTotalReel)+'</strong>.';
+  }
+
+  return '<div class="card panel"><h3>'+ic('<path d="M3 3v18h18"/><path d="M19 9l-5 5-4-4-4 4"/>')+'Impact à la revente — plus-value LMNP</h3>'
+    +'<p class="p-sub">Depuis la loi de finances 2025, les amortissements déduits sont réintégrés dans la plus-value imposable des LMNP.</p>'
+    +'<div class="kpis" style="margin-top:0">'
+    + kpi('Plus-value brute totale', fmt(t.pvBruteReel), '', 'sur '+fmt(t.prixRevente)+' de revente')
+    + kpi('Impôt de plus-value', fmt(t.pvTotalReel), t.pvTotalReel>0?'neg':'', 'IR 19 % + PS 17,2 % + surtaxe')
+    + kpi('Surcoût dû aux amortissements', fmt(t.surcoutRevente), t.surcoutRevente>0?'neg':'', 'réforme LFI 2025')
+    + kpi('Sans réintégration', fmt(t.pvTotalSans), '', 'régime antérieur, à titre de comparaison')
+    +'</div>'
+    +'<div class="rv-grid" style="margin-top:16px">'+cards+'</div>'
+    +'<div class="notes" style="margin-top:16px"><div class="note info"><span class="ni"><svg viewBox="0 0 24 24"><path d="M12 8v5M12 16h.01"/><circle cx="12" cy="12" r="9"/></svg></span><div class="nt"><strong>Vision globale.</strong> '+bigMsg+'</div></div></div>'
+    +'</div>';
+}
+
+function trackingPanel(t, per){
+  return '<div class="card panel"><h3>'+ic('<path d="M4 7h16M4 12h16M4 17h10"/>')+'Suivi — amortissements & déficits (régime réel)</h3>'
+    +'<p class="p-sub">Capital fiscal reportable qui réduira l’imposition des années suivantes.</p>'
+    +'<div class="kpis" style="margin-top:0">'
+    + kpi('Stock amort. différés généré', fmt(t.stockNew), '', 'report illimité')
+    + kpi('Amortissement déduit (N)', fmt(t.amortDeductible), '', 'sur l’année')
+    + kpi('Déficit LMNP généré', fmt(t.deficit), t.deficit<0?'neg':'', 'reportable 10 ans')
+    +'</div></div>';
+}
+
+function advisoryPanel(t, per){
+  var notes=[];
+  // Seuils micro par bien
+  state.biens.forEach(function(b,i){
+    var meta=TYPE_META[b.type]||TYPE_META.classique; var R=num(b.recettes);
+    if(R>meta.seuil){
+      notes.push({cls:'alert', txt:'<strong>'+esc(b.nom||('Bien '+(i+1)))+'</strong> : recettes de '+fmt(R)+' supérieures au seuil du micro-BIC ('+fmt(meta.seuil)+' pour '+meta.label+'). Le régime réel devient obligatoire.'});
+    }
+  });
+  // LMP
+  if(t.R>23000){
+    notes.push({cls:'warn', txt:'Recettes totales supérieures à <strong>23 000 €</strong> : vérifiez le seuil du statut LMP (Loueur Meublé Professionnel), qui s’applique si ces recettes dépassent aussi les autres revenus d’activité du foyer. Le régime de plus-value et les cotisations sociales y diffèrent.'});
+  }
+  // Rendements (bien 1 indicatif)
+  if(per[0] && per[0].prix>0){
+    notes.push({cls:'info', txt:'Rendement du bien 1 — brut <strong>'+pct(per[0].rdtBrut)+'</strong>, net de charges <strong>'+pct(per[0].rdtNet)+'</strong>, net-net après impôt (réel) <strong>'+pct(per[0].rdtNetNet)+'</strong>.'});
+  }
+  // Autres éléments à considérer (conseil)
+  notes.push({cls:'info', txt:'<strong>À intégrer dans la décision globale :</strong> revalorisation du bien et des loyers, vacance locative et impayés (assurance GLI), évolution des taux, l’IFI si votre patrimoine immobilier net dépasse 1,3 M€, et l’articulation avec vos objectifs de transmission.'});
+
+  var html = notes.map(function(n){
+    var icon = n.cls==='alert'||n.cls==='warn'
+      ? '<path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>'
+      : '<circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/>';
+    return '<div class="note '+n.cls+'"><span class="ni"><svg viewBox="0 0 24 24">'+icon+'</svg></span><div class="nt">'+n.txt+'</div></div>';
+  }).join('');
+  return '<div class="card panel"><h3>'+ic('<path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/>')+'Points de vigilance & éléments à considérer</h3>'
+    +'<div class="notes">'+html+'</div></div>';
+}
+
+function explainPanel(t){
+  var reco = t.reel
+    ? 'Le régime <strong>réel</strong> est recommandé. Après impôts et toutes charges payées, il vous resterait <strong>'+fmt(t.netReel)+'</strong> dans la poche — soit <strong>'+fmt(t.gain)+'</strong> de plus qu’au micro-BIC chaque année.'
+    : 'Le régime <strong>micro-BIC</strong> est ici plus avantageux : <strong>'+fmt(t.netMicro)+'</strong> nets dans la poche, soit <strong>'+fmt(Math.abs(t.gain))+'</strong> de plus que le réel.';
+  var blocks=[
+    ['💶 Ce qui reste dans la poche', reco+' Recettes totales '+fmt(t.R)+', moins '+fmt(t.charges)+' de charges réelles, moins le coût fiscal du régime choisi.'],
+    ['⚠️ CFE + honoraires comptables', 'En régime réel, la CFE et les honoraires comptables représentent '+fmt(t.cfe+t.honoraires)+' de charges annuelles quasi incontournables. Déductibles fiscalement, elles réduisent néanmoins votre trésorerie.'],
+    ['📦 Capital fiscal différé', 'Le régime réel génère un stock d’amortissements différés de '+fmt(t.stockNew)+' (report illimité). Ce capital viendra réduire votre imposition les années suivantes, renforçant l’avantage du réel dans la durée.'],
+    ['📈 Impact à la revente', 'Les amortissements déduits sont désormais réintégrés dans la plus-value (LFI 2025), pour un surcoût estimé de '+fmt(t.surcoutRevente)+' à la revente. L’avantage fiscal annuel doit toujours être mis en regard de cet impact — c’est la vision « big picture » de votre investissement.']
+  ];
+  return '<div class="card panel"><h3>'+ic('<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>')+'Explication client — claire et accessible</h3>'
+    +'<div class="explain">'+blocks.map(function(b){return '<div class="exp"><h4>'+b[0]+'</h4><p>'+b[1]+'</p></div>';}).join('')+'</div></div>';
+}
+
+/* ------------------------------------------------------------------ *
+ *  7. Événements
+ * ------------------------------------------------------------------ */
+document.addEventListener('input', function(e){
+  var t=e.target;
+  if(t.dataset && t.dataset.path!==undefined){
+    var v = t.value;
+    if(t.type==='checkbox') v=t.checked;
+    else if(t.dataset.num) v = t.value; // gardé en texte, parsé au calcul
+    pathSet(t.dataset.path, v);
+    // maj résumé si champ de bien
+    if(/^biens\.\d+\.(nom|type|recettes|prix)$/.test(t.dataset.path)) refreshHeads();
+    if(/\.recettes$/.test(t.dataset.path)) syncAuto7();
+    updateRecap(); save();
+  }
+});
+document.addEventListener('change', function(e){
+  var t=e.target;
+  if(t.dataset && t.dataset.auto7!==undefined){
+    var idx=t.dataset.auto7;
+    pathSet(idx+'.fraisGestionAuto', t.checked);
+    renderBiens(); save();
+  }
+  if(t.dataset && t.dataset.path && t.tagName==='SELECT'){ refreshHeads(); updateRecap(); save(); }
+});
+document.addEventListener('click', function(e){
+  var tgl=e.target.closest('[data-toggle]');
+  if(tgl){ var i=+tgl.dataset.toggle; if(!e.target.closest('[data-remove]')){ state.biens[i]._open=!state.biens[i]._open; tgl.parentNode.classList.toggle('open'); save(); } return; }
+  var rm=e.target.closest('[data-remove]');
+  if(rm){ e.stopPropagation(); var j=+rm.dataset.remove; if(state.biens.length>1){ state.biens.splice(j,1); renderBiens(); save(); toast('Bien supprimé'); } return; }
+});
+function refreshHeads(){
+  document.querySelectorAll('.bien').forEach(function(card){
+    var i=+card.dataset.i, b=state.biens[i];
+    card.querySelector('.titles strong').textContent = b.nom||('Bien '+(i+1));
+    card.querySelector('.titles small').textContent = bienSummary(b);
+  });
+}
+function syncAuto7(){
+  document.querySelectorAll('.bien').forEach(function(card){
+    var i=+card.dataset.i, b=state.biens[i];
+    var fg=card.querySelector('input[data-path="biens.'+i+'.fraisGestion"]');
+    if(fg && b.fraisGestionAuto){ fg.value=fmt0(num(b.recettes)*0.07); }
+  });
+}
+
+document.getElementById('addBien').addEventListener('click', function(){
+  state.biens.forEach(function(b){ b._open=false; });
+  var nb=blankBien(); state.biens.push(nb);
+  renderBiens(); save();
+  var last=document.querySelector('.bien:last-child');
+  if(last){ last.scrollIntoView({behavior:'smooth',block:'center'}); }
+  toast('Bien '+state.biens.length+' ajouté');
+});
+
+document.getElementById('btnSimulate').addEventListener('click', function(){
+  var c=computeAll();
+  if(c.t.R<=0){ toast('Renseignez au moins les loyers d’un bien'); return; }
+  renderResults();
+  document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
+});
+
+document.getElementById('btnReset').addEventListener('click', function(){
+  if(confirm('Réinitialiser toutes les données saisies ?')){
+    state=defaultState(); renderGlobals(); renderBiens();
+    document.getElementById('results').classList.remove('show');
+    document.getElementById('results').innerHTML='';
+    save(); toast('Simulateur réinitialisé');
+  }
+});
+
+document.getElementById('btnPrint').addEventListener('click', function(){
+  var c=computeAll();
+  if(c.t.R>0 && !document.getElementById('results').classList.contains('show')){ renderResults(); }
+  setTimeout(function(){ window.print(); },300);
+});
+
+/* Thème clair / sombre */
+(function(){
+  var KEY='lmnp_theme';
+  var saved=null; try{ saved=localStorage.getItem(KEY); }catch(e){}
+  if(saved){ document.documentElement.setAttribute('data-theme', saved); }
+  document.getElementById('btnTheme').addEventListener('click', function(){
+    var cur=document.documentElement.getAttribute('data-theme');
+    var isDark = cur ? cur==='dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var next=isDark?'light':'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try{ localStorage.setItem(KEY,next); }catch(e){}
+  });
+})();
+
+/* ------------------------------------------------------------------ *
+ *  8. Démarrage
+ * ------------------------------------------------------------------ */
+state = load();
+renderGlobals();
+renderBiens();
+
+})();
+</script>
