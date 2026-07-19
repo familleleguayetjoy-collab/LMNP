@@ -309,6 +309,19 @@ table.data .rowlabel{font-weight:600;color:var(--ink-2)}
 .rvl{display:flex;align-items:baseline;gap:10px;font-size:.84rem;padding:6px 0;border-bottom:1px dashed var(--line)}
 .rvl span{flex:1;font-weight:600;color:var(--ink-2)} .rvl b{font-variant-numeric:tabular-nums} .rvl small{color:var(--muted);font-size:.72rem}
 
+/* Trésorerie — décomposition (waterfall simple) */
+.treso h3,.retenir h3{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.treso-tag{margin-left:auto;background:var(--pos-soft);color:var(--pos);font-weight:800;font-size:.82rem;padding:5px 12px;border-radius:999px;font-variant-numeric:tabular-nums}
+.treso-tag.alt{background:var(--gold-soft);color:var(--gold-deep);font-size:.72rem;text-transform:uppercase;letter-spacing:.04em}
+.flow{display:flex;flex-direction:column;margin-top:6px}
+.flow-row{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:12px 4px;border-bottom:1px solid var(--line-2);font-size:.92rem}
+.flow-row .fl-label{color:var(--ink-2)}
+.flow-row .fl-val{font-variant-numeric:tabular-nums;font-weight:700;white-space:nowrap}
+.flow-row.minus .fl-val{color:var(--neg)}
+.flow-row.plus .fl-val{color:var(--ink)}
+.flow-row.total{border-bottom:0;border-top:2px solid var(--navy);margin-top:4px;padding-top:15px}
+.flow-row.total .fl-label{font-weight:800;color:var(--ink)}
+.flow-row.total .fl-val{font-family:var(--display);font-weight:600;font-size:1.5rem;color:var(--pos)}
 .retenir-list{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:10px}
 .retenir-list li{display:flex;gap:12px;align-items:flex-start;font-size:.9rem;line-height:1.5;color:var(--ink-2)}
 .retenir-list li b{color:var(--ink)}
@@ -859,9 +872,10 @@ function renderResults(){
   var out=[];
 
   out.push(pocheCard(t, multi));                       // 1. le verdict, global
-  if(t.prixRevente>0) out.push(reventeCard(t, per, multi)); // 2. le hic à la revente
-  out.push(retenirCard(t, per, multi));                // 3. à prendre en compte
-  out.push(expertDetail(t, per, multi));               // 4. détail replié
+  out.push(tresorerieCard(t));                         // 2. ce qui rentre sur le compte
+  if(t.prixRevente>0) out.push(reventeCard(t, per, multi)); // 3. le hic à la revente
+  out.push(retenirCard(t, per, multi));                // 4. à prendre en compte
+  out.push(expertDetail(t, per, multi));               // 5. détail replié
 
   var host=document.getElementById('results');
   var sub = multi ? state.biens.length+' biens — appréciés globalement' : 'Votre investissement, en clair';
@@ -921,26 +935,45 @@ function reventeCard(t, per, multi){
     + perLines + '</div>';
 }
 
-/* 3 — Ce qu'il faut prendre en compte (court, plain-language) */
+/* 2 bis — Ce qui reste réellement sur le compte (décomposition simple) */
+function tresorerieCard(t){
+  var reg = t.reel;
+  var cout = reg ? t.coutReel : t.coutMicro;
+  var net  = reg ? t.netReel  : t.netMicro;
+  var reste = net - t.capital;   // trésorerie après remboursement du capital
+  var mois = reste/12;
+  function row(label, val, kind){
+    return '<div class="flow-row '+kind+'"><span class="fl-label">'+label+'</span><span class="fl-val">'+fmt(val)+'</span></div>';
+  }
+  var rows = row('Loyers encaissés dans l’année', t.R, 'plus')
+    + row('Charges payées (taxe foncière, intérêts, gestion…)', -t.charges, 'minus')
+    + row('Impôt : IR + prélèvements sociaux', -cout, 'minus');
+  if(t.capital>0) rows += row('Remboursement du capital du prêt', -t.capital, 'minus');
+  rows += '<div class="flow-row total"><span class="fl-label">= Il vous reste sur le compte</span><span class="fl-val">'+fmt(reste)+'</span></div>';
+  var note = t.capital>0
+    ? 'Le capital remboursé ('+fmt(t.capital)+' / an) sort de votre trésorerie, mais il rembourse votre crédit et constitue du patrimoine : vous vous enrichissez en réalité de <b>'+fmt(reste+t.capital)+' / an</b>.'
+    : 'Pas de crédit bancaire ici : cette somme est directement disponible (à conserver dans la structure ou à sortir vers les associés).';
+  return '<div class="card panel treso"><h3>'+ic('<path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>')+'Concrètement, ce qui reste sur le compte'
+    + '<span class="treso-tag">≈ '+fmt(mois)+' / mois</span></h3>'
+    + '<p class="p-sub">Sur la base du régime '+(reg?'réel':'micro-BIC')+' (le plus avantageux ici).</p>'
+    + '<div class="flow">'+rows+'</div>'
+    + '<div class="notes" style="margin-top:14px"><div class="note info"><span class="ni"><svg viewBox="0 0 24 24"><path d="M12 8v5M12 16h.01"/><circle cx="12" cy="12" r="9"/></svg></span><div class="nt">'+note+'</div></div></div></div>';
+}
+
+/* 4 — Ce qu'il faut prendre en compte (court, plain-language) */
 function retenirCard(t, per, multi){
   var pts=[];
-  var m = t.cashflowReel/12;
-  if(t.capital>0){
-    pts.push(['💧', t.cashflowReel>=0
-      ? 'Trésorerie : le bien s’autofinance, ≈ <b>'+fmt(m)+' / mois</b> dans la poche.'
-      : 'Trésorerie : prévoir un effort d’épargne d’≈ <b>'+fmt(Math.abs(m))+' / mois</b> (mais vous remboursez '+fmt(t.capital)+' de capital / an).']);
-  } else {
-    pts.push(['💧', 'Trésorerie : ≈ <b>'+fmt(m)+' / mois</b> une fois l’impôt payé (bien financé sans emprunt bancaire).']);
-  }
+  vigilances(t).forEach(function(v){ pts.push(['⚠️', v]); });
   if(t.reel && (t.cfe+t.honoraires)>0){
-    pts.push(['🧾', 'Coûts propres au régime réel (CFE + comptable) : ≈ <b>'+fmt(t.cfe+t.honoraires)+' / an</b> — à ne pas négliger.']);
+    pts.push(['🧾', 'Le régime réel a un coût de fonctionnement (CFE + expert-comptable) : ≈ <b>'+fmt(t.cfe+t.honoraires)+' / an</b>, déjà pris en compte dans les chiffres ci-dessus.']);
   }
   if(t.reel && t.stockNew>1){
-    pts.push(['📦', 'Vous constituez un « capital fiscal » : <b>'+fmt(t.stockNew)+'</b> d’amortissements reportables, qui baisseront vos impôts des années suivantes.']);
+    pts.push(['📦', 'Bonne nouvelle : <b>'+fmt(t.stockNew)+'</b> d’amortissements n’ont pas pu être utilisés cette année. Ils ne sont pas perdus — ils feront baisser vos impôts les années suivantes.']);
   }
-  vigilances(t).forEach(function(v){ pts.push(['⚠️', v]); });
+  pts.push(['🔎', 'À garder en tête au-delà des chiffres : la revalorisation du bien et des loyers, le risque de vacance ou d’impayés (assurance GLI), et vos objectifs de transmission.']);
   pts = pts.slice(0,4);
-  return '<div class="card panel retenir"><h3>'+ic('<path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/>')+'À prendre en compte</h3>'
+  return '<div class="card panel retenir"><h3>'+ic('<path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/>')+'À prendre en compte'
+    + (multi?'<span class="treso-tag alt">tous biens confondus</span>':'')+'</h3>'
     + '<ul class="retenir-list">'
     + pts.map(function(p){ return '<li><span class="rl-ic">'+p[0]+'</span><span>'+p[1]+'</span></li>'; }).join('')
     + '</ul></div>';
@@ -949,9 +982,9 @@ function vigilances(t){
   var v=[];
   state.biens.forEach(function(b,i){
     var meta=TYPE_META[b.type]||TYPE_META.classique, R=num(b.recettes);
-    if(R>meta.seuil) v.push('<b>'+esc(b.nom||('Bien '+(i+1)))+'</b> : loyers > seuil micro ('+fmt(meta.seuil)+') → le régime réel est obligatoire.');
+    if(R>meta.seuil) v.push('Pour <b>« '+esc(b.nom||('Bien '+(i+1)))+' »</b>, les loyers dépassent le plafond du micro-BIC ('+fmt(meta.seuil)+') : le régime réel est de toute façon obligatoire.');
   });
-  if(t.R>23000) v.push('Loyers totaux > 23 000 € : vérifier le seuil du statut <b>LMP</b> (professionnel) selon les autres revenus du foyer.');
+  if(t.R>23000) v.push('Vos loyers dépassent <b>23 000 € au total</b> : selon vos autres revenus, vous pourriez relever du statut LMP (professionnel), qui obéit à d’autres règles — à vérifier.');
   return v;
 }
 
