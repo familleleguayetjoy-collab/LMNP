@@ -144,8 +144,23 @@
 
 .fieldset{padding:18px 0 4px;border-top:1px dashed var(--line);margin-top:4px}
 .fieldset:first-child{border-top:0}
-.fieldset > .fs-title{display:flex;align-items:center;gap:9px;font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;font-weight:800;color:var(--gold-deep);margin-bottom:4px}
-.fieldset > .fs-title svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.fieldset > .fs-title,.adv-block .fs-title{display:flex;align-items:center;gap:9px;font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;font-weight:800;color:var(--gold-deep);margin-bottom:4px}
+.fieldset > .fs-title svg,.adv-block .fs-title svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.fs-sep{grid-column:1/-1;font-size:.72rem;text-transform:uppercase;letter-spacing:.09em;font-weight:800;color:var(--muted);padding:8px 0 0;border-top:1px dashed var(--line);margin-top:6px}
+.fs-sep:first-child{border-top:0;margin-top:0;padding-top:0}
+/* Advanced collapsible inside a bien */
+.adv-block{margin-top:16px;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--paper-2);overflow:hidden}
+.adv-block>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:13px 16px;font-weight:700;font-size:.9rem;color:var(--ink-2)}
+.adv-block>summary::-webkit-details-marker{display:none}
+.adv-block>summary:hover{background:var(--paper)}
+.adv-block>summary .adv-sum{display:flex;align-items:center;gap:8px;font-weight:800}
+.adv-block>summary .adv-sum svg{width:17px;height:17px;fill:none;stroke:var(--gold-deep);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.adv-block>summary small{color:var(--muted);font-weight:500;font-size:.76rem;flex:1;min-width:0}
+.adv-chev{width:18px;height:18px;flex:0 0 auto;color:var(--muted);fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
+.adv-block[open]>summary .adv-chev{transform:rotate(180deg)}
+.adv-block .grid-fields{padding:0 16px 16px}
+.adv-block>summary+.grid-fields{padding-top:4px}
+@media (max-width:640px){.adv-block>summary small{display:none}}
 
 /* Field */
 .field{display:flex;flex-direction:column;gap:6px;min-width:0}
@@ -268,6 +283,73 @@ table.data .rowlabel{font-weight:600;color:var(--ink-2)}
 .rv-line.hl{margin-top:4px;padding-top:9px;border-top:1px solid var(--line);border-bottom:0}
 .rv-line.hl b{color:var(--neg)}
 
+/* ===== Résultats simples (verdict client) ===== */
+.poche-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px 24px;position:relative;overflow:hidden}
+.poche-card:before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:linear-gradient(90deg,var(--gold),var(--gold-deep))}
+.poche-head{text-align:center;font-size:.82rem;text-transform:uppercase;letter-spacing:.1em;font-weight:800;color:var(--muted);margin-bottom:20px}
+.poche-cols{display:flex;align-items:stretch;justify-content:center;gap:14px}
+.poche-col{flex:1;max-width:340px;text-align:center;border:1.5px solid var(--line);border-radius:var(--radius-sm);padding:16px 14px 18px;background:var(--paper-2);display:flex;flex-direction:column;gap:4px}
+.poche-col.best{border-color:var(--gold);background:var(--gold-soft);box-shadow:0 10px 30px rgba(200,165,122,.22)}
+.pc-badge{font-size:.64rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--gold-deep);min-height:16px}
+.pc-badge.ghost{visibility:hidden}
+.pc-label{font-size:.86rem;font-weight:700;color:var(--ink-2)}
+.pc-val{font-family:var(--display);font-weight:600;font-size:2.1rem;line-height:1.1;color:var(--ink);font-variant-numeric:tabular-nums;margin:2px 0}
+.poche-col.best .pc-val{color:var(--gold-deep)}
+.pc-sub{font-size:.72rem;color:var(--muted)}
+.poche-vs{align-self:center;font-family:var(--display);font-style:italic;color:var(--muted);font-size:.9rem;flex:0 0 auto}
+.poche-verdict{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:20px;padding:14px;background:var(--navy);color:#fff;border-radius:var(--radius-sm);font-size:1.05rem;text-align:center}
+.poche-verdict svg{width:22px;height:22px;flex:0 0 auto;fill:none;stroke:var(--gold);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.poche-verdict b{color:#fff;font-weight:800}
+
+.caveat h3{display:flex;align-items:center;gap:10px;font-size:1.15rem}
+.caveat .cav-ic{font-size:1.2rem}
+.caveat-lead{font-size:.95rem;line-height:1.55;color:var(--ink-2);margin:2px 0 16px}
+.caveat-lead b{color:var(--ink)}
+.tradeoff{display:flex;align-items:stretch;gap:12px;flex-wrap:wrap}
+.to-item{flex:1;min-width:150px;border-radius:var(--radius-sm);padding:14px 16px;border:1px solid var(--line)}
+.to-item span{font-size:.74rem;color:var(--muted);font-weight:700}
+.to-item b{display:block;font-family:var(--display);font-weight:600;font-size:1.5rem;margin:4px 0 2px;font-variant-numeric:tabular-nums}
+.to-item small{font-size:.74rem;color:var(--muted)}
+.to-item.pos{background:var(--pos-soft);border-color:transparent} .to-item.pos b{color:var(--pos)}
+.to-item.neg{background:var(--neg-soft);border-color:transparent} .to-item.neg b{color:var(--neg)}
+.to-arrow{align-self:center;color:var(--muted);flex:0 0 auto}
+.to-arrow svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.choice{margin-top:14px;font-size:.92rem;font-weight:600;color:var(--ink-2);line-height:1.5}
+.mini{margin-top:14px;border-top:1px solid var(--line-2);padding-top:8px}
+.mini>summary{cursor:pointer;font-size:.82rem;font-weight:700;color:var(--gold-deep);list-style:none}
+.mini>summary::-webkit-details-marker{display:none}
+.mini>summary:before{content:"▸ ";}
+.mini[open]>summary:before{content:"▾ ";}
+.rv-lines{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.rvl{display:flex;align-items:baseline;gap:10px;font-size:.84rem;padding:6px 0;border-bottom:1px dashed var(--line)}
+.rvl span{flex:1;font-weight:600;color:var(--ink-2)} .rvl b{font-variant-numeric:tabular-nums} .rvl small{color:var(--muted);font-size:.72rem}
+
+.retenir-list{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:10px}
+.retenir-list li{display:flex;gap:12px;align-items:flex-start;font-size:.9rem;line-height:1.5;color:var(--ink-2)}
+.retenir-list li b{color:var(--ink)}
+.rl-ic{flex:0 0 auto;width:30px;height:30px;border-radius:9px;background:var(--paper);display:grid;place-items:center;font-size:1rem}
+
+details.expert{margin-top:18px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);box-shadow:var(--shadow-soft);overflow:hidden}
+details.expert>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:12px;padding:18px 20px}
+details.expert>summary::-webkit-details-marker{display:none}
+details.expert>summary:hover{background:var(--paper-2)}
+.ex-left{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+.ex-ic{width:38px;height:38px;border-radius:11px;background:var(--gold-soft);color:var(--gold-deep);display:grid;place-items:center;flex:0 0 auto}
+.ex-ic svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.ex-left>span:last-child{display:flex;flex-direction:column;min-width:0}
+.ex-left b{font-family:var(--display);font-weight:600;font-size:1rem}
+.ex-left small{font-size:.76rem;color:var(--muted)}
+.ex-chev{width:20px;height:20px;flex:0 0 auto;color:var(--muted);fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
+details.expert[open]>summary .ex-chev{transform:rotate(180deg)}
+.expert-body{padding:0 16px 16px}
+.expert-body .panel{box-shadow:none;border-color:var(--line-2)}
+@media (max-width:640px){
+  .poche-cols{flex-direction:column;align-items:stretch}
+  .poche-col{max-width:none}
+  .poche-vs{padding:2px 0}
+  .pc-val{font-size:1.9rem}
+}
+
 /* footer */
 .app-footer{background:var(--navy);color:#aebfce;padding:34px 0 40px;margin-top:40px}
 .app-footer .wrap{display:flex;flex-wrap:wrap;gap:22px;justify-content:space-between;align-items:center}
@@ -292,7 +374,13 @@ table.data .rowlabel{font-weight:600;color:var(--ink-2)}
   .lmnp{background:#fff}
   .main{margin-top:20px}
   .results{display:block!important}
-  .card,.panel,.reco{box-shadow:none;break-inside:avoid}
+  .card,.panel,.poche-card,.caveat{box-shadow:none;break-inside:avoid}
+  details.expert,details.mini,.adv-block{display:block!important}
+  details.expert[open]{}
+  details>summary{list-style:none}
+  details:not([open])>:not(summary){display:block!important}
+  .ex-chev,.adv-chev{display:none}
+  .poche-card,.poche-col.best,.poche-verdict,.to-item.pos,.to-item.neg,.info-box{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .hero{background:var(--navy)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:20px 0}
 }
 </style>
@@ -404,27 +492,27 @@ var TYPE_META = {
 
 var TMI_OPTIONS = [['0','0 %'],['11','11 %'],['30','30 %'],['41','41 %'],['45','45 %']];
 
-// Groupes de champs d'un bien
+// Groupes de champs d'un bien. `adv:true` = replié dans « Réglages avancés ».
 var BIEN_GROUPS = [
-  { title:'Identité & régime', icon:'<path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/>', fields:[
+  { title:'Le bien', icon:'<path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/>', fields:[
     {k:'nom',  label:'Nom du bien', type:'text', ph:'Ex : Studio Nice Californie', full:true},
-    {k:'type', label:'Type de location LMNP', type:'select', options:TYPE_OPTIONS, full:true},
-    {k:'recettes', label:'Recettes annuelles', unit:'€', type:'euro', hint:'Total des loyers encaissés sur l’année.'}
+    {k:'type', label:'Type de location', type:'select', options:TYPE_OPTIONS, full:true},
+    {k:'recettes', label:'Loyers encaissés / an', unit:'€', type:'euro', full:true}
   ]},
-  { title:'Charges annuelles', icon:'<path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>', fields:[
+  { title:'Charges de l’année', icon:'<path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>', fields:[
     {k:'interets', label:'Intérêts d’emprunt', unit:'€', type:'euro',
       info:'Déductibles en totalité au régime réel. <b>⚠️ Seuls les intérêts (et l’assurance emprunteur) sont déductibles : le remboursement du capital de l’emprunt n’est jamais une charge.</b>'},
     {k:'assuranceEmpr', label:'Assurance emprunteur', unit:'€', type:'euro',
       info:'Assurance décès-invalidité adossée au prêt : déductible au régime réel.'},
-    {k:'taxeFonciere', label:'Taxe foncière (+ TH)', unit:'€', type:'euro', hint:'Hors TEOM récupérable.',
+    {k:'taxeFonciere', label:'Taxe foncière', unit:'€', type:'euro',
       info:'Taxe foncière déductible, hors part d’enlèvement des ordures ménagères (TEOM) refacturée au locataire. La taxe d’habitation n’est déductible que si elle reste à votre charge (logement gardé à votre disposition) ; sinon elle incombe à l’occupant.'},
-    {k:'cfe', label:'CFE', unit:'€', type:'euro', hint:'Obligatoire dès la 2ᵉ année.',
+    {k:'cfe', label:'CFE', unit:'€', type:'euro',
       info:'Cotisation Foncière des Entreprises : déductible. Exonérée la 1ʳᵉ année d’activité, puis due chaque année. Exonération de plein droit si les recettes annuelles sont inférieures à 5 000 €.'},
-    {k:'chargesCopro', label:'Charges copro non récupérables', unit:'€', type:'euro',
+    {k:'chargesCopro', label:'Charges copro (non récup.)', unit:'€', type:'euro',
       info:'Uniquement la part des charges de copropriété <b>non récupérable</b> sur le locataire. La part récupérable, refacturée au locataire, n’est pas déductible.'},
-    {k:'fraisGestion', label:'Frais de gestion / agence', unit:'€', type:'euro', auto7:true, hint:'Calcul auto à 7 % des recettes.',
+    {k:'fraisGestion', label:'Frais de gestion / agence', unit:'€', type:'euro', auto7:true,
       info:'Frais d’agence, honoraires de gérance locative et de mise en location : déductibles. Le forfait de 7 % est une simple commodité de saisie ; renseignez le montant réel si vous le connaissez.'},
-    {k:'honoraires', label:'Honoraires comptables', unit:'€', type:'euro', hint:'Déductibles au régime réel.',
+    {k:'honoraires', label:'Honoraires comptables', unit:'€', type:'euro',
       info:'Honoraires de l’expert-comptable : déductibles. La réduction d’impôt pour frais de comptabilité liée à l’adhésion à un OGA a été supprimée : ces honoraires ne sont plus qu’une charge déductible.'},
     {k:'assurancesPNO', label:'Assurances (PNO, GLI…)', unit:'€', type:'euro',
       info:'Assurance propriétaire non occupant (PNO), garantie loyers impayés (GLI), assurance carence locative : déductibles.'},
@@ -433,44 +521,46 @@ var BIEN_GROUPS = [
     {k:'autres', label:'Autres charges', unit:'€', type:'euro',
       info:'Autres charges déductibles : frais bancaires, frais de procédure, petit mobilier de moins de 600 € HT passé en charges, cotisations, frais de dossier… <b>⚠️ À ne pas inclure : le capital de l’emprunt, le prix du bien, les travaux immobilisés</b> (amortis, pas déduits).'}
   ]},
-  { title:'Acquisition & amortissement', icon:'<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>', fields:[
-    {k:'prix', label:'Valeur d’acquisition (base amortissable)', unit:'€', type:'euro', hint:'Frais de notaire inclus.',
-      info:'Prix d’acquisition, frais de notaire et d’acquisition inclus. <b>⚠️ Bien acheté il y a longtemps et passé au meublé plus tard ?</b> Retenez la <b>valeur vénale du bien à la date de mise en location meublée</b> : c’est elle qui sert de base d’amortissement. L’amortissement démarre à l’entrée dans l’activité LMNP — <b>aucun rattrapage</b> des années non amorties n’est possible.'},
-    {k:'pctTerrain', label:'Quote-part terrain', unit:'%', type:'pct', def:15, hint:'Non amortissable — généralement 10 à 20 %.',
+  { title:'Acquisition', icon:'<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>', fields:[
+    {k:'prix', label:'Valeur d’acquisition', unit:'€', type:'euro',
+      info:'Prix d’acquisition, frais de notaire et d’acquisition inclus — c’est la base amortissable (hors terrain). <b>⚠️ Bien acheté il y a longtemps et passé au meublé plus tard ?</b> Retenez la <b>valeur vénale du bien à la date de mise en location meublée</b>. L’amortissement démarre à l’entrée dans l’activité LMNP — <b>aucun rattrapage</b> des années antérieures.'},
+    {k:'pctTerrain', label:'Quote-part terrain', unit:'%', type:'pct', def:15,
       info:'Le terrain n’est pas amortissable et doit être isolé de la base. À défaut d’élément précis (acte, avis de valeur), une ventilation forfaitaire est admise, souvent 10 à 20 % (davantage en zone tendue).'},
     {k:'mobilier', label:'Mobilier / équipements', unit:'€', type:'euro',
       info:'Meubles et équipements (électroménager, literie, cuisine équipée, luminaires…) amortis séparément, en général sur 5 à 10 ans.'},
     {k:'travaux', label:'Travaux immobilisés', unit:'€', type:'euro',
-      info:'Travaux d’amélioration ou de rénovation immobilisés, amortis sur leur durée. Les simples réparations et l’entretien vont, eux, directement en charges déductibles (bloc Charges).'},
-    {k:'dureeImm', label:'Durée amort. immeuble', unit:'ans', type:'int', def:30, hint:'25 à 30 ans.',
-      info:'En pratique l’immeuble se décompose par composants (gros œuvre 40-50 ans, toiture, façade, agencements, etc.). Ce simulateur retient une durée moyenne unique ; affinez la décomposition avec votre comptable.'},
-    {k:'dureeMob', label:'Durée amort. mobilier', unit:'ans', type:'int', def:7, hint:'5 à 10 ans.'},
-    {k:'dureeTrav', label:'Durée amort. travaux', unit:'ans', type:'int', def:12, hint:'10 à 15 ans.'}
+      info:'Travaux d’amélioration ou de rénovation immobilisés, amortis sur leur durée. Les simples réparations et l’entretien vont, eux, directement en charges déductibles (bloc Charges).'}
   ]},
-  { title:'Financement & trésorerie (optionnel)', icon:'<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/>', fields:[
-    {k:'capitalRembourse', label:'Capital d’emprunt remboursé dans l’année', unit:'€', type:'euro', hint:'Uniquement en cas de prêt bancaire.',
-      info:'Sert <b>seulement</b> à calculer la trésorerie (cash-flow) — ce n’est pas une charge déductible. <b>⚠️ Pas d’emprunt bancaire ?</b> Si le bien est financé par les apports des associés / de l’exploitant (compte courant d’associé, compte 108), <b>laissez ce champ vide</b> : la trésorerie est alors simplement Loyers − Charges − Impôt.'}
+  { title:'Revente envisagée', icon:'<path d="M3 3v18h18"/><path d="M19 9l-5 5-4-4-4 4"/>', fields:[
+    {k:'prixRevente', label:'Prix de revente estimé', unit:'€', type:'euro', hint:'Optionnel — pour chiffrer l’impact à la revente.',
+      info:'Prix net vendeur envisagé, déduction faite des frais d’agence éventuellement à votre charge. Laissez vide si vous ne souhaitez pas simuler la revente.'},
+    {k:'dureeDetention', label:'Durée de détention prévue', unit:'ans', type:'int', def:15, hint:'Depuis l’achat.',
+      info:'Durée comptée <b>depuis la date d’acquisition</b> — même si vous n’avez opté pour le réel que récemment. Elle fixe les abattements pour durée de détention : exonération d’<b>IR au bout de 22 ans</b>, de <b>prélèvements sociaux au bout de 30 ans</b>.'}
   ]},
-  { title:'Impact à la revente', icon:'<path d="M3 3v18h18"/><path d="M19 9l-5 5-4-4-4 4"/>', fields:[
-    {k:'prixRevente', label:'Prix de revente estimé', unit:'€', type:'euro', hint:'Valeur nette vendeur envisagée.',
-      info:'Prix net vendeur envisagé, déduction faite des frais d’agence éventuellement à votre charge.'},
-    {k:'dureeDetention', label:'Durée de détention à la vente', unit:'ans', type:'int', def:15, hint:'Comptée depuis l’acquisition.',
-      info:'Durée comptée <b>depuis la date d’acquisition</b> — même si vous n’avez opté pour le réel que récemment. Elle fixe les abattements pour durée de détention : exonération d’<b>IR au bout de 22 ans</b>, de <b>prélèvements sociaux au bout de 30 ans</b>.'},
-    {k:'anneesAmorties', label:'Années d’amortissement déjà pratiquées', unit:'ans', type:'int', hint:'Sous le réel. Vide = durée de détention.',
-      info:'Nombre d’années où vous avez réellement amorti sous le régime réel. <b>Exemple :</b> bien détenu depuis 20 ans mais passé au réel il y a 3 ans → saisissez <b>3</b>. Seuls les amortissements effectivement déduits sont réintégrés dans la plus-value.'},
-    {k:'amortCumul', label:'Amortissements déduits cumulés', unit:'€', type:'euro', hint:'Vide = estimation automatique.',
+  { title:'Réglages avancés', adv:true, fields:[
+    {type:'sep', label:'Durées d’amortissement (valeurs par défaut)'},
+    {k:'dureeImm', label:'Immeuble', unit:'ans', type:'int', def:30,
+      info:'En pratique l’immeuble se décompose par composants (gros œuvre 40-50 ans, toiture, façade, agencements…). Ce simulateur retient une durée moyenne unique ; affinez avec votre comptable.'},
+    {k:'dureeMob', label:'Mobilier', unit:'ans', type:'int', def:7},
+    {k:'dureeTrav', label:'Travaux', unit:'ans', type:'int', def:12},
+    {type:'sep', label:'Financement & trésorerie'},
+    {k:'capitalRembourse', label:'Capital d’emprunt remboursé / an', unit:'€', type:'euro', hint:'Uniquement si prêt bancaire.',
+      info:'Sert <b>seulement</b> à calculer la trésorerie (cash-flow) — ce n’est pas une charge déductible. <b>⚠️ Pas d’emprunt bancaire ?</b> Si le bien est financé par les apports des associés / de l’exploitant (compte courant d’associé, compte 108), <b>laissez vide</b> : la trésorerie est alors simplement Loyers − Charges − Impôt.'},
+    {type:'sep', label:'Revente — précisions'},
+    {k:'anneesAmorties', label:'Années déjà amorties (réel)', unit:'ans', type:'int', hint:'Vide = durée de détention.',
+      info:'Nombre d’années réellement amorties sous le régime réel. <b>Exemple :</b> bien détenu depuis 20 ans mais passé au réel il y a 3 ans → saisissez <b>3</b>. Seuls les amortissements effectivement déduits sont réintégrés dans la plus-value.'},
+    {k:'amortCumul', label:'Amortissements déduits cumulés', unit:'€', type:'euro', hint:'Vide = estimation auto.',
       info:'Total des amortissements réellement déduits depuis l’option au réel. Laissé vide, il est estimé = amortissement annuel × années amorties, plafonné à la base amortissable.'},
-    {k:'amortReintegration', label:'Réintégrer les amortissements (réforme 2025)', type:'toggle', def:true,
+    {k:'amortReintegration', label:'Réintégrer les amortissements à la revente (réforme 2025)', type:'toggle', def:true,
       info:'Depuis la loi de finances 2025, les amortissements déduits pendant la location minorent le prix d’acquisition retenu pour la plus-value — ce qui augmente la plus-value imposable. Certaines résidences services (étudiantes, seniors, EHPAD) en sont exclues, sous conditions.', full:true},
     {k:'fraisForfait', label:'Majoration forfaitaire frais 7,5 %', type:'toggle', def:false,
       info:'Plus-value des particuliers : à défaut de justificatifs, le prix d’acquisition peut être majoré d’un forfait de <b>7,5 %</b> au titre des frais d’acquisition (art. 150 VB du CGI). Alternative aux frais réels, non cumulable avec eux.', full:true},
     {k:'travauxForfait', label:'Majoration forfaitaire travaux 15 % (si +5 ans)', type:'toggle', def:false,
-      info:'À défaut de justificatifs et pour un bien détenu depuis plus de 5 ans, le prix d’acquisition peut être majoré d’un forfait de <b>15 %</b> au titre des travaux (art. 150 VB du CGI). Non cumulable avec des travaux réels ni avec des travaux déjà déduits ou amortis.', full:true}
-  ]},
-  { title:'Reports N-1 (optionnel)', icon:'<path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/>', fields:[
-    {k:'stockDiffN1', label:'Stock amortissements différés N-1', unit:'€', type:'euro', hint:'Report illimité à reprendre chaque année.',
+      info:'À défaut de justificatifs et pour un bien détenu depuis plus de 5 ans, le prix d’acquisition peut être majoré d’un forfait de <b>15 %</b> au titre des travaux (art. 150 VB du CGI). Non cumulable avec des travaux réels ni avec des travaux déjà déduits ou amortis.', full:true},
+    {type:'sep', label:'Reports fiscaux N-1'},
+    {k:'stockDiffN1', label:'Stock amort. différés N-1', unit:'€', type:'euro',
       info:'Amortissements non déduits les années précédentes (car plafonnés par le résultat). Reportables <b>sans limite de durée</b> et déductibles dès que le résultat le permet.'},
-    {k:'deficitN1', label:'Déficits LMNP reportables N-1', unit:'€', type:'euro', hint:'Reportables 10 ans.',
+    {k:'deficitN1', label:'Déficits LMNP reportables N-1', unit:'€', type:'euro',
       info:'Déficits BIC issus des charges (hors amortissements) constatés antérieurement. Reportables sur les bénéfices de même nature pendant <b>10 ans</b>.'}
   ]}
 ];
@@ -484,6 +574,7 @@ var state = null;
 function blankBien(){
   var b = {};
   BIEN_GROUPS.forEach(function(g){ g.fields.forEach(function(f){
+    if(!f.k) return;
     if(f.type==='toggle') b[f.k] = (f.def!==undefined? f.def : false);
     else if(f.def!==undefined) b[f.k] = f.def;
     else b[f.k] = '';
@@ -665,6 +756,7 @@ function infoBox(key, html){
 }
 
 function fieldHTML(f, val, path){
+  if(f.type==='sep') return '<div class="fs-sep">'+esc(f.label)+'</div>';
   var full = f.full ? ' style="grid-column:1/-1"' : '';
   var info = f.info ? infoBtn(path) : '';
   var box  = f.info ? infoBox(path, f.info) : '';
@@ -729,10 +821,21 @@ function renderBiens(){
   var host = document.getElementById('biens');
   host.innerHTML='';
   state.biens.forEach(function(b,i){
-    var groups = BIEN_GROUPS.map(function(g){
-      var fields = g.fields.map(function(f){ return fieldHTML(f, b[f.k], 'biens.'+i+'.'+f.k); }).join('');
-      return '<div class="fieldset"><div class="fs-title"><svg viewBox="0 0 24 24">'+g.icon+'</svg>'+esc(g.title)+'</div><div class="grid-fields">'+fields+'</div></div>';
+    function renderGroup(g){
+      var fields = g.fields.map(function(f){ return fieldHTML(f, f.k?b[f.k]:null, 'biens.'+i+'.'+(f.k||'')); }).join('');
+      return '<div class="fs-title">'+(g.icon?'<svg viewBox="0 0 24 24">'+g.icon+'</svg>':'')+esc(g.title)+'</div><div class="grid-fields">'+fields+'</div>';
+    }
+    var groups = BIEN_GROUPS.filter(function(g){return !g.adv;}).map(function(g){
+      return '<div class="fieldset">'+renderGroup(g)+'</div>';
     }).join('');
+    var advG = BIEN_GROUPS.filter(function(g){return g.adv;});
+    if(advG.length){
+      var advInner = advG.map(function(g){
+        var fields = g.fields.map(function(f){ return fieldHTML(f, f.k?b[f.k]:null, 'biens.'+i+'.'+(f.k||'')); }).join('');
+        return '<div class="grid-fields">'+fields+'</div>';
+      }).join('');
+      groups += '<details class="adv-block"><summary><span class="adv-sum"><svg viewBox="0 0 24 24"><path d="M12 3a4 4 0 0 0-4 4c0 1.5.8 2.3 1.5 3M12 3a4 4 0 0 1 4 4c0 1.5-.8 2.3-1.5 3M9.5 10h5M9.5 13h5M10 16h4M11 19h2"/></svg>Réglages avancés</span><small>amortissement, financement, revente, reports — préremplis</small><svg class="adv-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary>'+advInner+'</details>';
+    }
     var card = el(
       '<div class="bien'+(b._open?' open':'')+'" data-i="'+i+'">'
       +  '<div class="bien-head" data-toggle="'+i+'">'
@@ -767,63 +870,127 @@ function ic(p){ return '<span class="ic"><svg viewBox="0 0 24 24">'+p+'</svg></s
 
 function renderResults(){
   var c = computeAll(), t=c.t, per=c.per;
+  var multi = state.biens.length>1;
   var out=[];
 
-  // ---- Recommandation ----
-  var reco = t.reel
-    ? { cls:'reel', label:'Régime recommandé', title:'Régime Réel',
-        txt:'Après impôts et charges payées, il resterait <b>'+fmt(t.netReel)+'</b> dans la poche sur l’ensemble du patrimoine — soit <b>'+fmt(Math.abs(t.gain))+'</b> de plus qu’au micro-BIC chaque année.',
-        gain:'Gain annuel réel : '+fmt(t.gain) }
-    : { cls:'micro', label:'Régime recommandé', title:'Régime Micro-BIC',
-        txt:'Le micro-BIC laisse <b>'+fmt(t.netMicro)+'</b> dans la poche, soit <b>'+fmt(Math.abs(t.gain))+'</b> de plus que le régime réel dans cette configuration.',
-        gain:'Écart annuel : '+fmt(Math.abs(t.gain)) };
-  out.push('<div class="reco '+reco.cls+'"><div class="rmark"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div>'
-    +'<div><div class="rlabel">'+reco.label+'</div><h3>'+reco.title+'</h3><p>'+reco.txt+'</p>'
-    +'<span class="gain"><svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M3 17l6-6 4 4 8-8"/><path d="M21 7v6h-6"/></svg>'+reco.gain+'</span></div></div>');
-
-  // ---- KPIs ----
-  var cfCls = t.cashflowReel>=0?'pos':'neg';
-  out.push('<div class="kpis">'
-    + kpi('Loyers annuels', fmt(t.R), '', '')
-    + kpi('Net dans la poche — '+(t.reel?'Réel':'Micro'), fmt(t.reel?t.netReel:t.netMicro), (t.reel?t.netReel:t.netMicro)>=0?'pos':'neg', 'après charges & impôts')
-    + kpi('Coût fiscal '+(t.reel?'Réel':'Micro'), fmt(t.reel?t.coutReel:t.coutMicro), '', 'IR + prélèvements sociaux')
-    + kpi('Cash-flow réel', fmt(t.cashflowReel), cfCls, (t.cashflowReel/12>=0?'+':'')+fmt(t.cashflowReel/12)+' / mois')
-    + kpi('Impôt de plus-value à la revente', fmt(t.pvTotalReel), t.pvTotalReel>0?'neg':'', 'sur '+fmt(t.prixRevente)+' de revente')
-    + '</div>');
-
-  // ---- Comparatif Micro vs Réel ----
-  var mx = Math.max(1, Math.abs(t.netMicro), Math.abs(t.netReel));
-  var hM = Math.max(8, Math.round(Math.abs(t.netMicro)/mx*180));
-  var hR = Math.max(8, Math.round(Math.abs(t.netReel)/mx*180));
-  out.push('<div class="card panel"><h3>'+ic('<path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="7"/><rect x="14" y="6" width="3" height="11"/>')+'Micro-BIC vs Réel</h3>'
-    +'<p class="p-sub">Ce qui reste réellement dans la poche chaque année, après charges et impôts.</p>'
-    +'<div style="display:flex;gap:34px;flex-wrap:wrap;align-items:center">'
-    +'<div class="compare"><div class="bar-col"><div class="bar-track"><div class="bar micro" style="height:'+hM+'px"><span class="bv">'+fmt(t.netMicro)+'</span></div></div><div class="bl">Micro-BIC<small>abattement forfaitaire</small></div></div>'
-    +'<div class="bar-col"><div class="bar-track"><div class="bar reel" style="height:'+hR+'px"><span class="bv">'+fmt(t.netReel)+'</span></div></div><div class="bl">Réel<small>charges + amortissements</small></div></div></div>'
-    + comparisonTable(t)
-    +'</div></div>');
-
-  // ---- Détail par bien ----
-  out.push(perBienTable(per));
-
-  // ---- Cash-flow ----
-  out.push(cashflowPanel(t, per));
-
-  // ---- Revente / plus-value ----
-  out.push(resalePanel(t, per));
-
-  // ---- Suivi amortissements & déficits ----
-  out.push(trackingPanel(t, per));
-
-  // ---- Points de vigilance ----
-  out.push(advisoryPanel(t, per));
-
-  // ---- Explication client ----
-  out.push(explainPanel(t));
+  out.push(pocheCard(t, multi));                       // 1. le verdict, global
+  if(t.prixRevente>0) out.push(reventeCard(t, per, multi)); // 2. le hic à la revente
+  out.push(retenirCard(t, per, multi));                // 3. à prendre en compte
+  out.push(expertDetail(t, per, multi));               // 4. détail replié
 
   var host=document.getElementById('results');
-  host.innerHTML = '<div class="section-lead" style="margin-top:40px"><h2>Résultats de la simulation</h2><span>Régime, cash-flow &amp; revente — vision globale</span></div>' + out.join('');
+  var sub = multi ? state.biens.length+' biens — appréciés globalement' : 'Votre investissement, en clair';
+  host.innerHTML = '<div class="section-lead" style="margin-top:40px"><h2>Le verdict</h2><span>'+sub+'</span></div>' + out.join('');
   host.classList.add('show');
+}
+
+/* 1 — Ce qui reste dans la poche (global, ultra clair) */
+function pocheCard(t, multi){
+  var reel = t.reel, diff = Math.abs(t.gain);
+  function col(name, val, best, sub){
+    return '<div class="poche-col'+(best?' best':'')+'">'
+      + (best?'<div class="pc-badge">★ Le plus avantageux</div>':'<div class="pc-badge ghost">&nbsp;</div>')
+      + '<div class="pc-label">'+name+'</div>'
+      + '<div class="pc-val">'+fmt(val)+'</div>'
+      + '<div class="pc-sub">'+sub+'</div></div>';
+  }
+  var verdict = diff<50
+    ? 'Les deux régimes se valent : <b>'+fmt(diff)+'</b> d’écart par an seulement.'
+    : 'Le régime <b>'+(reel?'réel':'micro-BIC')+'</b> vous laisse <b>'+fmt(diff)+' de plus</b> dans la poche, chaque année.';
+  return '<div class="poche-card">'
+    + '<div class="poche-head">Chaque année, ce qui vous reste réellement dans la poche'+(multi?' — tous vos biens':'')+'</div>'
+    + '<div class="poche-cols">'
+    +   col('Régime Micro-BIC', t.netMicro, !reel, 'abattement forfaitaire')
+    +   '<div class="poche-vs">vs</div>'
+    +   col('Régime Réel', t.netReel, reel, 'charges + amortissements')
+    + '</div>'
+    + '<div class="poche-verdict"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span>'+verdict+'</span></div>'
+    + '</div>';
+}
+
+/* 2 — Le revers à la revente (global, per-bien seulement en repli) */
+function reventeCard(t, per, multi){
+  var perLines='';
+  if(multi){
+    perLines = '<details class="mini"><summary>Voir bien par bien</summary><div class="rv-lines">'
+      + per.map(function(r,i){ if(r.prixRevente<=0) return '';
+          return '<div class="rvl"><span>'+esc(state.biens[i].nom||('Bien '+(i+1)))+'</span><b>'+fmt(r.pvReel.total)+'</b><small>d’impôt à la revente</small></div>';
+        }).join('')
+      + '</div></details>';
+  }
+  if(t.reel && t.surcoutRevente>1){
+    var Ymax = Math.max.apply(null, per.map(function(r){return r.dureeDetention||0;}));
+    return '<div class="card panel caveat"><h3><span class="cav-ic">⚠️</span>Le revers : à la revente</h3>'
+      + '<p class="caveat-lead">En contrepartie de l’économie annuelle, le régime réel <b>augmente l’impôt sur la plus-value de '+fmt(t.surcoutRevente)+'</b> : les amortissements déduits sont réintégrés dans le calcul (réforme 2025).</p>'
+      + '<div class="tradeoff">'
+      +   '<div class="to-item pos"><span>Chaque année</span><b>'+fmt(Math.abs(t.gain))+'</b><small>d’impôt en moins</small></div>'
+      +   '<div class="to-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>'
+      +   '<div class="to-item neg"><span>Une seule fois, à la revente</span><b>'+fmt(t.surcoutRevente)+'</b><small>d’impôt en plus</small></div>'
+      + '</div>'
+      + '<p class="choice">👉 À vous de choisir : plus vous gardez le bien longtemps ('+Ymax+' ans ici), plus l’économie annuelle l’emporte sur ce coût unique.</p>'
+      + perLines + '</div>';
+  }
+  // pas de surcoût d'amortissement à la revente dans cette configuration
+  return '<div class="card panel caveat soft"><h3><span class="cav-ic">🏷️</span>À la revente</h3>'
+    + '<p class="caveat-lead">Impôt estimé sur la plus-value : <b>'+fmt(t.pvTotalReel)+'</b> (IR 19 % + prélèvements sociaux 17,2 %, après abattements pour durée de détention).</p>'
+    + perLines + '</div>';
+}
+
+/* 3 — Ce qu'il faut prendre en compte (court, plain-language) */
+function retenirCard(t, per, multi){
+  var pts=[];
+  var m = t.cashflowReel/12;
+  if(t.capital>0){
+    pts.push(['💧', t.cashflowReel>=0
+      ? 'Trésorerie : le bien s’autofinance, ≈ <b>'+fmt(m)+' / mois</b> dans la poche.'
+      : 'Trésorerie : prévoir un effort d’épargne d’≈ <b>'+fmt(Math.abs(m))+' / mois</b> (mais vous remboursez '+fmt(t.capital)+' de capital / an).']);
+  } else {
+    pts.push(['💧', 'Trésorerie : ≈ <b>'+fmt(m)+' / mois</b> une fois l’impôt payé (bien financé sans emprunt bancaire).']);
+  }
+  if(t.reel && (t.cfe+t.honoraires)>0){
+    pts.push(['🧾', 'Coûts propres au régime réel (CFE + comptable) : ≈ <b>'+fmt(t.cfe+t.honoraires)+' / an</b> — à ne pas négliger.']);
+  }
+  if(t.reel && t.stockNew>1){
+    pts.push(['📦', 'Vous constituez un « capital fiscal » : <b>'+fmt(t.stockNew)+'</b> d’amortissements reportables, qui baisseront vos impôts des années suivantes.']);
+  }
+  vigilances(t).forEach(function(v){ pts.push(['⚠️', v]); });
+  pts = pts.slice(0,4);
+  return '<div class="card panel retenir"><h3>'+ic('<path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/>')+'À prendre en compte</h3>'
+    + '<ul class="retenir-list">'
+    + pts.map(function(p){ return '<li><span class="rl-ic">'+p[0]+'</span><span>'+p[1]+'</span></li>'; }).join('')
+    + '</ul></div>';
+}
+function vigilances(t){
+  var v=[];
+  state.biens.forEach(function(b,i){
+    var meta=TYPE_META[b.type]||TYPE_META.classique, R=num(b.recettes);
+    if(R>meta.seuil) v.push('<b>'+esc(b.nom||('Bien '+(i+1)))+'</b> : loyers > seuil micro ('+fmt(meta.seuil)+') → le régime réel est obligatoire.');
+  });
+  if(t.R>23000) v.push('Loyers totaux > 23 000 € : vérifier le seuil du statut <b>LMP</b> (professionnel) selon les autres revenus du foyer.');
+  return v;
+}
+
+/* 4 — Détail comptable complet, replié */
+function expertDetail(t, per, multi){
+  var mx = Math.max(1, Math.abs(t.netMicro), Math.abs(t.netReel));
+  var hM = Math.max(8, Math.round(Math.abs(t.netMicro)/mx*160));
+  var hR = Math.max(8, Math.round(Math.abs(t.netReel)/mx*160));
+  var compare = '<div class="card panel"><h3>'+ic('<path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="7"/><rect x="14" y="6" width="3" height="11"/>')+'Micro-BIC vs Réel — détail</h3>'
+    +'<div style="display:flex;gap:34px;flex-wrap:wrap;align-items:center">'
+    +'<div class="compare"><div class="bar-col"><div class="bar-track"><div class="bar micro" style="height:'+hM+'px"><span class="bv">'+fmt(t.netMicro)+'</span></div></div><div class="bl">Micro-BIC</div></div>'
+    +'<div class="bar-col"><div class="bar-track"><div class="bar reel" style="height:'+hR+'px"><span class="bv">'+fmt(t.netReel)+'</span></div></div><div class="bl">Réel</div></div></div>'
+    + comparisonTable(t) +'</div></div>';
+  var inner = compare
+    + (multi ? perBienTable(per) : '')
+    + cashflowPanel(t, per)
+    + (t.prixRevente>0 ? resalePanel(t, per) : '')
+    + (t.reel ? trackingPanel(t, per) : '')
+    + advisoryPanel(t, per);
+  return '<details class="expert"><summary><span class="ex-left"><span class="ex-ic">'
+    + '<svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 4-5"/></svg></span>'
+    + '<span><b>Détail comptable complet</b><small>tableaux, cash-flow, revente, suivi — pour l’expert-comptable</small></span></span>'
+    + '<svg class="ex-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary>'
+    + '<div class="expert-body">'+inner+'</div></details>';
 }
 
 function kpi(label,val,cls,sub){
