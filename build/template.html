@@ -1,8 +1,7 @@
 <style>
 /* ===================================================================
    ASSISTANT DE PRÉPARATION LMNP — S2A · Sud Alpes Audit
-   Prototype interne (version bêta). Identité de marque reprise du
-   simulateur LMNP du cabinet (mêmes couleurs, typographies, logo).
+   Prototype interne (bêta). Parcours en 3 étapes : préparer, traiter, exporter.
    =================================================================== */
 
 @font-face{font-family:'Poppins';font-weight:500;font-style:normal;font-display:swap;src:url("__POPPINS500__") format('woff2');}
@@ -15,346 +14,259 @@
   --gold:#c8a57a; --gold-deep:#9c7a48; --gold-soft:#efe7d9;
   --paper:#e9eef4; --paper-2:#f7f9fb; --surface:#ffffff;
   --muted:#64747b; --line:#d5dce4; --line-2:#e4e8ee;
-  --pos:#37725d; --pos-2:#4e7d68; --pos-soft:#e2f0e8;
-  --neg:#a85d54; --neg-soft:#f5e6e3;
+  --pos:#37725d; --pos-soft:#e2f0e8; --neg:#a85d54; --neg-soft:#f5e6e3;
   --warn:#9c7a48; --warn-soft:#f6edda;
   --field-bg:#ffffff; --field-line:#cdd6e0;
-  --shadow:0 22px 70px rgba(15,30,46,.12);
-  --shadow-soft:0 12px 40px rgba(15,30,46,.08);
-  --radius:22px; --radius-sm:14px; --radius-xs:10px;
+  --shadow:0 22px 70px rgba(15,30,46,.12); --shadow-soft:0 10px 34px rgba(15,30,46,.08);
+  --radius:20px; --radius-sm:14px;
   --sans:'Montserrat','Segoe UI',Roboto,Arial,sans-serif;
   --display:'Poppins','Montserrat',sans-serif;
 }
-@media (prefers-color-scheme:dark){
-  :root{
-    --navy:#0a1622; --navy-2:#16304a; --ink:#eaf0f6; --ink-2:#c6d3df;
-    --gold:#d4b587; --gold-deep:#c8a57a; --gold-soft:#2a2417;
-    --paper:#0d1a28; --paper-2:#0a1420; --surface:#132437;
-    --muted:#94a6b4; --line:#22384c; --line-2:#1c3145;
-    --pos:#6cbf9d; --pos-2:#4e7d68; --pos-soft:#14312a;
-    --neg:#d98a80; --neg-soft:#33201d;
-    --warn:#d4b587; --warn-soft:#2c2617;
-    --field-bg:#0e1e2e; --field-line:#2a415a;
-    --shadow:0 22px 70px rgba(0,0,0,.45); --shadow-soft:0 12px 40px rgba(0,0,0,.35);
-  }
-}
+@media (prefers-color-scheme:dark){:root{
+  --navy:#0a1622; --navy-2:#16304a; --ink:#eaf0f6; --ink-2:#c6d3df;
+  --gold:#d4b587; --gold-deep:#c8a57a; --gold-soft:#2a2417;
+  --paper:#0d1a28; --paper-2:#0a1420; --surface:#132437;
+  --muted:#94a6b4; --line:#22384c; --line-2:#1c3145;
+  --pos:#6cbf9d; --pos-soft:#14312a; --neg:#d98a80; --neg-soft:#33201d;
+  --warn:#d4b587; --warn-soft:#2c2617;
+  --field-bg:#0e1e2e; --field-line:#2a415a;
+  --shadow:0 22px 70px rgba(0,0,0,.45); --shadow-soft:0 10px 34px rgba(0,0,0,.35);
+}}
 :root[data-theme="light"]{
   --navy:#0f1e2e; --navy-2:#1e3a52; --ink:#0f1e2e; --ink-2:#1e3a52;
   --gold:#c8a57a; --gold-deep:#9c7a48; --gold-soft:#efe7d9;
   --paper:#e9eef4; --paper-2:#f7f9fb; --surface:#ffffff;
   --muted:#64747b; --line:#d5dce4; --line-2:#e4e8ee;
-  --pos:#37725d; --pos-2:#4e7d68; --pos-soft:#e2f0e8;
-  --neg:#a85d54; --neg-soft:#f5e6e3; --warn:#9c7a48; --warn-soft:#f6edda;
-  --field-bg:#ffffff; --field-line:#cdd6e0;
-  --shadow:0 22px 70px rgba(15,30,46,.12); --shadow-soft:0 12px 40px rgba(15,30,46,.08);
+  --pos:#37725d; --pos-soft:#e2f0e8; --neg:#a85d54; --neg-soft:#f5e6e3;
+  --warn:#9c7a48; --warn-soft:#f6edda; --field-bg:#ffffff; --field-line:#cdd6e0;
+  --shadow:0 22px 70px rgba(15,30,46,.12); --shadow-soft:0 10px 34px rgba(15,30,46,.08);
 }
 :root[data-theme="dark"]{
   --navy:#0a1622; --navy-2:#16304a; --ink:#eaf0f6; --ink-2:#c6d3df;
   --gold:#d4b587; --gold-deep:#c8a57a; --gold-soft:#2a2417;
   --paper:#0d1a28; --paper-2:#0a1420; --surface:#132437;
   --muted:#94a6b4; --line:#22384c; --line-2:#1c3145;
-  --pos:#6cbf9d; --pos-2:#4e7d68; --pos-soft:#14312a;
-  --neg:#d98a80; --neg-soft:#33201d; --warn:#d4b587; --warn-soft:#2c2617;
-  --field-bg:#0e1e2e; --field-line:#2a415a;
-  --shadow:0 22px 70px rgba(0,0,0,.45); --shadow-soft:0 12px 40px rgba(0,0,0,.35);
+  --pos:#6cbf9d; --pos-soft:#14312a; --neg:#d98a80; --neg-soft:#33201d;
+  --warn:#d4b587; --warn-soft:#2c2617; --field-bg:#0e1e2e; --field-line:#2a415a;
+  --shadow:0 22px 70px rgba(0,0,0,.45); --shadow-soft:0 10px 34px rgba(0,0,0,.35);
 }
 
 *{box-sizing:border-box}
-.lmnp{
-  font-family:var(--sans); color:var(--ink); background:var(--paper-2);
-  line-height:1.55; -webkit-font-smoothing:antialiased;
-  min-height:100vh; font-size:16px;
-}
-.lmnp h1,.lmnp h2,.lmnp h3,.lmnp h4{font-family:var(--display);font-weight:500;letter-spacing:-.02em;line-height:1.14;margin:0}
+.lmnp{font-family:var(--sans);color:var(--ink);background:var(--paper-2);line-height:1.55;-webkit-font-smoothing:antialiased;min-height:100vh;font-size:16px}
+.lmnp h1,.lmnp h2,.lmnp h3,.lmnp h4{font-family:var(--display);font-weight:600;letter-spacing:-.02em;line-height:1.15;margin:0}
 .lmnp p{margin:0}
 .lmnp button,.lmnp input,.lmnp select{font:inherit;color:inherit}
-.lmnp :focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:4px}
+.lmnp :focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:6px}
 .num{font-variant-numeric:tabular-nums}
-.wrap{width:min(1160px,calc(100% - 32px));margin-inline:auto}
+.wrap{width:min(940px,calc(100% - 32px));margin-inline:auto}
+.hidden{display:none!important}
 
-/* ---------- Header ---------- */
-.app-header{position:sticky;top:0;z-index:50;background:var(--navy);color:#eef3f8;box-shadow:0 6px 30px rgba(15,30,46,.18)}
-.app-header .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:70px;padding:10px 0}
-.brand{display:flex;align-items:center;gap:12px;min-width:0}
-.brand-mark{width:42px;height:42px;border-radius:12px;flex:0 0 auto;display:block}
-.brand-txt{display:flex;flex-direction:column;line-height:1.15;min-width:0}
-.brand-txt strong{font-family:var(--display);font-weight:600;font-size:.98rem;letter-spacing:.01em;color:#fff;white-space:nowrap}
-.brand-txt small{font-size:.6rem;text-transform:uppercase;letter-spacing:.14em;color:#9fb2c2;margin-top:3px}
-.header-actions{display:flex;align-items:center;gap:8px}
-.icon-btn{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:11px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:#dbe6f0;cursor:pointer;transition:.2s}
+/* Header */
+.app-header{position:sticky;top:0;z-index:50;background:var(--navy);color:#eef3f8;box-shadow:0 4px 24px rgba(15,30,46,.16)}
+.app-header .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:62px;padding:8px 0}
+.brand{display:flex;align-items:center;gap:11px;min-width:0}
+.brand img{width:38px;height:38px;border-radius:10px;flex:0 0 auto}
+.brand strong{font-family:var(--display);font-weight:600;font-size:.95rem;color:#fff;white-space:nowrap}
+.brand small{display:block;font-size:.58rem;text-transform:uppercase;letter-spacing:.14em;color:#9fb2c2;margin-top:2px}
+.header-actions{display:flex;gap:8px}
+.icon-btn{display:inline-grid;place-items:center;width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:#dbe6f0;cursor:pointer;transition:.2s}
 .icon-btn:hover{background:rgba(255,255,255,.16)}
-.icon-btn svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.icon-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 
-/* ---------- Hero ---------- */
-.hero{background:linear-gradient(180deg,var(--navy) 0%,var(--navy-2) 100%);color:#eef3f8;padding:34px 0 96px;position:relative;overflow:hidden}
-.hero:after{content:"";position:absolute;right:-120px;top:-80px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(200,165,122,.28),transparent 66%);pointer-events:none}
-.eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:.7rem;text-transform:uppercase;letter-spacing:.16em;font-weight:800;color:var(--gold);margin-bottom:14px}
-.eyebrow:before{content:"";width:26px;height:1px;background:currentColor}
-.hero h1{font-size:clamp(1.9rem,4.4vw,2.9rem);color:#fff;margin-bottom:12px;max-width:20ch;text-wrap:balance}
-.hero-lead{font-size:1.05rem;color:#c3d1de;max-width:64ch}
-.hero-tag{margin-top:18px;font-family:var(--display);font-style:italic;font-weight:500;color:var(--gold);font-size:1.02rem}
-.beta-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(200,165,122,.16);border:1px solid rgba(200,165,122,.42);color:var(--gold);font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:6px 13px;border-radius:999px;margin-bottom:16px}
-.beta-pill .dot{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(200,165,122,.22)}
+/* Intro */
+.intro{background:linear-gradient(180deg,var(--navy),var(--navy-2));color:#eef3f8;padding:26px 0 30px;text-align:center}
+.beta-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(200,165,122,.16);border:1px solid rgba(200,165,122,.42);color:var(--gold);font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border-radius:999px;margin-bottom:12px}
+.intro h1{font-size:clamp(1.5rem,3.4vw,2rem);color:#fff;margin-bottom:8px}
+.intro-lead{font-size:1rem;color:#c3d1de;max-width:56ch;margin-inline:auto}
 
-/* ---------- Main layout ---------- */
-.main{position:relative;z-index:2;margin-top:-62px;padding-bottom:120px}
+/* Main */
+.main{padding:26px 0 90px}
+
+/* Stepper */
+.stepper{list-style:none;display:flex;gap:8px;padding:0;margin:0 0 24px;counter-reset:s}
+.stepper li{flex:1;display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--surface);border:1px solid var(--line);border-radius:14px;color:var(--muted);font-family:var(--display);font-weight:600;font-size:.9rem;cursor:default;transition:.2s}
+.stepper li .sdot{width:26px;height:26px;flex:0 0 auto;border-radius:50%;background:var(--paper);color:var(--muted);display:grid;place-items:center;font-size:.85rem;border:1px solid var(--line)}
+.stepper li.on{border-color:var(--gold);color:var(--ink);box-shadow:var(--shadow-soft)}
+.stepper li.on .sdot{background:var(--gold);color:#241a0c;border-color:transparent}
+.stepper li.done{cursor:pointer}
+.stepper li.done .sdot{background:var(--pos-soft);color:var(--pos);border-color:transparent}
+.stepper li.done .slab{color:var(--ink-2)}
+.stepper .slab{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:620px){.stepper li .slab{display:none}.stepper li{flex:0 0 auto;justify-content:center}.stepper li.on{flex:1}.stepper li.on .slab{display:inline}}
+
+/* Steps */
+.step-panel{display:none}
+.step-panel.on{display:block;animation:fade .28s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-soft)}
-.section-lead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:40px 4px 16px}
-.section-lead h2{font-size:1.5rem}
-.section-lead span{font-size:.84rem;color:var(--muted)}
-.section-num{font-family:var(--display);font-weight:600;color:var(--gold-deep);font-size:1.05rem;margin-right:2px}
+.pad{padding:24px 26px}
+.card+.card,.card+.detail,.detail+.card,.card+.nav-row,.detail+.nav-row{margin-top:16px}
+.step-title{font-size:1.4rem}
+.step-title.center{text-align:center;margin-bottom:18px}
+.step-sub{font-size:.92rem;color:var(--muted);margin-top:6px}
+.done-chk{color:var(--pos);font-size:1.1rem}
 
-/* Notice bêta */
-.notice{padding:20px 22px;margin-bottom:22px;border-left:4px solid var(--gold);background:linear-gradient(90deg,var(--gold-soft),var(--surface) 60%)}
-.notice h3{font-size:1.05rem;margin-bottom:6px;display:flex;align-items:center;gap:9px}
-.notice h3 svg{width:20px;height:20px;fill:none;stroke:var(--gold-deep);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
-.notice p{font-size:.92rem;color:var(--ink-2);max-width:92ch}
-.notice p+p{margin-top:8px}
-.notice b{color:var(--ink)}
+/* Fields */
+.field{margin-top:20px}
+.field>label{display:block;font-size:.74rem;text-transform:uppercase;letter-spacing:.09em;font-weight:700;color:var(--gold-deep);margin-bottom:9px}
+.select-wrap{display:flex;gap:8px}
+.select-wrap select{flex:1;min-width:0;padding:13px 14px;border:1px solid var(--field-line);border-radius:12px;background:var(--field-bg);font-family:var(--display);font-weight:600;font-size:1rem;color:var(--ink)}
+.mini-btn{padding:0 16px;border:1px solid var(--line);border-radius:12px;background:var(--paper-2);font-family:var(--display);font-weight:600;font-size:.9rem;color:var(--ink-2);cursor:pointer;white-space:nowrap}
+.mini-btn:hover{border-color:var(--gold);color:var(--gold-deep)}
+.seg.big{display:flex;gap:6px;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:6px;max-width:360px}
+.seg.big button{flex:1;border:none;background:transparent;padding:13px;border-radius:9px;font-family:var(--display);font-weight:600;font-size:1rem;color:var(--muted);cursor:pointer;transition:.18s}
+.seg.big button.on{background:var(--navy);color:#fff;box-shadow:var(--shadow-soft)}
+.hint{font-size:.88rem;color:var(--ink-2);margin-top:12px;padding:12px 15px;border-left:3px solid var(--gold);background:var(--paper-2);border-radius:0 10px 10px 0;line-height:1.55}
+.hint b{color:var(--ink)}
+.pieces{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.piece{display:inline-flex;align-items:center;gap:8px;font-size:.85rem;color:var(--ink-2);background:var(--paper-2);border:1px solid var(--line);border-radius:10px;padding:8px 13px}
+.piece:before{content:"✓";color:var(--pos);font-weight:800}
+.piece b{color:var(--ink);font-weight:600}
 
-/* ---------- Poste de travail (inputs) ---------- */
-.desk{padding:24px 24px 26px;margin-bottom:22px}
-.desk-head{display:flex;align-items:flex-start;gap:13px;margin-bottom:6px}
-.desk-head .ic{width:40px;height:40px;border-radius:12px;background:var(--gold-soft);color:var(--gold-deep);display:grid;place-items:center;flex:0 0 auto}
-.desk-head .ic svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.desk-head h3{font-size:1.14rem}
-.desk-head p{font-size:.86rem;color:var(--muted);margin-top:3px;max-width:82ch}
-
-.tree{margin:18px 0 4px;font-family:'Poppins',var(--display);font-size:.86rem}
-.tree-root{display:flex;align-items:center;gap:8px;font-weight:600;color:var(--ink);margin-bottom:2px}
-.tree-root svg{width:17px;height:17px;fill:none;stroke:var(--gold-deep);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.inputs{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:16px}
-.ifile{display:flex;align-items:center;gap:13px;padding:14px 15px;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--paper-2)}
-.ifile .fic{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;flex:0 0 auto;font-family:var(--display);font-weight:700;font-size:.62rem;letter-spacing:.03em;color:#fff}
-.ifile .fic.pdf{background:#a85d54}.ifile .fic.xls{background:#37725d}.ifile .fic.fec{background:#1e3a52}
-.ifile .meta{min-width:0}
-.ifile .meta strong{display:block;font-family:var(--display);font-weight:600;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ifile .meta small{font-size:.76rem;color:var(--muted)}
-.ok-chk{margin-left:auto;color:var(--pos);flex:0 0 auto}
-.ok-chk svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-
-.runbar{display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-top:24px;padding-top:20px;border-top:1px dashed var(--line)}
-.runbar .rhint{font-size:.86rem;color:var(--muted);flex:1;min-width:220px}
-.btn{display:inline-flex;align-items:center;gap:9px;border:1px solid transparent;border-radius:12px;padding:12px 20px;font-family:var(--display);font-weight:600;font-size:.95rem;cursor:pointer;transition:.2s;white-space:nowrap}
-.btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;border:1px solid transparent;border-radius:12px;padding:12px 22px;font-family:var(--display);font-weight:600;font-size:.98rem;cursor:pointer;transition:.2s}
 .btn-primary{background:var(--gold);color:#241a0c;box-shadow:0 10px 26px rgba(200,165,122,.4)}
 .btn-primary:hover{background:var(--gold-deep);color:#fff}
 .btn-ghost{background:transparent;border-color:var(--line);color:var(--ink-2)}
 .btn-ghost:hover{border-color:var(--gold);color:var(--gold-deep)}
-.btn:disabled{opacity:.5;cursor:not-allowed;box-shadow:none}
+.btn-lg{width:100%;padding:16px;font-size:1.05rem;margin-top:26px}
+.nav-row{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.nav-row.center{justify-content:center}
 
-/* ---------- Console / progress ---------- */
-.console{margin-top:22px;border-radius:var(--radius-sm);background:var(--navy);color:#cfe0ee;overflow:hidden;display:none}
-.console.show{display:block}
-.console-head{display:flex;align-items:center;gap:9px;padding:12px 16px;background:rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.08);font-family:var(--display);font-weight:600;font-size:.82rem;letter-spacing:.02em}
-.console-head .live{width:9px;height:9px;border-radius:50%;background:var(--gold);animation:pulse 1.1s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.console-body{padding:14px 16px;font-family:'Poppins',ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.82rem;line-height:1.7;min-height:120px}
-.cline{opacity:0;transform:translateY(4px);transition:.35s;display:flex;gap:10px}
-.cline.on{opacity:1;transform:none}
-.cline .step{color:var(--gold);font-weight:700;flex:0 0 auto}
-.cline .ok{color:#6cbf9d;margin-left:auto;flex:0 0 auto}
-.cprog{height:5px;background:rgba(255,255,255,.1)}
-.cprog>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-deep));transition:width .4s}
+/* Processing */
+.processing{text-align:center;padding:70px 20px}
+.spinner{width:46px;height:46px;margin:0 auto 20px;border:4px solid var(--line);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.spinner{animation-duration:2s}}
+.processing p{font-family:var(--display);font-weight:600;color:var(--ink-2);margin-bottom:18px}
+.cprog{height:6px;max-width:320px;margin:0 auto;background:var(--line);border-radius:999px;overflow:hidden}
+.cprog>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-deep));transition:width .4s;border-radius:999px}
 
-/* ---------- KPI strip ---------- */
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:22px}
-.kpi{padding:18px 20px}
-.kpi .klabel{font-size:.74rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:700;display:flex;align-items:center;gap:8px}
-.kpi .klabel svg{width:16px;height:16px;fill:none;stroke:var(--gold-deep);stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
-.kpi .kval{font-family:var(--display);font-weight:600;font-size:2rem;letter-spacing:-.02em;margin-top:8px}
-.kpi .ksub{font-size:.8rem;color:var(--muted);margin-top:2px}
-.kpi.good .kval{color:var(--pos)}.kpi.warn .kval{color:var(--warn)}
+/* Summary tiles */
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+@media(max-width:620px){.summary{grid-template-columns:1fr}}
+.tile{padding:18px 20px;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--paper-2)}
+.tile .tval{font-family:var(--display);font-weight:600;font-size:2rem;letter-spacing:-.02em}
+.tile.good .tval{color:var(--pos)}.tile.warn .tval{color:var(--warn)}
+.tile .tlab{font-family:var(--display);font-weight:600;font-size:.95rem;margin-top:2px}
+.tile .tsub{font-size:.8rem;color:var(--muted);margin-top:3px}
 
-/* ---------- Tabs ---------- */
-.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:6px}
-.tab{flex:1;min-width:150px;display:flex;align-items:center;justify-content:center;gap:9px;padding:11px 12px;border-radius:10px;font-family:var(--display);font-weight:600;font-size:.88rem;color:var(--muted);cursor:pointer;border:1px solid transparent;transition:.18s;text-align:center}
-.tab svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
-.tab .badge{font-size:.72rem;background:var(--gold-soft);color:var(--gold-deep);border-radius:999px;padding:1px 8px;font-weight:700}
-.tab:hover{color:var(--ink)}
-.tab.active{background:var(--navy);color:#fff;box-shadow:var(--shadow-soft)}
-.tab.active .badge{background:rgba(255,255,255,.18);color:#fff}
-.tab.flag.active{background:var(--gold-deep)}
-.panel{display:none}
-.panel.active{display:block;animation:fade .3s}
-@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
+/* Review list */
+.rev-head{display:flex;align-items:baseline;gap:12px}
+.rev-head h3{font-size:1.15rem}
+.count{font-size:.85rem;color:var(--warn);font-weight:700;background:var(--warn-soft);padding:2px 10px;border-radius:999px}
+.review-list{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.rev-item{border:1px solid var(--line);border-left:3px solid var(--warn);border-radius:12px;padding:13px 16px;background:var(--paper-2)}
+.rev-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.rev-amt{font-family:var(--display);font-weight:600;font-size:1.1rem}
+.rev-acct{font-family:'Poppins',var(--display);font-weight:600;color:var(--ink);font-size:.9rem}
+.rev-acct small{font-weight:400;color:var(--muted)}
+.rev-lib{font-weight:600;margin-top:4px}
+.rev-date{color:var(--muted);font-weight:400;font-size:.85rem}
+.rev-why{font-size:.86rem;color:var(--ink-2);margin-top:5px}
+.rev-why b{color:var(--warn)}
 
-.pcard{padding:22px 22px 8px}
-.pcard .phead{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:6px}
-.pcard .phead h3{font-size:1.15rem}
-.pcard .phead p{font-size:.86rem;color:var(--muted);margin-top:3px;max-width:86ch}
-.pcard .phead .btn{margin-left:auto}
-.phead-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
-.phead-actions .btn{margin-left:0}
+/* Detail expander */
+.detail>summary{cursor:pointer;font-family:var(--display);font-weight:600;font-size:.9rem;color:var(--gold-deep);padding:12px 2px;list-style:none;display:flex;align-items:center;gap:8px}
+.detail>summary:before{content:"›";font-size:1.2rem;transition:.2s;display:inline-block}
+.detail[open]>summary:before{transform:rotate(90deg)}
+.detail>summary::-webkit-details-marker{display:none}
+.detail h4{font-size:1rem;margin-bottom:4px}
 
-/* ---------- Tables ---------- */
-.tbl-scroll{overflow-x:auto;margin:14px -22px 0;padding:0 22px}
-table.data{width:100%;border-collapse:collapse;font-size:.86rem;min-width:720px}
-table.data th{text-align:left;font-family:var(--display);font-weight:600;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:9px 12px;border-bottom:2px solid var(--line);white-space:nowrap}
-table.data td{padding:10px 12px;border-bottom:1px solid var(--line-2);vertical-align:top}
+/* Tables */
+.tbl-scroll{overflow-x:auto;margin-top:10px}
+table.data{width:100%;border-collapse:collapse;font-size:.84rem;min-width:720px}
+table.data th{text-align:left;font-family:var(--display);font-weight:600;font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);padding:8px 11px;border-bottom:2px solid var(--line);white-space:nowrap}
+table.data td{padding:9px 11px;border-bottom:1px solid var(--line-2);vertical-align:top}
 table.data td.r,table.data th.r{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-table.data tr:hover td{background:var(--paper-2)}
 .acct{font-family:'Poppins',var(--display);font-weight:600;color:var(--ink)}
-.acct small{display:block;font-weight:400;color:var(--muted);font-size:.76rem;letter-spacing:0;text-transform:none}
-.lib{font-weight:600}
-.lib small{display:block;font-weight:400;color:var(--muted);font-size:.78rem}
-
-/* confidence chips */
-.conf{display:inline-flex;align-items:center;gap:6px;font-size:.76rem;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
-.conf .cd{width:7px;height:7px;border-radius:50%}
+.acct small{display:block;font-weight:400;color:var(--muted);font-size:.74rem}
+.lib{font-weight:600}.lib small{display:block;font-weight:400;color:var(--muted);font-size:.76rem}
+.conf{display:inline-flex;align-items:center;gap:5px;font-size:.74rem;font-weight:700;padding:2px 8px;border-radius:999px}
+.conf .cd{width:6px;height:6px;border-radius:50%}
 .conf.hi{background:var(--pos-soft);color:var(--pos)}.conf.hi .cd{background:var(--pos)}
 .conf.mid{background:var(--warn-soft);color:var(--warn)}.conf.mid .cd{background:var(--warn)}
 .conf.lo{background:var(--neg-soft);color:var(--neg)}.conf.lo .cd{background:var(--neg)}
-.reason{font-size:.8rem;color:var(--ink-2)}
-.reason b{color:var(--warn)}
-.tag{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;padding:2px 8px;border-radius:6px;background:var(--paper);color:var(--muted);border:1px solid var(--line)}
+.tag{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;padding:2px 7px;border-radius:6px;background:var(--paper);color:var(--muted);border:1px solid var(--line)}
 .tag.immo{background:var(--gold-soft);color:var(--gold-deep);border-color:transparent}
 .tag.arb{background:var(--warn-soft);color:var(--warn);border-color:transparent}
 .tag.new{background:var(--neg-soft);color:var(--neg);border-color:transparent}
-
-.pill-pc{display:inline-flex;align-items:center;gap:7px}
-.mini-bar{width:52px;height:6px;border-radius:999px;background:var(--line);overflow:hidden;flex:0 0 auto}
-.mini-bar>i{display:block;height:100%;border-radius:999px}
-
-.empty-note{padding:26px 22px;text-align:center;color:var(--muted);font-size:.9rem}
-.empty-note svg{width:34px;height:34px;stroke:var(--pos);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;margin-bottom:8px}
-
-/* match status */
-.mstat{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:700}
-.mstat svg{width:15px;height:15px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tag.web{background:var(--pos-soft);color:var(--pos);border-color:transparent}
+.mstat{display:inline-flex;align-items:center;gap:5px;font-size:.78rem;font-weight:700}
+.mstat svg{width:14px;height:14px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .mstat.ok{color:var(--pos)}.mstat.no{color:var(--neg)}.mstat.diff{color:var(--warn)}
 
-/* ---------- Relance / email ---------- */
-.relance-grid{display:grid;grid-template-columns:1fr;gap:18px}
-.missing-list{list-style:none;padding:0;margin:14px 0 0}
-.missing-list li{display:flex;align-items:center;gap:12px;padding:11px 14px;border:1px solid var(--line);border-radius:12px;margin-bottom:9px;background:var(--paper-2)}
+/* Export */
+.export-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+@media(max-width:680px){.export-grid{grid-template-columns:1fr}}
+.export-card{text-align:center;display:flex;flex-direction:column;align-items:center}
+.ex-ic{width:56px;height:56px;border-radius:16px;background:var(--gold-soft);color:var(--gold-deep);display:grid;place-items:center;font-size:1.6rem;margin-bottom:14px}
+.export-card h3{font-size:1.15rem}
+.ex-fmt{font-size:.95rem;margin-top:6px}.ex-fmt b{color:var(--gold-deep)}
+.ex-line{font-size:.86rem;color:var(--muted);margin-top:8px;max-width:34ch}
+.export-card .btn{margin-top:20px}
+.export-card .passe-toggle,.export-card .missing-list,.export-card .subseuil-note,.export-card .detail{width:100%;text-align:left}
+
+/* Missing + mail */
+.passe-toggle{display:inline-flex;gap:4px;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:4px;margin:14px auto 4px}
+.passe-toggle button{border:none;background:transparent;padding:7px 14px;border-radius:7px;font-family:var(--display);font-weight:600;font-size:.82rem;color:var(--muted);cursor:pointer}
+.passe-toggle button.on{background:var(--navy);color:#fff}
+.passe-note{font-size:.82rem;color:var(--muted);margin:8px 0}
+.missing-list{list-style:none;padding:0;margin:10px 0 0}
+.missing-list li{display:flex;align-items:center;gap:11px;padding:10px 13px;border:1px solid var(--line);border-radius:11px;margin-bottom:8px;background:var(--paper-2)}
+.missing-list li .mn{width:26px;height:26px;border-radius:7px;background:var(--neg-soft);color:var(--neg);display:grid;place-items:center;font-weight:700;font-size:.8rem;flex:0 0 auto}
+.missing-list li .mtxt{min-width:0}.missing-list li .mtxt strong{display:block;font-size:.9rem}
+.missing-list li .mtxt small{font-size:.76rem;color:var(--muted)}
 .missing-list li .mamt{margin-left:auto;font-family:var(--display);font-weight:600;font-variant-numeric:tabular-nums;color:var(--neg);white-space:nowrap}
-.missing-list li .mn{width:30px;height:30px;border-radius:8px;background:var(--neg-soft);color:var(--neg);display:grid;place-items:center;font-weight:700;font-size:.85rem;flex:0 0 auto}
-.missing-list li .mtxt strong{display:block;font-size:.9rem}
-.missing-list li .mtxt small{font-size:.78rem;color:var(--muted)}
-.mailbox{border:1px solid var(--line);border-radius:var(--radius-sm);overflow:hidden;background:var(--paper-2)}
-.mailbox .mhead{padding:12px 16px;background:var(--surface);border-bottom:1px solid var(--line);font-size:.84rem}
-.mailbox .mhead .mrow{display:flex;gap:8px;padding:2px 0}
-.mailbox .mhead .mrow b{color:var(--muted);font-weight:600;min-width:52px}
-.mailbox pre{margin:0;padding:16px 18px;white-space:pre-wrap;font-family:var(--sans);font-size:.9rem;line-height:1.62;color:var(--ink)}
+.subseuil-note{font-size:.8rem;color:var(--muted);margin-top:10px;padding:9px 12px;border:1px dashed var(--line);border-radius:10px;background:var(--paper-2)}
+.subseuil-note b{color:var(--pos)}
+.mailbox{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--paper-2);margin-top:8px}
+.mailbox .mhead{padding:10px 14px;background:var(--surface);border-bottom:1px solid var(--line);font-size:.82rem}
+.mailbox .mrow{display:flex;gap:8px}.mailbox .mrow b{color:var(--muted);font-weight:600;min-width:46px}
+.mailbox pre{margin:0;padding:14px 16px;white-space:pre-wrap;font-family:var(--sans);font-size:.88rem;line-height:1.6;color:var(--ink)}
 
-/* ---------- Explainer : briques + timeline ---------- */
-.briques{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
-.brique{padding:20px}
-.brique .bic{width:42px;height:42px;border-radius:12px;background:var(--navy);color:var(--gold);display:grid;place-items:center;margin-bottom:12px}
-.brique .bic svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.brique h4{font-size:1.02rem;margin-bottom:4px}
-.brique .who{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--gold-deep);font-weight:700;margin-bottom:9px}
-.brique p{font-size:.87rem;color:var(--ink-2)}
-.brique.key{border:1.5px solid var(--gold)}
-.brique.key .bic{background:var(--gold);color:#241a0c}
-
-.timeline{position:relative;margin:8px 0 0;padding:6px 0}
-.tl-item{display:flex;gap:16px;padding:8px 0}
-.tl-when{flex:0 0 128px;text-align:right;font-family:var(--display);font-weight:600;font-size:.86rem;color:var(--gold-deep);padding-top:2px}
-.tl-dot{flex:0 0 auto;position:relative;width:16px;display:flex;justify-content:center}
-.tl-dot:before{content:"";position:absolute;top:6px;bottom:-18px;width:2px;background:var(--line)}
-.tl-item:last-child .tl-dot:before{display:none}
-.tl-dot span{width:14px;height:14px;border-radius:50%;background:var(--surface);border:3px solid var(--gold);z-index:1;margin-top:4px}
-.tl-item.stop .tl-dot span{border-color:var(--neg);background:var(--neg-soft)}
-.tl-body{flex:1;padding-bottom:6px}
-.tl-body strong{display:block;font-family:var(--display);font-weight:600;font-size:.98rem}
-.tl-body p{font-size:.86rem;color:var(--ink-2);margin-top:3px}
-.tl-body .whoc{font-size:.74rem;color:var(--muted);margin-top:4px;font-style:italic}
-.tl-body .gate{display:inline-block;margin-top:6px;font-size:.78rem;font-weight:700;color:var(--neg);background:var(--neg-soft);border-radius:8px;padding:3px 9px}
-
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.does{padding:22px}
-.does h4{font-size:1.05rem;margin-bottom:12px;display:flex;align-items:center;gap:9px}
-.does h4 svg{width:20px;height:20px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.does.yes h4 svg{stroke:var(--pos)}.does.no h4 svg{stroke:var(--neg)}
+/* About (collapsed pitch) */
+.about{margin-top:34px;border-top:1px solid var(--line);padding-top:8px}
+.about>summary{cursor:pointer;font-family:var(--display);font-weight:600;font-size:1rem;color:var(--ink-2);padding:14px 2px;list-style:none;display:flex;align-items:center;gap:9px}
+.about>summary:before{content:"›";font-size:1.3rem;transition:.2s}
+.about[open]>summary:before{transform:rotate(90deg)}
+.about>summary::-webkit-details-marker{display:none}
+.about-inner{padding:8px 2px 4px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+@media(max-width:640px){.two-col{grid-template-columns:1fr}}
+.does h4{font-size:1rem;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.does.yes h4{color:var(--pos)}.does.no h4{color:var(--neg)}
 .does ul{list-style:none;padding:0;margin:0}
-.does li{display:flex;gap:10px;padding:7px 0;font-size:.9rem;color:var(--ink-2);border-bottom:1px solid var(--line-2)}
+.does li{font-size:.88rem;color:var(--ink-2);padding:6px 0 6px 22px;position:relative;border-bottom:1px solid var(--line-2)}
 .does li:last-child{border-bottom:none}
-.does li:before{content:"";flex:0 0 18px;height:18px;margin-top:2px;background-size:contain;background-repeat:no-repeat}
-.does.yes li:before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2337725d' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6L9 17l-5-5'/%3E%3C/svg%3E")}
-.does.no li:before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a85d54' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 6L6 18M6 6l12 12'/%3E%3C/svg%3E")}
+.does li:before{position:absolute;left:0;top:6px;font-weight:800}
+.does.yes li:before{content:"✓";color:var(--pos)}.does.no li:before{content:"✕";color:var(--neg)}
+.timeline{margin:6px 0 16px}
+.tl-item{display:flex;gap:14px;padding:7px 0}
+.tl-when{flex:0 0 96px;text-align:right;font-family:var(--display);font-weight:600;font-size:.82rem;color:var(--gold-deep)}
+.tl-body strong{display:block;font-family:var(--display);font-weight:600;font-size:.92rem}
+.tl-body p{font-size:.84rem;color:var(--ink-2);margin-top:2px}
+.tl-body .gate{display:inline-block;margin-top:5px;font-size:.76rem;font-weight:700;color:var(--neg);background:var(--neg-soft);border-radius:7px;padding:2px 8px}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:6px}
+.fact{padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--paper-2)}
+.fact .fk{font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:700}
+.fact .fv{font-family:var(--display);font-weight:600;font-size:1.35rem;margin-top:5px}
+.fact .fs{font-size:.78rem;color:var(--muted);margin-top:2px}
+.about h4.blk{font-size:1rem;margin:18px 0 8px}
 
-/* cost / gain little cards */
-.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-top:4px}
-.fact{padding:18px 20px;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--paper-2)}
-.fact .fk{font-size:.76rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}
-.fact .fv{font-family:var(--display);font-weight:600;font-size:1.5rem;margin-top:6px;color:var(--ink)}
-.fact .fs{font-size:.8rem;color:var(--muted);margin-top:3px}
-
-/* ---------- Footer ---------- */
-.app-footer{background:var(--navy);color:#aebfce;padding:34px 0 40px;margin-top:40px}
-.app-footer .wrap{display:flex;flex-wrap:wrap;gap:22px;justify-content:space-between;align-items:center}
-.app-footer img{height:40px;width:auto}
-.app-footer .fcopy{font-size:.78rem;line-height:1.5;max-width:56ch}
-.app-footer .fcopy strong{color:#fff;font-family:var(--display);font-weight:600}
-.app-footer .disclaimer{font-size:.72rem;color:#7d92a4;line-height:1.55;margin-top:4px}
-
-/* ---------- Toast ---------- */
-.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--navy);color:#fff;padding:12px 20px;border-radius:12px;font-size:.9rem;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.3s;z-index:100}
+/* Footer + toast */
+.app-footer{background:var(--navy);color:#9fb2c2;padding:26px 0;margin-top:20px;font-size:.78rem;line-height:1.55}
+.app-footer .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center}
+.app-footer strong{color:#fff;font-family:var(--display);font-weight:600}
+.app-footer img{height:34px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--navy);color:#fff;padding:12px 20px;border-radius:12px;font-size:.9rem;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.3s;z-index:100}
 .toast.show{opacity:1;transform:translateX(-50%)}
 
-.hidden{display:none!important}
-
-@media (max-width:640px){
-  .tl-when{flex-basis:88px;font-size:.78rem}
-  .two-col{grid-template-columns:1fr}
-  .pcard .phead .btn{margin-left:0}
-}
-
-/* ---------- Sources & règles (poste de travail) ---------- */
-.src-block{margin-top:18px}
-.src-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.09em;font-weight:700;color:var(--gold-deep);display:flex;align-items:center;gap:8px;margin-bottom:9px}
-.src-label svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
-.src-label .pin{margin-left:auto;font-size:.66rem;letter-spacing:.04em;color:var(--muted);font-weight:600;text-transform:none}
-.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:20px;padding-top:20px;border-top:1px dashed var(--line)}
-.rules-title{grid-column:1/-1;font-family:var(--display);font-weight:600;font-size:.95rem;display:flex;align-items:center;gap:9px}
-.rules-title small{font-weight:400;color:var(--muted);font-size:.8rem}
-.rule{display:flex;gap:11px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--paper-2)}
-.rule .rn{width:26px;height:26px;border-radius:8px;background:var(--navy);color:var(--gold);display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:.8rem;flex:0 0 auto}
-.rule.human .rn{background:var(--warn-soft);color:var(--warn)}
-.rule p{font-size:.82rem;color:var(--ink-2)}
-.rule p b{color:var(--ink)}
-
-/* ---------- Setup : dossier + tenue de banque ---------- */
-.setup{padding:20px 22px;margin-bottom:18px}
-.setup-row{display:flex;flex-wrap:wrap;gap:22px}
-.setup-field{flex:1;min-width:262px}
-.setup-field>label{display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.09em;font-weight:700;color:var(--gold-deep);margin-bottom:8px}
-.select-wrap{display:flex;gap:8px}
-.select-wrap select{flex:1;min-width:0;padding:11px 13px;border:1px solid var(--field-line);border-radius:11px;background:var(--field-bg);font-family:var(--display);font-weight:600;font-size:.92rem;color:var(--ink)}
-.mini-btn{padding:0 14px;border:1px solid var(--line);border-radius:11px;background:var(--paper-2);font-family:var(--display);font-weight:600;font-size:.86rem;color:var(--ink-2);cursor:pointer;white-space:nowrap}
-.mini-btn:hover{border-color:var(--gold);color:var(--gold-deep)}
-.seg{display:flex;gap:4px;background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:4px}
-.seg button{flex:1;border:none;background:transparent;padding:10px 12px;border-radius:8px;font-family:var(--display);font-weight:600;font-size:.86rem;color:var(--muted);cursor:pointer;transition:.18s}
-.seg button.on{background:var(--navy);color:#fff;box-shadow:var(--shadow-soft)}
-.setup-hint{font-size:.85rem;color:var(--ink-2);margin-top:14px;padding:11px 15px;border-left:3px solid var(--gold);background:var(--paper-2);border-radius:0 10px 10px 0;line-height:1.55}
-.setup-hint b{color:var(--ink)}
-
-/* ---------- Tag web ---------- */
-.tag.web{background:var(--pos-soft);color:var(--pos);border-color:transparent}
-
-/* ---------- Double passe ---------- */
-.passe-toggle{display:inline-flex;gap:4px;background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:4px;margin:4px 0 6px}
-.passe-toggle button{border:none;background:transparent;padding:8px 15px;border-radius:8px;font-family:var(--display);font-weight:600;font-size:.82rem;color:var(--muted);cursor:pointer;transition:.18s}
-.passe-toggle button.on{background:var(--navy);color:#fff;box-shadow:var(--shadow-soft)}
-.passe-note{font-size:.83rem;color:var(--muted);margin:8px 2px;max-width:88ch}
-.passe-note b{color:var(--ink-2)}
-.subseuil-note{font-size:.8rem;color:var(--muted);margin-top:12px;padding:10px 13px;border:1px dashed var(--line);border-radius:10px;background:var(--paper-2)}
-.subseuil-note b{color:var(--pos)}
-
-/* ---------- Print ---------- */
 @media print{
-  .app-header,.header-actions,.runbar,.console,.hero-tag,.beta-pill,.tabs .tab .badge{display:none!important}
-  .hero{padding:20px 0;color:#000;background:#fff}
-  .hero h1,.hero-lead,.eyebrow{color:#000}
-  .lmnp{background:#fff}
-  .main{margin-top:20px}
-  .card,.notice{box-shadow:none;border:1px solid #ccc;break-inside:avoid}
-  .panel{display:block!important;break-inside:avoid;margin-bottom:16px}
-  .tab{display:none!important}
-  .btn{display:none!important}
-  .toast{display:none!important}
+  .app-header,.header-actions,.stepper,.nav-row,.btn,.processing,.toast,.detail>summary,.about>summary{display:none!important}
+  .step-panel{display:block!important}
+  .detail[open] .tbl-scroll,.about[open] .about-inner{display:block!important}
+  .lmnp{background:#fff}.card{box-shadow:none;border:1px solid #ccc}
 }
 </style>
 
@@ -363,370 +275,207 @@ table.data tr:hover td{background:var(--paper-2)}
   <header class="app-header">
     <div class="wrap">
       <div class="brand">
-        <img class="brand-mark" alt="S2A" src="__FAVICON__"/>
-        <span class="brand-txt"><strong>S2A · Sud Alpes Audit</strong><small>Assistant de préparation LMNP</small></span>
+        <img alt="S2A" src="__FAVICON__"/>
+        <span><strong>S2A · Sud Alpes Audit</strong><small>Assistant LMNP</small></span>
       </div>
       <div class="header-actions">
-        <button class="icon-btn" id="btnTheme" title="Thème clair / sombre" aria-label="Basculer le thème">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
-        </button>
-        <button class="icon-btn" id="btnPrint" title="Imprimer / PDF" aria-label="Imprimer ou exporter en PDF">
-          <svg viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M6 14h12v7H6z"/></svg>
-        </button>
+        <button class="icon-btn" id="btnTheme" title="Thème clair / sombre" aria-label="Basculer le thème"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+        <button class="icon-btn" id="btnPrint" title="Imprimer / PDF" aria-label="Imprimer"><svg viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M6 14h12v7H6z"/></svg></button>
       </div>
     </div>
   </header>
 
-  <section class="hero">
+  <section class="intro">
     <div class="wrap">
-      <span class="beta-pill"><span class="dot"></span>Prototype interne · version bêta</span>
-      <span class="eyebrow">Industrialisation des dossiers LMNP / LMP</span>
-      <h1>Assistant de préparation des dossiers de location meublée</h1>
-      <p class="hero-lead">Le collaborateur dépose le dossier client, lance la préparation, et récupère un dossier <b>codé, rapproché et contrôlé</b> : journal de banque, écran de revue des seules lignes qui posent question, liste des justificatifs manquants et mail de relance déjà rédigé. Il ne fait plus la saisie — il fait la revue.</p>
-      <p class="hero-tag">« À vos côtés, aujourd'hui, demain, toujours. »</p>
+      <span class="beta-pill">Prototype interne · bêta</span>
+      <h1>Assistant de préparation LMNP</h1>
+      <p class="intro-lead">Trois étapes : on prépare le dossier, l'outil traite, on exporte. Le collaborateur ne fait plus la saisie — il vérifie.</p>
     </div>
   </section>
 
-  <main class="main">
-    <div class="wrap">
+  <main class="main"><div class="wrap">
 
-      <!-- Notice bêta -->
-      <div class="card notice">
-        <h3><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg>À lire avant la démonstration</h3>
-        <p>Cette page est une <b>maquette fonctionnelle</b> destinée à Thierry et Julien. Elle tourne sur un <b>dossier fictif</b> (<i>LMNP DUPONT 2026</i>) : aucune donnée client réelle, aucun appel externe, tout est calculé dans le navigateur. Elle sert à montrer <b>ce que produira l'outil</b> et à décider du pilote de septembre.</p>
-        <p>Principe qui restera vrai dans la version réelle : <b>les montants, totaux et rapprochements sont calculés par du code</b>, pas par l'IA. L'IA n'interviendra que là où l'erreur est visible et rattrapable — <b>lire une facture</b> et <b>identifier un fournisseur inconnu par recherche en ligne</b> (sur le seul nom, aucune donnée client transmise). Les vrais arbitrages — travaux entretien/amélioration, immobilisations — <b>restent remontés à l'humain</b>. L'outil prépare ; la revue du collaborateur reste l'acte professionnel qui engage le cabinet.</p>
+    <ol class="stepper" id="stepper">
+      <li data-go="1" class="on"><span class="sdot">1</span><span class="slab">Avant le traitement</span></li>
+      <li data-go="2"><span class="sdot">2</span><span class="slab">Traitement</span></li>
+      <li data-go="3"><span class="sdot">3</span><span class="slab">Export</span></li>
+    </ol>
+
+    <!-- STEP 1 -->
+    <section class="step-panel on" data-step="1">
+      <div class="card pad">
+        <h2 class="step-title">1 · Avant le traitement</h2>
+        <p class="step-sub">On choisit le dossier et on indique s'il tient une banque. C'est tout.</p>
+
+        <div class="field">
+          <label>Dossier</label>
+          <div class="select-wrap">
+            <select id="selDossier" aria-label="Dossier">
+              <option>LMNP_DUPONT_2026</option>
+              <option>LMNP_DURAND_2026</option>
+              <option>SCI_MARTIN_IR_2026</option>
+            </select>
+            <button class="mini-btn" id="btnNewDossier" type="button">＋ Créer</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Une banque dans le dossier ?</label>
+          <div class="seg big" id="segBank">
+            <button data-bank="1" class="on" type="button">Oui</button>
+            <button data-bank="0" type="button">Non</button>
+          </div>
+          <p class="hint" id="bankHint"></p>
+        </div>
+
+        <div class="pieces">
+          <span class="piece">FEC 2025 (N-1)</span>
+          <span class="piece">Relevé 2026 · <b id="nLines"></b></span>
+          <span class="piece">Factures Drive · <b id="nInv"></b></span>
+        </div>
+
+        <button class="btn btn-primary btn-lg" id="btnRun" type="button">Lancer le traitement →</button>
+      </div>
+    </section>
+
+    <!-- STEP 2 -->
+    <section class="step-panel" data-step="2">
+      <div class="processing" id="processing">
+        <div class="spinner"></div>
+        <p id="procText">Traitement du dossier…</p>
+        <div class="cprog"><i id="cprog"></i></div>
       </div>
 
-      <!-- =============== POSTE DE TRAVAIL =============== -->
-      <div class="section-lead"><h2><span class="section-num">1.</span>Le poste de travail du collaborateur</h2><span>Le dossier · le paramétrage · ce qu'il lance</span></div>
-
-      <div class="card setup">
-        <div class="setup-row">
-          <div class="setup-field">
-            <label>Étape 0 — Dossier</label>
-            <div class="select-wrap">
-              <select id="selDossier" aria-label="Sélection du dossier">
-                <option>LMNP_DUPONT_2026</option>
-                <option>LMNP_DURAND_2026</option>
-                <option>SCI_MARTIN_IR_2026</option>
-              </select>
-              <button class="mini-btn" id="btnNewDossier" type="button">＋ Créer</button>
-            </div>
-          </div>
-          <div class="setup-field">
-            <label>Tenue de banque dans le dossier&nbsp;?</label>
-            <div class="seg" id="segBank">
-              <button data-bank="1" class="on" type="button">Oui — banque tenue</button>
-              <button data-bank="0" type="button">Non — pas de banque</button>
-            </div>
-          </div>
-        </div>
-        <p class="setup-hint" id="bankHint"></p>
-      </div>
-
-      <div class="card desk">
-        <div class="desk-head">
-          <span class="ic"><svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span>
-          <div>
-            <h3>Dossier <span class="num">LMNP_DUPONT_2026</span></h3>
-            <p>Le collaborateur (ou le client) dépose les pièces dans le dossier Google&nbsp;Drive partagé, à la structure imposée. L'outil lit ce dossier — ici, il est déjà rempli avec un jeu de démonstration.</p>
-          </div>
+      <div id="step2body" class="hidden">
+        <div class="card pad">
+          <h2 class="step-title">Dossier préparé <span class="done-chk">✓</span></h2>
+          <div class="summary" id="summary"></div>
         </div>
 
-        <div class="tree">
-          <div class="tree-root"><svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>LMNP_DUPONT_2026/</div>
+        <div class="card pad">
+          <div class="rev-head"><h3>À vérifier avant de valider</h3><span class="count" id="revCount"></span></div>
+          <p class="step-sub">Les seules lignes qui demandent votre jugement. Tout le reste est prêt.</p>
+          <div class="review-list" id="reviewList"></div>
         </div>
 
-        <div class="src-block">
-          <div class="src-label">
-            <svg viewBox="0 0 24 24"><path d="M12 2l3.5 6h-7zM6 22l3.5-6M18 22l-3.5-6M4 14h16"/></svg>
-            Partagé par le client — Drive
-            <span class="pin">le client y scanne / photographie ses factures au fil de l'eau</span>
+        <details class="detail card pad">
+          <summary>Voir le détail — journal complet &amp; rapprochement des factures</summary>
+          <h4 style="margin-top:12px">Journal codé (<span id="bJournal"></span> écritures)</h4>
+          <div class="tbl-scroll">
+            <table class="data" id="tJournal">
+              <thead><tr><th>Date</th><th>Libellé</th><th class="r">Montant</th><th>Compte</th><th>Contrepartie</th><th>Confiance</th><th>Origine</th></tr></thead>
+              <tbody></tbody>
+            </table>
           </div>
-          <div class="inputs">
-            <div class="ifile">
-              <span class="fic pdf">PDF</span>
-              <span class="meta"><strong>01_Factures/</strong><small id="nInv">— pièces déposées par le client</small></span>
-              <span class="ok-chk"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>
-            </div>
+          <h4 style="margin-top:20px">Rapprochement des factures</h4>
+          <div class="tbl-scroll">
+            <table class="data" id="tFact" style="min-width:560px">
+              <thead><tr><th>Fournisseur</th><th>Date</th><th class="r">TTC</th><th class="r">dont TVA</th><th>Rapprochement</th></tr></thead>
+              <tbody></tbody>
+            </table>
           </div>
-        </div>
+        </details>
 
-        <div class="src-block">
-          <div class="src-label">
-            <svg viewBox="0 0 24 24"><path d="M12 2l3.5 6h-7zM6 22l3.5-6M18 22l-3.5-6M4 14h16"/></svg>
-            Ajouté par le cabinet
-            <span class="pin">le collaborateur dépose le FEC N-1 et le relevé annuel</span>
-          </div>
-          <div class="inputs">
-            <div class="ifile">
-              <span class="fic fec">FEC</span>
-              <span class="meta"><strong>FEC 2025 (N-1)</strong><small>Exercice précédent · apprentissage du dictionnaire</small></span>
-              <span class="ok-chk"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>
-            </div>
-            <div class="ifile">
-              <span class="fic xls">XLS</span>
-              <span class="meta"><strong>Relevé bancaire 2026</strong><small id="nLines">— lignes à coder</small></span>
-              <span class="ok-chk"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>
-            </div>
-          </div>
-        </div>
-
-        <div class="rules">
-          <div class="rules-title">
-            <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:none;stroke:var(--gold-deep);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-            Règles appliquées <small>seuil de matérialité : <b id="seuilTxt">100 €</b></small>
-          </div>
-          <div class="rule"><span class="rn">1</span><p><b>Fournisseur connu</b> (vu au FEC N-1) → affectation directe, même en l'absence de facture.</p></div>
-          <div class="rule"><span class="rn">2</span><p><b>Fournisseur inconnu</b> → recherche en ligne sur le seul nom, puis affectation automatique.</p></div>
-          <div class="rule"><span class="rn">3</span><p><b>Dépense &gt; seuil sans justificatif</b> → relance client par mail. Sous le seuil : affectée sans relancer.</p></div>
-          <div class="rule human"><span class="rn">!</span><p><b>Toujours à l'humain</b> : arbitrages travaux (entretien / amélioration) et immobilisations, quel que soit le montant.</p></div>
-        </div>
-
-        <div class="runbar">
-          <p class="rhint">Une seule commande. L'outil apprend du FEC N-1, code le relevé, lit et rapproche les factures, puis sort les livrables.</p>
-          <button class="btn btn-ghost" id="btnReset" type="button">
-            <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Réinitialiser
-          </button>
-          <button class="btn btn-primary" id="btnRun" type="button">
-            <svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9z"/></svg>Lancer la préparation
-          </button>
-        </div>
-
-        <div class="console" id="console">
-          <div class="console-head"><span class="live"></span>Préparation du dossier en cours…</div>
-          <div class="console-body" id="consoleBody"></div>
-          <div class="cprog"><i id="cprog"></i></div>
+        <div class="nav-row">
+          <button class="btn btn-ghost" data-go="1" type="button">← Retour</button>
+          <button class="btn btn-primary" id="btnToExport" type="button">Continuer vers l'export →</button>
         </div>
       </div>
+    </section>
 
-      <!-- =============== RESULTATS =============== -->
-      <div id="results" class="hidden">
-
-        <div class="section-lead"><h2><span class="section-num">2.</span>Le dossier préparé</h2><span>En un coup d'œil</span></div>
-        <div class="kpis" id="kpis"></div>
-
-        <div class="tabs" id="tabs">
-          <div class="tab active" data-tab="journal"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 9v11"/></svg>Journal codé<span class="badge" id="bJournal"></span></div>
-          <div class="tab flag" data-tab="revue"><svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-4 8-9 10-5-2-9-5-9-10V6z"/><path d="M12 8v4M12 15v.5"/></svg>Écran de revue<span class="badge" id="bRevue"></span></div>
-          <div class="tab" data-tab="factures"><svg viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z"/><path d="M15 2v5h5M9 13h6M9 17h6"/></svg>Rapprochement<span class="badge" id="bFact"></span></div>
-          <div class="tab" data-tab="relance"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 7l8 6 8-6"/></svg>Manquants &amp; relance<span class="badge" id="bRel"></span></div>
-        </div>
-
-        <!-- Journal -->
-        <div class="panel active" data-panel="journal">
-          <div class="card pcard">
-            <div class="phead">
-              <div>
-                <h3>Journal de banque codé</h3>
-                <p>Chaque ligne du relevé reçoit un compte proposé et un niveau de confiance. Les lignes en confiance moyenne ou faible sont reprises dans l'écran de revue. Export en <b>écritures Quadratus (ASCII, partie double)</b> — journal <b>BQ</b> (banque) ou <b>OD</b> selon le paramètre — ou en CSV.</p>
-              </div>
-              <div class="phead-actions">
-                <button class="btn btn-primary" id="btnQuadra" type="button"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>Export Quadra (ASCII)</button>
-                <button class="btn btn-ghost" id="btnCsv" type="button"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>CSV</button>
-              </div>
-            </div>
-            <div class="tbl-scroll">
-              <table class="data" id="tJournal">
-                <thead><tr><th>Date</th><th>Libellé bancaire</th><th class="r">Montant</th><th>Compte proposé</th><th>Contrepartie</th><th>Confiance</th><th>Origine</th></tr></thead>
-                <tbody></tbody>
-              </table>
-            </div>
-            <div style="height:14px"></div>
+    <!-- STEP 3 -->
+    <section class="step-panel" data-step="3">
+      <h2 class="step-title center">3 · Export</h2>
+      <div class="export-grid">
+        <div class="card pad export-card" id="exportFile"></div>
+        <div class="card pad export-card">
+          <div class="ex-ic">✉</div>
+          <h3>La relance client</h3>
+          <p class="ex-line"><b id="relCount"></b> à réclamer au client</p>
+          <div class="passe-toggle" id="passeToggle">
+            <button data-passe="1" class="on" type="button">Passe 1 · 15 janv.</button>
+            <button data-passe="2" type="button">Passe 2 · 31 janv.</button>
           </div>
-        </div>
-
-        <!-- Revue -->
-        <div class="panel" data-panel="revue">
-          <div class="card pcard">
-            <div class="phead">
-              <div>
-                <h3>Écran de revue — les seules lignes qui posent question</h3>
-                <p>Triées par montant décroissant : on traite d'abord ce qui compte. Pour chaque ligne, la <b>raison du doute</b> est affichée. C'est ici que le collaborateur exerce son jugement — et sa validation laisse une trace datée (exigence NPMQ 2025).</p>
-              </div>
+          <p class="passe-note" id="passeNote"></p>
+          <ul class="missing-list" id="missingList"></ul>
+          <p class="subseuil-note" id="subSeuilNote"></p>
+          <details class="detail"><summary>Voir le mail rédigé</summary>
+            <div class="mailbox">
+              <div class="mhead"><div class="mrow"><b>Objet</b><span id="mailSubj"></span></div></div>
+              <pre id="mailBody"></pre>
             </div>
-            <div class="tbl-scroll">
-              <table class="data" id="tRevue">
-                <thead><tr><th class="r">Montant</th><th>Date · Libellé</th><th>Proposition</th><th>Pourquoi c'est remonté</th></tr></thead>
-                <tbody></tbody>
-              </table>
-            </div>
-            <div style="height:14px"></div>
-          </div>
-        </div>
-
-        <!-- Factures -->
-        <div class="panel" data-panel="factures">
-          <div class="card pcard">
-            <div class="phead">
-              <div>
-                <h3>Rapprochement factures ↔ banque</h3>
-                <p>L'outil lit chaque pièce (date, fournisseur, HT, TVA, TTC) et la rapproche de la ligne bancaire correspondante (même montant, date proche). Un écart de montant est signalé plutôt que corrigé en silence.</p>
-              </div>
-            </div>
-            <div class="tbl-scroll">
-              <table class="data" id="tFact">
-                <thead><tr><th>Fournisseur</th><th>Date pièce</th><th class="r">TTC</th><th class="r">dont TVA</th><th>Rapprochement</th></tr></thead>
-                <tbody></tbody>
-              </table>
-            </div>
-            <div style="height:14px"></div>
-          </div>
-        </div>
-
-        <!-- Relance -->
-        <div class="panel" data-panel="relance">
-          <div class="card pcard">
-            <div class="phead">
-              <div>
-                <h3>Justificatifs manquants &amp; relance client</h3>
-                <p>Le livrable qui change tout : produit <b>dès la mi-janvier</b>, avant même de commencer le dossier. Deux passes — <b>15 janvier</b> puis <b>31 janvier</b> (sur les seuls nouveaux éléments) — et on ne relance que les pièces <b>au-dessus du seuil de matérialité</b>, sans harceler le client pour un ticket de 40 €.</p>
-              </div>
-              <button class="btn btn-ghost" id="btnMail" type="button"><svg viewBox="0 0 24 24"><path d="M9 5h9a2 2 0 0 1 2 2v12M16 3H6a2 2 0 0 0-2 2v14l4-3h8"/></svg>Copier le mail</button>
-            </div>
-            <div class="passe-toggle" id="passeToggle">
-              <button data-passe="1" class="on" type="button">Passe 1 · 15 janvier</button>
-              <button data-passe="2" type="button">Passe 2 · 31 janvier</button>
-            </div>
-            <p class="passe-note" id="passeNote"></p>
-            <div class="relance-grid">
-              <div>
-                <h4 style="font-family:var(--display);font-weight:600;font-size:1rem;margin:8px 0 2px">Pièces attendues, non retrouvées dans le Drive <span id="relCount" style="color:var(--muted);font-weight:400"></span></h4>
-                <ul class="missing-list" id="missingList"></ul>
-                <p class="subseuil-note" id="subSeuilNote"></p>
-              </div>
-              <div>
-                <h4 style="font-family:var(--display);font-weight:600;font-size:1rem;margin:6px 0 8px">Mail de relance — prêt à envoyer</h4>
-                <div class="mailbox">
-                  <div class="mhead">
-                    <div class="mrow"><b>À</b><span>client.dupont@email.fr</span></div>
-                    <div class="mrow"><b>Objet</b><span id="mailSubj"></span></div>
-                  </div>
-                  <pre id="mailBody"></pre>
-                </div>
-              </div>
-            </div>
-            <div style="height:16px"></div>
-          </div>
+          </details>
+          <button class="btn btn-primary" id="btnMail" type="button" style="margin-top:16px">Copier le mail</button>
         </div>
       </div>
+      <div class="nav-row center" style="margin-top:20px">
+        <button class="btn btn-ghost" data-go="2" type="button">← Retour</button>
+        <button class="btn btn-ghost" id="btnRestart" type="button">↺ Recommencer</button>
+      </div>
+    </section>
 
-      <!-- =============== CE QU'IL FAUT ET QUAND =============== -->
-      <div class="section-lead"><h2><span class="section-num">3.</span>Ce qu'il faut, et quand</h2><span>Les briques · le calendrier · le périmètre</span></div>
-
-      <div class="card" style="padding:22px 22px 24px;margin-bottom:22px">
-        <h3 style="font-size:1.14rem;margin-bottom:4px">Quatre briques, pas quatre alternatives</h3>
-        <p style="font-size:.88rem;color:var(--muted);margin-bottom:18px;max-width:88ch">Ce ne sont pas des options concurrentes : elles vont ensemble. Le <b style="color:var(--gold-deep)">Skill</b> est la pièce maîtresse — c'est lui qui garantit que Paul, Heddy ou un futur collaborateur produisent exactement le même travail.</p>
-        <div class="briques">
-          <div class="brique">
-            <span class="bic"><svg viewBox="0 0 24 24"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg></span>
-            <h4>Claude Code</h4>
-            <div class="who">Paul uniquement</div>
-            <p>L'atelier. Sert à <b>fabriquer</b> l'outil. Personne d'autre n'y touche.</p>
+    <!-- ABOUT (pitch, replié) -->
+    <details class="about">
+      <summary>En savoir plus — ce que fait l'outil, le calendrier, le coût</summary>
+      <div class="about-inner">
+        <div class="two-col">
+          <div class="does yes">
+            <h4>✓ Ce que l'outil fait</h4>
+            <ul>
+              <li>Apprend le plan comptable du client à partir du FEC N-1</li>
+              <li>Code le relevé, avec un niveau de confiance par ligne</li>
+              <li>Identifie les fournisseurs inconnus par recherche en ligne</li>
+              <li>Rapproche les factures et liste les pièces manquantes</li>
+              <li>Rédige le mail de relance et sort le fichier d'écritures</li>
+            </ul>
           </div>
-          <div class="brique key">
-            <span class="bic"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
-            <h4>Le Skill <span style="font-size:.7rem;color:var(--gold-deep)">· pièce maîtresse</span></h4>
-            <div class="who">Travaille en fond</div>
-            <p>Le mode d'emploi permanent que Claude lit seul : plan comptable LMNP, seuil d'immobilisation, doctrine entretien/amélioration, format de sortie. Écrit une fois, appliqué partout — et il produit la trace de revue attendue par la NPMQ.</p>
-          </div>
-          <div class="brique">
-            <span class="bic"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg></span>
-            <h4>Claude Cowork</h4>
-            <div class="who">Tous les collaborateurs</div>
-            <p>Le poste de travail (comme cette page). On dépose les fichiers, on clique, on récupère le dossier préparé. Aucune ligne de code.</p>
-          </div>
-          <div class="brique">
-            <span class="bic"><svg viewBox="0 0 24 24"><path d="M12 2l3.5 6h-7zM6 22l3.5-6M18 22l-3.5-6M4 14h16"/></svg></span>
-            <h4>Google Drive</h4>
-            <div class="who">Client + collaborateur</div>
-            <p>Le canal de collecte des pièces. Un dossier par client, structure imposée, dépôt au fil de l'eau.</p>
+          <div class="does no">
+            <h4>✕ Ce qu'il ne fait pas</h4>
+            <ul>
+              <li>Les arbitrages travaux (entretien / amélioration)</li>
+              <li>Les immobilisations et le tableau d'amortissement</li>
+              <li>La liasse fiscale 2031</li>
+              <li>Deviner les montants — ils restent du code, pas de l'IA</li>
+              <li>Valider le dossier — la revue reste l'acte du collaborateur</li>
+            </ul>
           </div>
         </div>
-      </div>
 
-      <div class="card" style="padding:22px 24px 26px;margin-bottom:22px">
-        <h3 style="font-size:1.14rem;margin-bottom:16px">Le calendrier — décision par décision, pas d'un coup</h3>
+        <h4 class="blk">Comment l'outil décide</h4>
+        <div class="does yes"><ul>
+          <li><b>Fournisseur connu</b> (FEC N-1) → affectation directe</li>
+          <li><b>Fournisseur inconnu</b> → recherche en ligne, puis affectation automatique</li>
+          <li><b>Dépense &gt; 150 € sans justificatif</b> → relance client ; sous le seuil → affectée sans relancer</li>
+          <li><b>Travaux / immobilisations</b> → toujours remontés à l'humain</li>
+        </ul></div>
+
+        <h4 class="blk">Le calendrier</h4>
         <div class="timeline">
-          <div class="tl-item">
-            <div class="tl-when">Août 2026</div><div class="tl-dot"><span></span></div>
-            <div class="tl-body"><strong>Feu vert RGPD/DPA + choix du dossier pilote</strong><p>Contrat de sous-traitance Anthropic signé, inscription au registre, mention dans la lettre de mission. Prérequis, pas formalité de fin.</p><p class="whoc">Associés + Paul</p></div>
-          </div>
-          <div class="tl-item stop">
-            <div class="tl-when">Septembre</div><div class="tl-dot"><span></span></div>
-            <div class="tl-body"><strong>Pilote sur 1 dossier réel (1 jour)</strong><p>On mesure : quel % de lignes codées seules, quel % de factures rapprochées.</p><span class="gate">Point d'arrêt : si &lt; 60 %, on ajuste ou on arrête.</span><p class="whoc">Paul</p></div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-when">Octobre</div><div class="tl-dot"><span></span></div>
-            <div class="tl-body"><strong>Construction de la version 1</strong><p>Moteur de codage + lecture des factures + écran de revue.</p><p class="whoc">Paul</p></div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-when">Novembre</div><div class="tl-dot"><span></span></div>
-            <div class="tl-body"><strong>Test croisé — la vraie validation</strong><p>Heddy traite 2 dossiers avec l'outil, sans l'aide de Paul. Si ça ne marche pas sans lui, ça ne marche pas.</p><p class="whoc">Heddy + Paul</p></div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-when">Décembre</div><div class="tl-dot"><span></span></div>
-            <div class="tl-body"><strong>Mise en place du circuit client</strong><p>Création des dossiers Drive, courrier aux clients LMNP, mise à jour des lettres de mission.</p><p class="whoc">Cabinet</p></div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-when">Janvier 2027</div><div class="tl-dot"><span></span></div>
-            <div class="tl-body"><strong>Production sur les 10 dossiers</strong><p>Double passe de relance : scan du Drive le 15 janvier (1er mail), puis le 31 janvier sur les seuls nouveaux éléments (2ᵉ mail si besoin) — pendant qu'on travaille sur autre chose.</p><p class="whoc">Collaborateurs</p></div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-when">Avril 2027</div><div class="tl-dot"><span></span></div>
-            <div class="tl-body"><strong>Bilan chiffré &amp; décision d'extension</strong><p>Temps réellement passé vs. année précédente. Extension possible : SCI à l'IR, BNC, petites BIC.</p><p class="whoc">Associés</p></div>
-          </div>
+          <div class="tl-item"><div class="tl-when">Août 2026</div><div class="tl-body"><strong>Feu vert RGPD/DPA + choix du dossier pilote</strong><p>Prérequis, pas formalité de fin.</p></div></div>
+          <div class="tl-item"><div class="tl-when">Septembre</div><div class="tl-body"><strong>Pilote sur 1 dossier réel (1 jour)</strong><p>Mesure des taux réels.</p><span class="gate">Point d'arrêt : si &lt; 60 %, on ajuste ou on arrête.</span></div></div>
+          <div class="tl-item"><div class="tl-when">Octobre</div><div class="tl-body"><strong>Construction de la version 1</strong></div></div>
+          <div class="tl-item"><div class="tl-when">Novembre</div><div class="tl-body"><strong>Test croisé — Heddy traite 2 dossiers sans Paul</strong><p>Si ça ne marche pas sans lui, ça ne marche pas.</p></div></div>
+          <div class="tl-item"><div class="tl-when">Décembre</div><div class="tl-body"><strong>Circuit client : dossiers Drive, courrier, lettres de mission</strong></div></div>
+          <div class="tl-item"><div class="tl-when">Janv. 2027</div><div class="tl-body"><strong>Production sur 10 dossiers — relances dès la 1ʳᵉ semaine</strong></div></div>
+          <div class="tl-item"><div class="tl-when">Avril 2027</div><div class="tl-body"><strong>Bilan chiffré &amp; décision d'extension</strong> (SCI IR, BNC…)</div></div>
         </div>
-      </div>
 
-      <div class="two-col" style="margin-bottom:22px">
-        <div class="card does yes">
-          <h4><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Ce que l'outil fait</h4>
-          <ul>
-            <li>Apprend le plan comptable propre au client à partir du FEC N-1</li>
-            <li>Code le relevé bancaire, avec un niveau de confiance par ligne</li>
-            <li>Recherche en ligne les fournisseurs inconnus pour les affecter</li>
-            <li>Lit les factures du Drive et les rapproche des lignes bancaires</li>
-            <li>Relance le client au-dessus d'un seuil, en deux passes (15 &amp; 31 janv.)</li>
-            <li>Laisse une trace datée de la revue (NPMQ 2025)</li>
-          </ul>
-        </div>
-        <div class="card does no">
-          <h4><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>Ce qu'il ne fait pas, et ne fera jamais</h4>
-          <ul>
-            <li>Les arbitrages charge / immobilisation, entretien / amélioration</li>
-            <li>Le plafonnement de l'amortissement (article 39 C)</li>
-            <li>La liasse fiscale 2031</li>
-            <li>Calculer les montants « au jugé » : ils restent du code, pas de l'IA</li>
-            <li>Valider le dossier — la revue reste l'acte du collaborateur</li>
-            <li>Fonctionner en boîte noire : tout doute est explicité</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="card" style="padding:22px 24px 24px">
-        <h3 style="font-size:1.14rem;margin-bottom:4px">Ce que ça coûte, ce que ça rapporte</h3>
-        <p style="font-size:.88rem;color:var(--muted);margin-bottom:16px;max-width:88ch">Chiffres de la note, à confirmer par le pilote. Le vrai enjeu dépasse les LMNP : la même méthode s'applique à tous nos traitements annuels répétitifs.</p>
+        <h4 class="blk">Ce que ça coûte, ce que ça rapporte</h4>
         <div class="facts">
-          <div class="fact"><div class="fk">Gain / dossier</div><div class="fv">≈ 3 h 00</div><div class="fs">~1 h 30 en année 1</div></div>
-          <div class="fact"><div class="fk">Sur 10 dossiers</div><div class="fv">≈ 30 h / an</div><div class="fs">récupérées en pleine période de bilans</div></div>
-          <div class="fact"><div class="fk">Fonctionnement</div><div class="fv">&lt; 100 € / an</div><div class="fs">API à l'usage · abonnement déjà en place</div></div>
-          <div class="fact"><div class="fk">Construction</div><div class="fv">≈ 10 j</div><div class="fs">temps de Paul, étalé sept.–déc.</div></div>
+          <div class="fact"><div class="fk">Gain / dossier</div><div class="fv">≈ 3 h</div><div class="fs">~1 h 30 en année 1</div></div>
+          <div class="fact"><div class="fk">Sur 10 dossiers</div><div class="fv">≈ 30 h / an</div><div class="fs">en pleine période de bilans</div></div>
+          <div class="fact"><div class="fk">Fonctionnement</div><div class="fv">&lt; 100 €/an</div><div class="fs">API à l'usage</div></div>
+          <div class="fact"><div class="fk">Construction</div><div class="fv">≈ 10 j</div><div class="fs">temps de Paul</div></div>
         </div>
       </div>
+    </details>
 
-    </div>
-  </main>
+  </div></main>
 
-  <footer class="app-footer">
-    <div class="wrap">
-      <img alt="S2A — Sud Alpes Audit" src="__LOGO_LIGHT__"/>
-      <p class="fcopy"><strong>Sud Alpes Audit</strong> — Cabinet d'expertise comptable et de commissariat aux comptes à Nice &amp; Allos, depuis 1998. Avancer. Décider. Réussir.</p>
-    </div>
-    <div class="wrap">
-      <p class="disclaimer">Prototype interne à vocation de démonstration. Fonctionne sur un dossier fictif ; aucune donnée client réelle n'est traitée, aucun appel externe n'est effectué. Les taux d'automatisation et gains de temps affichés sont illustratifs et devront être confirmés par le pilote de septembre 2026 avant tout engagement. Le déploiement réel est subordonné à la signature du DPA Anthropic et à la mise à jour des lettres de mission.</p>
-    </div>
-  </footer>
+  <footer class="app-footer"><div class="wrap">
+    <img alt="S2A" src="__LOGO_LIGHT__"/>
+    <p><strong>Sud Alpes Audit</strong> — Prototype interne de démonstration, dossier fictif : aucune donnée client réelle, aucun appel externe. Taux et gains illustratifs, à confirmer par le pilote de septembre 2026. Le format Quadratus ASCII est à valider dans l'import Quadra du cabinet.</p>
+  </div></footer>
 
   <div class="toast" id="toast"></div>
 </div>
@@ -737,8 +486,6 @@ table.data tr:hover td{background:var(--paper-2)}
 /* ============================================================
    JEU DE DONNÉES DE DÉMONSTRATION — dossier fictif DUPONT 2026
    ============================================================ */
-
-// Plan comptable LMNP (libellés d'affichage)
 var COMPTES = {
   "706":  "Loyers — locations meublées",
   "6061": "Eau, énergie",
@@ -761,7 +508,6 @@ var COMPTES = {
 };
 
 // FEC N-1 (2025) : ce dont l'outil apprend le dictionnaire du client.
-// Chaque entrée = un libellé déjà rencontré et son compte validé l'an dernier.
 var FEC = [
   {lib:"LOYER MARTIN",          compte:"706",  n:12},
   {lib:"SYNDIC AZUR",           compte:"614",  n:4},
@@ -774,9 +520,7 @@ var FEC = [
   {lib:"HONORAIRES S2A",        compte:"622",  n:1}
 ];
 
-// Relevé bancaire 2026 : les lignes à coder cette année (année pleine, dossier de
-// croisière). sens: 'debit' / 'credit' ; montant en € TTC. Les échéances de prêt
-// portent 'amort:[intérêts,capital]' : ventilation issue du tableau d'amortissement.
+// Relevé bancaire 2026 (année pleine). amort:[intérêts,capital] = tableau d'amortissement.
 var BANK = [
   {date:"05/01/2026", lib:"VIR RECU LOYER M MARTIN",             montant:  850.00, sens:"credit" },
   {date:"06/01/2026", lib:"PRLV ECH PRET IMMO CACIB",            montant: 1030.64, sens:"debit"  , amort:[387.35,643.29]},
@@ -837,11 +581,7 @@ var BANK = [
   {date:"15/12/2026", lib:"PRLV DGFIP CFE",                      montant:  226.00, sens:"debit"  },
 ];
 
-// Factures déposées par le client dans son Drive (01_Factures/). Volontairement
-// incomplètes. L'outil les lit (fournisseur/date/HT/TVA/TTC) et les rapproche par
-// montant + date. Manquent (→ relance > seuil) : Syndic T3, Chubb GLI, Menuiserie,
-// Appel de fonds copro. Sous le seuil, non réclamées : Leroy Merlin, CLINK.
-// Boulanger : facture 899,00 € vs banque 890,00 € → écart signalé.
+// Factures déposées (Drive). Volontairement incomplètes. Boulanger : 899 vs 890 → écart.
 var INVOICES = [
   {four:"Syndic Azur SA",                  date:"07/01/2026", ttc:  438.00, tva:  73.00},
   {four:"Syndic Azur SA",                  date:"07/04/2026", ttc:  438.00, tva:  73.00},
@@ -867,63 +607,37 @@ var INVOICES = [
 ];
 
 /* ============================================================
-   MOTEUR — déterministe. Aucune donnée inventée : uniquement
-   application du dictionnaire + rapprochement par montant/date.
+   MOTEUR — déterministe (dictionnaire + rapprochement montant/date)
    ============================================================ */
-
 function stripAccents(s){ return s.normalize("NFD").replace(/[̀-ͯ]/g,""); }
 function normalize(lib){
   var s = stripAccents((""+lib).toUpperCase());
-  // on retire les préfixes d'opération et les mots peu porteurs
   s = s.replace(/\b(VIR|VIRT|PRLV|PRELEVEMENT|CB|CHQ|CHEQUE|ECH|RECU|SEPA|CLIENTS?|SA|SAS|SARL|EURL|PRO|T[1-4]|GESTION|INTERV)\b/g," ");
   s = s.replace(/[^A-Z ]/g," ").replace(/\s+/g," ").trim();
   return s;
 }
 function tokens(lib){ return normalize(lib).split(" ").filter(function(t){return t.length>2;}); }
+function buildDict(fec){ return fec.map(function(e){ return {key:normalize(e.lib), lib:e.lib, compte:e.compte, n:e.n, toks:tokens(e.lib)}; }); }
+function intersize(a,b){ var set={},hit=0; a.forEach(function(t){set[t]=1;}); b.forEach(function(t){ if(set[t]){hit++;set[t]=0;} }); return hit; }
 
-// Construction du dictionnaire client à partir du FEC N-1
-function buildDict(fec){
-  return fec.map(function(e){ return {key:normalize(e.lib), lib:e.lib, compte:e.compte, n:e.n, toks:tokens(e.lib)}; });
-}
-
-// Taille de l'intersection de deux ensembles de tokens
-function intersize(a,b){
-  var set={}, hit=0; a.forEach(function(t){set[t]=1;});
-  b.forEach(function(t){ if(set[t]){ hit++; set[t]=0; } });
-  return hit;
-}
-
-// Codage d'une ligne bancaire — déterministe, priorité aux règles sûres
 function codeLine(line, dict){
   var toks = tokens(line.lib);
   var out = {date:line.date, lib:line.lib, montant:line.montant, sens:line.sens, toks:toks};
-
-  // 1) recettes
   if(line.sens === "credit"){
-    if(/LOYER/.test(line.lib))
-      return set(out,"706",0.99,"exact","Recette de loyer identifiée (opération récurrente)");
-    if(/INDEMNI|SINISTRE|REMB.*ASSURANCE/.test(line.lib))
-      return set(out,"758",0.55,"regle","Indemnité d'assurance (sinistre) — produit (758) ou diminution de la charge concernée : à valider","arb");
-    if(/APPORT|DUPONT/.test(line.lib))
-      return set(out,"108",0.62,"regle","Apport probable de l'exploitant — compte courant (108) à confirmer","arb");
+    if(/LOYER/.test(line.lib)) return set(out,"706",0.99,"exact","Recette de loyer identifiée (opération récurrente)");
+    if(/INDEMNI|SINISTRE|REMB.*ASSURANCE/.test(line.lib)) return set(out,"758",0.55,"regle","Indemnité d'assurance (sinistre) — produit (758) ou diminution de la charge concernée : à valider","arb");
+    if(/APPORT|DUPONT/.test(line.lib)) return set(out,"108",0.62,"regle","Apport probable de l'exploitant — compte courant (108) à confirmer","arb");
     return set(out,"471",0.0,"inconnu","Recette non identifiée — à ventiler","new");
   }
-
-  // 2a) échéance de prêt : ventilée par le TABLEAU D'AMORTISSEMENT (du code, pas de l'IA)
   if(line.amort){
     var oa = set(out,"661",0.95,"amort","Échéance de prêt ventilée d'après le tableau d'amortissement : intérêts (661) + capital (164)");
     oa.split = {int:line.amort[0], cap:line.amort[1]}; return oa;
   }
-
-  // 2b) appel de fonds travaux copropriété → arbitrage charge / immobilisation
   if(/APPEL.*FONDS|FONDS.*TRAVAUX|COPRO.*TRAVAUX|COPROPRIETE.*TRAVAUX/.test(line.lib))
     return set(out,"614",0.55,"regle","Appel de fonds travaux de copropriété — charge courante (614) ou gros travaux à immobiliser (2135) : à trancher","arb");
-
-  // 2c) travaux : arbitrage charge/immo — jamais codé tout seul, quel que soit le libellé
   if(/MENUISERIE|MACON|PLOMB|ELECTRICI|TRAVAUX|RENOV|CARRELAGE|PEINTURE|ISOLATION|TOITURE/.test(line.lib))
     return set(out,"2135",0.55,"regle","Travaux — arbitrage entretien (615, déductible) / amélioration à immobiliser (2135). "+eur(line.montant)+" : à trancher.","arb");
 
-  // 3) dictionnaire N-1 : recherche du meilleur libellé connu
   var nkey = normalize(line.lib), exactD=null, best=null, bestCov=0, bestInter=0;
   dict.forEach(function(d){
     if(!d.toks.length) return;
@@ -932,44 +646,30 @@ function codeLine(line, dict){
     var cov   = inter / Math.min(d.toks.length, toks.length);
     if(cov > bestCov || (cov === bestCov && inter > bestInter)){ bestCov=cov; bestInter=inter; best=d; }
   });
-
-  if(exactD)
-    return set(out, exactD.compte, 0.98, "dict", "Libellé identique au FEC N-1 (vu "+exactD.n+"× l'an dernier) : « "+exactD.lib+" »");
+  if(exactD) return set(out, exactD.compte, 0.98, "dict", "Libellé identique au FEC N-1 (vu "+exactD.n+"× l'an dernier) : « "+exactD.lib+" »");
   if(best && bestCov >= 0.999 && (bestInter >= 2 || best.toks.length === 1))
     return set(out, best.compte, 0.94, "near", "Variante du libellé N-1 « "+best.lib+" » (mêmes mots-clés) → même compte");
-  if(best && bestCov >= 0.6 && bestInter >= 1){
-    var conf = round2(0.72 + 0.13*(bestCov-0.6)/0.4); // 0.72 → 0.85
-    return set(out, best.compte, conf, "fuzzy", "Rapproché de « "+best.lib+" » (N-1) — libellé proche, à confirmer");
-  }
+  if(best && bestCov >= 0.6 && bestInter >= 1)
+    return set(out, best.compte, round2(0.72 + 0.13*(bestCov-0.6)/0.4), "fuzzy", "Rapproché de « "+best.lib+" » (N-1) — libellé proche, à confirmer");
 
-  // 4) frais bancaires (libellés variables) → 627
   if(/FRAIS.*(TENUE|COMPTE|BANCAIRE)|TENUE DE COMPTE|COMMISSION|AGIOS|COTISATION.*CARTE/.test(line.lib))
     return set(out,"627",0.92,"regle","Frais bancaires → 627 (services bancaires)");
-
-  // 4b) immobilisations & arbitrages : identifiables, mais la NATURE reste un jugement humain
   if(/MOBILIER|CONFORAMA|IKEA|\bBUT\b|MAISON DU MONDE|LITERIE|CANAPE|ELECTROMENAGER|DARTY|BOULANGER/.test(line.lib))
-    return set(out,"2184",0.60,"regle","Achat de mobilier → immobilisation (2184) à porter au tableau d'amortissement, pas une charge de l'année : à valider","immo");
+    return set(out,"2184",0.60,"regle","Achat de mobilier → immobilisation (2184) à porter au tableau d'amortissement, pas une charge : à valider","immo");
   if(/LEROY MERLIN|CASTORAMA|BRICO|QUINCAILL|WELDOM|MR BRICOLAGE|POINT P/.test(line.lib))
-    return set(out,"615",0.68,"regle","Achat en grande surface de bricolage — entretien (615) probable, mais peut relever d'une amélioration à immobiliser selon la pièce : à valider","arb");
+    return set(out,"615",0.68,"regle","Achat en grande surface de bricolage — entretien (615) probable, mais peut relever d'une amélioration à immobiliser : à valider","arb");
 
-  // 5) fournisseur inconnu → recherche en ligne (sur le seul nom), puis affectation automatique
   var web = webSearch(line.lib);
   if(web) return set(out, web.compte, 0.90, "web", "Fournisseur absent du FEC N-1 → identifié par recherche en ligne : "+web.note);
-
-  // 6) vraiment inconnu, même après recherche → à qualifier par l'humain
   return set(out,"471",0.0,"inconnu","Libellé inconnu, non résolu par la recherche en ligne — à qualifier","new");
 }
-
-// Simulation de la recherche en ligne d'un fournisseur inconnu.
-// Dans l'outil réel, c'est Claude qui effectue une vraie recherche web sur le
-// SEUL nom du fournisseur (aucune donnée client transmise) et en déduit le compte.
 function webSearch(lib){
   var L = stripAccents((""+lib).toUpperCase());
   var BASE = [
-    {re:/ORANGE|\bFREE\b|\bSFR\b|BOUYGUES|SOSH|\bRED\b/,               compte:"626",  note:"opérateur télécom / internet → 626 (télécommunications)"},
-    {re:/CHUBB|GENERALI|\bMMA\b|ALLIANZ|\bAXA\b|MAAF|GROUPAMA|MATMUT|\bGLI\b/, compte:"616", note:"compagnie d'assurance → 616 (primes d'assurance)"},
-    {re:/PLENITUDE|ENGIE|TOTALENERGIES|\bENI\b|EKWATEUR|ENGIE/,        compte:"6061", note:"fournisseur d'énergie → 6061"},
-    {re:/\bSUEZ\b|\bSAUR\b|\bSDEI\b|VEOLIA/,                           compte:"6061", note:"distributeur d'eau → 6061"}
+    {re:/ORANGE|\bFREE\b|\bSFR\b|BOUYGUES|SOSH|\bRED\b/, compte:"626", note:"opérateur télécom / internet → 626"},
+    {re:/CHUBB|GENERALI|\bMMA\b|ALLIANZ|\bAXA\b|MAAF|GROUPAMA|MATMUT|\bGLI\b/, compte:"616", note:"compagnie d'assurance → 616"},
+    {re:/PLENITUDE|ENGIE|TOTALENERGIES|\bENI\b|EKWATEUR/, compte:"6061", note:"fournisseur d'énergie → 6061"},
+    {re:/\bSUEZ\b|\bSAUR\b|\bSDEI\b|VEOLIA/, compte:"6061", note:"distributeur d'eau → 6061"}
   ];
   for(var i=0;i<BASE.length;i++){ if(BASE[i].re.test(L)) return BASE[i]; }
   return null;
@@ -977,11 +677,9 @@ function webSearch(lib){
 function set(o,compte,conf,origin,reason,tag){ o.compte=compte; o.conf=conf; o.origin=origin; o.reason=reason; o.tag=tag||null; return o; }
 function round2(x){ return Math.round(x*100)/100; }
 
-// Rapprochement factures <-> lignes bancaires (débits uniquement)
 function reconcile(lines, invoices){
   var debits = lines.filter(function(l){return l.sens==="debit";});
   var used = {};
-  // pour chaque ligne, chercher une facture au même montant (±0,5 %) et date proche (±20 j)
   debits.forEach(function(l){
     l.match=null; l.matchState="none";
     var lm=parseDate(l.date), bestIdx=-1, bestDelta=1e9, bestAmtOk=false;
@@ -992,108 +690,78 @@ function reconcile(lines, invoices){
       var amtClose = Math.abs(inv.ttc - l.montant) <= l.montant*0.08;
       if((amtOk||amtClose) && dd<=25 && dd<bestDelta){ bestDelta=dd; bestIdx=i; bestAmtOk=amtOk; }
     });
-    if(bestIdx>=0){
-      used[bestIdx]=true; l.match=invoices[bestIdx];
-      l.matchState = bestAmtOk ? "ok" : "diff";
-    }
+    if(bestIdx>=0){ used[bestIdx]=true; l.match=invoices[bestIdx]; l.matchState = bestAmtOk ? "ok" : "diff"; }
   });
   invoices.forEach(function(inv,i){ inv.matched = !!used[i]; });
   return debits;
 }
-
 function parseDate(s){ var p=s.split("/"); return new Date(+p[2],+p[1]-1,+p[0]); }
 function dayDiff(a,b){ return Math.round((a-b)/86400000); }
-
-/* ---- formatting ---- */
-function eur(v){ var n=Math.round(v*100)/100; var s=n.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2}); return s+" €"; }
+function eur(v){ return (Math.round(v*100)/100).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})+" €"; }
 function eur0(v){ return Math.round(v).toLocaleString('fr-FR')+" €"; }
 function esc(s){ return (""+s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
 
-/* ============================================================
-   ÉTAT + RENDU
-   ============================================================ */
-var SEUIL = 150;               // seuil de matérialité (€) déclenchant la relance client
-var HAS_BANK = true;           // le dossier tient-il une banque ? contrepartie 512 (oui) / 108 (non)
-var CURRENT_PASSE = 1;         // passe de relance affichée (15 ou 31 janvier)
-// Pièces transmises par le client entre la passe 1 et la passe 2 (démo)
+/* ============================================================ ÉTAT ============================================================ */
+var SEUIL = 150, HAS_BANK = true, CURRENT_PASSE = 1;
 var RECU_P2 = ["PRLV SYNDIC AZUR SA APPEL T3", "PRLV CHUBB EUROPEAN GROUP GLI"];
-
 var DICT = buildDict(FEC);
 var CODED = BANK.map(function(l){ return codeLine(l, DICT); });
 var DEBITS = reconcile(CODED, INVOICES);
 
-// classification des lignes pour la revue (arbitrage humain)
 function needsReview(l){ return l.conf < 0.90 || l.tag==="new" || l.tag==="arb" || l.matchState==="diff"; }
-
-// Justificatifs matériels manquants (> seuil), pour une passe donnée
-function materialMissing(){
-  return DEBITS.filter(function(l){ return isJustifiable(l) && !l.match && l.montant > SEUIL; })
-               .sort(function(a,b){ return b.montant - a.montant; });
+function isJustifiable(l){
+  if(l.sens==="credit") return false;
+  if(l.compte==="627"||l.compte==="661"||l.compte==="164"||l.compte==="108") return false;
+  return true;
 }
-function missingList(passe){
-  var m = materialMissing();
-  if(passe === 2) m = m.filter(function(l){ return RECU_P2.indexOf(l.lib) < 0; });
-  return m;
-}
-// Dépenses sans facture MAIS sous le seuil : affectées, non réclamées
-function subSeuilMissing(){
-  return DEBITS.filter(function(l){ return isJustifiable(l) && !l.match && l.montant <= SEUIL; })
-               .sort(function(a,b){ return b.montant - a.montant; });
-}
-
+function materialMissing(){ return DEBITS.filter(function(l){ return isJustifiable(l) && !l.match && l.montant > SEUIL; }).sort(function(a,b){ return b.montant-a.montant; }); }
+function missingList(passe){ var m=materialMissing(); if(passe===2) m=m.filter(function(l){ return RECU_P2.indexOf(l.lib)<0; }); return m; }
+function subSeuilMissing(){ return DEBITS.filter(function(l){ return isJustifiable(l) && !l.match && l.montant <= SEUIL; }).sort(function(a,b){ return b.montant-a.montant; }); }
 function confClass(c){ return c>=0.90?"hi":(c>=0.65?"mid":"lo"); }
-function confLabel(c){ return Math.round(c*100)+"%"; }
-
-/* KPIs */
-function renderKpis(){
-  var total = CODED.length;
-  var auto = CODED.filter(function(l){return !needsReview(l);}).length;
-  var pctAuto = Math.round(auto/total*100);
-  var justif = DEBITS.filter(isJustifiable);
-  var justifOk = justif.filter(function(l){return l.match;}).length;
-  var pctJust = Math.round(justifOk/justif.length*100);
-  var relances = missingList(1);
-  var relTotal = relances.reduce(function(a,l){return a+l.montant;},0);
-
-  var host=document.getElementById("kpis");
-  host.innerHTML =
-    kpi("good", svgClock(), pctAuto+" %", "Lignes codées seules", auto+" / "+total+" lignes du relevé")+
-    kpi("good", svgLink(), pctJust+" %", "Dépenses justifiées", justifOk+" / "+justif.length+" avec leur facture")+
-    kpi("warn", svgFlag(), (total-auto)+"", "Lignes à arbitrer", "jugement humain : immo, travaux, apports")+
-    kpi("warn", svgMail(), relances.length+"", "Relances à envoyer", eur0(relTotal)+" · au-dessus du seuil de "+SEUIL+" €");
-}
-function kpi(cls,ic,val,label,sub){
-  return '<div class="card kpi '+cls+'"><div class="klabel">'+ic+label+'</div><div class="kval num">'+val+'</div><div class="ksub">'+sub+'</div></div>';
-}
-
-/* Journal */
-function renderJournal(){
-  var tb=document.querySelector("#tJournal tbody"), h="";
-  CODED.forEach(function(l){
-    h+='<tr><td class="num">'+l.date+'</td>'+
-       '<td class="lib">'+esc(l.lib)+'</td>'+
-       '<td class="r num">'+(l.sens==="credit"?'+ ':'')+eur(l.montant)+'</td>'+
-       acctCell(l)+
-       contrepartieCell()+
-       '<td>'+confChip(l.conf)+'</td>'+
-       '<td>'+originTag(l)+'</td></tr>';
-  });
-  tb.innerHTML=h;
-  document.getElementById("bJournal").textContent=CODED.length;
-}
-function confChip(c){
-  var cl=confClass(c);
-  return '<span class="pill-pc"><span class="conf '+cl+'"><span class="cd"></span>'+confLabel(c)+'</span></span>';
-}
-function acctCell(l){
-  if(l.split)
-    return '<td class="acct">661 / 164<small>intérêts '+eur(l.split.int)+' · capital '+eur(l.split.cap)+'</small></td>';
-  return '<td class="acct">'+l.compte+'<small>'+esc(COMPTES[l.compte]||"")+'</small></td>';
-}
+function confChip(c){ return '<span class="conf '+confClass(c)+'"><span class="cd"></span>'+Math.round(c*100)+'%</span>'; }
 function contrepartieAcct(){ return HAS_BANK ? "512" : "108"; }
-function contrepartieCell(){
-  var c = contrepartieAcct();
-  return '<td class="acct">'+c+'<small>'+esc(COMPTES[c]||"")+'</small></td>';
+function prettyVendor(l){
+  var s=l.lib.replace(/^(VIR|PRLV|CB|CHQ|ECH)\s+/,"")
+    .replace(/\b(SA|SAS|SARL|EURL|CLIENTS?|PARTICULIERS?|IDF|SEPA|EUROPEAN GROUP)\b/g," ")
+    .replace(/\s+/g," ").trim().toLowerCase();
+  s = s.replace(/\b([a-zà-ÿ])/g, function(m,c){ return c.toUpperCase(); });
+  return s.replace(/\bT([1-4])\b/gi,"T$1").replace(/\b(Gli|Cfe|Pno)\b/g, function(m){ return m.toUpperCase(); });
+}
+function reasonHtml(l){
+  var extra="";
+  if(l.matchState==="diff" && l.match) extra=' <b>⚠ écart facture :</b> pièce '+esc(l.match.four)+' à '+eur(l.match.ttc)+' vs banque '+eur(l.montant)+'.';
+  else if(!l.match && l.sens==="debit" && isJustifiable(l)) extra=' <b>Aucune facture</b> rapprochée.';
+  return esc(l.reason)+extra;
+}
+
+/* ============================================================ RENDU ============================================================ */
+function renderSummary(){
+  var total=CODED.length, auto=CODED.filter(function(l){return !needsReview(l);}).length;
+  var pct=Math.round(auto/total*100), review=total-auto;
+  var rel=missingList(1), relTot=rel.reduce(function(a,l){return a+l.montant;},0);
+  document.getElementById("summary").innerHTML =
+    tile("good", pct+" %", "traité automatiquement", auto+" écritures sur "+total)+
+    tile("warn", ""+review, "à vérifier", "jugement humain")+
+    tile("warn", ""+rel.length, "à réclamer", eur0(relTot)+" de pièces");
+}
+function tile(cls,val,lab,sub){ return '<div class="tile '+cls+'"><div class="tval num">'+val+'</div><div class="tlab">'+lab+'</div><div class="tsub">'+sub+'</div></div>'; }
+
+function renderReview(){
+  var rows=CODED.filter(needsReview).slice().sort(function(a,b){return b.montant-a.montant;});
+  document.getElementById("reviewList").innerHTML = rows.map(function(l){
+    var acct = l.split ? "661 / 164" : l.compte;
+    return '<div class="rev-item"><div class="rev-top">'+
+      '<span class="rev-amt num">'+eur(l.montant)+'</span>'+
+      '<span class="rev-acct">'+acct+' <small>'+esc(COMPTES[l.compte]||"")+'</small> '+confChip(l.conf)+'</span></div>'+
+      '<div class="rev-lib">'+esc(prettyVendor(l))+' <span class="rev-date">· '+l.date+'</span></div>'+
+      '<div class="rev-why">'+reasonHtml(l)+'</div></div>';
+  }).join("");
+  document.getElementById("revCount").textContent = rows.length+" ligne"+(rows.length>1?"s":"");
+}
+
+function acctCell(l){
+  if(l.split) return '<td class="acct">661 / 164<small>int. '+eur(l.split.int)+' · cap. '+eur(l.split.cap)+'</small></td>';
+  return '<td class="acct">'+l.compte+'<small>'+esc(COMPTES[l.compte]||"")+'</small></td>';
 }
 function originTag(l){
   if(l.tag==="new") return '<span class="tag new">nouveau</span>';
@@ -1102,56 +770,31 @@ function originTag(l){
   if(l.origin==="dict") return '<span class="tag">FEC N-1</span>';
   if(l.origin==="near") return '<span class="tag">≈ FEC N-1</span>';
   if(l.origin==="amort") return '<span class="tag">amort. prêt</span>';
-  if(l.origin==="web")  return '<span class="tag web">🔎 web</span>';
+  if(l.origin==="web") return '<span class="tag web">🔎 web</span>';
   if(l.origin==="fuzzy") return '<span class="tag">approché</span>';
-  if(l.origin==="regle") return '<span class="tag">règle</span>';
-  return '<span class="tag">—</span>';
+  return '<span class="tag">règle</span>';
 }
-
-/* Revue */
-function renderRevue(){
-  var rows = CODED.filter(needsReview).slice().sort(function(a,b){return b.montant-a.montant;});
-  var tb=document.querySelector("#tRevue tbody");
-  tb.innerHTML = rows.map(function(l){
-    return '<tr><td class="r num" style="font-weight:600">'+eur(l.montant)+'</td>'+
-      '<td class="lib">'+esc(l.lib)+'<small>'+l.date+'</small></td>'+
-      '<td class="acct">'+l.compte+'<small>'+esc(COMPTES[l.compte]||"")+'</small> '+confChip(l.conf)+'</td>'+
-      '<td class="reason">'+reasonHtml(l)+'</td></tr>';
+function renderJournal(){
+  var cp=contrepartieAcct();
+  document.querySelector("#tJournal tbody").innerHTML = CODED.map(function(l){
+    return '<tr><td class="num">'+l.date+'</td><td class="lib">'+esc(l.lib)+'</td>'+
+      '<td class="r num">'+(l.sens==="credit"?'+ ':'')+eur(l.montant)+'</td>'+
+      acctCell(l)+'<td class="acct">'+cp+'<small>'+esc(COMPTES[cp])+'</small></td>'+
+      '<td>'+confChip(l.conf)+'</td><td>'+originTag(l)+'</td></tr>';
   }).join("");
-  document.getElementById("bRevue").textContent=rows.length;
+  document.getElementById("bJournal").textContent = CODED.length;
 }
-function reasonHtml(l){
-  var extra="";
-  if(l.matchState==="diff" && l.match){
-    extra=' <b>⚠ écart facture :</b> pièce '+esc(l.match.four)+' à '+eur(l.match.ttc)+' vs banque '+eur(l.montant)+'.';
-  } else if(!l.match && l.sens==="debit" && isJustifiable(l)){
-    extra=' <b>Aucune facture</b> rapprochée.';
-  }
-  return esc(l.reason)+extra;
-}
-
-/* Factures */
 function renderFactures(){
-  var tb=document.querySelector("#tFact tbody");
-  tb.innerHTML = INVOICES.map(function(inv){
-    var st, l = DEBITS.filter(function(x){return x.match===inv;})[0];
+  document.querySelector("#tFact tbody").innerHTML = INVOICES.map(function(inv){
+    var l=DEBITS.filter(function(x){return x.match===inv;})[0], st;
     if(!inv.matched) st='<span class="mstat no"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>Non rapprochée</span>';
-    else if(l && l.matchState==="diff") st='<span class="mstat diff"><svg viewBox="0 0 24 24"><path d="M12 2l10 18H2z"/><path d="M12 9v4M12 16.5v.5"/></svg>Écart de montant</span>';
+    else if(l && l.matchState==="diff") st='<span class="mstat diff"><svg viewBox="0 0 24 24"><path d="M12 2l10 18H2z"/><path d="M12 9v4M12 16.5v.5"/></svg>Écart</span>';
     else st='<span class="mstat ok"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>'+(l?l.date:"")+'</span>';
     return '<tr><td class="lib">'+esc(inv.four)+'</td><td class="num">'+inv.date+'</td>'+
-      '<td class="r num">'+eur(inv.ttc)+'</td><td class="r num">'+(inv.tva?eur(inv.tva):'—')+'</td>'+
-      '<td>'+st+'</td></tr>';
+      '<td class="r num">'+eur(inv.ttc)+'</td><td class="r num">'+(inv.tva?eur(inv.tva):'—')+'</td><td>'+st+'</td></tr>';
   }).join("");
-  document.getElementById("bFact").textContent=INVOICES.length;
 }
 
-/* Manquants + relance */
-function isJustifiable(l){
-  // une recette, un apport, un frais bancaire n'appellent pas de facture fournisseur
-  if(l.sens==="credit") return false;
-  if(l.compte==="627"||l.compte==="661"||l.compte==="164"||l.compte==="108") return false;
-  return true;
-}
 function renderRelance(passe){
   passe = passe || CURRENT_PASSE; CURRENT_PASSE = passe;
   var missing = missingList(passe);
@@ -1160,141 +803,60 @@ function renderRelance(passe){
       '<small>'+l.date+' · '+esc(COMPTES[l.compte]||"à ventiler")+'</small></span>'+
       '<span class="mamt">'+eur(l.montant)+'</span></li>';
   }).join("");
-  document.getElementById("relCount").textContent = "· "+missing.length+" pièce"+(missing.length>1?"s":"");
-  document.getElementById("bRel").textContent = missingList(1).length;
-
-  // note de cadence
+  document.getElementById("relCount").textContent = missing.length+" pièce"+(missing.length>1?"s":"");
   document.getElementById("passeNote").innerHTML = passe===1
-    ? "<b>Premier scan du Drive le 15 janvier</b>, email envoyé dans la foulée — avant même de commencer le dossier."
-    : "<b>Second scan le 31 janvier</b>, uniquement les nouveaux éléments. Le client a déposé 2 pièces entre-temps ; il ne reste que ce qui suit.";
-
-  // dépenses sous le seuil (non réclamées)
-  var ss = subSeuilMissing();
-  var ssNode = document.getElementById("subSeuilNote");
-  if(ss.length){
-    ssNode.style.display="block";
-    ssNode.innerHTML = "<b>"+ss.length+" dépense"+(ss.length>1?"s":"")+" sans facture, sous le seuil de "+SEUIL+" €</b> ("+
-      ss.map(function(l){return esc(prettyVendor(l))+" "+eur(l.montant);}).join(", ")+") : affectée"+(ss.length>1?"s":"")+" directement, non réclamée"+(ss.length>1?"s":"")+".";
-  } else { ssNode.style.display="none"; }
-
-  // mail
-  var n = missing.length;
-  var lines = missing.map(function(l){ return "   • "+prettyVendor(l)+" — "+l.date+" — "+eur(l.montant); }).join("\n");
-  var subj, body;
+    ? "<b>1er scan du Drive le 15 janvier</b>, mail envoyé dans la foulée."
+    : "<b>2e scan le 31 janvier</b> — le client a déposé 2 pièces entre-temps ; il ne reste que ce qui suit.";
+  var ss = subSeuilMissing(), ssNode=document.getElementById("subSeuilNote");
+  if(ss.length){ ssNode.style.display="block";
+    ssNode.innerHTML = "<b>"+ss.length+" dépense"+(ss.length>1?"s":"")+" sous le seuil de "+SEUIL+" €</b> ("+
+      ss.map(function(l){return esc(prettyVendor(l))+" "+eur(l.montant);}).join(", ")+") : affectée"+(ss.length>1?"s":"")+" sans relancer.";
+  } else ssNode.style.display="none";
+  var n=missing.length, lines=missing.map(function(l){ return "   • "+prettyVendor(l)+" — "+l.date+" — "+eur(l.montant); }).join("\n"), subj, body;
   if(passe===1){
-    subj = "Dossier LMNP 2026 — "+n+" justificatif"+(n>1?"s":"")+" à nous transmettre";
-    body =
-"Bonjour M. Dupont,\n\n"+
-"Nous préparons votre dossier de location meublée 2026. En rapprochant votre relevé bancaire des pièces déposées dans votre espace Drive, il nous manque "+
-n+" justificatif"+(n>1?"s":"")+" (au-dessus de "+SEUIL+" €) pour finaliser :\n\n"+lines+"\n\n"+
-"Merci de les déposer dans LMNP_DUPONT_2026 › 01_Factures (une photo nette suffit), idéalement avant le 30 janvier.\n"+
-"Sans facture, ces dépenses ne pourront pas être déduites — d'où notre relance en amont.\n\n"+
-"Bien à vous,\nCabinet S2A — Sud Alpes Audit";
+    subj="Dossier LMNP 2026 — "+n+" justificatif"+(n>1?"s":"")+" à nous transmettre";
+    body="Bonjour M. Dupont,\n\nNous préparons votre dossier de location meublée 2026. En rapprochant votre relevé bancaire des pièces déposées dans votre espace Drive, il nous manque "+n+" justificatif"+(n>1?"s":"")+" (au-dessus de "+SEUIL+" €) pour finaliser :\n\n"+lines+"\n\nMerci de les déposer dans LMNP_DUPONT_2026 › 01_Factures (une photo nette suffit), idéalement avant le 30 janvier.\nSans facture, ces dépenses ne pourront pas être déduites — d'où notre relance en amont.\n\nBien à vous,\nCabinet S2A — Sud Alpes Audit";
   } else {
-    subj = "Dossier LMNP 2026 — relance : "+n+" justificatif"+(n>1?"s":"")+" encore manquant"+(n>1?"s":"");
-    body =
-"Bonjour M. Dupont,\n\n"+
-"Merci pour les pièces déjà transmises. Après une nouvelle vérification de votre Drive au 31 janvier, il reste "+
-n+" justificatif"+(n>1?"s":"")+" :\n\n"+lines+"\n\n"+
-"C'est le dernier élément qui nous manque pour boucler votre dossier — pouvez-vous nous l'adresser dès que possible ?\n\n"+
-"Bien à vous,\nCabinet S2A — Sud Alpes Audit";
+    subj="Dossier LMNP 2026 — relance : "+n+" justificatif"+(n>1?"s":"")+" encore manquant"+(n>1?"s":"");
+    body="Bonjour M. Dupont,\n\nMerci pour les pièces déjà transmises. Après une nouvelle vérification de votre Drive au 31 janvier, il reste "+n+" justificatif"+(n>1?"s":"")+" :\n\n"+lines+"\n\nC'est le dernier élément qui nous manque pour boucler votre dossier — pouvez-vous nous l'adresser dès que possible ?\n\nBien à vous,\nCabinet S2A — Sud Alpes Audit";
   }
   document.getElementById("mailSubj").textContent = subj;
   document.getElementById("mailBody").textContent = body;
   window.__mail = {subj:subj, body:body};
-
-  // état du toggle
-  var tg = document.getElementById("passeToggle");
-  if(tg) tg.querySelectorAll("button").forEach(function(b){ b.classList.toggle("on", +b.getAttribute("data-passe")===passe); });
-}
-function prettyVendor(l){
-  // libellé lisible pour le client (on garde le trimestre T1..T4, utile pour retrouver la pièce)
-  var s=l.lib
-    .replace(/^(VIR|PRLV|CB|CHQ|ECH)\s+/,"")
-    .replace(/\b(SA|SAS|SARL|EURL|CLIENTS?|PARTICULIERS?|IDF|SEPA|EUROPEAN GROUP)\b/g," ")
-    .replace(/\s+/g," ").trim().toLowerCase();
-  s = s.replace(/\b([a-zà-ÿ])/g, function(m,c){ return c.toUpperCase(); });         // Titre
-  s = s.replace(/\bT([1-4])\b/gi,"T$1").replace(/\b(Gli|Cfe|Pno)\b/g, function(m){ return m.toUpperCase(); });
-  return s;
+  document.getElementById("passeToggle").querySelectorAll("button").forEach(function(b){ b.classList.toggle("on", +b.getAttribute("data-passe")===passe); });
 }
 
-/* ============================================================
-   ANIMATION DE LA PRÉPARATION
-   ============================================================ */
-var STEPS=[
-  {t:"Temps 1", d:"Lecture du FEC 2025 — dictionnaire client reconstitué : "+DICT.length+" libellés connus", ms:650},
-  {t:"Temps 2", d:"Codage du relevé bancaire — "+BANK.length+" lignes, application du dictionnaire", ms:800},
-  {t:"Temps 2", d:"Fournisseurs inconnus → recherche en ligne et affectation automatique", ms:800},
-  {t:"Temps 3", d:"Lecture des "+INVOICES.length+" factures du Drive client (date, fournisseur, HT, TVA, TTC)", ms:900},
-  {t:"Temps 3", d:"Rapprochement factures ↔ banque par montant et date", ms:650},
-  {t:"Temps 4", d:"Écran d'arbitrage, relance au-dessus du seuil de "+SEUIL+" € et mail généré", ms:700}
-];
-function run(){
-  var btn=document.getElementById("btnRun"); btn.disabled=true;
-  var cons=document.getElementById("console"); cons.classList.add("show");
-  var body=document.getElementById("consoleBody"); body.innerHTML="";
-  var prog=document.getElementById("cprog"); prog.style.width="0";
-  var i=0, acc=0;
-  STEPS.forEach(function(s,idx){
-    var line=document.createElement("div"); line.className="cline";
-    line.innerHTML='<span class="step">'+s.t+'</span><span>'+esc(s.d)+'</span><span class="ok">✓</span>';
-    body.appendChild(line);
-  });
-  var nodes=body.querySelectorAll(".cline");
-  function tick(){
-    if(i>=STEPS.length){ finish(); return; }
-    nodes[i].classList.add("on");
-    prog.style.width=Math.round((i+1)/STEPS.length*100)+"%";
-    var wait=STEPS[i].ms; i++;
-    setTimeout(tick, wait);
-  }
-  setTimeout(tick,250);
-}
-function finish(){
-  renderKpis(); renderJournal(); renderRevue(); renderFactures(); renderRelance();
-  var res=document.getElementById("results"); res.classList.remove("hidden");
-  setTimeout(function(){
-    document.getElementById("console").classList.remove("show");
-    document.getElementById("btnRun").disabled=false;
-    res.scrollIntoView({behavior:"smooth", block:"start"});
-  }, 600);
+function renderExport(){
+  var fmt = HAS_BANK ? "Excel" : "Quadra (ASCII)";
+  var sub = HAS_BANK
+    ? "Relevé codé, contrepartie banque (512). À intégrer dans le journal de banque."
+    : "Écritures en partie double, contrepartie exploitant (108). Fichier d'import Quadratus.";
+  var host = document.getElementById("exportFile");
+  host.innerHTML = '<div class="ex-ic">'+(HAS_BANK?"▦":"▤")+'</div><h3>Le fichier d\'écritures</h3>'+
+    '<p class="ex-fmt">Format : <b>'+fmt+'</b></p><p class="ex-line">'+sub+'</p>'+
+    '<button class="btn btn-primary btn-lg" id="btnExportFile" type="button">Télécharger</button>';
+  document.getElementById("btnExportFile").addEventListener("click", HAS_BANK ? exportExcel : exportQuadra);
 }
 
-/* ============================================================
-   INTERACTIONS
-   ============================================================ */
-function toast(m){ var t=document.getElementById("toast"); t.textContent=m; t.classList.add("show"); setTimeout(function(){t.classList.remove("show");},2200); }
-
-function csv(){
-  var rows=[["Date","Libelle","Sens","Montant","Compte","Intitule","Contrepartie","Confiance","Origine"]];
+/* ============================================================ EXPORTS ============================================================ */
+function download(name, text, mime){
+  var blob=new Blob([text],{type:mime}); var a=document.createElement("a");
+  a.href=URL.createObjectURL(blob); a.download=name; a.click();
+}
+function exportExcel(){
+  var rows=[["Date","Libelle","Sens","Montant","Compte","Intitule","Contrepartie","Confiance"]];
   CODED.forEach(function(l){
-    var compte = l.split ? "661/164" : l.compte;
-    var intit  = l.split ? ("Echeance pret : interets "+l.split.int+" / capital "+l.split.cap) : (COMPTES[l.compte]||"");
-    rows.push([l.date,l.lib,l.sens,String(l.montant).replace(".",","),compte,intit,contrepartieAcct(),Math.round(l.conf*100)+"%",l.origin]);
+    var compte=l.split?"661/164":l.compte;
+    var intit=l.split?("Echeance pret : interets "+l.split.int+" / capital "+l.split.cap):(COMPTES[l.compte]||"");
+    rows.push([l.date,l.lib,l.sens,String(l.montant).replace(".",","),compte,intit,contrepartieAcct(),Math.round(l.conf*100)+"%"]);
   });
   var txt=rows.map(function(r){ return r.map(function(c){ return '"'+(""+c).replace(/"/g,'""')+'"'; }).join(";"); }).join("\r\n");
-  var blob=new Blob(["﻿"+txt],{type:"text/csv;charset=utf-8"});
-  var a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="journal_banque_DUPONT_2026.csv"; a.click();
-  toast("Journal exporté (CSV)");
+  download("RELEVE_CODE_DUPONT_2026.csv", "﻿"+txt, "text/csv;charset=utf-8");
+  toast("Fichier Excel exporté");
 }
-/* ---- Export Quadratus ASCII (Cegid Quadra) ----
-   Enregistrement "Mouvement" (type M), largeur fixe 256 caractères.
-   Champs texte cadrés à gauche (espaces à droite), numériques cadrés à droite
-   (zéros à gauche). Écritures en partie double (débit + crédit équilibrés).
-   Positions (1-indexées) :
-     1     (1)  type = 'M'
-     2-9   (8)  n° de compte
-     10-11 (2)  code journal
-     12-14 (3)  n° folio ('000')
-     15-20 (6)  date écriture JJMMAA
-     21    (1)  code libellé
-     22-41 (20) libellé
-     42    (1)  sens 'D' / 'C'
-     43-55 (13) montant en centimes
-     182-193 (12) n° de pièce
-   NB : positions issues du format Quadratus standard — à VALIDER dans le
-   paramétrage d'import de votre Quadra avant usage réel.
-*/
+/* Quadratus ASCII : enregistrement 'M', 256 car. 1:type · 2-9:compte · 10-11:journal ·
+   12-14:folio · 15-20:date JJMMAA · 21:code libellé · 22-41:libellé · 42:sens D/C ·
+   43-55:montant en centimes · 182-193:n° pièce. À VALIDER dans l'import Quadra. */
 function qTxt(s,len){ s=(""+s); return s.length>=len ? s.slice(0,len) : s+Array(len-s.length+1).join(" "); }
 function qNum(n,len){ var c=Math.round(Math.abs(n)*100).toString(); return c.length>=len ? c.slice(-len) : Array(len-c.length+1).join("0")+c; }
 function qDate(d){ var p=d.split("/"); return p[0]+p[1]+p[2].slice(2); }
@@ -1308,111 +870,111 @@ function qLine(compte,journal,date,lib,sens,montant,piece){
   return b.join("");
 }
 function quadraAscii(){
-  var journal = HAS_BANK ? "BQ" : "OD";
-  var cp = HAS_BANK ? "512" : "108";
-  var out=[], p=0;
+  var journal = HAS_BANK ? "BQ" : "OD", cp = HAS_BANK ? "512" : "108", out=[], p=0;
   CODED.forEach(function(l){
     p++; var pc="P"+("0000"+p).slice(-4);
     if(l.split){
       out.push(qLine("661",journal,l.date,l.lib+" INTERETS","D",l.split.int,pc));
       out.push(qLine("164",journal,l.date,l.lib+" CAPITAL","D",l.split.cap,pc));
-      out.push(qLine(cp,journal,l.date,l.lib,"C",l.montant,pc));
-      return;
+      out.push(qLine(cp,journal,l.date,l.lib,"C",l.montant,pc)); return;
     }
-    var s = l.sens==="debit" ? "D" : "C", os = l.sens==="debit" ? "C" : "D";
+    var s=l.sens==="debit"?"D":"C", os=l.sens==="debit"?"C":"D";
     out.push(qLine(l.compte,journal,l.date,l.lib,s,l.montant,pc));
     out.push(qLine(cp,journal,l.date,l.lib,os,l.montant,pc));
   });
   return out.join("\r\n")+"\r\n";
 }
-function exportQuadra(){
-  var blob=new Blob([quadraAscii()],{type:"text/plain;charset=iso-8859-1"});
-  var a=document.createElement("a"); a.href=URL.createObjectURL(blob);
-  a.download="ECRITURES_QUADRA_DUPONT_2026.txt"; a.click();
-  toast("Écritures Quadra (ASCII) exportées");
-}
+function exportQuadra(){ download("ECRITURES_QUADRA_DUPONT_2026.txt", quadraAscii(), "text/plain;charset=iso-8859-1"); toast("Écritures Quadra (ASCII) exportées"); }
+window.__quadra = quadraAscii;
 
 function copyMail(){
   var m=window.__mail; if(!m) return;
   var txt="Objet : "+m.subj+"\n\n"+m.body;
-  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(function(){toast("Mail copié");},function(){fallbackCopy(txt);}); }
-  else fallbackCopy(txt);
+  if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(function(){toast("Mail copié");},function(){fbCopy(txt);});
+  else fbCopy(txt);
 }
-function fallbackCopy(txt){
-  var ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta); ta.select();
-  try{ document.execCommand("copy"); toast("Mail copié"); }catch(e){ toast("Copie impossible"); }
-  document.body.removeChild(ta);
+function fbCopy(txt){ var ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta); ta.select(); try{document.execCommand("copy");toast("Mail copié");}catch(e){toast("Copie impossible");} document.body.removeChild(ta); }
+
+/* ============================================================ FLUX (3 étapes) ============================================================ */
+var maxStep=1;
+function goStep(n){
+  if(n>maxStep) return;
+  document.querySelectorAll(".step-panel").forEach(function(p){ p.classList.toggle("on", +p.getAttribute("data-step")===n); });
+  document.querySelectorAll("#stepper li").forEach(function(li){
+    var s=+li.getAttribute("data-go");
+    li.classList.toggle("on", s===n);
+    li.classList.toggle("done", s<n || (s<=maxStep && s!==n));
+  });
+  if(n===3) renderExport();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function run(){
+  maxStep=2; goStep(2);
+  var proc=document.getElementById("processing"); proc.classList.remove("hidden");
+  document.getElementById("step2body").classList.add("hidden");
+  var prog=document.getElementById("cprog"); prog.style.width="0";
+  var msgs=["Lecture du FEC N-1…","Codage du relevé bancaire…","Recherche des fournisseurs inconnus…","Rapprochement des factures…"];
+  var t=document.getElementById("procText"), i=0;
+  (function tick(){
+    if(i<msgs.length){ t.textContent=msgs[i]; prog.style.width=Math.round((i+1)/msgs.length*100)+"%"; i++; setTimeout(tick,430); }
+    else finish();
+  })();
+}
+function finish(){
+  renderSummary(); renderReview(); renderJournal(); renderFactures();
+  setTimeout(function(){
+    document.getElementById("processing").classList.add("hidden");
+    document.getElementById("step2body").classList.remove("hidden");
+  }, 300);
 }
 
-function initTabs(){
-  var tabs=document.querySelectorAll("#tabs .tab");
-  tabs.forEach(function(t){ t.addEventListener("click",function(){
-    tabs.forEach(function(x){x.classList.remove("active");}); t.classList.add("active");
-    var id=t.getAttribute("data-tab");
-    document.querySelectorAll(".panel").forEach(function(p){ p.classList.toggle("active", p.getAttribute("data-panel")===id); });
-  });});
-}
-
+/* ============================================================ THÈME + BOOT ============================================================ */
+function toast(m){ var t=document.getElementById("toast"); t.textContent=m; t.classList.add("show"); setTimeout(function(){t.classList.remove("show");},2200); }
 function initTheme(){
   var KEY="s2a-prep-theme";
   function apply(v){ document.documentElement.setAttribute("data-theme",v); }
   try{ var s=localStorage.getItem(KEY); if(s) apply(s); }catch(e){}
   document.getElementById("btnTheme").addEventListener("click",function(){
     var cur=document.documentElement.getAttribute("data-theme");
-    if(!cur){ cur = matchMedia("(prefers-color-scheme:dark)").matches ? "dark":"light"; }
+    if(!cur) cur = matchMedia("(prefers-color-scheme:dark)").matches ? "dark":"light";
     var next=cur==="dark"?"light":"dark"; apply(next);
     try{ localStorage.setItem(KEY,next); }catch(e){}
   });
 }
-
-/* SVG icons for KPIs */
-function svgClock(){return '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';}
-function svgLink(){return '<svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1"/></svg>';}
-function svgFlag(){return '<svg viewBox="0 0 24 24"><path d="M4 22V4M4 4h13l-2 4 2 4H4"/></svg>';}
-function svgMail(){return '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>';}
-
-/* boot */
-document.getElementById("nLines").textContent=BANK.length+" lignes à coder";
-document.getElementById("nInv").textContent=INVOICES.length+" pièces déposées";
-document.getElementById("seuilTxt").textContent=SEUIL+" €";
-document.getElementById("passeToggle").querySelectorAll("button").forEach(function(b){
-  b.addEventListener("click",function(){ renderRelance(+b.getAttribute("data-passe")); });
-});
-
-// Tenue de banque : contrepartie 512 (oui) ou 108 (non)
 function updateBankHint(){
   document.getElementById("bankHint").innerHTML = HAS_BANK
-    ? "Le relevé est saisi en <b>journal de banque</b> : chaque opération est simplement affectée à son compte de charge/produit, <b>en contrepartie du compte 512</b> (banque)."
-    : "Pas de banque dans le dossier — vous apportez le relevé Excel. Les écritures sont passées avec le <b>compte de l'exploitant (108)</b> en contrepartie : <b>débit charge / crédit 108</b>, et <b>débit 108 / crédit 706</b> pour les loyers.";
+    ? "Écritures en contrepartie de la <b>banque (512)</b> → export du <b>fichier Excel</b> du relevé codé."
+    : "Vous apportez le relevé Excel. Écritures en contrepartie du <b>compte de l'exploitant (108)</b> → export du <b>fichier Quadra (ASCII)</b>.";
 }
+
+document.getElementById("nLines").textContent = BANK.length+" opérations";
+document.getElementById("nInv").textContent = INVOICES.length+" pièces";
+updateBankHint();
+
 document.getElementById("segBank").querySelectorAll("button").forEach(function(b){
   b.addEventListener("click",function(){
     HAS_BANK = b.getAttribute("data-bank")==="1";
     document.getElementById("segBank").querySelectorAll("button").forEach(function(x){ x.classList.toggle("on", x===b); });
     updateBankHint();
-    if(!document.getElementById("results").classList.contains("hidden")) renderJournal();
-    toast(HAS_BANK ? "Contrepartie : 512 (banque)" : "Contrepartie : 108 (exploitant)");
+    if(maxStep>=2) renderJournal();
+    if(document.querySelector('.step-panel[data-step="3"]').classList.contains("on")) renderExport();
   });
 });
-updateBankHint();
 document.getElementById("selDossier").addEventListener("change",function(){
   if(this.value!=="LMNP_DUPONT_2026"){ this.value="LMNP_DUPONT_2026"; toast("Démo : seul le dossier DUPONT est chargé"); }
 });
-document.getElementById("btnNewDossier").addEventListener("click",function(){
-  toast("Démo : la création de dossier sera câblée sur le Drive du cabinet");
-});
+document.getElementById("btnNewDossier").addEventListener("click",function(){ toast("Démo : la création de dossier sera câblée sur le Drive du cabinet"); });
 document.getElementById("btnRun").addEventListener("click",run);
-document.getElementById("btnReset").addEventListener("click",function(){
-  document.getElementById("results").classList.add("hidden");
-  document.getElementById("console").classList.remove("show");
-  window.scrollTo({top:0,behavior:"smooth"});
-  toast("Démonstration réinitialisée");
+document.getElementById("btnToExport").addEventListener("click",function(){ maxStep=3; renderRelance(1); goStep(3); });
+document.getElementById("btnRestart").addEventListener("click",function(){ maxStep=1; goStep(1); toast("Prêt pour un nouveau traitement"); });
+document.getElementById("passeToggle").querySelectorAll("button").forEach(function(b){
+  b.addEventListener("click",function(){ renderRelance(+b.getAttribute("data-passe")); });
 });
-window.__quadra = quadraAscii;   // hook de test (inoffensif)
-document.getElementById("btnQuadra").addEventListener("click",exportQuadra);
-document.getElementById("btnCsv").addEventListener("click",csv);
 document.getElementById("btnMail").addEventListener("click",copyMail);
 document.getElementById("btnPrint").addEventListener("click",function(){ window.print(); });
-initTabs(); initTheme();
+document.querySelectorAll("[data-go]").forEach(function(el){
+  el.addEventListener("click",function(){ goStep(+el.getAttribute("data-go")); });
+});
+initTheme();
 })();
 </script>
