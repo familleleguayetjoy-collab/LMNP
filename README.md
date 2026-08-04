@@ -13,6 +13,21 @@ externe.
 
 ## Ce que montre la maquette
 
+### Étape 0 — dossier & tenue de banque
+
+Avant tout : on **crée ou sélectionne un dossier**, puis on indique s'il tient une
+banque en comptabilité. Ce choix fixe le **compte de contrepartie** des écritures :
+
+- **Oui, banque tenue** → contrepartie **512 (banque)**. On se contente d'affecter
+  chaque opération du relevé à son compte de charge / produit.
+- **Non, pas de banque** (petit dossier financé par l'exploitant) → on apporte le
+  relevé Excel et les écritures sont passées avec le **compte de l'exploitant
+  (108)** en contrepartie : **débit charge / crédit 108**, et **débit 108 / crédit
+  706** pour les loyers.
+
+Le sélecteur en tête du poste de travail bascule le journal entre les deux (colonne
+**Contrepartie**). État exposé par la variable `HAS_BANK`.
+
 ### Les deux sources
 
 - **Le client** partage son **Drive** et y scanne / photographie ses factures au

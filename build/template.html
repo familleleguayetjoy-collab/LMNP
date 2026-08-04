@@ -187,7 +187,7 @@
 
 /* ---------- Tables ---------- */
 .tbl-scroll{overflow-x:auto;margin:14px -22px 0;padding:0 22px}
-table.data{width:100%;border-collapse:collapse;font-size:.86rem;min-width:640px}
+table.data{width:100%;border-collapse:collapse;font-size:.86rem;min-width:720px}
 table.data th{text-align:left;font-family:var(--display);font-weight:600;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:9px 12px;border-bottom:2px solid var(--line);white-space:nowrap}
 table.data td{padding:10px 12px;border-bottom:1px solid var(--line-2);vertical-align:top}
 table.data td.r,table.data th.r{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -314,6 +314,21 @@ table.data tr:hover td{background:var(--paper-2)}
 .rule p{font-size:.82rem;color:var(--ink-2)}
 .rule p b{color:var(--ink)}
 
+/* ---------- Setup : dossier + tenue de banque ---------- */
+.setup{padding:20px 22px;margin-bottom:18px}
+.setup-row{display:flex;flex-wrap:wrap;gap:22px}
+.setup-field{flex:1;min-width:262px}
+.setup-field>label{display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.09em;font-weight:700;color:var(--gold-deep);margin-bottom:8px}
+.select-wrap{display:flex;gap:8px}
+.select-wrap select{flex:1;min-width:0;padding:11px 13px;border:1px solid var(--field-line);border-radius:11px;background:var(--field-bg);font-family:var(--display);font-weight:600;font-size:.92rem;color:var(--ink)}
+.mini-btn{padding:0 14px;border:1px solid var(--line);border-radius:11px;background:var(--paper-2);font-family:var(--display);font-weight:600;font-size:.86rem;color:var(--ink-2);cursor:pointer;white-space:nowrap}
+.mini-btn:hover{border-color:var(--gold);color:var(--gold-deep)}
+.seg{display:flex;gap:4px;background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:4px}
+.seg button{flex:1;border:none;background:transparent;padding:10px 12px;border-radius:8px;font-family:var(--display);font-weight:600;font-size:.86rem;color:var(--muted);cursor:pointer;transition:.18s}
+.seg button.on{background:var(--navy);color:#fff;box-shadow:var(--shadow-soft)}
+.setup-hint{font-size:.85rem;color:var(--ink-2);margin-top:14px;padding:11px 15px;border-left:3px solid var(--gold);background:var(--paper-2);border-radius:0 10px 10px 0;line-height:1.55}
+.setup-hint b{color:var(--ink)}
+
 /* ---------- Tag web ---------- */
 .tag.web{background:var(--pos-soft);color:var(--pos);border-color:transparent}
 
@@ -381,7 +396,32 @@ table.data tr:hover td{background:var(--paper-2)}
       </div>
 
       <!-- =============== POSTE DE TRAVAIL =============== -->
-      <div class="section-lead"><h2><span class="section-num">1.</span>Le poste de travail du collaborateur</h2><span>Ce qu'il dépose · ce qu'il lance</span></div>
+      <div class="section-lead"><h2><span class="section-num">1.</span>Le poste de travail du collaborateur</h2><span>Le dossier · le paramétrage · ce qu'il lance</span></div>
+
+      <div class="card setup">
+        <div class="setup-row">
+          <div class="setup-field">
+            <label>Étape 0 — Dossier</label>
+            <div class="select-wrap">
+              <select id="selDossier" aria-label="Sélection du dossier">
+                <option>LMNP_DUPONT_2026</option>
+                <option>LMNP_DURAND_2026</option>
+                <option>SCI_MARTIN_IR_2026</option>
+              </select>
+              <button class="mini-btn" id="btnNewDossier" type="button">＋ Créer</button>
+            </div>
+          </div>
+          <div class="setup-field">
+            <label>Tenue de banque dans le dossier&nbsp;?</label>
+            <div class="seg" id="segBank">
+              <button data-bank="1" class="on" type="button">Oui — banque tenue</button>
+              <button data-bank="0" type="button">Non — pas de banque</button>
+            </div>
+          </div>
+        </div>
+        <p class="setup-hint" id="bankHint"></p>
+      </div>
+
       <div class="card desk">
         <div class="desk-head">
           <span class="ic"><svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span>
@@ -483,7 +523,7 @@ table.data tr:hover td{background:var(--paper-2)}
             </div>
             <div class="tbl-scroll">
               <table class="data" id="tJournal">
-                <thead><tr><th>Date</th><th>Libellé bancaire</th><th class="r">Montant</th><th>Compte proposé</th><th>Confiance</th><th>Origine</th></tr></thead>
+                <thead><tr><th>Date</th><th>Libellé bancaire</th><th class="r">Montant</th><th>Compte proposé</th><th>Contrepartie</th><th>Confiance</th><th>Origine</th></tr></thead>
                 <tbody></tbody>
               </table>
             </div>
@@ -711,7 +751,8 @@ var COMPTES = {
   "2135": "Agencements, installations (immobilisation)",
   "758":  "Produits divers (indemnité d'assurance)",
   "108":  "Compte de l'exploitant (apport)",
-  "471":  "Compte d'attente — à ventiler"
+  "471":  "Compte d'attente — à ventiler",
+  "512":  "Banque"
 };
 
 // FEC N-1 (2025) : ce dont l'outil apprend le dictionnaire du client.
@@ -967,6 +1008,7 @@ function esc(s){ return (""+s).replace(/[&<>"]/g,function(c){return {'&':'&amp;'
    ÉTAT + RENDU
    ============================================================ */
 var SEUIL = 150;               // seuil de matérialité (€) déclenchant la relance client
+var HAS_BANK = true;           // le dossier tient-il une banque ? contrepartie 512 (oui) / 108 (non)
 var CURRENT_PASSE = 1;         // passe de relance affichée (15 ou 31 janvier)
 // Pièces transmises par le client entre la passe 1 et la passe 2 (démo)
 var RECU_P2 = ["PRLV SYNDIC AZUR SA APPEL T3", "PRLV CHUBB EUROPEAN GROUP GLI"];
@@ -1027,6 +1069,7 @@ function renderJournal(){
        '<td class="lib">'+esc(l.lib)+'</td>'+
        '<td class="r num">'+(l.sens==="credit"?'+ ':'')+eur(l.montant)+'</td>'+
        acctCell(l)+
+       contrepartieCell()+
        '<td>'+confChip(l.conf)+'</td>'+
        '<td>'+originTag(l)+'</td></tr>';
   });
@@ -1041,6 +1084,11 @@ function acctCell(l){
   if(l.split)
     return '<td class="acct">661 / 164<small>intérêts '+eur(l.split.int)+' · capital '+eur(l.split.cap)+'</small></td>';
   return '<td class="acct">'+l.compte+'<small>'+esc(COMPTES[l.compte]||"")+'</small></td>';
+}
+function contrepartieAcct(){ return HAS_BANK ? "512" : "108"; }
+function contrepartieCell(){
+  var c = contrepartieAcct();
+  return '<td class="acct">'+c+'<small>'+esc(COMPTES[c]||"")+'</small></td>';
 }
 function originTag(l){
   if(l.tag==="new") return '<span class="tag new">nouveau</span>';
@@ -1213,11 +1261,11 @@ function finish(){
 function toast(m){ var t=document.getElementById("toast"); t.textContent=m; t.classList.add("show"); setTimeout(function(){t.classList.remove("show");},2200); }
 
 function csv(){
-  var rows=[["Date","Libelle","Sens","Montant","Compte","Intitule","Confiance","Origine"]];
+  var rows=[["Date","Libelle","Sens","Montant","Compte","Intitule","Contrepartie","Confiance","Origine"]];
   CODED.forEach(function(l){
     var compte = l.split ? "661/164" : l.compte;
     var intit  = l.split ? ("Echeance pret : interets "+l.split.int+" / capital "+l.split.cap) : (COMPTES[l.compte]||"");
-    rows.push([l.date,l.lib,l.sens,String(l.montant).replace(".",","),compte,intit,Math.round(l.conf*100)+"%",l.origin]);
+    rows.push([l.date,l.lib,l.sens,String(l.montant).replace(".",","),compte,intit,contrepartieAcct(),Math.round(l.conf*100)+"%",l.origin]);
   });
   var txt=rows.map(function(r){ return r.map(function(c){ return '"'+(""+c).replace(/"/g,'""')+'"'; }).join(";"); }).join("\r\n");
   var blob=new Blob(["﻿"+txt],{type:"text/csv;charset=utf-8"});
@@ -1269,6 +1317,29 @@ document.getElementById("nInv").textContent=INVOICES.length+" pièces déposées
 document.getElementById("seuilTxt").textContent=SEUIL+" €";
 document.getElementById("passeToggle").querySelectorAll("button").forEach(function(b){
   b.addEventListener("click",function(){ renderRelance(+b.getAttribute("data-passe")); });
+});
+
+// Tenue de banque : contrepartie 512 (oui) ou 108 (non)
+function updateBankHint(){
+  document.getElementById("bankHint").innerHTML = HAS_BANK
+    ? "Le relevé est saisi en <b>journal de banque</b> : chaque opération est simplement affectée à son compte de charge/produit, <b>en contrepartie du compte 512</b> (banque)."
+    : "Pas de banque dans le dossier — vous apportez le relevé Excel. Les écritures sont passées avec le <b>compte de l'exploitant (108)</b> en contrepartie : <b>débit charge / crédit 108</b>, et <b>débit 108 / crédit 706</b> pour les loyers.";
+}
+document.getElementById("segBank").querySelectorAll("button").forEach(function(b){
+  b.addEventListener("click",function(){
+    HAS_BANK = b.getAttribute("data-bank")==="1";
+    document.getElementById("segBank").querySelectorAll("button").forEach(function(x){ x.classList.toggle("on", x===b); });
+    updateBankHint();
+    if(!document.getElementById("results").classList.contains("hidden")) renderJournal();
+    toast(HAS_BANK ? "Contrepartie : 512 (banque)" : "Contrepartie : 108 (exploitant)");
+  });
+});
+updateBankHint();
+document.getElementById("selDossier").addEventListener("change",function(){
+  if(this.value!=="LMNP_DUPONT_2026"){ this.value="LMNP_DUPONT_2026"; toast("Démo : seul le dossier DUPONT est chargé"); }
+});
+document.getElementById("btnNewDossier").addEventListener("click",function(){
+  toast("Démo : la création de dossier sera câblée sur le Drive du cabinet");
 });
 document.getElementById("btnRun").addEventListener("click",run);
 document.getElementById("btnReset").addEventListener("click",function(){
