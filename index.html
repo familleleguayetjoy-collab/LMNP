@@ -287,8 +287,73 @@ table.data td.r,table.data th.r{text-align:right;font-variant-numeric:tabular-nu
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--navy);color:#fff;padding:12px 20px;border-radius:12px;font-size:.9rem;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.3s;z-index:100}
 .toast.show{opacity:1;transform:translateX(-50%)}
 
+/* Campagne */
+.camp-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:18px;padding-bottom:18px;border-bottom:1px dashed var(--line)}
+.camp-note{font-size:.84rem;color:var(--muted)}
+.blk2{font-size:1.1rem;margin-top:20px}
+.st{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;font-weight:700;padding:3px 11px;border-radius:999px}
+.st:before{content:"";width:8px;height:8px;border-radius:50%}
+.st-ok{background:var(--pos-soft);color:var(--pos)}.st-ok:before{background:var(--pos)}
+.st-wait{background:var(--warn-soft);color:var(--warn)}.st-wait:before{background:var(--warn)}
+.st-no{background:var(--neg-soft);color:var(--neg)}.st-no:before{background:var(--neg)}
+.muted-sm{font-size:.82rem;color:var(--muted)}
+.mini-btn.go{border-color:var(--gold);color:var(--gold-deep)}
+
+/* Période */
+.seg2{display:inline-flex;gap:4px;background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:4px}
+.seg2 button{border:none;background:transparent;padding:9px 18px;border-radius:8px;font-family:var(--display);font-weight:600;font-size:.9rem;color:var(--muted);cursor:pointer}
+.seg2 button.on{background:var(--navy);color:#fff}
+.periode-note{font-size:.84rem;color:var(--ink-2);margin-top:10px;padding:10px 13px;background:var(--paper-2);border-radius:10px;border-left:3px solid var(--gold)}
+
+/* Import dropzones */
+.imports{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:560px){.imports{grid-template-columns:1fr}}
+.dropzone{display:flex;align-items:center;gap:12px;text-align:left;border:2px dashed var(--field-line);border-radius:14px;background:var(--paper-2);padding:15px 16px;cursor:pointer;font:inherit;color:inherit;transition:.18s}
+.dropzone:hover{border-color:var(--gold)}
+.dropzone.done{border-style:solid;border-color:var(--pos);background:var(--pos-soft)}
+.dz-ic{width:40px;height:40px;border-radius:9px;display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:.6rem;color:#fff;flex:0 0 auto;letter-spacing:.02em}
+.dz-ic.fec{background:#1e3a52}.dz-ic.xls{background:#37725d}
+.dz-tx{min-width:0}.dz-tx b{display:block;font-family:var(--display);font-weight:600;font-size:.92rem}
+.dz-tx small{font-size:.8rem;color:var(--muted)}
+.dropzone.done .dz-tx small{color:var(--pos);font-weight:600}
+.dropzone.off{display:none}
+.import-hint{font-size:.84rem;color:var(--muted);margin-top:12px}
+
+/* Review image link */
+.img-link{flex:0 0 auto;border:1px solid var(--gold);background:var(--surface);color:var(--gold-deep);border-radius:999px;padding:4px 12px;font-family:var(--display);font-weight:600;font-size:.8rem;cursor:pointer}
+.img-link:hover{background:var(--gold-soft)}
+.no-img{flex:0 0 auto;font-size:.78rem;color:var(--muted);font-style:italic}
+
+/* Checkbox list (manquants) */
+.check-list{list-style:none;padding:0;margin:14px 0 0}
+.check-list li{margin-bottom:9px}
+.chk{display:flex;align-items:center;gap:13px;padding:12px 15px;border:1px solid var(--line);border-radius:12px;background:var(--surface);cursor:pointer}
+.chk input{position:absolute;opacity:0;width:0;height:0}
+.chk-box{width:22px;height:22px;flex:0 0 auto;border:2px solid var(--field-line);border-radius:6px;display:grid;place-items:center;transition:.15s}
+.chk-box:after{content:"✓";color:#fff;font-weight:800;font-size:.85rem;opacity:0}
+.chk input:checked+.chk-box{background:var(--gold);border-color:var(--gold)}
+.chk input:checked+.chk-box:after{opacity:1;color:#241a0c}
+.chk input:focus-visible+.chk-box{outline:2px solid var(--gold);outline-offset:2px}
+.chk .mtxt{min-width:0;flex:1}.chk .mtxt strong{display:block;font-size:.94rem}
+.chk .mtxt small{font-size:.8rem;color:var(--muted)}
+.chk .mamt{font-family:var(--display);font-weight:600;font-variant-numeric:tabular-nums;color:var(--neg);white-space:nowrap}
+.mail-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:16px}
+.mail-actions .btn{margin-left:auto}
+
+/* Compta */
+.import-done{margin-top:14px;font-size:.9rem;font-weight:600;color:var(--pos);background:var(--pos-soft);border-radius:10px;padding:11px 14px;width:100%}
+.traite-note{font-size:.85rem;color:var(--ink-2);text-align:center;max-width:60ch;margin:16px auto 0;background:var(--paper-2);border:1px dashed var(--line);border-radius:12px;padding:12px 16px}
+
+/* Modal facture */
+.modal{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:20px}
+.modal[hidden]{display:none}
+.modal-backdrop{position:absolute;inset:0;background:rgba(10,20,30,.6)}
+.modal-box{position:relative;background:var(--surface);border-radius:16px;box-shadow:var(--shadow);padding:16px;max-width:92vw;max-height:90vh;overflow:auto}
+.modal-x{position:absolute;top:-14px;right:-14px;width:34px;height:34px;border-radius:50%;background:var(--navy);color:#fff;border:none;cursor:pointer;font-size:1rem;box-shadow:var(--shadow-soft)}
+#imgHost svg{display:block;max-width:100%;height:auto;border-radius:8px}
+
 @media print{
-  .app-header,.header-actions,.stepper,.nav-row,.btn,.processing,.toast,.detail>summary,.about>summary{display:none!important}
+  .app-header,.header-actions,.stepper,.nav-row,.btn,.processing,.toast,.detail>summary,.about>summary,.modal{display:none!important}
   .step-panel{display:block!important}
   .detail[open] .tbl-scroll,.about[open] .about-inner{display:block!important}
   .lmnp{background:#fff}.card{box-shadow:none;border:1px solid #ccc}
@@ -321,80 +386,93 @@ table.data td.r,table.data th.r{text-align:right;font-variant-numeric:tabular-nu
   <main class="main"><div class="wrap">
 
     <ol class="stepper" id="stepper">
-      <li data-go="1" class="on"><span class="sdot">1</span><span class="slab">Avant le traitement</span></li>
-      <li data-go="2"><span class="sdot">2</span><span class="slab">Traitement</span></li>
-      <li data-go="3"><span class="sdot">3</span><span class="slab">Export</span></li>
+      <li data-go="0" class="on"><span class="sdot">0</span><span class="slab">Campagne</span></li>
+      <li data-go="1"><span class="sdot">1</span><span class="slab">Import</span></li>
+      <li data-go="2"><span class="sdot">2</span><span class="slab">À vérifier</span></li>
+      <li data-go="3"><span class="sdot">3</span><span class="slab">Manquants</span></li>
+      <li data-go="4"><span class="sdot">4</span><span class="slab">Compta</span></li>
     </ol>
 
-    <!-- STEP 1 -->
-    <section class="step-panel on" data-step="1">
+    <!-- STEP 0 · CAMPAGNE -->
+    <section class="step-panel on" data-step="0">
       <div class="card pad">
-        <h2 class="step-title">1 · Avant le traitement</h2>
-        <p class="step-sub">On choisit le dossier et on indique s'il tient une banque. C'est tout.</p>
-
-        <div class="field">
-          <label>Dossier</label>
-          <div class="select-wrap">
-            <select id="selDossier" aria-label="Dossier">
-              <option>LMNP_DUPONT_2026</option>
-              <option>LMNP_DURAND_2026</option>
-              <option>SCI_MARTIN_IR_2026</option>
-            </select>
-            <button class="mini-btn" id="btnNewDossier" type="button">＋ Créer</button>
-          </div>
+        <h2 class="step-title">0 · Campagne de collecte</h2>
+        <p class="step-sub">Fin décembre, un mail part à <b>tous les clients</b> : « nous traiterons votre compta le 15 janvier ». Sans dépôt au 1ᵉʳ janvier, une relance est envoyée automatiquement.</p>
+        <div class="camp-actions">
+          <button class="btn btn-primary" id="btnCampaign" type="button">✉ Envoyer le mail de lancement (fin déc.)</button>
+          <span class="camp-note">Relance auto le 1ᵉʳ janvier · point de contrôle le 15 janvier</span>
         </div>
-
-        <div class="field">
-          <label>Une banque dans le dossier ?</label>
-          <div class="choice-grid" id="segBank">
-            <button class="choice on" data-bank="1" type="button">
-              <div class="choice-ic">🏦</div>
-              <div class="choice-t">Avec banque</div>
-              <div class="choice-d">La banque est tenue dans le dossier.</div>
-              <div class="choice-tag">→ Export Excel</div>
-            </button>
-            <button class="choice" data-bank="0" type="button">
-              <div class="choice-ic">📄</div>
-              <div class="choice-t">Sans banque</div>
-              <div class="choice-d">Vous apportez le relevé Excel.</div>
-              <div class="choice-tag">→ Export Quadra</div>
-            </button>
-          </div>
+        <h3 class="blk2">Vos dossiers au 15 janvier</h3>
+        <p class="step-sub">L'outil lit la liste de vos dossiers Drive. Ouvrez ceux qui sont prêts.</p>
+        <div class="tbl-scroll" style="margin-top:12px">
+          <table class="data" style="min-width:520px">
+            <thead><tr><th>Dossier client</th><th class="r">Pièces déposées</th><th>Statut au 15 janv.</th><th></th></tr></thead>
+            <tbody id="clientsBody"></tbody>
+          </table>
         </div>
-
-        <div class="pieces">
-          <span class="piece">FEC 2025 (N-1)</span>
-          <span class="piece">Relevé 2026 · <b id="nLines"></b></span>
-          <span class="piece">Factures Drive · <b id="nInv"></b></span>
-        </div>
-
-        <button class="btn btn-primary btn-lg" id="btnRun" type="button">Lancer le traitement →</button>
       </div>
     </section>
 
-    <!-- STEP 2 -->
+    <!-- STEP 1 · IMPORT -->
+    <section class="step-panel" data-step="1">
+      <div class="card pad">
+        <h2 class="step-title">1 · Import — <span id="dossierName">LMNP_DUPONT_2026</span></h2>
+        <p class="step-sub">On importe le FEC de l'an dernier et, si le dossier tient une banque, le relevé bancaire.</p>
+
+        <div class="field">
+          <label>Le dossier tient-il une banque ?</label>
+          <div class="choice-grid" id="segBank">
+            <button class="choice on" data-bank="1" type="button">
+              <div class="choice-ic">🏦</div><div class="choice-t">Avec banque</div>
+              <div class="choice-d">La banque est tenue dans le dossier.</div><div class="choice-tag">→ Export Excel</div>
+            </button>
+            <button class="choice" data-bank="0" type="button">
+              <div class="choice-ic">📄</div><div class="choice-t">Sans banque</div>
+              <div class="choice-d">Vous apportez le relevé Excel.</div><div class="choice-tag">→ Export Quadra</div>
+            </button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Période de traitement</label>
+          <div class="seg2" id="segPeriode">
+            <button data-p="annuel" class="on" type="button">Annuel</button>
+            <button data-p="semestriel" type="button">Semestriel</button>
+          </div>
+          <p class="periode-note" id="periodeNote"></p>
+        </div>
+
+        <div class="field">
+          <label>Fichiers à importer</label>
+          <div class="imports">
+            <button class="dropzone" id="dzFec" type="button"><span class="dz-ic fec">FEC</span><span class="dz-tx"><b>FEC 2025 (N-1)</b><small id="dzFecS">Cliquer pour importer</small></span></button>
+            <button class="dropzone" id="dzBank" type="button"><span class="dz-ic xls">XLS</span><span class="dz-tx"><b>Relevé bancaire 2026</b><small id="dzBankS">Cliquer pour importer</small></span></button>
+          </div>
+          <p class="import-hint">Les factures sont déjà déposées par le client dans le Drive (<b id="nInv"></b>).</p>
+        </div>
+
+        <button class="btn btn-primary btn-lg" id="btnRun" type="button" disabled>Lancer le traitement →</button>
+        <div class="nav-row" style="margin-top:12px"><button class="btn btn-ghost" data-go="0" type="button">← Dossiers</button><span></span></div>
+      </div>
+    </section>
+
+    <!-- STEP 2 · À VÉRIFIER -->
     <section class="step-panel" data-step="2">
       <div class="processing" id="processing">
         <div class="spinner"></div>
         <p id="procText">Traitement du dossier…</p>
         <div class="cprog"><i id="cprog"></i></div>
       </div>
-
       <div id="step2body" class="hidden">
+        <div class="card pad"><div class="summary" id="summary"></div></div>
         <div class="card pad">
-          <h2 class="step-title">Dossier préparé <span class="done-chk">✓</span></h2>
-          <div class="summary" id="summary"></div>
-        </div>
-
-        <div class="card pad">
-          <div class="rev-head"><h3>À vérifier avant de valider</h3><span class="count" id="revCount"></span></div>
-          <p class="step-sub">Les seules lignes qui demandent votre jugement. Tout le reste est prêt.</p>
+          <div class="rev-head"><h3>Les dépenses à regarder</h3><span class="count" id="revCount"></span></div>
+          <p class="step-sub">Seulement celles qui demandent votre œil. Cliquez <b>« facture »</b> pour voir l'image, ou la ligne pour le détail.</p>
           <div class="review-list" id="reviewList"></div>
         </div>
-
         <details class="detail card pad">
-          <summary>Voir le détail — journal complet &amp; rapprochement des factures</summary>
-          <h4 style="margin-top:12px">Journal codé (<span id="bJournal"></span> écritures)</h4>
+          <summary>Voir tout le journal (<span id="bJournal"></span> écritures) &amp; le rapprochement</summary>
+          <h4 style="margin-top:12px">Journal codé</h4>
           <div class="tbl-scroll">
             <table class="data" id="tJournal">
               <thead><tr><th>Date</th><th>Libellé</th><th class="r">Montant</th><th>Compte</th><th>Contrepartie</th><th>Confiance</th><th>Origine</th></tr></thead>
@@ -409,44 +487,55 @@ table.data td.r,table.data th.r{text-align:right;font-variant-numeric:tabular-nu
             </table>
           </div>
         </details>
-
         <div class="nav-row">
-          <button class="btn btn-ghost" data-go="1" type="button">← Retour</button>
-          <button class="btn btn-primary" id="btnToExport" type="button">Continuer vers l'export →</button>
+          <button class="btn btn-ghost" data-go="1" type="button">← Import</button>
+          <button class="btn btn-primary" id="btnToMissing" type="button">Voir les manquants →</button>
         </div>
       </div>
     </section>
 
-    <!-- STEP 3 -->
+    <!-- STEP 3 · MANQUANTS -->
     <section class="step-panel" data-step="3">
-      <h2 class="step-title center">3 · Export</h2>
-      <div class="export-grid">
-        <div class="card pad export-card" id="exportFile"></div>
-        <div class="card pad export-card">
-          <div class="ex-ic">✉</div>
-          <h3>La relance client</h3>
-          <p class="ex-fmt"><b id="relCount"></b> à réclamer</p>
-          <p class="ex-line">Mail déjà rédigé, prêt à envoyer.</p>
-          <button class="btn btn-primary btn-lg" id="btnMail" type="button">Copier le mail</button>
-          <details class="detail" style="width:100%;margin-top:16px">
-            <summary>Voir les pièces &amp; le mail</summary>
-            <div class="passe-toggle" id="passeToggle">
-              <button data-passe="1" class="on" type="button">15 janv.</button>
-              <button data-passe="2" type="button">31 janv.</button>
-            </div>
-            <p class="passe-note" id="passeNote"></p>
-            <ul class="missing-list" id="missingList"></ul>
-            <p class="subseuil-note" id="subSeuilNote"></p>
-            <div class="mailbox">
-              <div class="mhead"><div class="mrow"><b>Objet</b><span id="mailSubj"></span></div></div>
-              <pre id="mailBody"></pre>
-            </div>
-          </details>
+      <div class="card pad">
+        <h2 class="step-title">3 · Éléments manquants</h2>
+        <p class="step-sub">Cochez les pièces à réclamer, puis copiez le mail. Rédigé automatiquement à partir de votre sélection.</p>
+        <div class="passe-toggle" id="passeToggle">
+          <button data-passe="1" class="on" type="button">15 janv.</button>
+          <button data-passe="2" type="button">31 janv.</button>
         </div>
+        <p class="passe-note" id="passeNote"></p>
+        <ul class="check-list" id="missingList"></ul>
+        <p class="subseuil-note" id="subSeuilNote"></p>
+        <div class="mail-actions">
+          <button class="mini-btn" id="btnSelectAll" type="button">Tout cocher / décocher</button>
+          <button class="btn btn-primary" id="btnMail" type="button">Copier le mail (<span id="selCount"></span>)</button>
+        </div>
+        <details class="detail" style="margin-top:14px"><summary>Aperçu du mail</summary>
+          <div class="mailbox"><div class="mhead"><div class="mrow"><b>Objet</b><span id="mailSubj"></span></div></div><pre id="mailBody"></pre></div>
+        </details>
       </div>
-      <div class="nav-row center" style="margin-top:20px">
-        <button class="btn btn-ghost" data-go="2" type="button">← Retour</button>
-        <button class="btn btn-ghost" id="btnRestart" type="button">↺ Recommencer</button>
+      <div class="nav-row">
+        <button class="btn btn-ghost" data-go="2" type="button">← À vérifier</button>
+        <button class="btn btn-primary" id="btnToCompta" type="button">Import en compta →</button>
+      </div>
+    </section>
+
+    <!-- STEP 4 · COMPTA -->
+    <section class="step-panel" data-step="4">
+      <h2 class="step-title center">4 · Import en comptabilité</h2>
+      <div class="card pad export-card" style="max-width:520px;margin:0 auto">
+        <div class="ex-ic" id="comptaIc">▦</div>
+        <h3>Écritures prêtes</h3>
+        <p class="ex-fmt">Format : <b id="comptaFmt">Excel</b> · <span id="comptaN"></span> écritures</p>
+        <p class="ex-line" id="comptaLine"></p>
+        <button class="btn btn-primary btn-lg" id="btnImportCompta" type="button">Importer dans Quadra</button>
+        <button class="btn btn-ghost" id="btnDownload" type="button" style="width:100%;margin-top:10px">Télécharger le fichier</button>
+        <p class="import-done" id="importDone" hidden></p>
+      </div>
+      <p class="traite-note">✓ Après import, les <b id="traiteN"></b> pièces traitées sont renommées et classées dans <b>02_Traités/</b> — elles ne seront pas reprises au prochain semestre.</p>
+      <div class="nav-row center" style="margin-top:16px">
+        <button class="btn btn-ghost" data-go="3" type="button">← Manquants</button>
+        <button class="btn btn-ghost" id="btnRestart" type="button">↺ Nouveau dossier</button>
       </div>
     </section>
 
@@ -513,6 +602,10 @@ table.data td.r,table.data th.r{text-align:right;font-variant-numeric:tabular-nu
     <p><strong>Sud Alpes Audit</strong> — Prototype interne de démonstration, dossier fictif : aucune donnée client réelle, aucun appel externe. Taux et gains illustratifs, à confirmer par le pilote de septembre 2026. Le format Quadratus ASCII est à valider dans l'import Quadra du cabinet.</p>
   </div></footer>
 
+  <div class="modal" id="imgModal" hidden>
+    <div class="modal-backdrop" id="imgBackdrop"></div>
+    <div class="modal-box"><button class="modal-x" id="imgClose" type="button" aria-label="Fermer">✕</button><div id="imgHost"></div></div>
+  </div>
   <div class="toast" id="toast"></div>
 </div>
 
@@ -796,19 +889,47 @@ function shortAction(l){
   return a;
 }
 function renderReview(){
-  var rows=CODED.filter(needsReview).slice().sort(function(a,b){return b.montant-a.montant;});
-  document.getElementById("reviewList").innerHTML = rows.map(function(l){
-    var acct = l.split ? "661 / 164" : l.compte;
+  var rows=[]; CODED.forEach(function(l,i){ if(needsReview(l)) rows.push({l:l,i:i}); });
+  rows.sort(function(a,b){return b.l.montant-a.l.montant;});
+  document.getElementById("reviewList").innerHTML = rows.map(function(x){
+    var l=x.l, acct = l.split ? "661 / 164" : l.compte;
+    var img = l.match
+      ? '<button class="img-link" data-i="'+x.i+'" type="button">🔎 facture</button>'
+      : '<span class="no-img">pas de facture</span>';
     return '<details class="rev"><summary>'+
       '<span class="rev-amt num">'+eur(l.montant)+'</span>'+
       '<span class="rev-name">'+esc(prettyVendor(l))+'</span>'+
-      '<span class="rev-action">'+shortAction(l)+'</span>'+
+      '<span class="rev-action">'+shortAction(l)+'</span>'+img+
       '<span class="rev-caret">›</span></summary>'+
       '<div class="rev-detail"><b>Compte proposé : '+acct+'</b> — '+esc(COMPTES[l.compte]||"")+'<br>'+
       '<span style="color:var(--muted)">'+l.date+' · '+esc(l.lib)+'</span><br>'+reasonHtml(l)+'</div></details>';
   }).join("");
   document.getElementById("revCount").textContent = rows.length;
 }
+/* Facture simulée (SVG) pour la démonstration */
+function pad4(n){ return ("0000"+n).slice(-4); }
+function genFacture(l){
+  var inv=l.match||{four:prettyVendor(l),date:l.date,ttc:l.montant,tva:0};
+  var ht=inv.ttc-(inv.tva||0);
+  return '<svg viewBox="0 0 380 500" width="380" height="500" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica,Arial,sans-serif">'+
+    '<rect width="380" height="500" fill="#ffffff"/>'+
+    '<rect x="0" y="0" width="380" height="72" fill="#0f1e2e"/>'+
+    '<text x="24" y="32" fill="#c8a57a" font-size="11" letter-spacing="3">FACTURE</text>'+
+    '<text x="24" y="55" fill="#ffffff" font-size="18" font-weight="bold">'+esc(inv.four)+'</text>'+
+    '<text x="24" y="108" fill="#64747b" font-size="11">Date</text><text x="24" y="127" fill="#0f1e2e" font-size="14">'+inv.date+'</text>'+
+    '<text x="230" y="108" fill="#64747b" font-size="11">N° pièce</text><text x="230" y="127" fill="#0f1e2e" font-size="14">FA-2026-'+pad4(Math.round(inv.ttc))+'</text>'+
+    '<line x1="24" y1="148" x2="356" y2="148" stroke="#e4e8ee"/>'+
+    '<text x="24" y="178" fill="#0f1e2e" font-size="13">Prestation / fourniture — '+esc(inv.four)+'</text>'+
+    '<rect x="24" y="200" width="332" height="90" fill="#f7f9fb" rx="6"/>'+
+    '<text x="24" y="326" fill="#64747b" font-size="12">Total HT</text><text x="356" y="326" fill="#0f1e2e" font-size="13" text-anchor="end">'+eur(ht)+'</text>'+
+    '<text x="24" y="352" fill="#64747b" font-size="12">TVA</text><text x="356" y="352" fill="#0f1e2e" font-size="13" text-anchor="end">'+eur(inv.tva||0)+'</text>'+
+    '<line x1="24" y1="368" x2="356" y2="368" stroke="#e4e8ee"/>'+
+    '<text x="24" y="398" fill="#0f1e2e" font-size="15" font-weight="bold">Total TTC</text><text x="356" y="398" fill="#9c7a48" font-size="17" font-weight="bold" text-anchor="end">'+eur(inv.ttc)+'</text>'+
+    '<text x="24" y="472" fill="#94a6b4" font-size="9">Image simulée pour la démonstration — pièce déposée par le client dans le Drive.</text>'+
+    '</svg>';
+}
+function openImage(i){ document.getElementById("imgHost").innerHTML=genFacture(CODED[i]); document.getElementById("imgModal").hidden=false; }
+function closeImage(){ document.getElementById("imgModal").hidden=true; }
 
 function acctCell(l){
   if(l.split) return '<td class="acct">661 / 164<small>int. '+eur(l.split.int)+' · cap. '+eur(l.split.cap)+'</small></td>';
@@ -846,15 +967,15 @@ function renderFactures(){
   }).join("");
 }
 
-function renderRelance(passe){
+var MISS_NOW=[];
+function renderMissing(passe){
   passe = passe || CURRENT_PASSE; CURRENT_PASSE = passe;
-  var missing = missingList(passe);
-  document.getElementById("missingList").innerHTML = missing.map(function(l,i){
-    return '<li><span class="mn">'+(i+1)+'</span><span class="mtxt"><strong>'+esc(prettyVendor(l))+'</strong>'+
-      '<small>'+l.date+' · '+esc(COMPTES[l.compte]||"à ventiler")+'</small></span>'+
-      '<span class="mamt">'+eur(l.montant)+'</span></li>';
+  MISS_NOW = missingList(passe);
+  document.getElementById("missingList").innerHTML = MISS_NOW.map(function(l,i){
+    return '<li><label class="chk"><input type="checkbox" data-i="'+i+'" checked><span class="chk-box"></span>'+
+      '<span class="mtxt"><strong>'+esc(prettyVendor(l))+'</strong><small>'+l.date+' · '+esc(COMPTES[l.compte]||"à ventiler")+'</small></span>'+
+      '<span class="mamt">'+eur(l.montant)+'</span></label></li>';
   }).join("");
-  document.getElementById("relCount").textContent = missing.length+" pièce"+(missing.length>1?"s":"");
   document.getElementById("passeNote").innerHTML = passe===1
     ? "<b>1er scan du Drive le 15 janvier</b>, mail envoyé dans la foulée."
     : "<b>2e scan le 31 janvier</b> — le client a déposé 2 pièces entre-temps ; il ne reste que ce qui suit.";
@@ -863,10 +984,19 @@ function renderRelance(passe){
     ssNode.innerHTML = "<b>"+ss.length+" dépense"+(ss.length>1?"s":"")+" sous le seuil de "+SEUIL+" €</b> ("+
       ss.map(function(l){return esc(prettyVendor(l))+" "+eur(l.montant);}).join(", ")+") : affectée"+(ss.length>1?"s":"")+" sans relancer.";
   } else ssNode.style.display="none";
-  var n=missing.length, lines=missing.map(function(l){ return "   • "+prettyVendor(l)+" — "+l.date+" — "+eur(l.montant); }).join("\n"), subj, body;
-  if(passe===1){
+  document.getElementById("passeToggle").querySelectorAll("button").forEach(function(b){ b.classList.toggle("on", +b.getAttribute("data-passe")===passe); });
+  buildSelMail();
+}
+function buildSelMail(){
+  var boxes = document.getElementById("missingList").querySelectorAll('input[type=checkbox]');
+  var sel=[]; boxes.forEach(function(cb){ if(cb.checked) sel.push(MISS_NOW[+cb.getAttribute("data-i")]); });
+  document.getElementById("selCount").textContent = sel.length;
+  var n=sel.length, lines=sel.map(function(l){ return "   • "+prettyVendor(l)+" — "+l.date+" — "+eur(l.montant); }).join("\n");
+  var subj, body;
+  if(n===0){ subj="Dossier LMNP 2026"; body="Bonjour M. Dupont,\n\n(Sélectionnez au moins une pièce à réclamer.)\n\nBien à vous,\nCabinet S2A — Sud Alpes Audit"; }
+  else if(CURRENT_PASSE===1){
     subj="Dossier LMNP 2026 — "+n+" justificatif"+(n>1?"s":"")+" à nous transmettre";
-    body="Bonjour M. Dupont,\n\nNous préparons votre dossier de location meublée 2026. En rapprochant votre relevé bancaire des pièces déposées dans votre espace Drive, il nous manque "+n+" justificatif"+(n>1?"s":"")+" (au-dessus de "+SEUIL+" €) pour finaliser :\n\n"+lines+"\n\nMerci de les déposer dans LMNP_DUPONT_2026 › 01_Factures (une photo nette suffit), idéalement avant le 30 janvier.\nSans facture, ces dépenses ne pourront pas être déduites — d'où notre relance en amont.\n\nBien à vous,\nCabinet S2A — Sud Alpes Audit";
+    body="Bonjour M. Dupont,\n\nNous préparons votre dossier de location meublée 2026. En rapprochant votre relevé bancaire des pièces déposées dans votre espace Drive, il nous manque "+n+" justificatif"+(n>1?"s":"")+" pour finaliser :\n\n"+lines+"\n\nMerci de les déposer dans votre dossier Drive › 01_Factures (une photo nette suffit), idéalement avant le 30 janvier.\nSans facture, ces dépenses ne pourront pas être déduites.\n\nBien à vous,\nCabinet S2A — Sud Alpes Audit";
   } else {
     subj="Dossier LMNP 2026 — relance : "+n+" justificatif"+(n>1?"s":"")+" encore manquant"+(n>1?"s":"");
     body="Bonjour M. Dupont,\n\nMerci pour les pièces déjà transmises. Après une nouvelle vérification de votre Drive au 31 janvier, il reste "+n+" justificatif"+(n>1?"s":"")+" :\n\n"+lines+"\n\nC'est le dernier élément qui nous manque pour boucler votre dossier — pouvez-vous nous l'adresser dès que possible ?\n\nBien à vous,\nCabinet S2A — Sud Alpes Audit";
@@ -874,19 +1004,25 @@ function renderRelance(passe){
   document.getElementById("mailSubj").textContent = subj;
   document.getElementById("mailBody").textContent = body;
   window.__mail = {subj:subj, body:body};
-  document.getElementById("passeToggle").querySelectorAll("button").forEach(function(b){ b.classList.toggle("on", +b.getAttribute("data-passe")===passe); });
 }
 
-function renderExport(){
-  var fmt = HAS_BANK ? "Excel" : "Quadra (ASCII)";
-  var sub = HAS_BANK
-    ? "Relevé codé, contrepartie banque (512). À intégrer dans le journal de banque."
-    : "Écritures en partie double, contrepartie exploitant (108). Fichier d'import Quadratus.";
-  var host = document.getElementById("exportFile");
-  host.innerHTML = '<div class="ex-ic">'+(HAS_BANK?"▦":"▤")+'</div><h3>Le fichier d\'écritures</h3>'+
-    '<p class="ex-fmt">Format : <b>'+fmt+'</b></p><p class="ex-line">'+sub+'</p>'+
-    '<button class="btn btn-primary btn-lg" id="btnExportFile" type="button">Télécharger</button>';
-  document.getElementById("btnExportFile").addEventListener("click", HAS_BANK ? exportExcel : exportQuadra);
+function renderCompta(){
+  document.getElementById("comptaFmt").textContent = HAS_BANK ? "Excel" : "Quadra (ASCII)";
+  document.getElementById("comptaIc").textContent  = HAS_BANK ? "▦" : "▤";
+  document.getElementById("comptaN").textContent   = CODED.length;
+  document.getElementById("comptaLine").textContent = HAS_BANK
+    ? "Relevé codé, contrepartie banque (512) — à intégrer dans le journal de banque."
+    : "Écritures en partie double, contrepartie exploitant (108) — fichier d'import Quadratus.";
+  document.getElementById("traiteN").textContent = INVOICES.length;
+  document.getElementById("btnImportCompta").textContent = HAS_BANK ? "Générer le fichier Excel" : "Importer dans Quadra";
+  document.getElementById("importDone").hidden = true;
+}
+function importCompta(){
+  if(HAS_BANK) exportExcel(); else exportQuadra();
+  var done=document.getElementById("importDone"); done.hidden=false;
+  done.textContent = HAS_BANK
+    ? "✓ Fichier Excel généré — à ouvrir dans votre tableur ou à intégrer au journal de banque."
+    : "✓ Fichier d'import généré — à charger dans Quadra : Outils › Suivi › Import ASCII (Compta).";
 }
 
 /* ============================================================ EXPORTS ============================================================ */
@@ -946,22 +1082,70 @@ function copyMail(){
 }
 function fbCopy(txt){ var ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta); ta.select(); try{document.execCommand("copy");toast("Mail copié");}catch(e){toast("Copie impossible");} document.body.removeChild(ta); }
 
-/* ============================================================ FLUX (3 étapes) ============================================================ */
-var maxStep=1;
+/* ============================================================ CAMPAGNE (étape 0) ============================================================ */
+var CLIENTS=[
+  {nom:"DUPONT",   pieces:21, statut:"pret"},
+  {nom:"LEROUX",   pieces:16, statut:"pret"},
+  {nom:"MARTINEZ", pieces:9,  statut:"attente"},
+  {nom:"GIRAUD",   pieces:28, statut:"pret"},
+  {nom:"BERNARD",  pieces:0,  statut:"relance"}
+];
+function statutBadge(s){
+  if(s==="pret")    return '<span class="st st-ok">Prêt à traiter</span>';
+  if(s==="attente") return '<span class="st st-wait">Pièces partielles</span>';
+  return '<span class="st st-no">Rien reçu · relancé</span>';
+}
+function renderCampaign(){
+  document.getElementById("clientsBody").innerHTML = CLIENTS.map(function(c){
+    var act = c.statut==="pret"
+      ? '<button class="mini-btn go" data-open="'+c.nom+'" type="button">Ouvrir →</button>'
+      : '<span class="muted-sm">en attente</span>';
+    return '<tr><td class="lib">LMNP_'+c.nom+'_2026</td><td class="r num">'+(c.pieces||"—")+'</td><td>'+statutBadge(c.statut)+'</td><td class="r">'+act+'</td></tr>';
+  }).join("");
+  document.getElementById("clientsBody").querySelectorAll("[data-open]").forEach(function(b){
+    b.addEventListener("click",function(){ openDossier(b.getAttribute("data-open")); });
+  });
+}
+function openDossier(nom){
+  document.getElementById("dossierName").textContent = "LMNP_"+nom+"_2026";
+  fecOK=false; bankOK=false; resetImports();
+  maxStep=Math.max(maxStep,1); goStep(1);
+}
+
+/* ============================================================ IMPORT (étape 1) ============================================================ */
+var PERIODE="annuel", TREATED_S1=9, fecOK=false, bankOK=false;
+function updatePeriode(){
+  document.getElementById("periodeNote").innerHTML = PERIODE==="annuel"
+    ? "L'exercice complet est traité."
+    : "Semestre 2 : les <b>"+TREATED_S1+" pièces déjà traitées</b> au 1ᵉʳ semestre (classées dans <b>02_Traités/</b>) sont ignorées ; seules les nouvelles sont reprises. <span style=\"color:var(--muted)\">(la démo affiche l'année complète)</span>";
+}
+function resetImports(){
+  var f=document.getElementById("dzFec"); f.classList.remove("done"); document.getElementById("dzFecS").textContent="Cliquer pour importer";
+  var b=document.getElementById("dzBank"); b.classList.remove("done"); document.getElementById("dzBankS").textContent="Cliquer pour importer";
+  updateRun();
+}
+function updateRun(){
+  var need = HAS_BANK ? (fecOK&&bankOK) : fecOK;
+  document.getElementById("btnRun").disabled = !need;
+}
+
+/* ============================================================ FLUX (5 pages) ============================================================ */
+var maxStep=0;
 function goStep(n){
   if(n>maxStep) return;
   document.querySelectorAll(".step-panel").forEach(function(p){ p.classList.toggle("on", +p.getAttribute("data-step")===n); });
   document.querySelectorAll("#stepper li").forEach(function(li){
     var s=+li.getAttribute("data-go");
     li.classList.toggle("on", s===n);
-    li.classList.toggle("done", s<n || (s<=maxStep && s!==n));
+    li.classList.toggle("done", s<maxStep && s!==n);
   });
-  if(n===3) renderExport();
+  if(n===3 && maxStep>=3) renderMissing(CURRENT_PASSE);
+  if(n===4 && maxStep>=4) renderCompta();
   window.scrollTo({top:0,behavior:"smooth"});
 }
 function run(){
   maxStep=2; goStep(2);
-  var proc=document.getElementById("processing"); proc.classList.remove("hidden");
+  document.getElementById("processing").classList.remove("hidden");
   document.getElementById("step2body").classList.add("hidden");
   var prog=document.getElementById("cprog"); prog.style.width="0";
   var msgs=["Lecture du FEC N-1…","Codage du relevé bancaire…","Recherche des fournisseurs inconnus…","Rapprochement des factures…"];
@@ -992,28 +1176,68 @@ function initTheme(){
     try{ localStorage.setItem(KEY,next); }catch(e){}
   });
 }
-document.getElementById("nLines").textContent = BANK.length+" opérations";
-document.getElementById("nInv").textContent = INVOICES.length+" pièces";
 
+document.getElementById("nInv").textContent = INVOICES.length+" pièces";
+renderCampaign();
+updatePeriode();
+
+document.getElementById("btnCampaign").addEventListener("click",function(){ toast("Mail de lancement envoyé à "+CLIENTS.length+" clients"); });
+
+// choix banque
 document.getElementById("segBank").querySelectorAll("button").forEach(function(b){
   b.addEventListener("click",function(){
     HAS_BANK = b.getAttribute("data-bank")==="1";
     document.getElementById("segBank").querySelectorAll("button").forEach(function(x){ x.classList.toggle("on", x===b); });
+    document.getElementById("dzBank").classList.toggle("off", !HAS_BANK);
+    updateRun();
     if(maxStep>=2) renderJournal();
-    if(document.querySelector('.step-panel[data-step="3"]').classList.contains("on")) renderExport();
   });
 });
-document.getElementById("selDossier").addEventListener("change",function(){
-  if(this.value!=="LMNP_DUPONT_2026"){ this.value="LMNP_DUPONT_2026"; toast("Démo : seul le dossier DUPONT est chargé"); }
+// période
+document.getElementById("segPeriode").querySelectorAll("button").forEach(function(b){
+  b.addEventListener("click",function(){
+    PERIODE=b.getAttribute("data-p");
+    document.getElementById("segPeriode").querySelectorAll("button").forEach(function(x){ x.classList.toggle("on", x===b); });
+    updatePeriode();
+  });
 });
-document.getElementById("btnNewDossier").addEventListener("click",function(){ toast("Démo : la création de dossier sera câblée sur le Drive du cabinet"); });
+// imports simulés
+document.getElementById("dzFec").addEventListener("click",function(){
+  fecOK=true; this.classList.add("done"); document.getElementById("dzFecS").textContent="✓ Importé · FEC_2025.txt"; updateRun();
+});
+document.getElementById("dzBank").addEventListener("click",function(){
+  bankOK=true; this.classList.add("done"); document.getElementById("dzBankS").textContent="✓ Importé · RELEVE_2026.xlsx"; updateRun();
+});
+
 document.getElementById("btnRun").addEventListener("click",run);
-document.getElementById("btnToExport").addEventListener("click",function(){ maxStep=3; renderRelance(1); goStep(3); });
-document.getElementById("btnRestart").addEventListener("click",function(){ maxStep=1; goStep(1); toast("Prêt pour un nouveau traitement"); });
+document.getElementById("btnToMissing").addEventListener("click",function(){ maxStep=3; renderMissing(1); goStep(3); });
+document.getElementById("btnToCompta").addEventListener("click",function(){ maxStep=4; renderCompta(); goStep(4); });
+document.getElementById("btnRestart").addEventListener("click",function(){ maxStep=0; goStep(0); toast("Choisissez un dossier"); });
+
+// manquants : sélection → mail
 document.getElementById("passeToggle").querySelectorAll("button").forEach(function(b){
-  b.addEventListener("click",function(){ renderRelance(+b.getAttribute("data-passe")); });
+  b.addEventListener("click",function(){ renderMissing(+b.getAttribute("data-passe")); });
+});
+document.getElementById("missingList").addEventListener("change", buildSelMail);
+document.getElementById("btnSelectAll").addEventListener("click",function(){
+  var boxes=document.getElementById("missingList").querySelectorAll('input[type=checkbox]');
+  var anyOff=false; boxes.forEach(function(cb){ if(!cb.checked) anyOff=true; });
+  boxes.forEach(function(cb){ cb.checked=anyOff; }); buildSelMail();
 });
 document.getElementById("btnMail").addEventListener("click",copyMail);
+
+// compta
+document.getElementById("btnImportCompta").addEventListener("click",importCompta);
+document.getElementById("btnDownload").addEventListener("click",function(){ if(HAS_BANK) exportExcel(); else exportQuadra(); });
+
+// image facture (délégation)
+document.getElementById("reviewList").addEventListener("click",function(e){
+  var b=e.target.closest ? e.target.closest(".img-link") : null;
+  if(b){ e.preventDefault(); e.stopPropagation(); openImage(+b.getAttribute("data-i")); }
+});
+document.getElementById("imgClose").addEventListener("click",closeImage);
+document.getElementById("imgBackdrop").addEventListener("click",closeImage);
+
 document.getElementById("btnPrint").addEventListener("click",function(){ window.print(); });
 document.querySelectorAll("[data-go]").forEach(function(el){
   el.addEventListener("click",function(){ goStep(+el.getAttribute("data-go")); });
