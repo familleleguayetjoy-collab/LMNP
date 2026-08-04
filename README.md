@@ -13,22 +13,46 @@ externe.
 
 ## Ce que montre la maquette
 
-La chaîne en quatre temps de la note, jouée sur un **dossier fictif**
-(`LMNP_DUPONT_2026`) :
+### Les deux sources
+
+- **Le client** partage son **Drive** et y scanne / photographie ses factures au
+  fil de l'eau (`01_Factures/`).
+- **Le cabinet** ajoute le **FEC N-1** et le **relevé bancaire annuel** (Excel) à
+  coder.
+
+### La chaîne, jouée sur un dossier fictif (`LMNP_DUPONT_2026`)
 
 1. **Temps 1 — apprentissage.** L'outil lit le FEC 2025 (N-1) et en tire le
    dictionnaire comptable propre au client (« *SYNDIC AZUR* → 614 »).
-2. **Temps 2 — codage du relevé.** Chaque ligne bancaire reçoit un compte proposé
-   et un **niveau de confiance**. Les libellés inconnus sont mis de côté.
+2. **Temps 2 — codage du relevé.** Chaque ligne reçoit un compte proposé et un
+   **niveau de confiance**. Les **fournisseurs inconnus** sont identifiés par
+   **recherche en ligne** puis affectés automatiquement (Orange → 626, Chubb → 616).
 3. **Temps 3 — lecture & rapprochement des factures.** Chaque pièce (date,
    fournisseur, HT, TVA, TTC) est rapprochée de la ligne bancaire correspondante
    (même montant, date proche). Les écarts sont signalés, pas corrigés en silence.
 4. **Temps 4 — les livrables :**
    - le **journal de banque codé** (exportable en CSV) ;
-   - l'**écran de revue** : uniquement les lignes qui posent question, triées par
-     montant décroissant, avec la **raison du doute** affichée ;
+   - l'**écran d'arbitrage** : uniquement les lignes qui demandent un jugement
+     humain (travaux, immobilisations, apports), triées par montant, avec la
+     **raison du doute** affichée ;
    - la **liste des justificatifs manquants** et le **mail de relance** déjà rédigé
-     (copiable) — le livrable productible dès le 2 janvier.
+     (copiable).
+
+### Les règles d'affectation & de relance
+
+| Cas | Action |
+|---|---|
+| Fournisseur **connu** (FEC N-1) | Affectation directe, même sans facture |
+| Fournisseur **inconnu** | Recherche en ligne (sur le seul nom) → affectation auto |
+| Dépense **> seuil** (100 €) sans justificatif | Relance client par mail |
+| Dépense **≤ seuil** sans justificatif | Affectée, **non** réclamée |
+| **Travaux / immobilisation** | **Toujours** remonté à l'humain, quel que soit le montant |
+
+### La cadence de relance (double passe)
+
+- **15 janvier** — 1er scan du Drive, email de relance dans la foulée.
+- **31 janvier** — 2ᵉ scan, uniquement les **nouveaux éléments** ; 2ᵉ email sur ce
+  qu'il reste (ton plus ferme). Démontré par le sélecteur *Passe 1 / Passe 2*.
 
 Une section **« Ce qu'il faut, et quand »** résume les quatre briques
 (Claude Code · Skill · Cowork · Drive), le calendrier de déploiement (août 2026 →
@@ -42,20 +66,24 @@ Pour ne pas survendre : cette page est une **démonstration**, pas encore l'outi
 
 | Réel dans la maquette | Simulé / à construire |
 |---|---|
-| Le **moteur de codage** est du vrai code déterministe : dictionnaire tiré du FEC, application par recouvrement de libellés, niveaux de confiance, rapprochement par montant + date, calcul des manquants et du mail. | La **lecture des PDF/photos par IA** (OCR + extraction) est ici pré-remplie : les factures sont fournies déjà lues. Dans la version réelle, c'est l'API Claude qui lit les pièces. |
-| Les **montants et totaux** sont calculés, jamais « devinés ». | Le **FEC et le relevé** sont un jeu de démonstration, pas un vrai dossier. |
-| La logique **80 % auto / 20 % remonté à l'humain** avec raison du doute. | Le **connecteur Google Drive** et le **Skill** (mode d'emploi permanent) restent à câbler. |
+| Le **moteur de codage** est du vrai code déterministe : dictionnaire tiré du FEC, application par recouvrement de libellés, niveaux de confiance, seuil de matérialité, rapprochement par montant + date, calcul des manquants, double passe et mail. | La **lecture des PDF/photos par IA** (OCR + extraction) est pré-remplie : les factures sont fournies déjà lues. Dans la version réelle, c'est l'API Claude qui lit les pièces. |
+| Les **montants et totaux** sont calculés, jamais « devinés ». | La **recherche en ligne** des fournisseurs inconnus est ici une table de correspondance figée. Dans la version réelle, c'est une vraie recherche web de Claude sur le seul nom du fournisseur. |
+| La logique **auto / arbitrage humain** avec raison du doute. | Le **connecteur Google Drive** et le **Skill** (mode d'emploi permanent) restent à câbler. Le FEC et le relevé sont un jeu de démonstration. |
 
-Principe qui reste vrai dans la version réelle : l'IA n'intervient que sur deux
-tâches où l'erreur est visible et rattrapable — **lire une facture** et **proposer
-un compte sur un libellé jamais vu**. Tout le reste est du code. L'outil prépare ;
-la revue du collaborateur reste l'acte professionnel qui engage le cabinet.
+Principe qui reste vrai dans la version réelle : l'IA n'intervient que là où
+l'erreur est visible et rattrapable — **lire une facture** et **identifier un
+fournisseur inconnu** (recherche en ligne, sur le seul nom, aucune donnée client
+transmise). Les vrais **arbitrages** — travaux entretien/amélioration,
+immobilisations — **restent remontés à l'humain**. Tout le reste est du code.
+L'outil prépare ; la revue du collaborateur reste l'acte professionnel qui engage
+le cabinet.
 
-Sur ce jeu de démonstration, la maquette produit : **76 %** de lignes codées
-seules, **71 %** de dépenses déjà justifiées, **6** lignes à revoir et **4**
-justificatifs à réclamer. Ces taux sont illustratifs — ils devront être
-**confirmés par le pilote de septembre** (point d'arrêt : si < 60 %, on ajuste ou
-on arrête).
+Sur ce jeu de démonstration, la maquette produit : **84 %** de lignes codées
+seules (dont l'identification en ligne des fournisseurs inconnus), **71 %** de
+dépenses déjà justifiées, **4** lignes à arbitrer et **3** relances à envoyer
+au-dessus du seuil de 100 € (dont une pièce sous le seuil, affectée sans relancer).
+Ces taux sont illustratifs — ils devront être **confirmés par le pilote de
+septembre** (point d'arrêt : si < 60 %, on ajuste ou on arrête).
 
 ---
 
@@ -68,7 +96,10 @@ Les données fictives sont regroupées, lisibles et modifiables en tête du bloc
 - `BANK` — les 25 lignes du relevé 2026 à coder ;
 - `INVOICES` — les 10 factures déposées (volontairement incomplètes, pour faire
   apparaître la liste de relance) ;
-- `COMPTES` — le plan comptable LMNP utilisé pour les intitulés.
+- `COMPTES` — le plan comptable LMNP utilisé pour les intitulés ;
+- `SEUIL` — le seuil de matérialité (€) qui déclenche la relance ;
+- `RECU_P2` — les pièces réputées transmises par le client entre les deux passes ;
+- `webSearch()` — la table de correspondance « fournisseur inconnu → compte ».
 
 Pour tester un autre scénario devant les associés, il suffit de modifier ces
 tableaux et de reconstruire.

@@ -315,6 +315,32 @@ table.data tr:hover td{background:var(--paper-2)}
   .pcard .phead .btn{margin-left:0}
 }
 
+/* ---------- Sources & règles (poste de travail) ---------- */
+.src-block{margin-top:18px}
+.src-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.09em;font-weight:700;color:var(--gold-deep);display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.src-label svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.src-label .pin{margin-left:auto;font-size:.66rem;letter-spacing:.04em;color:var(--muted);font-weight:600;text-transform:none}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:20px;padding-top:20px;border-top:1px dashed var(--line)}
+.rules-title{grid-column:1/-1;font-family:var(--display);font-weight:600;font-size:.95rem;display:flex;align-items:center;gap:9px}
+.rules-title small{font-weight:400;color:var(--muted);font-size:.8rem}
+.rule{display:flex;gap:11px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--paper-2)}
+.rule .rn{width:26px;height:26px;border-radius:8px;background:var(--navy);color:var(--gold);display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:.8rem;flex:0 0 auto}
+.rule.human .rn{background:var(--warn-soft);color:var(--warn)}
+.rule p{font-size:.82rem;color:var(--ink-2)}
+.rule p b{color:var(--ink)}
+
+/* ---------- Tag web ---------- */
+.tag.web{background:var(--pos-soft);color:var(--pos);border-color:transparent}
+
+/* ---------- Double passe ---------- */
+.passe-toggle{display:inline-flex;gap:4px;background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:4px;margin:4px 0 6px}
+.passe-toggle button{border:none;background:transparent;padding:8px 15px;border-radius:8px;font-family:var(--display);font-weight:600;font-size:.82rem;color:var(--muted);cursor:pointer;transition:.18s}
+.passe-toggle button.on{background:var(--navy);color:#fff;box-shadow:var(--shadow-soft)}
+.passe-note{font-size:.83rem;color:var(--muted);margin:8px 2px;max-width:88ch}
+.passe-note b{color:var(--ink-2)}
+.subseuil-note{font-size:.8rem;color:var(--muted);margin-top:12px;padding:10px 13px;border:1px dashed var(--line);border-radius:10px;background:var(--paper-2)}
+.subseuil-note b{color:var(--pos)}
+
 /* ---------- Print ---------- */
 @media print{
   .app-header,.header-actions,.runbar,.console,.hero-tag,.beta-pill,.tabs .tab .badge{display:none!important}
@@ -366,7 +392,7 @@ table.data tr:hover td{background:var(--paper-2)}
       <div class="card notice">
         <h3><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg>À lire avant la démonstration</h3>
         <p>Cette page est une <b>maquette fonctionnelle</b> destinée à Thierry et Julien. Elle tourne sur un <b>dossier fictif</b> (<i>LMNP DUPONT 2026</i>) : aucune donnée client réelle, aucun appel externe, tout est calculé dans le navigateur. Elle sert à montrer <b>ce que produira l'outil</b> et à décider du pilote de septembre.</p>
-        <p>Principe qui restera vrai dans la version réelle : <b>les montants, totaux et rapprochements sont calculés par du code</b>, pas par l'IA. L'IA n'interviendra que sur deux tâches où l'erreur est visible et rattrapable — <b>lire une facture</b> et <b>proposer un compte sur un libellé jamais vu</b>. La cible est <b>80 % traité tout seul, 20 % remonté à l'humain avec la raison du doute affichée</b>. L'outil prépare ; la revue du collaborateur reste l'acte professionnel qui engage le cabinet.</p>
+        <p>Principe qui restera vrai dans la version réelle : <b>les montants, totaux et rapprochements sont calculés par du code</b>, pas par l'IA. L'IA n'interviendra que là où l'erreur est visible et rattrapable — <b>lire une facture</b> et <b>identifier un fournisseur inconnu par recherche en ligne</b> (sur le seul nom, aucune donnée client transmise). Les vrais arbitrages — travaux entretien/amélioration, immobilisations — <b>restent remontés à l'humain</b>. L'outil prépare ; la revue du collaborateur reste l'acte professionnel qui engage le cabinet.</p>
       </div>
 
       <!-- =============== POSTE DE TRAVAIL =============== -->
@@ -384,22 +410,50 @@ table.data tr:hover td{background:var(--paper-2)}
           <div class="tree-root"><svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>LMNP_DUPONT_2026/</div>
         </div>
 
-        <div class="inputs">
-          <div class="ifile">
-            <span class="fic fec">FEC</span>
-            <span class="meta"><strong>FEC 2025 (N-1)</strong><small>Exercice précédent · apprentissage</small></span>
-            <span class="ok-chk"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>
+        <div class="src-block">
+          <div class="src-label">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.5 6h-7zM6 22l3.5-6M18 22l-3.5-6M4 14h16"/></svg>
+            Partagé par le client — Drive
+            <span class="pin">le client y scanne / photographie ses factures au fil de l'eau</span>
           </div>
-          <div class="ifile">
-            <span class="fic xls">XLS</span>
-            <span class="meta"><strong>Relevé bancaire 2026</strong><small id="nLines">— lignes à coder</small></span>
-            <span class="ok-chk"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>
+          <div class="inputs">
+            <div class="ifile">
+              <span class="fic pdf">PDF</span>
+              <span class="meta"><strong>01_Factures/</strong><small id="nInv">— pièces déposées par le client</small></span>
+              <span class="ok-chk"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>
+            </div>
           </div>
-          <div class="ifile">
-            <span class="fic pdf">PDF</span>
-            <span class="meta"><strong>01_Factures/</strong><small id="nInv">— pièces déposées par le client</small></span>
-            <span class="ok-chk"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>
+        </div>
+
+        <div class="src-block">
+          <div class="src-label">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.5 6h-7zM6 22l3.5-6M18 22l-3.5-6M4 14h16"/></svg>
+            Ajouté par le cabinet
+            <span class="pin">le collaborateur dépose le FEC N-1 et le relevé annuel</span>
           </div>
+          <div class="inputs">
+            <div class="ifile">
+              <span class="fic fec">FEC</span>
+              <span class="meta"><strong>FEC 2025 (N-1)</strong><small>Exercice précédent · apprentissage du dictionnaire</small></span>
+              <span class="ok-chk"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>
+            </div>
+            <div class="ifile">
+              <span class="fic xls">XLS</span>
+              <span class="meta"><strong>Relevé bancaire 2026</strong><small id="nLines">— lignes à coder</small></span>
+              <span class="ok-chk"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="rules">
+          <div class="rules-title">
+            <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:none;stroke:var(--gold-deep);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            Règles appliquées <small>seuil de matérialité : <b id="seuilTxt">100 €</b></small>
+          </div>
+          <div class="rule"><span class="rn">1</span><p><b>Fournisseur connu</b> (vu au FEC N-1) → affectation directe, même en l'absence de facture.</p></div>
+          <div class="rule"><span class="rn">2</span><p><b>Fournisseur inconnu</b> → recherche en ligne sur le seul nom, puis affectation automatique.</p></div>
+          <div class="rule"><span class="rn">3</span><p><b>Dépense &gt; seuil sans justificatif</b> → relance client par mail. Sous le seuil : affectée sans relancer.</p></div>
+          <div class="rule human"><span class="rn">!</span><p><b>Toujours à l'humain</b> : arbitrages travaux (entretien / amélioration) et immobilisations, quel que soit le montant.</p></div>
         </div>
 
         <div class="runbar">
@@ -496,14 +550,20 @@ table.data tr:hover td{background:var(--paper-2)}
             <div class="phead">
               <div>
                 <h3>Justificatifs manquants &amp; relance client</h3>
-                <p>Le livrable qui change tout : il peut être produit <b>dès le 2 janvier</b>, avant même de commencer le dossier. On relance le client pendant qu'on travaille sur autre chose, au lieu de le découvrir en mars.</p>
+                <p>Le livrable qui change tout : produit <b>dès la mi-janvier</b>, avant même de commencer le dossier. Deux passes — <b>15 janvier</b> puis <b>31 janvier</b> (sur les seuls nouveaux éléments) — et on ne relance que les pièces <b>au-dessus du seuil de matérialité</b>, sans harceler le client pour un ticket de 40 €.</p>
               </div>
               <button class="btn btn-ghost" id="btnMail" type="button"><svg viewBox="0 0 24 24"><path d="M9 5h9a2 2 0 0 1 2 2v12M16 3H6a2 2 0 0 0-2 2v14l4-3h8"/></svg>Copier le mail</button>
             </div>
+            <div class="passe-toggle" id="passeToggle">
+              <button data-passe="1" class="on" type="button">Passe 1 · 15 janvier</button>
+              <button data-passe="2" type="button">Passe 2 · 31 janvier</button>
+            </div>
+            <p class="passe-note" id="passeNote"></p>
             <div class="relance-grid">
               <div>
-                <h4 style="font-family:var(--display);font-weight:600;font-size:1rem;margin:14px 0 2px">Pièces attendues, non retrouvées dans le dossier</h4>
+                <h4 style="font-family:var(--display);font-weight:600;font-size:1rem;margin:8px 0 2px">Pièces attendues, non retrouvées dans le Drive <span id="relCount" style="color:var(--muted);font-weight:400"></span></h4>
                 <ul class="missing-list" id="missingList"></ul>
+                <p class="subseuil-note" id="subSeuilNote"></p>
               </div>
               <div>
                 <h4 style="font-family:var(--display);font-weight:600;font-size:1rem;margin:6px 0 8px">Mail de relance — prêt à envoyer</h4>
@@ -580,7 +640,7 @@ table.data tr:hover td{background:var(--paper-2)}
           </div>
           <div class="tl-item">
             <div class="tl-when">Janvier 2027</div><div class="tl-dot"><span></span></div>
-            <div class="tl-body"><strong>Production sur les 10 dossiers</strong><p>Relances client envoyées dès la première semaine — pendant qu'on travaille sur autre chose.</p><p class="whoc">Collaborateurs</p></div>
+            <div class="tl-body"><strong>Production sur les 10 dossiers</strong><p>Double passe de relance : scan du Drive le 15 janvier (1er mail), puis le 31 janvier sur les seuls nouveaux éléments (2ᵉ mail si besoin) — pendant qu'on travaille sur autre chose.</p><p class="whoc">Collaborateurs</p></div>
           </div>
           <div class="tl-item">
             <div class="tl-when">Avril 2027</div><div class="tl-dot"><span></span></div>
@@ -595,9 +655,9 @@ table.data tr:hover td{background:var(--paper-2)}
           <ul>
             <li>Apprend le plan comptable propre au client à partir du FEC N-1</li>
             <li>Code le relevé bancaire, avec un niveau de confiance par ligne</li>
-            <li>Lit les factures et les rapproche des lignes bancaires</li>
-            <li>Remonte les seules anomalies, la raison du doute affichée</li>
-            <li>Produit la liste des manquants et le mail de relance</li>
+            <li>Recherche en ligne les fournisseurs inconnus pour les affecter</li>
+            <li>Lit les factures du Drive et les rapproche des lignes bancaires</li>
+            <li>Relance le client au-dessus d'un seuil, en deux passes (15 &amp; 31 janv.)</li>
             <li>Laisse une trace datée de la revue (NPMQ 2025)</li>
           </ul>
         </div>
@@ -652,6 +712,7 @@ table.data tr:hover td{background:var(--paper-2)}
 var COMPTES = {
   "706":  "Loyers — locations meublées",
   "6061": "Eau, énergie",
+  "626":  "Frais postaux et de télécommunications",
   "614":  "Charges de copropriété (syndic)",
   "615":  "Entretien et réparations",
   "616":  "Primes d'assurance",
@@ -795,16 +856,33 @@ function codeLine(line, dict){
     return set(out, best.compte, conf, "fuzzy", "Rapproché de « "+best.lib+" » (N-1) — libellé proche, à confirmer");
   }
 
-  // 4) règles métier sur libellés nouveaux (proposition prudente, remontée à l'humain)
-  if(/MOBILIER|CONFORAMA|IKEA|\bBUT\b|MAISON DU MONDE|LITERIE|CANAPE|ELECTROMENAGER/.test(line.lib))
-    return set(out,"2184",0.60,"regle","Achat de mobilier → immobilisation (2184) à porter au tableau d'amortissement, pas une charge de l'année","immo");
-  if(/ASSURANCE|MUTUELLE|\bGLI\b|MMA|GENERALI|ALLIANZ/.test(line.lib))
-    return set(out,"616",0.66,"regle","Assurance — compte 616 probable, mais contrat non vu au N-1 (ici une GLI) : à confirmer","arb");
-  if(/LEROY MERLIN|CASTORAMA|BRICO|QUINCAILL|WELDOM|WELDOM/.test(line.lib))
-    return set(out,"615",0.68,"regle","Petit achat de bricolage — entretien (615) probable, mais peut relever du mobilier selon la pièce","arb");
+  // 4) immobilisations & arbitrages : identifiables, mais la NATURE reste un jugement humain
+  if(/MOBILIER|CONFORAMA|IKEA|\bBUT\b|MAISON DU MONDE|LITERIE|CANAPE|ELECTROMENAGER|DARTY|BOULANGER/.test(line.lib))
+    return set(out,"2184",0.60,"regle","Achat de mobilier → immobilisation (2184) à porter au tableau d'amortissement, pas une charge de l'année : à valider","immo");
+  if(/LEROY MERLIN|CASTORAMA|BRICO|QUINCAILL|WELDOM|MR BRICOLAGE|POINT P/.test(line.lib))
+    return set(out,"615",0.68,"regle","Achat en grande surface de bricolage — entretien (615) probable, mais peut relever d'une amélioration à immobiliser selon la pièce : à valider","arb");
 
-  // 5) inconnu total
-  return set(out,"471",0.0,"inconnu","Libellé jamais vu dans le FEC N-1 — aucun compte proposé, à qualifier","new");
+  // 5) fournisseur inconnu → recherche en ligne (sur le seul nom), puis affectation automatique
+  var web = webSearch(line.lib);
+  if(web) return set(out, web.compte, 0.90, "web", "Fournisseur absent du FEC N-1 → identifié par recherche en ligne : "+web.note);
+
+  // 6) vraiment inconnu, même après recherche → à qualifier par l'humain
+  return set(out,"471",0.0,"inconnu","Libellé inconnu, non résolu par la recherche en ligne — à qualifier","new");
+}
+
+// Simulation de la recherche en ligne d'un fournisseur inconnu.
+// Dans l'outil réel, c'est Claude qui effectue une vraie recherche web sur le
+// SEUL nom du fournisseur (aucune donnée client transmise) et en déduit le compte.
+function webSearch(lib){
+  var L = stripAccents((""+lib).toUpperCase());
+  var BASE = [
+    {re:/ORANGE|\bFREE\b|\bSFR\b|BOUYGUES|SOSH|\bRED\b/,               compte:"626",  note:"opérateur télécom / internet → 626 (télécommunications)"},
+    {re:/CHUBB|GENERALI|\bMMA\b|ALLIANZ|\bAXA\b|MAAF|GROUPAMA|MATMUT|\bGLI\b/, compte:"616", note:"compagnie d'assurance → 616 (primes d'assurance)"},
+    {re:/PLENITUDE|ENGIE|TOTALENERGIES|\bENI\b|EKWATEUR|ENGIE/,        compte:"6061", note:"fournisseur d'énergie → 6061"},
+    {re:/\bSUEZ\b|\bSAUR\b|\bSDEI\b|VEOLIA/,                           compte:"6061", note:"distributeur d'eau → 6061"}
+  ];
+  for(var i=0;i<BASE.length;i++){ if(BASE[i].re.test(L)) return BASE[i]; }
+  return null;
 }
 function set(o,compte,conf,origin,reason,tag){ o.compte=compte; o.conf=conf; o.origin=origin; o.reason=reason; o.tag=tag||null; return o; }
 function round2(x){ return Math.round(x*100)/100; }
@@ -844,12 +922,33 @@ function esc(s){ return (""+s).replace(/[&<>"]/g,function(c){return {'&':'&amp;'
 /* ============================================================
    ÉTAT + RENDU
    ============================================================ */
+var SEUIL = 100;               // seuil de matérialité (€) déclenchant la relance client
+var CURRENT_PASSE = 1;         // passe de relance affichée (15 ou 31 janvier)
+// Pièces transmises par le client entre la passe 1 et la passe 2 (démo)
+var RECU_P2 = ["PRLV SYNDIC AZUR SA T2", "PRLV CHUBB ASSURANCE GLI"];
+
 var DICT = buildDict(FEC);
 var CODED = BANK.map(function(l){ return codeLine(l, DICT); });
 var DEBITS = reconcile(CODED, INVOICES);
 
-// classification des lignes pour la revue
+// classification des lignes pour la revue (arbitrage humain)
 function needsReview(l){ return l.conf < 0.90 || l.tag==="new" || l.tag==="arb" || l.matchState==="diff"; }
+
+// Justificatifs matériels manquants (> seuil), pour une passe donnée
+function materialMissing(){
+  return DEBITS.filter(function(l){ return isJustifiable(l) && !l.match && l.montant > SEUIL; })
+               .sort(function(a,b){ return b.montant - a.montant; });
+}
+function missingList(passe){
+  var m = materialMissing();
+  if(passe === 2) m = m.filter(function(l){ return RECU_P2.indexOf(l.lib) < 0; });
+  return m;
+}
+// Dépenses sans facture MAIS sous le seuil : affectées, non réclamées
+function subSeuilMissing(){
+  return DEBITS.filter(function(l){ return isJustifiable(l) && !l.match && l.montant <= SEUIL; })
+               .sort(function(a,b){ return b.montant - a.montant; });
+}
 
 function confClass(c){ return c>=0.90?"hi":(c>=0.65?"mid":"lo"); }
 function confLabel(c){ return Math.round(c*100)+"%"; }
@@ -862,14 +961,15 @@ function renderKpis(){
   var justif = DEBITS.filter(isJustifiable);
   var justifOk = justif.filter(function(l){return l.match;}).length;
   var pctJust = Math.round(justifOk/justif.length*100);
-  var missing = justif.filter(function(l){ return !l.match; });
+  var relances = missingList(1);
+  var relTotal = relances.reduce(function(a,l){return a+l.montant;},0);
 
   var host=document.getElementById("kpis");
   host.innerHTML =
     kpi("good", svgClock(), pctAuto+" %", "Lignes codées seules", auto+" / "+total+" lignes du relevé")+
     kpi("good", svgLink(), pctJust+" %", "Dépenses justifiées", justifOk+" / "+justif.length+" avec leur facture")+
-    kpi("warn", svgFlag(), (total-auto)+"", "Lignes à revoir", "remontées avec la raison du doute")+
-    kpi("warn", svgMail(), missing.length+"", "Justificatifs manquants", eur0(missing.reduce(function(a,l){return a+l.montant;},0))+" à réclamer");
+    kpi("warn", svgFlag(), (total-auto)+"", "Lignes à arbitrer", "jugement humain : immo, travaux, apports")+
+    kpi("warn", svgMail(), relances.length+"", "Relances à envoyer", eur0(relTotal)+" · au-dessus du seuil de "+SEUIL+" €");
 }
 function kpi(cls,ic,val,label,sub){
   return '<div class="card kpi '+cls+'"><div class="klabel">'+ic+label+'</div><div class="kval num">'+val+'</div><div class="ksub">'+sub+'</div></div>';
@@ -899,6 +999,7 @@ function originTag(l){
   if(l.compte==="2184"||l.compte==="2135") return '<span class="tag immo">immo</span>';
   if(l.origin==="dict") return '<span class="tag">FEC N-1</span>';
   if(l.origin==="near") return '<span class="tag">≈ FEC N-1</span>';
+  if(l.origin==="web")  return '<span class="tag web">🔎 web</span>';
   if(l.origin==="fuzzy") return '<span class="tag">approché</span>';
   if(l.origin==="regle") return '<span class="tag">règle</span>';
   return '<span class="tag">—</span>';
@@ -948,29 +1049,60 @@ function isJustifiable(l){
   if(l.compte==="627"||l.compte==="661"||l.compte==="164"||l.compte==="108") return false;
   return true;
 }
-function renderRelance(){
-  var missing = DEBITS.filter(function(l){ return !l.match && isJustifiable(l); })
-                      .sort(function(a,b){return b.montant-a.montant;});
-  var host=document.getElementById("missingList");
-  host.innerHTML = missing.map(function(l,i){
+function renderRelance(passe){
+  passe = passe || CURRENT_PASSE; CURRENT_PASSE = passe;
+  var missing = missingList(passe);
+  document.getElementById("missingList").innerHTML = missing.map(function(l,i){
     return '<li><span class="mn">'+(i+1)+'</span><span class="mtxt"><strong>'+esc(prettyVendor(l))+'</strong>'+
       '<small>'+l.date+' · '+esc(COMPTES[l.compte]||"à ventiler")+'</small></span>'+
       '<span class="mamt">'+eur(l.montant)+'</span></li>';
   }).join("");
-  document.getElementById("bRel").textContent=missing.length;
+  document.getElementById("relCount").textContent = "· "+missing.length+" pièce"+(missing.length>1?"s":"");
+  document.getElementById("bRel").textContent = missingList(1).length;
 
-  var subj="Dossier LMNP 2026 — "+missing.length+" justificatif"+(missing.length>1?"s":"")+" à nous transmettre";
-  document.getElementById("mailSubj").textContent=subj;
+  // note de cadence
+  document.getElementById("passeNote").innerHTML = passe===1
+    ? "<b>Premier scan du Drive le 15 janvier</b>, email envoyé dans la foulée — avant même de commencer le dossier."
+    : "<b>Second scan le 31 janvier</b>, uniquement les nouveaux éléments. Le client a déposé 2 pièces entre-temps ; il ne reste que ce qui suit.";
+
+  // dépenses sous le seuil (non réclamées)
+  var ss = subSeuilMissing();
+  var ssNode = document.getElementById("subSeuilNote");
+  if(ss.length){
+    ssNode.style.display="block";
+    ssNode.innerHTML = "<b>"+ss.length+" dépense"+(ss.length>1?"s":"")+" sans facture, sous le seuil de "+SEUIL+" €</b> ("+
+      ss.map(function(l){return esc(prettyVendor(l))+" "+eur(l.montant);}).join(", ")+") : affectée"+(ss.length>1?"s":"")+" directement, non réclamée"+(ss.length>1?"s":"")+".";
+  } else { ssNode.style.display="none"; }
+
+  // mail
+  var n = missing.length;
   var lines = missing.map(function(l){ return "   • "+prettyVendor(l)+" — "+l.date+" — "+eur(l.montant); }).join("\n");
-  var body =
+  var subj, body;
+  if(passe===1){
+    subj = "Dossier LMNP 2026 — "+n+" justificatif"+(n>1?"s":"")+" à nous transmettre";
+    body =
 "Bonjour M. Dupont,\n\n"+
-"Nous préparons votre dossier de location meublée 2026. En rapprochant votre relevé bancaire des pièces déjà déposées, il nous manque "+
-missing.length+" justificatif"+(missing.length>1?"s":"")+" pour finaliser :\n\n"+lines+"\n\n"+
-"Merci de les déposer dans le dossier partagé LMNP_DUPONT_2026 › 01_Factures (une photo nette suffit).\n"+
+"Nous préparons votre dossier de location meublée 2026. En rapprochant votre relevé bancaire des pièces déposées dans votre espace Drive, il nous manque "+
+n+" justificatif"+(n>1?"s":"")+" (au-dessus de "+SEUIL+" €) pour finaliser :\n\n"+lines+"\n\n"+
+"Merci de les déposer dans LMNP_DUPONT_2026 › 01_Factures (une photo nette suffit), idéalement avant le 30 janvier.\n"+
 "Sans facture, ces dépenses ne pourront pas être déduites — d'où notre relance en amont.\n\n"+
 "Bien à vous,\nCabinet S2A — Sud Alpes Audit";
-  document.getElementById("mailBody").textContent=body;
-  window.__mail={subj:subj, body:body};
+  } else {
+    subj = "Dossier LMNP 2026 — relance : "+n+" justificatif"+(n>1?"s":"")+" encore manquant"+(n>1?"s":"");
+    body =
+"Bonjour M. Dupont,\n\n"+
+"Merci pour les pièces déjà transmises. Après une nouvelle vérification de votre Drive au 31 janvier, il reste "+
+n+" justificatif"+(n>1?"s":"")+" :\n\n"+lines+"\n\n"+
+"C'est le dernier élément qui nous manque pour boucler votre dossier — pouvez-vous nous l'adresser dès que possible ?\n\n"+
+"Bien à vous,\nCabinet S2A — Sud Alpes Audit";
+  }
+  document.getElementById("mailSubj").textContent = subj;
+  document.getElementById("mailBody").textContent = body;
+  window.__mail = {subj:subj, body:body};
+
+  // état du toggle
+  var tg = document.getElementById("passeToggle");
+  if(tg) tg.querySelectorAll("button").forEach(function(b){ b.classList.toggle("on", +b.getAttribute("data-passe")===passe); });
 }
 function prettyVendor(l){
   // libellé lisible pour le client
@@ -982,11 +1114,12 @@ function prettyVendor(l){
    ANIMATION DE LA PRÉPARATION
    ============================================================ */
 var STEPS=[
-  {t:"Temps 1", d:"Lecture du FEC 2025 — dictionnaire client reconstitué : "+DICT.length+" libellés connus", ms:700},
-  {t:"Temps 2", d:"Codage du relevé bancaire — "+BANK.length+" lignes, application du dictionnaire", ms:900},
-  {t:"Temps 3", d:"Lecture des "+INVOICES.length+" factures déposées (date, fournisseur, HT, TVA, TTC)", ms:1000},
-  {t:"Temps 3", d:"Rapprochement factures ↔ banque par montant et date", ms:700},
-  {t:"Temps 4", d:"Écran de revue, liste des manquants et mail de relance générés", ms:700}
+  {t:"Temps 1", d:"Lecture du FEC 2025 — dictionnaire client reconstitué : "+DICT.length+" libellés connus", ms:650},
+  {t:"Temps 2", d:"Codage du relevé bancaire — "+BANK.length+" lignes, application du dictionnaire", ms:800},
+  {t:"Temps 2", d:"Fournisseurs inconnus → recherche en ligne et affectation automatique", ms:800},
+  {t:"Temps 3", d:"Lecture des "+INVOICES.length+" factures du Drive client (date, fournisseur, HT, TVA, TTC)", ms:900},
+  {t:"Temps 3", d:"Rapprochement factures ↔ banque par montant et date", ms:650},
+  {t:"Temps 4", d:"Écran d'arbitrage, relance au-dessus du seuil de "+SEUIL+" € et mail généré", ms:700}
 ];
 function run(){
   var btn=document.getElementById("btnRun"); btn.disabled=true;
@@ -1074,6 +1207,10 @@ function svgMail(){return '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18"
 /* boot */
 document.getElementById("nLines").textContent=BANK.length+" lignes à coder";
 document.getElementById("nInv").textContent=INVOICES.length+" pièces déposées";
+document.getElementById("seuilTxt").textContent=SEUIL+" €";
+document.getElementById("passeToggle").querySelectorAll("button").forEach(function(b){
+  b.addEventListener("click",function(){ renderRelance(+b.getAttribute("data-passe")); });
+});
 document.getElementById("btnRun").addEventListener("click",run);
 document.getElementById("btnReset").addEventListener("click",function(){
   document.getElementById("results").classList.add("hidden");
