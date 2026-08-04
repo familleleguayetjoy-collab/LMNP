@@ -44,7 +44,7 @@ externe.
 |---|---|
 | Fournisseur **connu** (FEC N-1) | Affectation directe, même sans facture |
 | Fournisseur **inconnu** | Recherche en ligne (sur le seul nom) → affectation auto |
-| Dépense **> seuil** (100 €) sans justificatif | Relance client par mail |
+| Dépense **> seuil** (150 €) sans justificatif | Relance client par mail |
 | Dépense **≤ seuil** sans justificatif | Affectée, **non** réclamée |
 | **Travaux / immobilisation** | **Toujours** remonté à l'humain, quel que soit le montant |
 
@@ -78,12 +78,16 @@ immobilisations — **restent remontés à l'humain**. Tout le reste est du code
 L'outil prépare ; la revue du collaborateur reste l'acte professionnel qui engage
 le cabinet.
 
-Sur ce jeu de démonstration, la maquette produit : **84 %** de lignes codées
-seules (dont l'identification en ligne des fournisseurs inconnus), **71 %** de
-dépenses déjà justifiées, **4** lignes à arbitrer et **3** relances à envoyer
-au-dessus du seuil de 100 € (dont une pièce sous le seuil, affectée sans relancer).
-Ces taux sont illustratifs — ils devront être **confirmés par le pilote de
-septembre** (point d'arrêt : si < 60 %, on ajuste ou on arrête).
+Le jeu de démonstration est un **relevé d'année pleine** (57 lignes : loyers,
+échéances de prêt ventilées par le tableau d'amortissement, énergie avec bascule
+de fournisseur en cours d'année, eau, syndic trimestriel, assurances, taxe
+foncière, CFE, honoraires, mobilier, travaux, appel de fonds copropriété, apport
+en compte courant, indemnité de sinistre…). La maquette produit : **88 %** de
+lignes codées seules (dont l'identification en ligne des fournisseurs inconnus),
+**78 %** de dépenses déjà justifiées, **7** lignes à arbitrer et **4** relances à
+envoyer au-dessus du seuil de 150 € (deux pièces sous le seuil, affectées sans
+relancer). Ces taux sont illustratifs — ils devront être **confirmés par le pilote
+de septembre** (point d'arrêt : si < 60 %, on ajuste ou on arrête).
 
 ---
 
@@ -93,9 +97,11 @@ Les données fictives sont regroupées, lisibles et modifiables en tête du bloc
 `<script>` de `build/template.html` :
 
 - `FEC` — les libellés déjà codés en 2025 (source du dictionnaire) ;
-- `BANK` — les 25 lignes du relevé 2026 à coder ;
-- `INVOICES` — les 10 factures déposées (volontairement incomplètes, pour faire
-  apparaître la liste de relance) ;
+- `BANK` — les 57 lignes du relevé 2026 à coder (les échéances de prêt portent le
+  champ `amort:[intérêts, capital]`, ventilation issue du tableau d'amortissement) ;
+- `INVOICES` — les 21 factures déposées (volontairement incomplètes, pour faire
+  apparaître la liste de relance ; une facture Boulanger diverge du montant bancaire
+  pour illustrer la détection d'écart) ;
 - `COMPTES` — le plan comptable LMNP utilisé pour les intitulés ;
 - `SEUIL` — le seuil de matérialité (€) qui déclenche la relance ;
 - `RECU_P2` — les pièces réputées transmises par le client entre les deux passes ;

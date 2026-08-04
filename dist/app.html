@@ -704,10 +704,12 @@ var COMPTES = {
   "622":  "Honoraires (agence, expert-comptable)",
   "627":  "Services bancaires",
   "63512":"Taxe foncière",
+  "63511":"Cotisation foncière des entreprises (CFE)",
   "661":  "Intérêts d'emprunt",
   "164":  "Emprunt — capital remboursé",
   "2184": "Mobilier (immobilisation)",
   "2135": "Agencements, installations (immobilisation)",
+  "758":  "Produits divers (indemnité d'assurance)",
   "108":  "Compte de l'exploitant (apport)",
   "471":  "Compte d'attente — à ventiler"
 };
@@ -715,66 +717,107 @@ var COMPTES = {
 // FEC N-1 (2025) : ce dont l'outil apprend le dictionnaire du client.
 // Chaque entrée = un libellé déjà rencontré et son compte validé l'an dernier.
 var FEC = [
+  {lib:"LOYER MARTIN",          compte:"706",  n:12},
   {lib:"SYNDIC AZUR",           compte:"614",  n:4},
-  {lib:"EDF",                   compte:"6061", n:6},
+  {lib:"EDF",                   compte:"6061", n:12},
   {lib:"VEOLIA EAU",            compte:"6061", n:2},
   {lib:"ASSURANCE PNO AXA",     compte:"616",  n:1},
   {lib:"TAXE FONCIERE DGFIP",   compte:"63512",n:1},
-  {lib:"INTERETS PRET CE",      compte:"661",  n:12},
-  {lib:"AMORT CAPITAL PRET CE", compte:"164",  n:12},
-  {lib:"AGENCE IMMO RIVIERA",   compte:"622",  n:3},
-  {lib:"HONORAIRES S2A",        compte:"622",  n:1},
-  {lib:"FRAIS BANCAIRES",       compte:"627",  n:12},
-  {lib:"LOYER LOCATAIRE",       compte:"706",  n:12}
+  {lib:"CFE DGFIP",             compte:"63511",n:1},
+  {lib:"FRAIS TENUE DE COMPTE", compte:"627",  n:4},
+  {lib:"HONORAIRES S2A",        compte:"622",  n:1}
 ];
 
-// Relevé bancaire 2026 : les lignes à coder cette année.
-// sens: 'debit' (dépense) / 'credit' (recette). montant en € TTC.
-// Dossier de croisière (client déjà connu) : la plupart des libellés
-// reviennent du N-1, quelques nouveautés obligent à l'arbitrage humain.
+// Relevé bancaire 2026 : les lignes à coder cette année (année pleine, dossier de
+// croisière). sens: 'debit' / 'credit' ; montant en € TTC. Les échéances de prêt
+// portent 'amort:[intérêts,capital]' : ventilation issue du tableau d'amortissement.
 var BANK = [
-  {date:"06/01/2026", lib:"VIR RECU LOYER MARTIN",            montant:780,    sens:"credit"},
-  {date:"08/01/2026", lib:"PRLV SYNDIC AZUR SA T1",           montant:412.50, sens:"debit"},
-  {date:"10/01/2026", lib:"PRLV EDF CLIENTS",                 montant:96.40,  sens:"debit"},
-  {date:"15/01/2026", lib:"ECH PRET CE INTERETS",             montant:243.11, sens:"debit"},
-  {date:"15/01/2026", lib:"ECH PRET CE CAPITAL",              montant:611.89, sens:"debit"},
-  {date:"31/01/2026", lib:"PRLV FRAIS BANCAIRES TENUE CPTE",  montant:6.90,   sens:"debit"},
-  {date:"05/02/2026", lib:"VIR RECU LOYER MARTIN",            montant:780,    sens:"credit"},
-  {date:"12/02/2026", lib:"PRLV ASSURANCE PNO AXA",           montant:214.00, sens:"debit"},
-  {date:"15/02/2026", lib:"ECH PRET CE INTERETS",             montant:241.02, sens:"debit"},
-  {date:"15/02/2026", lib:"ECH PRET CE CAPITAL",              montant:613.98, sens:"debit"},
-  {date:"22/02/2026", lib:"CB MOBILIER CONFORAMA NICE",       montant:1289.00,sens:"debit"},
-  {date:"05/03/2026", lib:"VIR RECU LOYER MARTIN",            montant:780,    sens:"credit"},
-  {date:"09/03/2026", lib:"PRLV VEOLIA EAU",                  montant:71.20,  sens:"debit"},
-  {date:"18/03/2026", lib:"CHQ MENUISERIE DES CIMES",         montant:3920.00,sens:"debit"},
-  {date:"27/03/2026", lib:"PRLV AGENCE IMMO RIVIERA GESTION", montant:93.60,  sens:"debit"},
-  {date:"03/04/2026", lib:"VIR RECU LOYER MARTIN",            montant:780,    sens:"credit"},
-  {date:"08/04/2026", lib:"PRLV SYNDIC AZUR SA T2",           montant:412.50, sens:"debit"},
-  {date:"14/04/2026", lib:"PRLV EDF CLIENTS",                 montant:88.15,  sens:"debit"},
-  {date:"20/04/2026", lib:"VIR M. DUPONT APPORT CC",          montant:2000.00,sens:"credit"},
-  {date:"05/05/2026", lib:"VIR RECU LOYER MARTIN",            montant:780,    sens:"credit"},
-  {date:"16/05/2026", lib:"PRLV CHUBB ASSURANCE GLI",         montant:156.00, sens:"debit"},
-  {date:"11/06/2026", lib:"VIR TAXE FONCIERE DGFIP NICE",     montant:1187.00,sens:"debit"},
-  {date:"24/06/2026", lib:"CB LEROY MERLIN QUINCAILLERIE",    montant:143.80, sens:"debit"},
-  {date:"08/07/2026", lib:"PRLV SYNDIC AZUR SA T3",           montant:428.00, sens:"debit"},
-  {date:"19/07/2026", lib:"PRLV ORANGE FIBRE PRO",            montant:43.99,  sens:"debit"}
+  {date:"05/01/2026", lib:"VIR RECU LOYER M MARTIN",             montant:  850.00, sens:"credit" },
+  {date:"06/01/2026", lib:"PRLV ECH PRET IMMO CACIB",            montant: 1030.64, sens:"debit"  , amort:[387.35,643.29]},
+  {date:"09/01/2026", lib:"PRLV SYNDIC AZUR SA APPEL T1",        montant:  438.00, sens:"debit"  },
+  {date:"11/01/2026", lib:"PRLV EDF CLIENTS PARTICULIERS",       montant:  118.40, sens:"debit"  },
+  {date:"28/01/2026", lib:"PRLV FRAIS TENUE DE COMPTE",          montant:    8.90, sens:"debit"  },
+  {date:"05/02/2026", lib:"VIR RECU LOYER M MARTIN",             montant:  850.00, sens:"credit" },
+  {date:"06/02/2026", lib:"PRLV ECH PRET IMMO CACIB",            montant: 1030.64, sens:"debit"  , amort:[385.71,644.93]},
+  {date:"11/02/2026", lib:"PRLV EDF CLIENTS PARTICULIERS",       montant:  109.20, sens:"debit"  },
+  {date:"14/02/2026", lib:"PRLV ASSURANCE PNO AXA",              montant:  268.00, sens:"debit"  },
+  {date:"22/02/2026", lib:"CB BOULANGER ELECTROMENAGER",         montant:  890.00, sens:"debit"  },
+  {date:"05/03/2026", lib:"VIR RECU LOYER M MARTIN",             montant:  850.00, sens:"credit" },
+  {date:"06/03/2026", lib:"PRLV ECH PRET IMMO CACIB",            montant: 1030.64, sens:"debit"  , amort:[384.08,646.56]},
+  {date:"11/03/2026", lib:"PRLV EDF CLIENTS PARTICULIERS",       montant:   96.80, sens:"debit"  },
+  {date:"17/03/2026", lib:"PRLV VEOLIA EAU IDF",                 montant:   84.60, sens:"debit"  },
+  {date:"18/03/2026", lib:"CHQ MENUISERIE DES CIMES",            montant: 3480.00, sens:"debit"  },
+  {date:"20/03/2026", lib:"PRLV ORANGE SA FIBRE",                montant:   33.99, sens:"debit"  },
+  {date:"05/04/2026", lib:"VIR RECU LOYER M MARTIN",             montant:  850.00, sens:"credit" },
+  {date:"06/04/2026", lib:"PRLV ECH PRET IMMO CACIB",            montant: 1030.64, sens:"debit"  , amort:[382.43,648.21]},
+  {date:"09/04/2026", lib:"PRLV SYNDIC AZUR SA APPEL T2",        montant:  438.00, sens:"debit"  },
+  {date:"11/04/2026", lib:"PRLV EDF CLIENTS PARTICULIERS",       montant:   74.30, sens:"debit"  },
+  {date:"20/04/2026", lib:"VIR M DUPONT APPORT CC",              montant: 2500.00, sens:"credit" },
+  {date:"25/04/2026", lib:"PRLV HONORAIRES S2A",                 montant:  780.00, sens:"debit"  },
+  {date:"28/04/2026", lib:"PRLV FRAIS TENUE DE COMPTE",          montant:    8.90, sens:"debit"  },
+  {date:"05/05/2026", lib:"VIR RECU LOYER M MARTIN",             montant:  850.00, sens:"credit" },
+  {date:"06/05/2026", lib:"PRLV ECH PRET IMMO CACIB",            montant: 1030.64, sens:"debit"  , amort:[380.78,649.86]},
+  {date:"16/05/2026", lib:"PRLV CHUBB EUROPEAN GROUP GLI",       montant:  168.00, sens:"debit"  },
+  {date:"05/06/2026", lib:"VIR RECU LOYER M MARTIN",             montant:  850.00, sens:"credit" },
+  {date:"06/06/2026", lib:"PRLV ECH PRET IMMO CACIB",            montant: 1030.64, sens:"debit"  , amort:[379.13,651.51]},
+  {date:"11/06/2026", lib:"PRLV TOTALENERGIES ELEC",             montant:   68.90, sens:"debit"  },
+  {date:"24/06/2026", lib:"CB LEROY MERLIN NICE",                montant:  128.40, sens:"debit"  },
+  {date:"05/07/2026", lib:"VIR RECU LOYER M MARTIN",             montant:  850.00, sens:"credit" },
+  {date:"06/07/2026", lib:"PRLV ECH PRET IMMO CACIB",            montant: 1030.64, sens:"debit"  , amort:[377.48,653.16]},
+  {date:"09/07/2026", lib:"PRLV SYNDIC AZUR SA APPEL T3",        montant:  438.00, sens:"debit"  },
+  {date:"20/07/2026", lib:"PRLV ORANGE SA FIBRE",                montant:   33.99, sens:"debit"  },
+  {date:"28/07/2026", lib:"PRLV FRAIS TENUE DE COMPTE",          montant:    8.90, sens:"debit"  },
+  {date:"03/08/2026", lib:"PRLV SEPA CLINK ABONNEMENT",          montant:   12.90, sens:"debit"  },
+  {date:"05/08/2026", lib:"VIR RECU LOYER M MARTIN",             montant:  850.00, sens:"credit" },
+  {date:"06/08/2026", lib:"PRLV ECH PRET IMMO CACIB",            montant: 1030.64, sens:"debit"  , amort:[375.82,654.82]},
+  {date:"11/08/2026", lib:"PRLV TOTALENERGIES ELEC",             montant:   61.50, sens:"debit"  },
+  {date:"05/09/2026", lib:"VIR RECU LOYER M MARTIN",             montant:  850.00, sens:"credit" },
+  {date:"06/09/2026", lib:"PRLV ECH PRET IMMO CACIB",            montant: 1030.64, sens:"debit"  , amort:[374.15,656.49]},
+  {date:"12/09/2026", lib:"PRLV COPRO AZUR APPEL FONDS TRAVAUX", montant:  720.00, sens:"debit"  },
+  {date:"17/09/2026", lib:"PRLV VEOLIA EAU IDF",                 montant:   92.30, sens:"debit"  },
+  {date:"05/10/2026", lib:"VIR RECU LOYER M MARTIN",             montant:  850.00, sens:"credit" },
+  {date:"06/10/2026", lib:"PRLV ECH PRET IMMO CACIB",            montant: 1030.64, sens:"debit"  , amort:[372.48,658.16]},
+  {date:"09/10/2026", lib:"PRLV SYNDIC AZUR SA APPEL T4",        montant:  452.00, sens:"debit"  },
+  {date:"11/10/2026", lib:"PRLV TOTALENERGIES ELEC",             montant:   79.20, sens:"debit"  },
+  {date:"15/10/2026", lib:"VIR TAXE FONCIERE DGFIP",             montant: 1342.00, sens:"debit"  },
+  {date:"28/10/2026", lib:"PRLV FRAIS TENUE DE COMPTE",          montant:    8.90, sens:"debit"  },
+  {date:"05/11/2026", lib:"VIR RECU LOYER M MARTIN",             montant:  850.00, sens:"credit" },
+  {date:"06/11/2026", lib:"PRLV ECH PRET IMMO CACIB",            montant: 1030.64, sens:"debit"  , amort:[370.81,659.83]},
+  {date:"08/11/2026", lib:"VIR AXA INDEMNISATION SINISTRE",      montant:  640.00, sens:"credit" },
+  {date:"20/11/2026", lib:"PRLV ORANGE SA FIBRE",                montant:   35.99, sens:"debit"  },
+  {date:"05/12/2026", lib:"VIR RECU LOYER M MARTIN",             montant:  850.00, sens:"credit" },
+  {date:"06/12/2026", lib:"PRLV ECH PRET IMMO CACIB",            montant: 1030.64, sens:"debit"  , amort:[369.13,661.51]},
+  {date:"11/12/2026", lib:"PRLV TOTALENERGIES ELEC",             montant:  121.60, sens:"debit"  },
+  {date:"15/12/2026", lib:"PRLV DGFIP CFE",                      montant:  226.00, sens:"debit"  },
 ];
 
-// Factures déposées par le client (01_Factures/). Volontairement incomplètes.
-// L'outil les lit (fournisseur/date/HT/TVA/TTC) et les rapproche par montant+date.
+// Factures déposées par le client dans son Drive (01_Factures/). Volontairement
+// incomplètes. L'outil les lit (fournisseur/date/HT/TVA/TTC) et les rapproche par
+// montant + date. Manquent (→ relance > seuil) : Syndic T3, Chubb GLI, Menuiserie,
+// Appel de fonds copro. Sous le seuil, non réclamées : Leroy Merlin, CLINK.
+// Boulanger : facture 899,00 € vs banque 890,00 € → écart signalé.
 var INVOICES = [
-  {four:"Syndic Azur SA",         date:"05/01/2026", ttc:412.50, tva:68.75},
-  {four:"EDF",                    date:"09/01/2026", ttc:96.40,  tva:16.07},
-  {four:"AXA — assurance PNO",    date:"11/02/2026", ttc:214.00, tva:0},
-  {four:"Conforama Nice",         date:"22/02/2026", ttc:1289.00,tva:214.83},
-  {four:"Veolia Eau",             date:"08/03/2026", ttc:71.20,  tva:3.89},
-  {four:"Agence Riviera Gestion", date:"27/03/2026", ttc:93.60,  tva:15.60},
-  {four:"EDF",                    date:"13/04/2026", ttc:88.15,  tva:14.69},
-  {four:"DGFIP — taxe foncière",  date:"11/06/2026", ttc:1187.00,tva:0},
-  {four:"Leroy Merlin",           date:"24/06/2026", ttc:151.20, tva:25.20},
-  {four:"Syndic Azur SA",         date:"03/07/2026", ttc:428.00, tva:71.33}
-  // Manquent volontairement (→ liste de relance) : Menuiserie des Cimes
-  // 3 920 € (travaux), Syndic Azur T2 412,50 €, Chubb GLI 156 €, Orange Fibre.
+  {four:"Syndic Azur SA",                  date:"07/01/2026", ttc:  438.00, tva:  73.00},
+  {four:"Syndic Azur SA",                  date:"07/04/2026", ttc:  438.00, tva:  73.00},
+  {four:"Syndic Azur SA",                  date:"06/10/2026", ttc:  452.00, tva:  75.33},
+  {four:"EDF",                             date:"10/01/2026", ttc:  118.40, tva:  19.73},
+  {four:"EDF",                             date:"08/02/2026", ttc:  109.20, tva:  18.20},
+  {four:"EDF",                             date:"10/03/2026", ttc:   96.80, tva:  16.13},
+  {four:"EDF",                             date:"08/04/2026", ttc:   74.30, tva:  12.38},
+  {four:"TotalEnergies",                   date:"10/06/2026", ttc:   68.90, tva:  11.48},
+  {four:"TotalEnergies",                   date:"10/08/2026", ttc:   61.50, tva:  10.25},
+  {four:"TotalEnergies",                   date:"10/10/2026", ttc:   79.20, tva:  13.20},
+  {four:"TotalEnergies",                   date:"10/12/2026", ttc:  121.60, tva:  20.27},
+  {four:"Veolia Eau",                      date:"15/03/2026", ttc:   84.60, tva:   4.41},
+  {four:"Veolia Eau",                      date:"15/09/2026", ttc:   92.30, tva:   4.81},
+  {four:"AXA — assurance PNO",             date:"12/02/2026", ttc:  268.00, tva:   0.00},
+  {four:"Orange SA",                       date:"18/03/2026", ttc:   33.99, tva:   5.66},
+  {four:"Orange SA",                       date:"18/07/2026", ttc:   33.99, tva:   5.66},
+  {four:"Orange SA",                       date:"18/11/2026", ttc:   35.99, tva:   6.00},
+  {four:"DGFIP — taxe foncière (avis)",    date:"14/10/2026", ttc: 1342.00, tva:   0.00},
+  {four:"DGFIP — CFE (avis)",              date:"14/12/2026", ttc:  226.00, tva:   0.00},
+  {four:"S2A — honoraires",                date:"24/04/2026", ttc:  780.00, tva: 130.00},
+  {four:"Boulanger",                       date:"21/02/2026", ttc:  899.00, tva: 149.83},
 ];
 
 /* ============================================================
@@ -813,12 +856,24 @@ function codeLine(line, dict){
   if(line.sens === "credit"){
     if(/LOYER/.test(line.lib))
       return set(out,"706",0.99,"exact","Recette de loyer identifiée (opération récurrente)");
+    if(/INDEMNI|SINISTRE|REMB.*ASSURANCE/.test(line.lib))
+      return set(out,"758",0.55,"regle","Indemnité d'assurance (sinistre) — produit (758) ou diminution de la charge concernée : à valider","arb");
     if(/APPORT|DUPONT/.test(line.lib))
       return set(out,"108",0.62,"regle","Apport probable de l'exploitant — compte courant (108) à confirmer","arb");
     return set(out,"471",0.0,"inconnu","Recette non identifiée — à ventiler","new");
   }
 
-  // 2) travaux : arbitrage charge/immo — jamais codé tout seul, quel que soit le libellé
+  // 2a) échéance de prêt : ventilée par le TABLEAU D'AMORTISSEMENT (du code, pas de l'IA)
+  if(line.amort){
+    var oa = set(out,"661",0.95,"amort","Échéance de prêt ventilée d'après le tableau d'amortissement : intérêts (661) + capital (164)");
+    oa.split = {int:line.amort[0], cap:line.amort[1]}; return oa;
+  }
+
+  // 2b) appel de fonds travaux copropriété → arbitrage charge / immobilisation
+  if(/APPEL.*FONDS|FONDS.*TRAVAUX|COPRO.*TRAVAUX|COPROPRIETE.*TRAVAUX/.test(line.lib))
+    return set(out,"614",0.55,"regle","Appel de fonds travaux de copropriété — charge courante (614) ou gros travaux à immobiliser (2135) : à trancher","arb");
+
+  // 2c) travaux : arbitrage charge/immo — jamais codé tout seul, quel que soit le libellé
   if(/MENUISERIE|MACON|PLOMB|ELECTRICI|TRAVAUX|RENOV|CARRELAGE|PEINTURE|ISOLATION|TOITURE/.test(line.lib))
     return set(out,"2135",0.55,"regle","Travaux — arbitrage entretien (615, déductible) / amélioration à immobiliser (2135). "+eur(line.montant)+" : à trancher.","arb");
 
@@ -834,14 +889,18 @@ function codeLine(line, dict){
 
   if(exactD)
     return set(out, exactD.compte, 0.98, "dict", "Libellé identique au FEC N-1 (vu "+exactD.n+"× l'an dernier) : « "+exactD.lib+" »");
-  if(best && bestInter >= 2 && bestCov >= 0.999)
+  if(best && bestCov >= 0.999 && (bestInter >= 2 || best.toks.length === 1))
     return set(out, best.compte, 0.94, "near", "Variante du libellé N-1 « "+best.lib+" » (mêmes mots-clés) → même compte");
   if(best && bestCov >= 0.6 && bestInter >= 1){
     var conf = round2(0.72 + 0.13*(bestCov-0.6)/0.4); // 0.72 → 0.85
     return set(out, best.compte, conf, "fuzzy", "Rapproché de « "+best.lib+" » (N-1) — libellé proche, à confirmer");
   }
 
-  // 4) immobilisations & arbitrages : identifiables, mais la NATURE reste un jugement humain
+  // 4) frais bancaires (libellés variables) → 627
+  if(/FRAIS.*(TENUE|COMPTE|BANCAIRE)|TENUE DE COMPTE|COMMISSION|AGIOS|COTISATION.*CARTE/.test(line.lib))
+    return set(out,"627",0.92,"regle","Frais bancaires → 627 (services bancaires)");
+
+  // 4b) immobilisations & arbitrages : identifiables, mais la NATURE reste un jugement humain
   if(/MOBILIER|CONFORAMA|IKEA|\bBUT\b|MAISON DU MONDE|LITERIE|CANAPE|ELECTROMENAGER|DARTY|BOULANGER/.test(line.lib))
     return set(out,"2184",0.60,"regle","Achat de mobilier → immobilisation (2184) à porter au tableau d'amortissement, pas une charge de l'année : à valider","immo");
   if(/LEROY MERLIN|CASTORAMA|BRICO|QUINCAILL|WELDOM|MR BRICOLAGE|POINT P/.test(line.lib))
@@ -907,10 +966,10 @@ function esc(s){ return (""+s).replace(/[&<>"]/g,function(c){return {'&':'&amp;'
 /* ============================================================
    ÉTAT + RENDU
    ============================================================ */
-var SEUIL = 100;               // seuil de matérialité (€) déclenchant la relance client
+var SEUIL = 150;               // seuil de matérialité (€) déclenchant la relance client
 var CURRENT_PASSE = 1;         // passe de relance affichée (15 ou 31 janvier)
 // Pièces transmises par le client entre la passe 1 et la passe 2 (démo)
-var RECU_P2 = ["PRLV SYNDIC AZUR SA T2", "PRLV CHUBB ASSURANCE GLI"];
+var RECU_P2 = ["PRLV SYNDIC AZUR SA APPEL T3", "PRLV CHUBB EUROPEAN GROUP GLI"];
 
 var DICT = buildDict(FEC);
 var CODED = BANK.map(function(l){ return codeLine(l, DICT); });
@@ -967,7 +1026,7 @@ function renderJournal(){
     h+='<tr><td class="num">'+l.date+'</td>'+
        '<td class="lib">'+esc(l.lib)+'</td>'+
        '<td class="r num">'+(l.sens==="credit"?'+ ':'')+eur(l.montant)+'</td>'+
-       '<td class="acct">'+l.compte+'<small>'+esc(COMPTES[l.compte]||"")+'</small></td>'+
+       acctCell(l)+
        '<td>'+confChip(l.conf)+'</td>'+
        '<td>'+originTag(l)+'</td></tr>';
   });
@@ -978,12 +1037,18 @@ function confChip(c){
   var cl=confClass(c);
   return '<span class="pill-pc"><span class="conf '+cl+'"><span class="cd"></span>'+confLabel(c)+'</span></span>';
 }
+function acctCell(l){
+  if(l.split)
+    return '<td class="acct">661 / 164<small>intérêts '+eur(l.split.int)+' · capital '+eur(l.split.cap)+'</small></td>';
+  return '<td class="acct">'+l.compte+'<small>'+esc(COMPTES[l.compte]||"")+'</small></td>';
+}
 function originTag(l){
   if(l.tag==="new") return '<span class="tag new">nouveau</span>';
   if(l.tag==="arb") return '<span class="tag arb">arbitrage</span>';
   if(l.compte==="2184"||l.compte==="2135") return '<span class="tag immo">immo</span>';
   if(l.origin==="dict") return '<span class="tag">FEC N-1</span>';
   if(l.origin==="near") return '<span class="tag">≈ FEC N-1</span>';
+  if(l.origin==="amort") return '<span class="tag">amort. prêt</span>';
   if(l.origin==="web")  return '<span class="tag web">🔎 web</span>';
   if(l.origin==="fuzzy") return '<span class="tag">approché</span>';
   if(l.origin==="regle") return '<span class="tag">règle</span>';
@@ -1090,9 +1155,14 @@ n+" justificatif"+(n>1?"s":"")+" :\n\n"+lines+"\n\n"+
   if(tg) tg.querySelectorAll("button").forEach(function(b){ b.classList.toggle("on", +b.getAttribute("data-passe")===passe); });
 }
 function prettyVendor(l){
-  // libellé lisible pour le client
-  var s=l.lib.replace(/^(VIR|PRLV|CB|CHQ|ECH)\s+/,"").replace(/\s+(RECU|CLIENTS?|SA|SAS|PRO|GESTION|T[1-4]|INTERV|NICE)\b/g," ").replace(/\s+/g," ").trim();
-  return s.charAt(0)+s.slice(1).toLowerCase();
+  // libellé lisible pour le client (on garde le trimestre T1..T4, utile pour retrouver la pièce)
+  var s=l.lib
+    .replace(/^(VIR|PRLV|CB|CHQ|ECH)\s+/,"")
+    .replace(/\b(SA|SAS|SARL|EURL|CLIENTS?|PARTICULIERS?|IDF|SEPA|EUROPEAN GROUP)\b/g," ")
+    .replace(/\s+/g," ").trim().toLowerCase();
+  s = s.replace(/\b([a-zà-ÿ])/g, function(m,c){ return c.toUpperCase(); });         // Titre
+  s = s.replace(/\bT([1-4])\b/gi,"T$1").replace(/\b(Gli|Cfe|Pno)\b/g, function(m){ return m.toUpperCase(); });
+  return s;
 }
 
 /* ============================================================
@@ -1144,7 +1214,11 @@ function toast(m){ var t=document.getElementById("toast"); t.textContent=m; t.cl
 
 function csv(){
   var rows=[["Date","Libelle","Sens","Montant","Compte","Intitule","Confiance","Origine"]];
-  CODED.forEach(function(l){ rows.push([l.date,l.lib,l.sens,String(l.montant).replace(".",","),l.compte,COMPTES[l.compte]||"",Math.round(l.conf*100)+"%",l.origin]); });
+  CODED.forEach(function(l){
+    var compte = l.split ? "661/164" : l.compte;
+    var intit  = l.split ? ("Echeance pret : interets "+l.split.int+" / capital "+l.split.cap) : (COMPTES[l.compte]||"");
+    rows.push([l.date,l.lib,l.sens,String(l.montant).replace(".",","),compte,intit,Math.round(l.conf*100)+"%",l.origin]);
+  });
   var txt=rows.map(function(r){ return r.map(function(c){ return '"'+(""+c).replace(/"/g,'""')+'"'; }).join(";"); }).join("\r\n");
   var blob=new Blob(["﻿"+txt],{type:"text/csv;charset=utf-8"});
   var a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="journal_banque_DUPONT_2026.csv"; a.click();
