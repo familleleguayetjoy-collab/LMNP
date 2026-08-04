@@ -184,6 +184,8 @@
 .pcard .phead h3{font-size:1.15rem}
 .pcard .phead p{font-size:.86rem;color:var(--muted);margin-top:3px;max-width:86ch}
 .pcard .phead .btn{margin-left:auto}
+.phead-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.phead-actions .btn{margin-left:0}
 
 /* ---------- Tables ---------- */
 .tbl-scroll{overflow-x:auto;margin:14px -22px 0;padding:0 22px}
@@ -517,9 +519,12 @@ table.data tr:hover td{background:var(--paper-2)}
             <div class="phead">
               <div>
                 <h3>Journal de banque codé</h3>
-                <p>Chaque ligne du relevé reçoit un compte proposé et un niveau de confiance. Prêt à intégrer après revue. Les lignes en confiance moyenne ou faible sont reprises dans l'écran de revue.</p>
+                <p>Chaque ligne du relevé reçoit un compte proposé et un niveau de confiance. Les lignes en confiance moyenne ou faible sont reprises dans l'écran de revue. Export en <b>écritures Quadratus (ASCII, partie double)</b> — journal <b>BQ</b> (banque) ou <b>OD</b> selon le paramètre — ou en CSV.</p>
               </div>
-              <button class="btn btn-ghost" id="btnCsv" type="button"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>Exporter en CSV</button>
+              <div class="phead-actions">
+                <button class="btn btn-primary" id="btnQuadra" type="button"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>Export Quadra (ASCII)</button>
+                <button class="btn btn-ghost" id="btnCsv" type="button"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>CSV</button>
+              </div>
             </div>
             <div class="tbl-scroll">
               <table class="data" id="tJournal">
@@ -1272,6 +1277,61 @@ function csv(){
   var a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="journal_banque_DUPONT_2026.csv"; a.click();
   toast("Journal exporté (CSV)");
 }
+/* ---- Export Quadratus ASCII (Cegid Quadra) ----
+   Enregistrement "Mouvement" (type M), largeur fixe 256 caractères.
+   Champs texte cadrés à gauche (espaces à droite), numériques cadrés à droite
+   (zéros à gauche). Écritures en partie double (débit + crédit équilibrés).
+   Positions (1-indexées) :
+     1     (1)  type = 'M'
+     2-9   (8)  n° de compte
+     10-11 (2)  code journal
+     12-14 (3)  n° folio ('000')
+     15-20 (6)  date écriture JJMMAA
+     21    (1)  code libellé
+     22-41 (20) libellé
+     42    (1)  sens 'D' / 'C'
+     43-55 (13) montant en centimes
+     182-193 (12) n° de pièce
+   NB : positions issues du format Quadratus standard — à VALIDER dans le
+   paramétrage d'import de votre Quadra avant usage réel.
+*/
+function qTxt(s,len){ s=(""+s); return s.length>=len ? s.slice(0,len) : s+Array(len-s.length+1).join(" "); }
+function qNum(n,len){ var c=Math.round(Math.abs(n)*100).toString(); return c.length>=len ? c.slice(-len) : Array(len-c.length+1).join("0")+c; }
+function qDate(d){ var p=d.split("/"); return p[0]+p[1]+p[2].slice(2); }
+function qLib(l){ return stripAccents((""+l).toUpperCase()).replace(/[^A-Z0-9 ]/g," ").replace(/\s+/g," ").trim(); }
+function qLine(compte,journal,date,lib,sens,montant,piece){
+  var b=[]; for(var i=0;i<256;i++) b[i]=" ";
+  function put(pos,str){ for(var i=0;i<str.length;i++) b[pos-1+i]=str[i]; }
+  put(1,"M"); put(2,qTxt(compte,8)); put(10,qTxt(journal,2)); put(12,"000");
+  put(15,qDate(date)); put(21,"0"); put(22,qTxt(qLib(lib),20));
+  put(42,sens); put(43,qNum(montant,13)); put(182,qTxt(piece,12));
+  return b.join("");
+}
+function quadraAscii(){
+  var journal = HAS_BANK ? "BQ" : "OD";
+  var cp = HAS_BANK ? "512" : "108";
+  var out=[], p=0;
+  CODED.forEach(function(l){
+    p++; var pc="P"+("0000"+p).slice(-4);
+    if(l.split){
+      out.push(qLine("661",journal,l.date,l.lib+" INTERETS","D",l.split.int,pc));
+      out.push(qLine("164",journal,l.date,l.lib+" CAPITAL","D",l.split.cap,pc));
+      out.push(qLine(cp,journal,l.date,l.lib,"C",l.montant,pc));
+      return;
+    }
+    var s = l.sens==="debit" ? "D" : "C", os = l.sens==="debit" ? "C" : "D";
+    out.push(qLine(l.compte,journal,l.date,l.lib,s,l.montant,pc));
+    out.push(qLine(cp,journal,l.date,l.lib,os,l.montant,pc));
+  });
+  return out.join("\r\n")+"\r\n";
+}
+function exportQuadra(){
+  var blob=new Blob([quadraAscii()],{type:"text/plain;charset=iso-8859-1"});
+  var a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download="ECRITURES_QUADRA_DUPONT_2026.txt"; a.click();
+  toast("Écritures Quadra (ASCII) exportées");
+}
+
 function copyMail(){
   var m=window.__mail; if(!m) return;
   var txt="Objet : "+m.subj+"\n\n"+m.body;
@@ -1348,6 +1408,8 @@ document.getElementById("btnReset").addEventListener("click",function(){
   window.scrollTo({top:0,behavior:"smooth"});
   toast("Démonstration réinitialisée");
 });
+window.__quadra = quadraAscii;   // hook de test (inoffensif)
+document.getElementById("btnQuadra").addEventListener("click",exportQuadra);
 document.getElementById("btnCsv").addEventListener("click",csv);
 document.getElementById("btnMail").addEventListener("click",copyMail);
 document.getElementById("btnPrint").addEventListener("click",function(){ window.print(); });

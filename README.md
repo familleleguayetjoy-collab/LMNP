@@ -28,6 +28,20 @@ banque en comptabilité. Ce choix fixe le **compte de contrepartie** des écritu
 Le sélecteur en tête du poste de travail bascule le journal entre les deux (colonne
 **Contrepartie**). État exposé par la variable `HAS_BANK`.
 
+### Export Quadratus (ASCII)
+
+Le bouton **Export Quadra (ASCII)** génère un fichier texte à largeur fixe
+(256 car., enregistrements « M »), en **écritures de partie double équilibrées**,
+dans le journal **BQ** (si banque tenue) ou **OD** (contrepartie 108). Les
+échéances de prêt sont ventilées 661 / 164. Positions des champs documentées en
+tête de la fonction `quadraAscii()` dans `build/template.html`.
+
+> ⚠️ Le format a été implémenté d'après le **standard Quadratus ASCII** ; les
+> positions exactes des champs et les **codes journaux** (BQ, OD) doivent être
+> **validés dans le paramétrage d'import de votre Quadra** avant un usage réel.
+> Les libellés de compte proviennent du plan comptable LMNP (les comptes doivent
+> exister dans le dossier, ou être créés par l'import).
+
 ### Les deux sources
 
 - **Le client** partage son **Drive** et y scanne / photographie ses factures au
@@ -46,7 +60,8 @@ Le sélecteur en tête du poste de travail bascule le journal entre les deux (co
    fournisseur, HT, TVA, TTC) est rapprochée de la ligne bancaire correspondante
    (même montant, date proche). Les écarts sont signalés, pas corrigés en silence.
 4. **Temps 4 — les livrables :**
-   - le **journal de banque codé** (exportable en CSV) ;
+   - le **journal de banque codé**, exportable en **écritures Quadratus (ASCII)**
+     ou en CSV ;
    - l'**écran d'arbitrage** : uniquement les lignes qui demandent un jugement
      humain (travaux, immobilisations, apports), triées par montant, avec la
      **raison du doute** affichée ;
