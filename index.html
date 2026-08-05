@@ -117,18 +117,33 @@
 .seg button.on{background:var(--navy);color:#fff}
 .set-note{font-size:.8rem;color:var(--muted);flex:1;min-width:180px}
 
-/* Onglets */
-.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:18px 0 14px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:6px;box-shadow:var(--shadow-soft)}
-.tab{flex:1;min-width:132px;display:flex;align-items:center;justify-content:center;gap:8px;padding:13px 12px;border:1px solid transparent;border-radius:10px;background:transparent;font-family:var(--display);font-weight:600;font-size:.94rem;color:var(--muted);cursor:pointer;transition:.16s}
-.tab:hover{color:var(--ink)}
-.tab.on{background:var(--navy);color:#fff;box-shadow:var(--shadow-soft)}
+/* Parcours guidé (stepper) */
+.stepper{display:flex;align-items:stretch;gap:6px;flex-wrap:wrap;margin:18px 0 14px}
+.step{flex:1;min-width:120px;display:flex;align-items:center;justify-content:center;gap:9px;padding:13px 10px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-family:var(--display);font-weight:600;font-size:.9rem;color:var(--muted);cursor:pointer;transition:.16s;box-shadow:var(--shadow-soft)}
+.step .sd{width:24px;height:24px;border-radius:50%;background:var(--paper);color:var(--muted);display:grid;place-items:center;font-size:.82rem;border:1px solid var(--line);flex:0 0 auto}
+.step.on{border-color:var(--gold);color:var(--ink)}
+.step.on .sd{background:var(--gold);color:#241a0c;border-color:transparent}
+.step.done{color:var(--ink-2)}
+.step.done .sd{background:var(--pos);color:#fff;border-color:transparent}
+.step[disabled]{opacity:.45;cursor:not-allowed;box-shadow:none}
 .tb{font-size:.78rem;background:var(--warn-soft);color:var(--warn);border-radius:999px;padding:1px 9px;font-weight:700}
 .tb.done{background:var(--pos-soft);color:var(--pos)}
-.tab.on .tb{background:rgba(255,255,255,.22);color:#fff}
 .panel{display:none}
 .panel.on{display:block;animation:fade .25s ease}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
 .panel-intro{font-size:.92rem;color:var(--muted);margin:0 4px 13px}
+.next-row{display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-top:18px}
+.next-row .btn-primary{margin-left:auto}
+.link-journal{background:none;border:none;color:var(--gold-deep);font-family:var(--display);font-weight:600;font-size:.85rem;cursor:pointer;text-decoration:underline;padding:0;margin-top:10px}
+/* Écran de fin */
+.done-screen{text-align:center;padding:36px 26px}
+.done-badge{width:72px;height:72px;border-radius:50%;background:var(--pos-soft);color:var(--pos);display:grid;place-items:center;font-size:2.2rem;margin:0 auto 16px}
+.done-screen h2{font-size:1.5rem}
+.done-screen .dsub{color:var(--muted);margin-top:6px}
+.recap{list-style:none;padding:0;margin:22px auto 0;max-width:460px;text-align:left}
+.recap li{display:flex;gap:12px;align-items:flex-start;padding:12px 15px;border:1px solid var(--line);border-radius:12px;background:var(--paper-2);margin-bottom:10px;font-size:.92rem}
+.recap li:before{content:"✓";color:var(--pos);font-weight:800;flex:0 0 auto}
+.recap li b{font-weight:600}
 /* Sections */
 .section{margin-top:22px}
 .sec-head{display:flex;align-items:center;gap:12px;margin:0 4px 14px}
@@ -292,24 +307,26 @@ table.data td.r,table.data th.r{text-align:right;font-variant-numeric:tabular-nu
         <div class="hero-top"><h1 id="dossierName">LMNP_DUPONT_2026</h1><span class="exo">Exercice 2026 · locations meublées</span></div>
         <p class="hero-lead" id="heroLead"></p>
         <div class="progress"><i id="heroBar"></i></div>
+        <button class="link-journal" id="btnJournal" type="button">Voir le journal complet</button>
       </div>
 
-      <div class="tabs" id="tabs">
-        <button class="tab on" data-tab="trancher" type="button">À trancher <span class="tb" id="tbTr"></span></button>
-        <button class="tab" data-tab="reclamer" type="button">À réclamer <span class="tb" id="tbRel"></span></button>
-        <button class="tab" data-tab="compta" type="button">Envoyer en compta</button>
-        <button class="tab" data-tab="journal" type="button">Journal complet</button>
+      <div class="stepper" id="stepper">
+        <button class="step on" data-step="1" type="button"><span class="sd">1</span> À trancher <span class="tb" id="tbTr"></span></button>
+        <button class="step" data-step="2" type="button" disabled><span class="sd">2</span> À réclamer <span class="tb" id="tbRel"></span></button>
+        <button class="step" data-step="3" type="button" disabled><span class="sd">3</span> Envoyer</button>
+        <button class="step" data-step="4" type="button" disabled><span class="sd">✓</span> Terminé</button>
       </div>
 
-      <!-- Onglet : à trancher -->
+      <!-- Étape 1 : à trancher -->
       <div class="panel on" data-panel="trancher">
-        <p class="panel-intro">Les seules lignes qui demandent votre expertise. Choisissez le compte, puis validez.</p>
+        <p class="panel-intro"><b>1.</b> D'abord, tranchez les lignes qui demandent votre expertise. Choisissez le compte, puis validez.</p>
         <div class="card sec-body"><div id="trancherList"></div></div>
+        <div class="next-row"><button class="btn btn-primary btn-lg" id="btnNext1" type="button">Continuer vers les pièces manquantes →</button></div>
       </div>
 
-      <!-- Onglet : à réclamer -->
+      <!-- Étape 2 : à réclamer -->
       <div class="panel" data-panel="reclamer">
-        <p class="panel-intro">Uniquement les pièces manquantes à réclamer au client.</p>
+        <p class="panel-intro"><b>2.</b> Ensuite, réclamez les pièces manquantes : cochez celles à demander, puis envoyez le mail.</p>
         <div class="card sec-body">
           <div class="passe-toggle" id="passeToggle"><button data-passe="1" class="on" type="button">15 janv.</button><button data-passe="2" type="button">31 janv.</button></div>
           <p class="passe-note" id="passeNote"></p>
@@ -317,16 +334,21 @@ table.data td.r,table.data th.r{text-align:right;font-variant-numeric:tabular-nu
           <p class="subseuil-note" id="subSeuilNote"></p>
           <div class="mail-actions">
             <button class="mini-btn" id="btnSelectAll" type="button">Tout cocher / décocher</button>
-            <button class="btn btn-primary" id="btnMail" type="button">Copier le mail (<span id="selCount"></span>)</button>
+            <button class="mini-btn" id="btnMail" type="button">Copier le mail (<span id="selCount"></span>)</button>
           </div>
           <details class="detail"><summary>Aperçu du mail</summary>
             <div class="mailbox"><div class="mhead"><div class="mrow"><b>Objet</b><span id="mailSubj"></span></div></div><pre id="mailBody"></pre></div>
           </details>
         </div>
+        <div class="next-row">
+          <button class="btn btn-ghost" data-back="trancher" type="button">← Retour</button>
+          <button class="btn btn-primary btn-lg" id="btnSendMail" type="button">Envoyer le mail de relance →</button>
+        </div>
       </div>
 
-      <!-- Onglet : compta -->
+      <!-- Étape 3 : envoyer en compta -->
       <div class="panel" data-panel="compta">
+        <p class="panel-intro"><b>3.</b> Enfin, envoyez les écritures en comptabilité.</p>
         <div class="card" style="overflow:hidden">
           <div class="settings" style="margin:0;padding:16px 22px;border-top:none;border-bottom:1px solid var(--line)">
             <div class="set"><span>Banque</span><div class="seg" id="segBank"><button data-bank="1" class="on" type="button">Oui</button><button data-bank="0" type="button">Non</button></div></div>
@@ -337,23 +359,27 @@ table.data td.r,table.data th.r{text-align:right;font-variant-numeric:tabular-nu
             <div class="ex-ic" id="comptaIc">▦</div>
             <h3>Écritures prêtes</h3>
             <p class="ex-line" id="comptaLine"></p>
-            <div class="compta-btns">
-              <button class="btn btn-primary btn-lg" id="btnImportCompta" type="button">Importer dans Quadra</button>
-              <button class="btn btn-ghost" id="btnDownload" type="button">Télécharger le fichier</button>
-            </div>
-            <p class="import-done" id="importDone" hidden></p>
+            <button class="btn btn-ghost" id="btnDownload" type="button" style="margin-top:14px">Télécharger le fichier seul</button>
             <p class="traite-note" id="traiteNote"></p>
           </div>
         </div>
+        <div class="next-row">
+          <button class="btn btn-ghost" data-back="reclamer" type="button">← Retour</button>
+          <button class="btn btn-primary btn-lg" id="btnSendCompta" type="button">Envoyer en comptabilité →</button>
+        </div>
       </div>
 
-      <!-- Onglet : journal complet -->
-      <div class="panel" data-panel="journal">
-        <div class="card sec-body">
-          <h4 style="margin:6px 0 2px">Journal codé (<span id="bJournal"></span> écritures)</h4>
-          <div class="tbl-scroll"><table class="data" id="tJournal"><thead><tr><th>Date</th><th>Libellé</th><th class="r">Montant</th><th>Compte</th><th>Contrepartie</th><th>Origine</th></tr></thead><tbody></tbody></table></div>
-          <h4 style="margin:18px 0 2px">Rapprochement des factures</h4>
-          <div class="tbl-scroll"><table class="data" id="tFact" style="min-width:520px"><thead><tr><th>Fournisseur</th><th>Date</th><th class="r">TTC</th><th class="r">dont TVA</th><th>Rapprochement</th></tr></thead><tbody></tbody></table></div>
+      <!-- Étape 4 : terminé -->
+      <div class="panel" data-panel="done">
+        <div class="card done-screen">
+          <div class="done-badge">🎉</div>
+          <h2 id="doneTitle">Dossier terminé</h2>
+          <p class="dsub" id="doneSub"></p>
+          <ul class="recap" id="recap"></ul>
+          <div class="next-row" style="justify-content:center;margin-top:24px">
+            <button class="btn btn-ghost" id="btnRedo" type="button">↺ Revoir ce dossier</button>
+            <button class="btn btn-primary btn-lg" id="btnNextDossier" type="button">Dossier suivant →</button>
+          </div>
         </div>
       </div>
 
@@ -415,6 +441,18 @@ table.data td.r,table.data th.r{text-align:right;font-variant-numeric:tabular-nu
           <tbody id="clientsBody"></tbody>
         </table>
       </div>
+    </div>
+  </div>
+
+  <!-- Journal complet -->
+  <div class="modal" id="jrnModal" hidden>
+    <div class="modal-backdrop" id="jrnBackdrop"></div>
+    <div class="modal-box wide">
+      <button class="modal-x" id="jrnClose" type="button" aria-label="Fermer">✕</button>
+      <h3 style="margin-bottom:8px">Journal codé — <span id="bJournal"></span> écritures</h3>
+      <div class="tbl-scroll"><table class="data" id="tJournal"><thead><tr><th>Date</th><th>Libellé</th><th class="r">Montant</th><th>Compte</th><th>Contrepartie</th><th>Origine</th></tr></thead><tbody></tbody></table></div>
+      <h4 style="margin:18px 0 4px">Rapprochement des factures</h4>
+      <div class="tbl-scroll"><table class="data" id="tFact" style="min-width:520px"><thead><tr><th>Fournisseur</th><th>Date</th><th class="r">TTC</th><th class="r">dont TVA</th><th>Rapprochement</th></tr></thead><tbody></tbody></table></div>
     </div>
   </div>
 
@@ -638,9 +676,8 @@ function renderCompta(){
   document.getElementById("comptaLine").innerHTML=(HAS_BANK
     ?"Format <b>Excel</b> — relevé codé, contrepartie banque (512), à intégrer au journal de banque."
     :"Format <b>Quadra (ASCII)</b> — écritures en partie double, contrepartie exploitant (108).")+" · "+CODED.length+" écritures.";
-  document.getElementById("btnImportCompta").textContent=HAS_BANK?"Générer le fichier Excel":"Importer dans Quadra";
-  document.getElementById("traiteNote").innerHTML="✓ Les "+INVOICES.length+" pièces traitées sont classées dans <b>02_Traités/</b> — non reprises au prochain semestre.";
-  document.getElementById("importDone").hidden=true;
+  document.getElementById("btnSendCompta").textContent=(HAS_BANK?"Envoyer en Excel":"Envoyer dans Quadra")+" →";
+  document.getElementById("traiteNote").innerHTML="Après envoi, les "+INVOICES.length+" pièces traitées sont classées dans <b>02_Traités/</b> — non reprises au prochain semestre.";
 }
 function renderDetail(){
   var cp=HAS_BANK?"512":"108";
@@ -658,7 +695,43 @@ function renderDetail(){
     return '<tr><td>'+esc(inv.four)+'</td><td class="num">'+inv.date+'</td><td class="r num">'+eur(inv.ttc)+'</td><td class="r num">'+(inv.tva?eur(inv.tva):'—')+'</td><td>'+st+'</td></tr>';
   }).join("");
 }
-function renderAll(){ renderHero(); renderTrancher(); renderReclamer(CURRENT_PASSE); renderCompta(); renderDetail(); }
+function renderAll(){ renderHero(); renderTrancher(); renderReclamer(CURRENT_PASSE); renderCompta(); renderDetail(); resetFlow(); }
+
+/* ===== PARCOURS GUIDÉ (histoire : début → fin) ===== */
+var ORDER=["trancher","reclamer","compta","done"], reached=0, MAIL_SENT=-1, COMPTA_SENT=false;
+function showPanel(name){
+  var idx=ORDER.indexOf(name);
+  document.querySelectorAll(".panel").forEach(function(p){p.classList.toggle("on",p.getAttribute("data-panel")===name);});
+  document.querySelectorAll("#stepper .step").forEach(function(s){
+    var si=+s.getAttribute("data-step")-1;
+    s.classList.toggle("on",si===idx);
+    s.classList.toggle("done",si<idx);
+    s.disabled=si>reached;
+  });
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function prepPanel(name){ if(name==="reclamer")renderReclamer(CURRENT_PASSE); else if(name==="compta")renderCompta(); else if(name==="done")renderDone(); }
+function goTo(name){ if(ORDER.indexOf(name)<=reached){ prepPanel(name); showPanel(name); } }
+function advance(name){ reached=Math.max(reached,ORDER.indexOf(name)); prepPanel(name); showPanel(name); }
+function resetFlow(){ reached=0; MAIL_SENT=-1; COMPTA_SENT=false; showPanel("trancher"); }
+function sendMail(){
+  var sel=[];document.getElementById("missingList").querySelectorAll('input[type=checkbox]').forEach(function(cb){if(cb.checked)sel.push(1);});
+  MAIL_SENT=sel.length;
+  toast(sel.length?("Mail de relance envoyé — "+sel.length+" pièce"+(sel.length>1?"s":"")+" réclamée"+(sel.length>1?"s":"")):"Aucune relance — on continue");
+  advance("compta");
+}
+function sendCompta(){ if(HAS_BANK)exportExcel();else exportQuadra(); COMPTA_SENT=true; advance("done"); }
+function renderDone(){
+  document.getElementById("doneTitle").textContent="Dossier "+document.getElementById("dossierName").textContent+" terminé";
+  document.getElementById("doneSub").textContent="Bravo — le dossier est prêt et le client relancé.";
+  var fmt=HAS_BANK?"Excel (journal de banque)":"Quadra (import ASCII)";
+  var mail = MAIL_SENT>0 ? ("Mail de relance <b>envoyé</b> — "+MAIL_SENT+" pièce"+(MAIL_SENT>1?"s":"")+" réclamée"+(MAIL_SENT>1?"s":"")+".")
+           : "Aucune pièce à réclamer — pas de relance nécessaire.";
+  document.getElementById("recap").innerHTML=
+    "<li><b>"+CODED.length+" écritures</b> envoyées en comptabilité — "+fmt+".</li>"+
+    "<li>"+mail+"</li>"+
+    "<li>Les "+INVOICES.length+" pièces sont classées dans <b>02_Traités/</b> — non reprises au prochain semestre.</li>";
+}
 
 /* Facture simulée */
 function pad4(n){return ("0000"+n).slice(-4);}
@@ -678,7 +751,6 @@ function qLine(cpt,j,d,lib,s,m,pc){var b=[];for(var i=0;i<256;i++)b[i]=" ";funct
 function quadraAscii(){var j=HAS_BANK?"BQ":"OD",cp=HAS_BANK?"512":"108",out=[],p=0;CODED.forEach(function(l){p++;var pc="P"+("0000"+p).slice(-4);if(l.split){out.push(qLine("661",j,l.date,l.lib+" INTERETS","D",l.split.int,pc));out.push(qLine("164",j,l.date,l.lib+" CAPITAL","D",l.split.cap,pc));out.push(qLine(cp,j,l.date,l.lib,"C",l.montant,pc));return;}var s=l.sens==="debit"?"D":"C",os=l.sens==="debit"?"C":"D";out.push(qLine(l.compte,j,l.date,l.lib,s,l.montant,pc));out.push(qLine(cp,j,l.date,l.lib,os,l.montant,pc));});return out.join("\r\n")+"\r\n";}
 function exportQuadra(){download("ECRITURES_QUADRA_DUPONT_2026.txt",quadraAscii(),"text/plain;charset=iso-8859-1");toast("Fichier Quadra (ASCII) généré");}
 window.__quadra=quadraAscii;
-function importCompta(){if(HAS_BANK)exportExcel();else exportQuadra();var d=document.getElementById("importDone");d.hidden=false;d.textContent=HAS_BANK?"✓ Fichier Excel généré — à ouvrir dans votre tableur / journal de banque.":"✓ Fichier généré — à charger dans Quadra : Outils › Suivi › Import ASCII (Compta).";}
 function copyMail(){var m=window.__mail;if(!m)return;var txt="Objet : "+m.subj+"\n\n"+m.body;if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(function(){toast("Mail copié");},function(){fbCopy(txt);});else fbCopy(txt);}
 function fbCopy(txt){var ta=document.createElement("textarea");ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");toast("Mail copié");}catch(e){toast("Copie impossible");}document.body.removeChild(ta);}
 
@@ -730,20 +802,24 @@ document.getElementById("passeToggle").querySelectorAll("button").forEach(functi
 document.getElementById("missingList").addEventListener("change",buildSelMail);
 document.getElementById("btnSelectAll").addEventListener("click",function(){var boxes=document.getElementById("missingList").querySelectorAll('input[type=checkbox]'),off=false;boxes.forEach(function(cb){if(!cb.checked)off=true;});boxes.forEach(function(cb){cb.checked=off;});buildSelMail();});
 document.getElementById("btnMail").addEventListener("click",copyMail);
-document.getElementById("btnImportCompta").addEventListener("click",importCompta);
 document.getElementById("btnDownload").addEventListener("click",function(){if(HAS_BANK)exportExcel();else exportQuadra();});
 document.getElementById("imgClose").addEventListener("click",function(){document.getElementById("imgModal").hidden=true;});
 document.getElementById("imgBackdrop").addEventListener("click",function(){document.getElementById("imgModal").hidden=true;});
 document.getElementById("btnPrint").addEventListener("click",function(){window.print();});
 
-/* Onglets */
-document.getElementById("tabs").querySelectorAll(".tab").forEach(function(t){
-  t.addEventListener("click",function(){
-    var id=t.getAttribute("data-tab");
-    document.getElementById("tabs").querySelectorAll(".tab").forEach(function(x){x.classList.toggle("on",x===t);});
-    document.querySelectorAll(".panel").forEach(function(p){p.classList.toggle("on",p.getAttribute("data-panel")===id);});
-  });
-});
+/* Parcours guidé */
+document.getElementById("btnNext1").addEventListener("click",function(){ advance("reclamer"); });
+document.getElementById("btnSendMail").addEventListener("click",sendMail);
+document.getElementById("btnSendCompta").addEventListener("click",sendCompta);
+document.getElementById("btnRedo").addEventListener("click",function(){ goTo("trancher"); });
+document.getElementById("btnNextDossier").addEventListener("click",function(){ document.getElementById("campModal").hidden=false; });
+document.querySelectorAll("[data-back]").forEach(function(b){ b.addEventListener("click",function(){ goTo(b.getAttribute("data-back")); }); });
+document.getElementById("stepper").querySelectorAll(".step").forEach(function(s){ s.addEventListener("click",function(){ if(!s.disabled) goTo(ORDER[+s.getAttribute("data-step")-1]); }); });
+
+/* Journal (modale) */
+document.getElementById("btnJournal").addEventListener("click",function(){ renderDetail(); document.getElementById("jrnModal").hidden=false; });
+document.getElementById("jrnClose").addEventListener("click",function(){ document.getElementById("jrnModal").hidden=true; });
+document.getElementById("jrnBackdrop").addEventListener("click",function(){ document.getElementById("jrnModal").hidden=true; });
 
 splash();
 })();
