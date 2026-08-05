@@ -117,6 +117,23 @@
 .seg button.on{background:var(--navy);color:#fff}
 .set-note{font-size:.8rem;color:var(--muted);flex:1;min-width:180px}
 
+/* Étape import */
+.drive-check{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--pos);background:var(--pos-soft);border-radius:12px;font-size:.92rem;color:var(--ink)}
+.drive-check .dc-ic{width:34px;height:34px;border-radius:9px;background:var(--pos);color:#fff;display:grid;place-items:center;font-weight:800;flex:0 0 auto}
+.drive-check b{font-weight:700}
+.field{margin-top:18px}
+.field>label{display:block;font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;color:var(--gold-deep);margin-bottom:8px}
+.imports{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:560px){.imports{grid-template-columns:1fr}}
+.dropzone{display:flex;align-items:center;gap:12px;text-align:left;border:2px dashed var(--field-line);border-radius:13px;background:var(--paper-2);padding:15px 16px;cursor:pointer;font:inherit;color:inherit;transition:.16s}
+.dropzone:hover{border-color:var(--gold)}
+.dropzone.done{border-style:solid;border-color:var(--pos);background:var(--pos-soft)}
+.dropzone.off{display:none}
+.dz-ic{width:40px;height:40px;border-radius:9px;display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:.6rem;color:#fff;flex:0 0 auto}
+.dz-ic.fec{background:#1e3a52}.dz-ic.xls{background:#37725d}
+.dz-tx b{display:block;font-family:var(--display);font-weight:600;font-size:.92rem}.dz-tx small{font-size:.8rem;color:var(--muted)}
+.dropzone.done .dz-tx small{color:var(--pos);font-weight:600}
+
 /* Parcours guidé (stepper) */
 .stepper{display:flex;align-items:stretch;gap:6px;flex-wrap:wrap;margin:18px 0 14px}
 .step{flex:1;min-width:120px;display:flex;align-items:center;justify-content:center;gap:9px;padding:13px 10px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-family:var(--display);font-weight:600;font-size:.9rem;color:var(--muted);cursor:pointer;transition:.16s;box-shadow:var(--shadow-soft)}
@@ -203,6 +220,7 @@
 .btn-primary:hover{background:var(--gold-deep);color:#fff}
 .btn-ghost{background:transparent;border-color:var(--line);color:var(--ink-2)}
 .btn-ghost:hover{border-color:var(--gold);color:var(--gold-deep)}
+.btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none;filter:grayscale(.3)}
 .btn-lg{padding:15px 26px;font-size:1.02rem}
 .mini-btn{padding:8px 14px;border:1px solid var(--line);border-radius:10px;background:var(--paper-2);font-family:var(--display);font-weight:600;font-size:.85rem;color:var(--ink-2);cursor:pointer}
 .mini-btn:hover{border-color:var(--gold);color:var(--gold-deep)}
@@ -311,67 +329,96 @@ table.data td.r,table.data th.r{text-align:right;font-variant-numeric:tabular-nu
       </div>
 
       <div class="stepper" id="stepper">
-        <button class="step on" data-step="1" type="button"><span class="sd">1</span> À trancher <span class="tb" id="tbTr"></span></button>
-        <button class="step" data-step="2" type="button" disabled><span class="sd">2</span> À réclamer <span class="tb" id="tbRel"></span></button>
-        <button class="step" data-step="3" type="button" disabled><span class="sd">3</span> Envoyer</button>
-        <button class="step" data-step="4" type="button" disabled><span class="sd">✓</span> Terminé</button>
+        <button class="step on" data-step="1" type="button"><span class="sd">1</span> Importer</button>
+        <button class="step" data-step="2" type="button" disabled><span class="sd">2</span> À trancher <span class="tb" id="tbTr"></span></button>
+        <button class="step" data-step="3" type="button" disabled><span class="sd">3</span> À réclamer <span class="tb" id="tbRel"></span></button>
+        <button class="step" data-step="4" type="button" disabled><span class="sd">4</span> Le mail</button>
+        <button class="step" data-step="5" type="button" disabled><span class="sd">5</span> Le fichier</button>
       </div>
 
-      <!-- Étape 1 : à trancher -->
-      <div class="panel on" data-panel="trancher">
-        <p class="panel-intro"><b>1.</b> D'abord, tranchez les lignes qui demandent votre expertise. Choisissez le compte, puis validez.</p>
+      <!-- Étape 1 : importer -->
+      <div class="panel on" data-panel="import">
+        <p class="panel-intro"><b>1.</b> On prépare le dossier : on vérifie les pièces du client, puis on importe le FEC de l'an dernier (et le relevé bancaire si le dossier tient une banque).</p>
+        <div class="card sec-body">
+          <div class="drive-check"><span class="dc-ic">✓</span><span><b id="driveCount">21 pièces</b> trouvées dans le Drive du client — dossier prêt à traiter.</span></div>
+          <div class="field">
+            <label>Une banque dans le dossier ?</label>
+            <div class="seg" id="segBank"><button data-bank="1" class="on" type="button">Oui</button><button data-bank="0" type="button">Non</button></div>
+          </div>
+          <div class="field">
+            <label>Période de traitement</label>
+            <div class="seg" id="segPeriode"><button data-p="annuel" class="on" type="button">Annuel</button><button data-p="semestriel" type="button">Semestriel</button></div>
+            <p class="set-note" id="setNote" style="margin-top:10px"></p>
+          </div>
+          <div class="field">
+            <label>Fichiers à importer</label>
+            <div class="imports">
+              <button class="dropzone" id="dzFec" type="button"><span class="dz-ic fec">FEC</span><span class="dz-tx"><b>FEC 2025 (N-1)</b><small id="dzFecS">Cliquer pour importer</small></span></button>
+              <button class="dropzone" id="dzBank" type="button"><span class="dz-ic xls">XLS</span><span class="dz-tx"><b>Relevé bancaire 2026</b><small id="dzBankS">Cliquer pour importer</small></span></button>
+            </div>
+          </div>
+        </div>
+        <div class="next-row"><button class="btn btn-primary btn-lg" id="btnRunImport" type="button" disabled>Lancer la préparation →</button></div>
+      </div>
+
+      <!-- Étape 2 : à trancher -->
+      <div class="panel" data-panel="trancher">
+        <p class="panel-intro"><b>2.</b> Tranchez les lignes qui demandent votre expertise. Choisissez le compte, puis validez.</p>
         <div class="card sec-body"><div id="trancherList"></div></div>
-        <div class="next-row"><button class="btn btn-primary btn-lg" id="btnNext1" type="button">Continuer vers les pièces manquantes →</button></div>
+        <div class="next-row">
+          <button class="btn btn-ghost" data-back="import" type="button">← Retour</button>
+          <button class="btn btn-primary btn-lg" id="btnNext2" type="button">Continuer vers les pièces manquantes →</button>
+        </div>
       </div>
 
-      <!-- Étape 2 : à réclamer -->
+      <!-- Étape 3 : à réclamer -->
       <div class="panel" data-panel="reclamer">
-        <p class="panel-intro"><b>2.</b> Ensuite, réclamez les pièces manquantes : cochez celles à demander, puis envoyez le mail.</p>
+        <p class="panel-intro"><b>3.</b> Voici les pièces manquantes. Cochez celles à réclamer au client.</p>
         <div class="card sec-body">
           <div class="passe-toggle" id="passeToggle"><button data-passe="1" class="on" type="button">15 janv.</button><button data-passe="2" type="button">31 janv.</button></div>
           <p class="passe-note" id="passeNote"></p>
           <ul class="check-list" id="missingList"></ul>
           <p class="subseuil-note" id="subSeuilNote"></p>
-          <div class="mail-actions">
-            <button class="mini-btn" id="btnSelectAll" type="button">Tout cocher / décocher</button>
-            <button class="mini-btn" id="btnMail" type="button">Copier le mail (<span id="selCount"></span>)</button>
-          </div>
-          <details class="detail"><summary>Aperçu du mail</summary>
-            <div class="mailbox"><div class="mhead"><div class="mrow"><b>Objet</b><span id="mailSubj"></span></div></div><pre id="mailBody"></pre></div>
-          </details>
+          <div class="mail-actions"><button class="mini-btn" id="btnSelectAll" type="button">Tout cocher / décocher</button></div>
         </div>
         <div class="next-row">
           <button class="btn btn-ghost" data-back="trancher" type="button">← Retour</button>
+          <button class="btn btn-primary btn-lg" id="btnNext3" type="button">Continuer — rédiger le mail →</button>
+        </div>
+      </div>
+
+      <!-- Étape 4 : le mail -->
+      <div class="panel" data-panel="mail">
+        <p class="panel-intro"><b>4.</b> Le mail de relance est rédigé (<span id="selCount">0</span> pièce<span id="selS"></span>). Vérifiez-le, puis envoyez-le au client.</p>
+        <div class="card sec-body">
+          <div class="mailbox">
+            <div class="mhead"><div class="mrow"><b>À</b><span>client.dupont@email.fr</span></div><div class="mrow"><b>Objet</b><span id="mailSubj"></span></div></div>
+            <pre id="mailBody"></pre>
+          </div>
+          <div class="mail-actions"><button class="mini-btn" id="btnMail" type="button">Copier le texte</button></div>
+        </div>
+        <div class="next-row">
+          <button class="btn btn-ghost" data-back="reclamer" type="button">← Retour</button>
           <button class="btn btn-primary btn-lg" id="btnSendMail" type="button">Envoyer le mail de relance →</button>
         </div>
       </div>
 
-      <!-- Étape 3 : envoyer en compta -->
-      <div class="panel" data-panel="compta">
-        <p class="panel-intro"><b>3.</b> Enfin, envoyez les écritures en comptabilité.</p>
-        <div class="card" style="overflow:hidden">
-          <div class="settings" style="margin:0;padding:16px 22px;border-top:none;border-bottom:1px solid var(--line)">
-            <div class="set"><span>Banque</span><div class="seg" id="segBank"><button data-bank="1" class="on" type="button">Oui</button><button data-bank="0" type="button">Non</button></div></div>
-            <div class="set"><span>Période</span><div class="seg" id="segPeriode"><button data-p="annuel" class="on" type="button">Annuel</button><button data-p="semestriel" type="button">Semestriel</button></div></div>
-            <p class="set-note" id="setNote"></p>
-          </div>
-          <div class="compta">
+      <!-- Étape 5 : le fichier -->
+      <div class="panel" data-panel="fichier">
+        <div id="fichierCard">
+          <p class="panel-intro"><b>5.</b> Dernière étape : récupérez le fichier d'écritures à importer en comptabilité.</p>
+          <div class="card compta">
             <div class="ex-ic" id="comptaIc">▦</div>
             <h3>Écritures prêtes</h3>
             <p class="ex-line" id="comptaLine"></p>
-            <button class="btn btn-ghost" id="btnDownload" type="button" style="margin-top:14px">Télécharger le fichier seul</button>
             <p class="traite-note" id="traiteNote"></p>
           </div>
+          <div class="next-row">
+            <button class="btn btn-ghost" data-back="mail" type="button">← Retour</button>
+            <button class="btn btn-primary btn-lg" id="btnGetFile" type="button">Récupérer le fichier d'import →</button>
+          </div>
         </div>
-        <div class="next-row">
-          <button class="btn btn-ghost" data-back="reclamer" type="button">← Retour</button>
-          <button class="btn btn-primary btn-lg" id="btnSendCompta" type="button">Envoyer en comptabilité →</button>
-        </div>
-      </div>
-
-      <!-- Étape 4 : terminé -->
-      <div class="panel" data-panel="done">
-        <div class="card done-screen">
+        <div class="card done-screen" id="fichierDone" hidden>
           <div class="done-badge">🎉</div>
           <h2 id="doneTitle">Dossier terminé</h2>
           <p class="dsub" id="doneSub"></p>
@@ -676,9 +723,10 @@ function renderCompta(){
   document.getElementById("comptaLine").innerHTML=(HAS_BANK
     ?"Format <b>Excel</b> — relevé codé, contrepartie banque (512), à intégrer au journal de banque."
     :"Format <b>Quadra (ASCII)</b> — écritures en partie double, contrepartie exploitant (108).")+" · "+CODED.length+" écritures.";
-  document.getElementById("btnSendCompta").textContent=(HAS_BANK?"Envoyer en Excel":"Envoyer dans Quadra")+" →";
-  document.getElementById("traiteNote").innerHTML="Après envoi, les "+INVOICES.length+" pièces traitées sont classées dans <b>02_Traités/</b> — non reprises au prochain semestre.";
+  document.getElementById("btnGetFile").textContent=(HAS_BANK?"Récupérer le fichier Excel":"Récupérer le fichier Quadra")+" →";
+  document.getElementById("traiteNote").innerHTML="Après récupération, les "+INVOICES.length+" pièces traitées sont classées dans <b>02_Traités/</b> — non reprises au prochain semestre.";
 }
+function renderMail(){ buildSelMail(); var n=+document.getElementById("selCount").textContent; document.getElementById("selS").textContent=n>1?"s":""; }
 function renderDetail(){
   var cp=HAS_BANK?"512":"108";
   document.querySelector("#tJournal tbody").innerHTML=CODED.map(function(l){
@@ -695,10 +743,10 @@ function renderDetail(){
     return '<tr><td>'+esc(inv.four)+'</td><td class="num">'+inv.date+'</td><td class="r num">'+eur(inv.ttc)+'</td><td class="r num">'+(inv.tva?eur(inv.tva):'—')+'</td><td>'+st+'</td></tr>';
   }).join("");
 }
-function renderAll(){ renderHero(); renderTrancher(); renderReclamer(CURRENT_PASSE); renderCompta(); renderDetail(); resetFlow(); }
+function renderResults(){ renderHero(); renderTrancher(); renderReclamer(CURRENT_PASSE); renderCompta(); renderDetail(); }
 
-/* ===== PARCOURS GUIDÉ (histoire : début → fin) ===== */
-var ORDER=["trancher","reclamer","compta","done"], reached=0, MAIL_SENT=-1, COMPTA_SENT=false;
+/* ===== PARCOURS GUIDÉ (histoire : 5 étapes, début → fin) ===== */
+var ORDER=["import","trancher","reclamer","mail","fichier"], reached=0, MAIL_SENT=-1, fecOK=false, bankOK=false;
 function showPanel(name){
   var idx=ORDER.indexOf(name);
   document.querySelectorAll(".panel").forEach(function(p){p.classList.toggle("on",p.getAttribute("data-panel")===name);});
@@ -710,17 +758,27 @@ function showPanel(name){
   });
   window.scrollTo({top:0,behavior:"smooth"});
 }
-function prepPanel(name){ if(name==="reclamer")renderReclamer(CURRENT_PASSE); else if(name==="compta")renderCompta(); else if(name==="done")renderDone(); }
+function prepPanel(name){ if(name==="reclamer")renderReclamer(CURRENT_PASSE); else if(name==="mail")renderMail(); else if(name==="fichier")renderCompta(); }
 function goTo(name){ if(ORDER.indexOf(name)<=reached){ prepPanel(name); showPanel(name); } }
 function advance(name){ reached=Math.max(reached,ORDER.indexOf(name)); prepPanel(name); showPanel(name); }
-function resetFlow(){ reached=0; MAIL_SENT=-1; COMPTA_SENT=false; showPanel("trancher"); }
+function resetImports(){ var f=document.getElementById("dzFec");f.classList.remove("done");document.getElementById("dzFecS").textContent="Cliquer pour importer"; var b=document.getElementById("dzBank");b.classList.remove("done");document.getElementById("dzBankS").textContent="Cliquer pour importer";b.classList.toggle("off",!HAS_BANK); updateRun(); }
+function updateRun(){ var need=HAS_BANK?(fecOK&&bankOK):fecOK; document.getElementById("btnRunImport").disabled=!need; }
+function resetToImport(){ reached=0; MAIL_SENT=-1; fecOK=false; bankOK=false; document.getElementById("fichierDone").hidden=true; document.getElementById("fichierCard").hidden=false; resetImports(); showPanel("import"); }
 function sendMail(){
-  var sel=[];document.getElementById("missingList").querySelectorAll('input[type=checkbox]').forEach(function(cb){if(cb.checked)sel.push(1);});
-  MAIL_SENT=sel.length;
-  toast(sel.length?("Mail de relance envoyé — "+sel.length+" pièce"+(sel.length>1?"s":"")+" réclamée"+(sel.length>1?"s":"")):"Aucune relance — on continue");
-  advance("compta");
+  var sel=0;document.getElementById("missingList").querySelectorAll('input[type=checkbox]').forEach(function(cb){if(cb.checked)sel++;});
+  MAIL_SENT=sel;
+  toast(sel?("Mail de relance envoyé — "+sel+" pièce"+(sel>1?"s":"")+" réclamée"+(sel>1?"s":"")):"Aucune relance — on continue");
+  advance("fichier");
 }
-function sendCompta(){ if(HAS_BANK)exportExcel();else exportQuadra(); COMPTA_SENT=true; advance("done"); }
+function getFile(){
+  if(HAS_BANK)exportExcel();else exportQuadra();
+  renderDone();
+  document.getElementById("fichierCard").hidden=true;
+  document.getElementById("fichierDone").hidden=false;
+  document.querySelectorAll("#stepper .step").forEach(function(s){s.classList.add("done");s.classList.remove("on");});
+  toast("Fichier récupéré — dossier terminé");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
 function renderDone(){
   document.getElementById("doneTitle").textContent="Dossier "+document.getElementById("dossierName").textContent+" terminé";
   document.getElementById("doneSub").textContent="Bravo — le dossier est prêt et le client relancé.";
@@ -728,7 +786,7 @@ function renderDone(){
   var mail = MAIL_SENT>0 ? ("Mail de relance <b>envoyé</b> — "+MAIL_SENT+" pièce"+(MAIL_SENT>1?"s":"")+" réclamée"+(MAIL_SENT>1?"s":"")+".")
            : "Aucune pièce à réclamer — pas de relance nécessaire.";
   document.getElementById("recap").innerHTML=
-    "<li><b>"+CODED.length+" écritures</b> envoyées en comptabilité — "+fmt+".</li>"+
+    "<li><b>Fichier récupéré</b> — "+CODED.length+" écritures, format "+fmt+".</li>"+
     "<li>"+mail+"</li>"+
     "<li>Les "+INVOICES.length+" pièces sont classées dans <b>02_Traités/</b> — non reprises au prochain semestre.</li>";
 }
@@ -764,7 +822,7 @@ function openDossier(nom){
   document.getElementById("dossierName").textContent="LMNP_"+nom+"_2026";
   document.getElementById("selDossier").value="LMNP_"+nom+"_2026";
   CODED.forEach(function(l){l.validated=false;});
-  splash();
+  resetToImport();
 }
 
 /* ===== FLUX ===== */
@@ -774,7 +832,7 @@ function splash(){
   var sp=document.getElementById("splash");sp.classList.remove("hidden");
   var prog=document.getElementById("cprog");prog.style.width="0";
   var msgs=["Lecture du FEC N-1…","Codage du relevé bancaire…","Recherche des fournisseurs inconnus…","Rapprochement des factures…"],t=document.getElementById("splashText"),i=0;
-  (function tick(){if(i<msgs.length){t.textContent=msgs[i];prog.style.width=Math.round((i+1)/msgs.length*100)+"%";i++;setTimeout(tick,380);}else{setTimeout(function(){sp.classList.add("hidden");document.getElementById("workspace").classList.remove("hidden");renderAll();window.scrollTo({top:0});},280);}})();
+  (function tick(){if(i<msgs.length){t.textContent=msgs[i];prog.style.width=Math.round((i+1)/msgs.length*100)+"%";i++;setTimeout(tick,380);}else{setTimeout(function(){sp.classList.add("hidden");document.getElementById("workspace").classList.remove("hidden");renderResults();advance("trancher");},280);}})();
 }
 function updateSetNote(){
   document.getElementById("setNote").innerHTML=(HAS_BANK?"Contrepartie <b>512 (banque)</b> · export Excel. ":"Contrepartie <b>108 (exploitant)</b> · export Quadra ASCII. ")+(PERIODE==="semestriel"?"Semestre 2 : "+TREATED_S1+" pièces déjà traitées ignorées (02_Traités/).":"");
@@ -789,8 +847,11 @@ document.querySelectorAll("[data-close-camp]").forEach(function(el){ el.addEvent
 document.getElementById("clientsBody").addEventListener("click",function(e){var b=e.target.closest?e.target.closest("[data-open]"):null;if(b)openDossier(b.getAttribute("data-open"));});
 document.getElementById("btnCampaign").addEventListener("click",function(){ toast("Mail de lancement envoyé à "+CLIENTS.length+" clients"); });
 
-document.getElementById("segBank").querySelectorAll("button").forEach(function(b){b.addEventListener("click",function(){HAS_BANK=b.getAttribute("data-bank")==="1";document.getElementById("segBank").querySelectorAll("button").forEach(function(x){x.classList.toggle("on",x===b);});updateSetNote();renderCompta();renderDetail();});});
+document.getElementById("segBank").querySelectorAll("button").forEach(function(b){b.addEventListener("click",function(){HAS_BANK=b.getAttribute("data-bank")==="1";document.getElementById("segBank").querySelectorAll("button").forEach(function(x){x.classList.toggle("on",x===b);});document.getElementById("dzBank").classList.toggle("off",!HAS_BANK);updateSetNote();updateRun();});});
 document.getElementById("segPeriode").querySelectorAll("button").forEach(function(b){b.addEventListener("click",function(){PERIODE=b.getAttribute("data-p");document.getElementById("segPeriode").querySelectorAll("button").forEach(function(x){x.classList.toggle("on",x===b);});updateSetNote();});});
+document.getElementById("dzFec").addEventListener("click",function(){fecOK=true;this.classList.add("done");document.getElementById("dzFecS").textContent="✓ Importé · FEC_2025.txt";updateRun();});
+document.getElementById("dzBank").addEventListener("click",function(){bankOK=true;this.classList.add("done");document.getElementById("dzBankS").textContent="✓ Importé · RELEVE_2026.xlsx";updateRun();});
+document.getElementById("btnRunImport").addEventListener("click",splash);
 
 document.getElementById("trancherList").addEventListener("click",function(e){
   var t=e.target;
@@ -802,15 +863,15 @@ document.getElementById("passeToggle").querySelectorAll("button").forEach(functi
 document.getElementById("missingList").addEventListener("change",buildSelMail);
 document.getElementById("btnSelectAll").addEventListener("click",function(){var boxes=document.getElementById("missingList").querySelectorAll('input[type=checkbox]'),off=false;boxes.forEach(function(cb){if(!cb.checked)off=true;});boxes.forEach(function(cb){cb.checked=off;});buildSelMail();});
 document.getElementById("btnMail").addEventListener("click",copyMail);
-document.getElementById("btnDownload").addEventListener("click",function(){if(HAS_BANK)exportExcel();else exportQuadra();});
 document.getElementById("imgClose").addEventListener("click",function(){document.getElementById("imgModal").hidden=true;});
 document.getElementById("imgBackdrop").addEventListener("click",function(){document.getElementById("imgModal").hidden=true;});
 document.getElementById("btnPrint").addEventListener("click",function(){window.print();});
 
 /* Parcours guidé */
-document.getElementById("btnNext1").addEventListener("click",function(){ advance("reclamer"); });
+document.getElementById("btnNext2").addEventListener("click",function(){ advance("reclamer"); });
+document.getElementById("btnNext3").addEventListener("click",function(){ advance("mail"); });
 document.getElementById("btnSendMail").addEventListener("click",sendMail);
-document.getElementById("btnSendCompta").addEventListener("click",sendCompta);
+document.getElementById("btnGetFile").addEventListener("click",getFile);
 document.getElementById("btnRedo").addEventListener("click",function(){ goTo("trancher"); });
 document.getElementById("btnNextDossier").addEventListener("click",function(){ document.getElementById("campModal").hidden=false; });
 document.querySelectorAll("[data-back]").forEach(function(b){ b.addEventListener("click",function(){ goTo(b.getAttribute("data-back")); }); });
@@ -821,7 +882,11 @@ document.getElementById("btnJournal").addEventListener("click",function(){ rende
 document.getElementById("jrnClose").addEventListener("click",function(){ document.getElementById("jrnModal").hidden=true; });
 document.getElementById("jrnBackdrop").addEventListener("click",function(){ document.getElementById("jrnModal").hidden=true; });
 
-splash();
+/* Démarrage : on entre directement sur l'étape 1 (import) */
+document.getElementById("splash").classList.add("hidden");
+document.getElementById("workspace").classList.remove("hidden");
+renderResults();
+resetToImport();
 })();
 </script>
 
