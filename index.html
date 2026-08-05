@@ -107,11 +107,6 @@
 .hero-lead.ready b{color:var(--pos)}
 .progress{height:12px;background:var(--line);border-radius:999px;overflow:hidden;margin:12px 0 16px}
 .progress>i{display:block;height:100%;background:linear-gradient(90deg,var(--pos),var(--pos));border-radius:999px;transition:width .6s cubic-bezier(.2,.7,.2,1)}
-.chips{display:flex;gap:10px;flex-wrap:wrap}
-.chip{display:flex;align-items:center;gap:9px;background:var(--paper-2);border:1px solid var(--line);border-radius:12px;padding:10px 15px}
-.chip .cnum{font-family:var(--display);font-weight:700;font-size:1.25rem;font-variant-numeric:tabular-nums}
-.chip .clab{font-size:.82rem;color:var(--muted);line-height:1.2}
-.chip.ok .cnum{color:var(--pos)}.chip.warn .cnum{color:var(--warn)}.chip.neg .cnum{color:var(--neg)}
 
 /* Settings row */
 .settings{display:flex;gap:20px;flex-wrap:wrap;align-items:center;margin-top:16px;padding-top:16px;border-top:1px dashed var(--line)}
@@ -122,6 +117,18 @@
 .seg button.on{background:var(--navy);color:#fff}
 .set-note{font-size:.8rem;color:var(--muted);flex:1;min-width:180px}
 
+/* Onglets */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:18px 0 14px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:6px;box-shadow:var(--shadow-soft)}
+.tab{flex:1;min-width:132px;display:flex;align-items:center;justify-content:center;gap:8px;padding:13px 12px;border:1px solid transparent;border-radius:10px;background:transparent;font-family:var(--display);font-weight:600;font-size:.94rem;color:var(--muted);cursor:pointer;transition:.16s}
+.tab:hover{color:var(--ink)}
+.tab.on{background:var(--navy);color:#fff;box-shadow:var(--shadow-soft)}
+.tb{font-size:.78rem;background:var(--warn-soft);color:var(--warn);border-radius:999px;padding:1px 9px;font-weight:700}
+.tb.done{background:var(--pos-soft);color:var(--pos)}
+.tab.on .tb{background:rgba(255,255,255,.22);color:#fff}
+.panel{display:none}
+.panel.on{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
+.panel-intro{font-size:.92rem;color:var(--muted);margin:0 4px 13px}
 /* Sections */
 .section{margin-top:22px}
 .sec-head{display:flex;align-items:center;gap:12px;margin:0 4px 14px}
@@ -285,23 +292,24 @@ table.data td.r,table.data th.r{text-align:right;font-variant-numeric:tabular-nu
         <div class="hero-top"><h1 id="dossierName">LMNP_DUPONT_2026</h1><span class="exo">Exercice 2026 · locations meublées</span></div>
         <p class="hero-lead" id="heroLead"></p>
         <div class="progress"><i id="heroBar"></i></div>
-        <div class="chips" id="chips"></div>
-        <div class="settings">
-          <div class="set"><span>Banque</span><div class="seg" id="segBank"><button data-bank="1" class="on" type="button">Oui</button><button data-bank="0" type="button">Non</button></div></div>
-          <div class="set"><span>Période</span><div class="seg" id="segPeriode"><button data-p="annuel" class="on" type="button">Annuel</button><button data-p="semestriel" type="button">Semestriel</button></div></div>
-          <p class="set-note" id="setNote"></p>
-        </div>
       </div>
 
-      <!-- 1. Trancher -->
-      <div class="section">
-        <div class="sec-head"><span class="sec-num">1</span><h2>Trancher les lignes qui demandent votre œil</h2><span class="sc" id="trCount"></span></div>
+      <div class="tabs" id="tabs">
+        <button class="tab on" data-tab="trancher" type="button">À trancher <span class="tb" id="tbTr"></span></button>
+        <button class="tab" data-tab="reclamer" type="button">À réclamer <span class="tb" id="tbRel"></span></button>
+        <button class="tab" data-tab="compta" type="button">Envoyer en compta</button>
+        <button class="tab" data-tab="journal" type="button">Journal complet</button>
+      </div>
+
+      <!-- Onglet : à trancher -->
+      <div class="panel on" data-panel="trancher">
+        <p class="panel-intro">Les seules lignes qui demandent votre expertise. Choisissez le compte, puis validez.</p>
         <div class="card sec-body"><div id="trancherList"></div></div>
       </div>
 
-      <!-- 2. Réclamer -->
-      <div class="section">
-        <div class="sec-head"><span class="sec-num">2</span><h2>Réclamer les pièces manquantes</h2><span class="sc" id="relCount"></span></div>
+      <!-- Onglet : à réclamer -->
+      <div class="panel" data-panel="reclamer">
+        <p class="panel-intro">Uniquement les pièces manquantes à réclamer au client.</p>
         <div class="card sec-body">
           <div class="passe-toggle" id="passeToggle"><button data-passe="1" class="on" type="button">15 janv.</button><button data-passe="2" type="button">31 janv.</button></div>
           <p class="passe-note" id="passeNote"></p>
@@ -317,29 +325,37 @@ table.data td.r,table.data th.r{text-align:right;font-variant-numeric:tabular-nu
         </div>
       </div>
 
-      <!-- 3. Envoyer en compta -->
-      <div class="section">
-        <div class="sec-head"><span class="sec-num">3</span><h2>Envoyer en comptabilité</h2></div>
-        <div class="card compta">
-          <div class="ex-ic" id="comptaIc">▦</div>
-          <h3>Écritures prêtes</h3>
-          <p class="ex-line" id="comptaLine"></p>
-          <div class="compta-btns">
-            <button class="btn btn-primary btn-lg" id="btnImportCompta" type="button">Importer dans Quadra</button>
-            <button class="btn btn-ghost" id="btnDownload" type="button">Télécharger le fichier</button>
+      <!-- Onglet : compta -->
+      <div class="panel" data-panel="compta">
+        <div class="card" style="overflow:hidden">
+          <div class="settings" style="margin:0;padding:16px 22px;border-top:none;border-bottom:1px solid var(--line)">
+            <div class="set"><span>Banque</span><div class="seg" id="segBank"><button data-bank="1" class="on" type="button">Oui</button><button data-bank="0" type="button">Non</button></div></div>
+            <div class="set"><span>Période</span><div class="seg" id="segPeriode"><button data-p="annuel" class="on" type="button">Annuel</button><button data-p="semestriel" type="button">Semestriel</button></div></div>
+            <p class="set-note" id="setNote"></p>
           </div>
-          <p class="import-done" id="importDone" hidden></p>
-          <p class="traite-note" id="traiteNote"></p>
+          <div class="compta">
+            <div class="ex-ic" id="comptaIc">▦</div>
+            <h3>Écritures prêtes</h3>
+            <p class="ex-line" id="comptaLine"></p>
+            <div class="compta-btns">
+              <button class="btn btn-primary btn-lg" id="btnImportCompta" type="button">Importer dans Quadra</button>
+              <button class="btn btn-ghost" id="btnDownload" type="button">Télécharger le fichier</button>
+            </div>
+            <p class="import-done" id="importDone" hidden></p>
+            <p class="traite-note" id="traiteNote"></p>
+          </div>
         </div>
       </div>
 
-      <details class="detail card" style="padding:6px 22px 14px">
-        <summary>Voir tout le journal (<span id="bJournal"></span> écritures) &amp; le rapprochement des factures</summary>
-        <h4 style="margin-top:12px">Journal codé</h4>
-        <div class="tbl-scroll"><table class="data" id="tJournal"><thead><tr><th>Date</th><th>Libellé</th><th class="r">Montant</th><th>Compte</th><th>Contrepartie</th><th>Origine</th></tr></thead><tbody></tbody></table></div>
-        <h4 style="margin-top:18px">Rapprochement des factures</h4>
-        <div class="tbl-scroll"><table class="data" id="tFact" style="min-width:520px"><thead><tr><th>Fournisseur</th><th>Date</th><th class="r">TTC</th><th class="r">dont TVA</th><th>Rapprochement</th></tr></thead><tbody></tbody></table></div>
-      </details>
+      <!-- Onglet : journal complet -->
+      <div class="panel" data-panel="journal">
+        <div class="card sec-body">
+          <h4 style="margin:6px 0 2px">Journal codé (<span id="bJournal"></span> écritures)</h4>
+          <div class="tbl-scroll"><table class="data" id="tJournal"><thead><tr><th>Date</th><th>Libellé</th><th class="r">Montant</th><th>Compte</th><th>Contrepartie</th><th>Origine</th></tr></thead><tbody></tbody></table></div>
+          <h4 style="margin:18px 0 2px">Rapprochement des factures</h4>
+          <div class="tbl-scroll"><table class="data" id="tFact" style="min-width:520px"><thead><tr><th>Fournisseur</th><th>Date</th><th class="r">TTC</th><th class="r">dont TVA</th><th>Rapprochement</th></tr></thead><tbody></tbody></table></div>
+        </div>
+      </div>
 
       <details class="about">
         <summary>En savoir plus — ce que fait l'outil, le calendrier, le coût</summary>
@@ -567,10 +583,10 @@ function renderHero(){
   else lead.innerHTML="L'outil a préparé <b>"+pct+" %</b> du dossier tout seul. Il reste <b style=\"color:var(--warn)\">"+toDo+" ligne"+(toDo>1?"s":"")+"</b> à trancher.";
   document.getElementById("heroBar").style.width=pct+"%";
   var missing=missingList(1);
-  document.getElementById("chips").innerHTML=
-    '<div class="chip ok"><span class="cnum num">'+ready+'</span><span class="clab">écritures<br>prêtes</span></div>'+
-    '<div class="chip warn"><span class="cnum num">'+toDo+'</span><span class="clab">à trancher<br>(votre œil)</span></div>'+
-    '<div class="chip neg"><span class="cnum num">'+missing.length+'</span><span class="clab">pièces à<br>réclamer</span></div>';
+  var tbTr=document.getElementById("tbTr");
+  tbTr.textContent = toDo===0 ? "✓" : toDo;
+  tbTr.className = toDo===0 ? "tb done" : "tb";
+  document.getElementById("tbRel").textContent = missing.length;
 }
 function renderTrancher(){
   var rev=reviewLines();
@@ -588,10 +604,6 @@ function renderTrancher(){
       '<span class="tr-act"><select class="tr-sel" data-sel="'+x.i+'">'+opts+'</select>'+img+
       '<button class="tr-ok" data-ok="'+x.i+'" type="button">Valider</button></span></div>';
   }).join("") || '<div class="all-done"><span>✓</span><br>Aucune ligne à trancher.</div>';
-  var toDo=rev.filter(function(x){return !x.l.validated;}).length;
-  var c=document.getElementById("trCount");
-  if(toDo===0){c.textContent="terminé ✓";c.className="sc done";}
-  else{c.textContent=toDo+" à trancher";c.className="sc";}
 }
 function validate(i){var sel=document.querySelector('[data-sel="'+i+'"]');if(sel)CODED[i].compte=sel.value;CODED[i].validated=true;renderTrancher();renderHero();}
 function undo(i){CODED[i].validated=false;renderTrancher();renderHero();}
@@ -599,7 +611,6 @@ function undo(i){CODED[i].validated=false;renderTrancher();renderHero();}
 function renderReclamer(passe){
   passe=passe||CURRENT_PASSE;CURRENT_PASSE=passe;
   var m=missingList(passe);MISS_NOW=m;
-  document.getElementById("relCount").textContent=missingList(1).length+" pièce"+(missingList(1).length>1?"s":"");
   document.getElementById("missingList").innerHTML=m.map(function(l,i){
     return '<li><label class="chk"><input type="checkbox" data-i="'+i+'" checked><span class="chk-box"></span>'+
       '<span class="mtxt"><strong>'+esc(prettyVendor(l))+'</strong><small>'+l.date+' · '+esc(COMPTES[l.compte]||"à ventiler")+'</small></span>'+
@@ -724,6 +735,15 @@ document.getElementById("btnDownload").addEventListener("click",function(){if(HA
 document.getElementById("imgClose").addEventListener("click",function(){document.getElementById("imgModal").hidden=true;});
 document.getElementById("imgBackdrop").addEventListener("click",function(){document.getElementById("imgModal").hidden=true;});
 document.getElementById("btnPrint").addEventListener("click",function(){window.print();});
+
+/* Onglets */
+document.getElementById("tabs").querySelectorAll(".tab").forEach(function(t){
+  t.addEventListener("click",function(){
+    var id=t.getAttribute("data-tab");
+    document.getElementById("tabs").querySelectorAll(".tab").forEach(function(x){x.classList.toggle("on",x===t);});
+    document.querySelectorAll(".panel").forEach(function(p){p.classList.toggle("on",p.getAttribute("data-panel")===id);});
+  });
+});
 
 splash();
 })();
