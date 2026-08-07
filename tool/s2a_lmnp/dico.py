@@ -9,11 +9,32 @@ from __future__ import annotations
 from collections import Counter
 from dataclasses import dataclass, field
 
-from .normalize import normalize, tokens
+from .normalize import normalize, tokens, strip_accents
 
 
 def _codable(compte: str) -> bool:
-    return bool(compte) and compte[0] in ("6", "7", "2")
+    """Comptes qui peuvent être la cible d'un codage d'opération bancaire :
+    charges (6), produits (7), immobilisations réelles (20/21/23...).
+    On EXCLUT les amortissements/dépréciations (28/29) : ce sont des
+    contreparties d'inventaire, jamais le compte d'une dépense/recette.
+    """
+    if not compte:
+        return False
+    if compte[0] in ("6", "7"):
+        return True
+    if compte[0] == "2":
+        return compte[:2] not in ("28", "29")  # pas d'amortissements/dépréciations
+    return False
+
+
+def _est_a_nouveau(ligne) -> bool:
+    """Ligne de report à-nouveau : à exclure du dictionnaire (ce n'est pas
+    une opération de l'exercice, et le même libellé y côtoie l'immo ET son
+    amortissement -> fausses imputations multiples)."""
+    if (getattr(ligne, "journal", "") or "").strip().upper() in ("AN", "AN0", "ANOUV"):
+        return True
+    lib = strip_accents((ligne.libelle or "")).lower()
+    return "a nouveau" in lib or "a-nouveau" in lib
 
 
 @dataclass

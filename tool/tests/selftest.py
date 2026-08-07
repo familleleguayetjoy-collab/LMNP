@@ -83,13 +83,39 @@ check(cas["mobilier"][0].facture is not None and cas["mobilier"][0].ecart, "boul
 manq = manquants(ops, seuil=150.0)
 check(cas["menuiserie"][0] in manq, "menuiserie (3480, sans facture) dans les manquants")
 
-print("5) Export Quadra : partie double équilibrée, 256 caractères")
+print("5) Export Quadra ASCII : format réel du cabinet (251 car., contrepartie en ligne)")
 allops = [cas[k][0] for k in ("loyer", "syndic", "pret", "menuiserie", "apport")]
-txt = to_quadratus(allops, avec_banque=True)
+txt = to_quadratus(allops, avec_banque=True, compte_banque="51210010")
 lignes_q = [l for l in txt.split("\r\n") if l]
-check(all(len(l) == 256 for l in lignes_q), "toutes les lignes = 256 caractères")
-deb, cred, equilibre = verifier_equilibre(txt)
-check(equilibre, "débit == crédit (%d c)" % deb)
+check(all(len(l) == 251 for l in lignes_q), "toutes les lignes = 251 caractères")
 check(lignes_q[0][0] == "M", "type d'enregistrement 'M'")
+deb, cred, equilibre = verifier_equilibre(txt)
+check(equilibre, "chaque ligne porte sa contrepartie en ligne (équilibrée par construction)")
+# le prêt donne 2 lignes (661 + 164), les 4 autres opérations 1 ligne -> 6 lignes
+check(len(lignes_q) == 6, "prêt ventilé en 2 lignes 661/164 -> 6 lignes au total")
+from s2a_lmnp.quadra import parse_mouvement, format_mouvement
+f0 = parse_mouvement(lignes_q[0])
+check(f0["contrep"].strip() == "51210010", "contrepartie = compte banque (51210010)")
+check(f0["devise"] == "EUR" and f0["journal"] == "BQ", "devise EUR + journal BQ")
+
+print("6) Aller-retour sur une VRAIE ligne Quadra (dossier DUMDUM) : identité octet à octet")
+REELLE = ("M62600100BQ000010126 NETFLIX             D+00000000219951200000000000"
+          "                                      EURBQ1   NETFLIX"
+          "                                                                                "
+          "0000000132PL  12062026104255                    ")
+check(len(REELLE) == 251, "ligne de référence = 251 caractères")
+f = parse_mouvement(REELLE)
+check(int(f["montant"]) == 2199, "montant relu = 2199 c (21,99 €)")
+check(f["compte"] == "62600100" and f["sens"] == "D", "compte 62600100, sens D")
+check(f["contrep"].strip() == "51200000", "contrepartie en ligne = 51200000")
+import datetime as _dt
+rebuilt = format_mouvement(
+    compte=f["compte"], journal=f["journal"],
+    date=_dt.date(2000 + int(f["date"][4:6]), int(f["date"][2:4]), int(f["date"][0:2])),
+    libelle=f["libelle"], sens=f["sens"], montant=int(f["montant"]) / 100.0,
+    contrepartie=f["contrep"], piece=int(f["piece"]), source=f["source"],
+    horodate=f["horodate"], folio=f["folio"], journal3=f["journal3"],
+    libelle_long=f["liblong"])
+check(rebuilt == REELLE, "réécriture identique à l'original (positions exactes)")
 
 print("\n%d contrôles OK — moteur cohérent." % ok)

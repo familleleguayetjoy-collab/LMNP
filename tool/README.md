@@ -6,17 +6,39 @@ jamais de l'IA. L'IA n'intervient que sur deux tâches, et seulement pour
 *proposer* (l'humain valide) : lire une facture, proposer un compte sur un
 fournisseur inconnu.
 
-## Ce qui marche déjà (testé, `python3 tool/tests/selftest.py` → 28 contrôles OK)
+## Ce qui marche déjà (testé, `python3 tool/tests/selftest.py` → 36 contrôles OK)
 
 | Module | Rôle | État |
 |---|---|---|
 | `normalize.py` | Normalisation des libellés + **parsing robuste des montants FR** | ✅ |
-| `fec.py` | Lecture du FEC (délimiteur `|`/tab/`;`, encodage, débit/crédit ou montant+sens) | ✅ (à éprouver sur un vrai FEC) |
-| `dico.py` | Dictionnaire client + **détection des imputations multiples N-1** | ✅ |
+| `fec.py` | Lecture du FEC (délimiteur `|`/tab/`;`, encodage, débit/crédit ou montant+sens) | ✅ **éprouvé sur le vrai FEC (684 lignes)** |
+| `dico.py` | Dictionnaire client + détection des imputations multiples N-1 | ✅ **+ exclusion des À-Nouveaux / amortissements (bug corrigé, voir + bas)** |
 | `codage.py` | Règles de codage. Ne remonte à l'humain que **immo / inconnu / multi** | ✅ |
 | `rapprochement.py` | Rapprochement facture↔banque, écarts, manquants | ✅ |
-| `quadra.py` | Export Quadratus ASCII, **partie double équilibrée, 256 car.** | ✅ (positions à valider) |
-| `ocr.py` | Lecture des factures par l'API Claude | ⛔ interface seulement |
+| `quadra.py` | **Lecture + export Quadratus ASCII (251 car., contrepartie en ligne)** | ✅ **calibré au format RÉEL du cabinet, aller-retour octet à octet vérifié** |
+| `ocr.py` | Lecture des factures par l'API Claude | ⛔ interface (contrat enrichi par 3 vraies factures) |
+
+## Éprouvé sur les vrais fichiers du cabinet
+
+- **Quadra ASCII (dossier DUMDUM)** : format entièrement décodé et **ré-écrit à
+  l'identique** (95/95 lignes M, au caractère près). Enregistrement M = 251 car.,
+  **contrepartie en ligne** (champ 56-63) → une seule ligne par opération, Quadra
+  génère l'écriture inverse. Positions exactes documentées dans `quadra.py`.
+- **FEC N-1 (684 lignes)** : lu sans erreur (tab, UTF-8, 18 colonnes). A révélé un
+  **vrai bug** : les lignes « À-Nouveaux » faisaient croire à des imputations
+  multiples (l'immo *et* son amortissement partagent le même libellé). Corrigé :
+  on exclut le journal AN et les comptes d'amortissement/dépréciation (28/29).
+  16 faux « multi » → 0.
+- **3 factures (EDF, Brico Dépôt, Bouygues)** : lues ; ont fixé le contrat OCR
+  (travailler sur l'image et pas la couche texte d'un ticket thermique ; TTC ≠
+  espèces remises ; ignorer les blocs « EXEMPLE »). Détail dans `ocr.py`.
+
+## Démonstrations (sans donnée client)
+
+```bash
+python3 tool/demo/demo_sans_banque.py   # FEC N-1 -> dico -> 3 factures -> codage (ctp 108) -> Quadra OD
+python3 tool/demo/demo_avec_banque.py   # relevé Quadra ASCII : lecture -> ré-export équilibré (ctp 512)
+```
 
 ## Architecture proposée
 
@@ -34,18 +56,18 @@ et les parties « montants » restent du code.
 
 ## Ce dont j'ai besoin de toi pour continuer
 
-1. **Un vrai jeu de fichiers anonymisé** (le plus important) pour éprouver les
-   lecteurs face à la réalité :
-   - un **FEC N-1** (`.txt`) tel qu'exporté ;
-   - un **relevé bancaire annuel** (Excel/CSV) tel que tu le récupères ;
-   - **2–3 factures** (PDF/photo) du même client.
-2. **Paramètres Quadra** : le cahier des charges exact de ton import ASCII
-   (positions des champs) + tes **codes journaux** (BQ, OD, AC, VE…). Ça me
-   permet de verrouiller `quadra.py` (aujourd'hui : format standard, à valider).
-3. **Plan comptable LMNP** du cabinet + **seuil d'immobilisation** + doctrine
-   entretien/amélioration (ça alimente les règles + le futur Skill).
-4. **Accès API Anthropic** (clé + DPA) — sans ça l'OCR reste une interface.
-5. **Deux décisions** : (a) forme finale (scripts+Skill dans Cowork, je pense) ;
+Les fichiers d'exemple et le format Quadra sont **reçus et intégrés**. Il reste :
+
+1. **Accès API Anthropic** (clé + DPA) — sans ça l'OCR reste une interface.
+   C'est le seul vrai bloquant pour automatiser la lecture des factures.
+2. **Doctrine d'immobilisation** : seuil (500 € HT ?) et règle entretien /
+   amélioration. Aujourd'hui toute enseigne de bricolage/mobilier est remontée
+   « à trancher » ; avec un seuil je pourrai auto-coder les petits achats
+   (ex. le ticket Brico de 71 € → petit équipement) et ne garder en manuel que
+   les vraies immo.
+3. **Relevé bancaire non-Quadra** : si un client fournit un relevé Excel/CSV
+   « brut » (et pas déjà au format Quadra), un exemplaire pour caler le lecteur.
+4. **Deux décisions** : (a) forme finale (scripts + Skill dans Cowork, je pense) ;
    (b) modèle OCR par défaut (je propose Haiku 4.5, escalade Sonnet si doute).
 
 ## Les cas qui peuvent faire buguer (ce à quoi je fais déjà attention)
