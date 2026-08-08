@@ -33,6 +33,20 @@ fournisseur inconnu.
   (travailler sur l'image et pas la couche texte d'un ticket thermique ; TTC ≠
   espèces remises ; ignorer les blocs « EXEMPLE »). Détail dans `ocr.py`.
 
+## Règles du cabinet intégrées
+
+- **TVA (LMNP non assujetti, ≈90 % des cas)** : on comptabilise le **TTC en
+  entier** en charge/immobilisation ; aucune écriture de TVA n'est jamais
+  générée. La TVA d'une facture ne sert qu'à apprécier le seuil (en HT).
+- **Seuil d'immobilisation = 50 € HT** : en dessous, un achat de nature durable
+  (mobilier, bricolage, travaux) est passé **directement en charge** (auto) ;
+  au-dessus, il reste **« à trancher »**. Le seuil s'apprécie en HT lorsque la
+  facture donne la TVA, sinon sur le TTC (prudent).
+  → conséquence sur le dossier test : le ticket Brico Dépôt (59,23 € HT) est
+  **au-dessus** du seuil, donc remonté « à trancher ». Quand l'OCR lira le
+  détail des lignes, les consommables (peinture, etc.) pourront être passés en
+  entretien automatiquement quel que soit le montant.
+
 ## Démonstrations (sans donnée client)
 
 ```bash

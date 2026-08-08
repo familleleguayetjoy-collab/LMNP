@@ -71,6 +71,24 @@ check(cas["multi"][0].compte in ("615000", "213500"), "multi : compte principal 
 check(len(cas["multi"][0].options) == 2, "multi : 2 options proposées")
 check(cas["pret"][0].split == (387.35, 643.29), "prêt : ventilation intérêts/capital conservée")
 
+print("3bis) Seuil d'immobilisation = 50 € HT (sous le seuil -> charge auto)")
+petit = op("CB LEROY MERLIN VISSERIE", 42.0)      # bricolage < 50 -> charge auto
+coder(petit, dico)
+check(not petit.a_revoir and petit.compte == "606", "petit bricolage 42 € -> 606 auto")
+gros = op("CB LEROY MERLIN PARQUET", 640.0)        # bricolage >= 50 -> à trancher
+coder(gros, dico)
+check(gros.a_revoir, "bricolage 640 € -> à trancher (immo possible)")
+petit_meuble = op("CB IKEA TABOURET", 39.0)        # mobilier < 50 -> charge auto
+coder(petit_meuble, dico)
+check(not petit_meuble.a_revoir and petit_meuble.compte == "606", "petit mobilier 39 € -> 606 auto")
+# le seuil s'apprécie en HT quand la facture donne la TVA (on poste le TTC)
+from s2a_lmnp import Facture
+o_ht = op("CB CASTORAMA ETAGERE", 58.0)            # 58 TTC mais 48,33 HT -> sous le seuil
+o_ht.facture = Facture("Castorama", D(2026, 3, 18), 58.0, 9.67)
+coder(o_ht, dico)
+check(not o_ht.a_revoir and o_ht.compte == "606",
+      "58 € TTC = 48,33 € HT < 50 -> charge auto (seuil apprécié en HT)")
+
 print("4) Rapprochement : exact / écart / manquant")
 ops = [cas["syndic"][0], cas["mobilier"][0], cas["menuiserie"][0]]
 facts = [

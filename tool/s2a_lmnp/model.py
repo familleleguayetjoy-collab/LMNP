@@ -8,10 +8,14 @@ from typing import Optional
 
 @dataclass
 class Operation:
-    """Une ligne du relevé bancaire à coder."""
+    """Une ligne du relevé bancaire à coder.
+
+    `montant` est le montant réellement mouvementé, donc TTC. En LMNP non
+    assujetti à la TVA (cas courant), c'est ce montant TTC qui est comptabilisé
+    en charge/produit ; aucune écriture de TVA n'est générée."""
     date: date
     libelle: str
-    montant: float                 # toujours positif
+    montant: float                 # toujours positif, TTC
     sens: str                      # 'D' = dépense (débit banque) / 'C' = recette
     amort: Optional[tuple] = None  # (interets, capital) si échéance de prêt connue
 
