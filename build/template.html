@@ -1,8 +1,8 @@
 <style>
 /* ===================================================================
    ASSISTANT DE PRÉPARATION LMNP — S2A · Sud Alpes Audit
-   Parcours guidé, 5 étapes : Importer → À trancher → À réclamer →
-   Le mail → Le fichier. Une seule chose à faire par écran.
+   Parcours guidé : Choisir le dossier → Importer → À trancher →
+   À réclamer → Le mail → Le fichier. Une seule chose à faire par écran.
    =================================================================== */
 @font-face{font-family:'Poppins';font-weight:500;font-style:normal;font-display:swap;src:url("__POPPINS500__") format('woff2');}
 @font-face{font-family:'Poppins';font-weight:600;font-style:normal;font-display:swap;src:url("__POPPINS600__") format('woff2');}
@@ -11,12 +11,13 @@
 
 :root{
   --navy:#0e1c2b; --ink:#0f2134; --muted:#7a8795;
-  --page:#f5f6f8; --surface:#ffffff; --line:#e7eaef; --line-2:#eef1f4;
+  --page:#fcfdff; --surface:#ffffff; --line:#e7eaef; --line-2:#eef1f4;
   --green:#2f8451; --green-soft:#e8f3ec; --green-line:#bfe0cc;
   --gold:#cf9e68; --gold-press:#bd8b4f; --gold-ink:#3a2a12;
   --red:#c0392b;
+  --todo-bg:#f4ead7; --todo-ink:#8a6c39; --wip-bg:#e6eef7; --wip-ink:#2f5c86;
   --field:#ffffff; --field-line:#d7dde5;
-  --shadow:0 18px 50px rgba(15,33,52,.10); --shadow-sm:0 6px 20px rgba(15,33,52,.07);
+  --shadow:0 18px 50px rgba(15,33,52,.10); --shadow-sm:0 5px 16px rgba(15,33,52,.06);
   --radius:18px; --radius-sm:12px;
   --sans:'Montserrat','Segoe UI',Roboto,Arial,sans-serif;
   --display:'Poppins','Montserrat',sans-serif;
@@ -27,8 +28,9 @@
   --green:#5cbf8c; --green-soft:#13302a; --green-line:#245442;
   --gold:#d6ab77; --gold-press:#c99a60; --gold-ink:#241a0b;
   --red:#e0857a;
+  --todo-bg:#2c2617; --todo-ink:#d6ab77; --wip-bg:#13293f; --wip-ink:#8fb4d6;
   --field:#0e1f31; --field-line:#2a4059;
-  --shadow:0 18px 50px rgba(0,0,0,.45); --shadow-sm:0 6px 20px rgba(0,0,0,.35);
+  --shadow:0 18px 50px rgba(0,0,0,.45); --shadow-sm:0 5px 16px rgba(0,0,0,.35);
 }}
 :root[data-theme="dark"]{
   --navy:#0a1622; --ink:#e9f0f6; --muted:#93a3b2;
@@ -36,8 +38,9 @@
   --green:#5cbf8c; --green-soft:#13302a; --green-line:#245442;
   --gold:#d6ab77; --gold-press:#c99a60; --gold-ink:#241a0b;
   --red:#e0857a;
+  --todo-bg:#2c2617; --todo-ink:#d6ab77; --wip-bg:#13293f; --wip-ink:#8fb4d6;
   --field:#0e1f31; --field-line:#2a4059;
-  --shadow:0 18px 50px rgba(0,0,0,.45); --shadow-sm:0 6px 20px rgba(0,0,0,.35);
+  --shadow:0 18px 50px rgba(0,0,0,.45); --shadow-sm:0 5px 16px rgba(0,0,0,.35);
 }
 
 *{box-sizing:border-box}
@@ -55,23 +58,24 @@
 /* ---------- Header ---------- */
 .hdr{position:sticky;top:0;z-index:40;background:var(--navy);color:#eef3f8}
 .hdr .wrap{display:flex;align-items:center;gap:16px;min-height:64px}
-.brand{display:flex;align-items:center;gap:10px}
-.brand img{width:30px;height:30px;border-radius:8px}
-.brand b{font-family:var(--display);font-weight:700;font-size:22px;letter-spacing:.02em}
+.brand{display:flex;align-items:center}
+.brand .chip{background:#fff;border-radius:10px;padding:6px 13px;display:flex;align-items:center}
+.brand .chip img{height:26px;width:auto;display:block}
 .hdr .spacer{flex:1}
-.sel{position:relative}
-.sel select{appearance:none;-webkit-appearance:none;background:rgba(255,255,255,.06);
-  color:#eef3f8;border:1px solid rgba(255,255,255,.16);border-radius:11px;
-  padding:11px 40px 11px 16px;font-family:var(--display);font-weight:600;font-size:15px;min-width:240px}
-.sel::after{content:"";position:absolute;right:15px;top:50%;width:9px;height:9px;
-  border-right:2px solid #cdd8e2;border-bottom:2px solid #cdd8e2;transform:translateY(-70%) rotate(45deg);pointer-events:none}
 .icon-btn{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;
   color:#cdd8e2;border:1px solid rgba(255,255,255,.18);font-weight:600}
 .avatar{width:36px;height:36px;border-radius:50%;background:var(--green);color:#fff;
   display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:15px}
 
 /* ---------- Layout ---------- */
-main.wrap{padding:34px 20px 90px}
+main.wrap{padding:30px 20px 90px}
+.navrow{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+.backbtn{display:inline-flex;align-items:center;gap:8px;color:var(--ink);font-family:var(--display);font-weight:600;
+  font-size:14px;background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:10px 17px;box-shadow:var(--shadow-sm)}
+.backbtn:hover{border-color:var(--muted)}
+.backbtn .cv{font-size:17px;line-height:1;margin-top:-1px}
+.steplbl{color:var(--muted);font-weight:600;font-size:13px}
+
 .pagehead{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap}
 .pagehead h1{font-size:clamp(30px,4.6vw,50px);color:var(--ink)}
 .pagehead .meta{color:var(--muted);font-size:15px;padding-top:12px;white-space:nowrap}
@@ -88,6 +92,22 @@ main.wrap{padding:34px 20px 90px}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-sm)}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 @media(max-width:720px){.grid2{grid-template-columns:1fr}}
+
+/* ---------- Étape 0 : choix du dossier ---------- */
+.dossiers{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-top:26px}
+.dcard{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px;
+  box-shadow:var(--shadow-sm);transition:transform .12s ease,box-shadow .12s ease}
+.dcard:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.dcard h3{font-family:var(--display);font-size:20px}
+.dcard .ex{color:var(--muted);font-size:14px;margin-top:5px}
+.dcard .st{display:inline-flex;align-items:center;gap:7px;margin-top:16px;font-family:var(--display);font-weight:600;
+  font-size:12.5px;padding:6px 13px;border-radius:99px}
+.st.todo{background:var(--todo-bg);color:var(--todo-ink)}
+.st.wip{background:var(--wip-bg);color:var(--wip-ink)}
+.st.done{background:var(--green-soft);color:var(--green)}
+.dcard.new{border-style:dashed;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  color:var(--muted);font-family:var(--display);font-weight:600;min-height:150px}
+.dcard.new .plus{width:38px;height:38px;border-radius:50%;background:var(--line-2);display:grid;place-items:center;font-size:22px}
 
 /* Step 1 fields */
 .field-card{padding:20px}
@@ -131,8 +151,7 @@ main.wrap{padding:34px 20px 90px}
 .tbl .lib{font-family:var(--display);font-weight:600;font-size:16px}
 .tbl .amt{font-family:var(--display);font-weight:700;font-size:17px;white-space:nowrap}
 .tbl .dt{color:var(--muted);white-space:nowrap}
-.thumb{width:50px;height:64px;border-radius:7px;border:1px solid var(--line);overflow:hidden;
-  display:block;box-shadow:var(--shadow-sm)}
+.thumb{width:50px;height:64px;border-radius:7px;border:1px solid var(--line);overflow:hidden;display:block;box-shadow:var(--shadow-sm)}
 .thumb svg{display:block;width:100%;height:100%}
 .acct{position:relative}
 .acct select{appearance:none;-webkit-appearance:none;width:100%;min-width:230px;background:var(--field);
@@ -178,10 +197,6 @@ main.wrap{padding:34px 20px 90px}
 .filebox .txt p{color:var(--muted);font-size:17px;margin-top:6px}
 @media(max-width:560px){.filebox{flex-direction:column;padding:30px;text-align:center}}
 
-/* back link */
-.back{display:inline-flex;align-items:center;gap:8px;color:var(--muted);font-weight:600;font-size:14px;margin-bottom:18px}
-.back:hover{color:var(--ink)}
-
 /* modal */
 .modal{position:fixed;inset:0;z-index:80;background:rgba(9,18,28,.55);display:none;place-items:center;padding:20px}
 .modal.on{display:grid}
@@ -191,17 +206,15 @@ main.wrap{padding:34px 20px 90px}
 .modal .box .close{margin-top:14px;display:inline-flex;color:var(--green);font-weight:700}
 .modal .box .paper{width:100%;border:1px solid var(--line);border-radius:10px;margin:6px 0 4px}
 
-.footnote{color:var(--muted);font-size:12.5px;text-align:center;margin-top:26px}
+.footnote{color:var(--muted);font-size:12.5px;margin-top:26px;line-height:1.6}
 </style>
 
-<div class="lmnp" data-step="1" data-banque="oui">
+<div class="lmnp" data-step="0" data-banque="oui">
 
   <!-- HEADER -->
   <header class="hdr">
     <div class="wrap">
-      <div class="brand"><img src="__LOGO_LIGHT__" alt="S2A"/><b>S2A</b></div>
-      <div class="spacer"></div>
-      <div class="sel js-step1only"><select aria-label="Dossier"><option>LMNP_DUPONT_2026</option><option>LMNP_MARTIN_2026</option><option>SCI_AZUR_2026</option></select></div>
+      <button class="brand js-home" aria-label="Accueil — mes dossiers"><span class="chip"><img src="__LOGO_DARK__" alt="S2A — Sud Alpes Audit"/></span></button>
       <div class="spacer"></div>
       <button class="icon-btn js-help" aria-label="À propos">?</button>
       <span class="avatar" title="Paul">P</span>
@@ -210,12 +223,34 @@ main.wrap{padding:34px 20px 90px}
 
   <main class="wrap">
 
+    <!-- ÉTAPE 0 — CHOISIR LE DOSSIER -->
+    <section class="step" data-s="0">
+      <div class="pagehead"><h1>Mes dossiers</h1><div class="meta">Drive partagé du cabinet</div></div>
+      <div class="dossiers">
+        <button class="dcard js-open" data-name="LMNP_DUPONT_2026" data-ex="Exercice 2026 · locations meublées">
+          <h3>LMNP_DUPONT_2026</h3><div class="ex">Exercice 2026 · 21 pièces au Drive</div>
+          <span class="st todo">● À traiter</span>
+        </button>
+        <button class="dcard js-open" data-name="LMNP_MARTIN_2026" data-ex="Exercice 2026 · locations meublées">
+          <h3>LMNP_MARTIN_2026</h3><div class="ex">Exercice 2026 · 8 pièces au Drive</div>
+          <span class="st wip">● En cours</span>
+        </button>
+        <button class="dcard js-open" data-name="SCI_AZUR_2025" data-ex="Exercice 2025 · locations meublées">
+          <h3>SCI_AZUR_2025</h3><div class="ex">Exercice 2025 · fichier importé</div>
+          <span class="st done">✓ Terminé</span>
+        </button>
+        <button class="dcard new js-newdossier"><span class="plus">+</span> Nouveau dossier</button>
+      </div>
+      <p class="footnote">Les dossiers sont lus depuis le <b>Drive partagé</b> : un client = un dossier. Un <b>nouveau</b> dossier apparaît dès qu'un dossier client existe sur le Drive ; il passe en <b>« Terminé »</b> une fois le fichier comptable généré et importé. Rien n'est renommé chez le client.</p>
+    </section>
+
     <!-- ÉTAPE 1 — IMPORTER -->
-    <section class="step" data-s="1">
+    <section class="step hidden" data-s="1">
+      <div class="navrow"><button class="backbtn js-back"><span class="cv">‹</span> Retour</button><span class="steplbl">Étape 1 / 5 · Importer</span></div>
       <div class="card" style="padding:26px 28px">
         <div class="pagehead">
-          <h1>LMNP_DUPONT_2026</h1>
-          <div class="meta">Exercice 2026 · locations meublées</div>
+          <h1 class="js-dossier">LMNP_DUPONT_2026</h1>
+          <div class="meta js-ex">Exercice 2026 · locations meublées</div>
         </div>
         <div class="ready">
           <span class="pct">88 % <span>prêt</span></span>
@@ -269,8 +304,8 @@ main.wrap{padding:34px 20px 90px}
 
     <!-- ÉTAPE 2 — À TRANCHER -->
     <section class="step hidden" data-s="2">
-      <a class="back js-back">‹ Retour · Étape 2 / 5</a>
-      <div class="pagehead"><h1>LMNP_DUPONT_2026</h1><div class="meta">Exercice 2026 · locations meublées</div></div>
+      <div class="navrow"><button class="backbtn js-back"><span class="cv">‹</span> Retour</button><span class="steplbl">Étape 2 / 5 · À trancher</span></div>
+      <div class="pagehead"><h1 class="js-dossier">LMNP_DUPONT_2026</h1><div class="meta js-ex">Exercice 2026 · locations meublées</div></div>
       <div class="ready"><span class="pct">88 % <span>prêt</span></span></div>
       <div class="bar"><i></i></div>
 
@@ -288,9 +323,9 @@ main.wrap{padding:34px 20px 90px}
 
     <!-- ÉTAPE 3 — À RÉCLAMER -->
     <section class="step hidden" data-s="3">
-      <a class="back js-back">‹ Retour · Étape 3 / 5</a>
+      <div class="navrow"><button class="backbtn js-back"><span class="cv">‹</span> Retour</button><span class="steplbl">Étape 3 / 5 · À réclamer</span></div>
       <div class="card" style="padding:26px 28px">
-        <div class="pagehead"><h1>LMNP_DUPONT_2026</h1><div class="meta">Exercice 2026 · locations meublées</div></div>
+        <div class="pagehead"><h1 class="js-dossier">LMNP_DUPONT_2026</h1><div class="meta js-ex">Exercice 2026 · locations meublées</div></div>
         <div class="ready"><span class="pct">88 % <span>prêt</span></span></div>
         <div class="bar"><i></i></div>
 
@@ -305,18 +340,18 @@ main.wrap{padding:34px 20px 90px}
 
     <!-- ÉTAPE 4 — LE MAIL -->
     <section class="step hidden" data-s="4">
-      <a class="back js-back">‹ Retour · Étape 4 / 5</a>
-      <div class="pagehead"><h1>LMNP_DUPONT_2026</h1><div class="meta">Exercice 2026 · locations meublées</div></div>
+      <div class="navrow"><button class="backbtn js-back"><span class="cv">‹</span> Retour</button><span class="steplbl">Étape 4 / 5 · Le mail</span></div>
+      <div class="pagehead"><h1 class="js-dossier">LMNP_DUPONT_2026</h1><div class="meta js-ex">Exercice 2026 · locations meublées</div></div>
       <div class="ready"><span class="pct">88 % <span>prêt</span></span></div>
       <div class="bar"><i></i></div>
 
       <h2 style="font-family:var(--display);font-size:22px;margin:24px 0 12px">Email prêt à envoyer</h2>
       <div class="card mail">
-        <div class="row"><span class="k">À :</span><span class="v">client.dupont@email.fr</span></div>
+        <div class="row"><span class="k">À :</span><span class="v js-client-mail">client.dupont@email.fr</span></div>
         <div class="row"><span class="k">Objet :</span><span class="v">Dossier LMNP 2026 — <span class="js-mail-n">4</span> justificatifs</span></div>
         <hr/>
         <div class="body">
-          <p>Bonjour M. Dupont,</p>
+          <p>Bonjour <span class="js-client-name">M. Dupont</span>,</p>
           <p>Vous trouverez ci-joint les <span class="js-mail-n">4</span> justificatifs manquants :</p>
           <ul class="js-mail-list"></ul>
           <p>Cordialement,<br/>Cabinet S2A — Sud Alpes Audit</p>
@@ -327,8 +362,8 @@ main.wrap{padding:34px 20px 90px}
 
     <!-- ÉTAPE 5 — LE FICHIER -->
     <section class="step hidden" data-s="5">
-      <a class="back js-back">‹ Retour · Étape 5 / 5</a>
-      <div class="pagehead"><h1>LMNP_DUPONT_2026</h1><div class="meta">Exercice 2026 · locations meublées</div></div>
+      <div class="navrow"><button class="backbtn js-back"><span class="cv">‹</span> Retour</button><span class="steplbl">Étape 5 / 5 · Le fichier</span></div>
+      <div class="pagehead"><h1 class="js-dossier">LMNP_DUPONT_2026</h1><div class="meta js-ex">Exercice 2026 · locations meublées</div></div>
       <div class="done-head"><span class="check" style="width:32px;height:32px"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span><h2>Fichier prêt</h2></div>
 
       <div class="card filebox">
@@ -346,7 +381,6 @@ main.wrap{padding:34px 20px 90px}
 
   </main>
 
-  <!-- modals -->
   <div class="modal js-modal">
     <div class="box">
       <div class="js-modal-content"></div>
@@ -361,7 +395,6 @@ main.wrap{padding:34px 20px 90px}
   var $=function(s,c){return (c||root).querySelector(s)};
   var $$=function(s,c){return Array.prototype.slice.call((c||root).querySelectorAll(s))};
 
-  /* --- données de démonstration --- */
   var TRANCHER=[
     {dt:"18/03/2026",lib:"Menuiserie Des Cimes",m:3480.00,cpt:"2135",col:"#8a7355",ini:"M",
       opts:[["2135","2135 — Agencements, installations"],["615","615 — Entretien et réparations"],["2313","2313 — Constructions"]]},
@@ -382,44 +415,35 @@ main.wrap{padding:34px 20px 90px}
   ];
   var eur=function(n){return n.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €'};
 
-  /* --- vignette facture stylisée (SVG) --- */
   function thumbSVG(col,ini){
     return '<svg viewBox="0 0 50 64" xmlns="http://www.w3.org/2000/svg">'
-      +'<rect width="50" height="64" fill="#fff"/>'
-      +'<rect width="50" height="17" fill="'+col+'"/>'
+      +'<rect width="50" height="64" fill="#fff"/><rect width="50" height="17" fill="'+col+'"/>'
       +'<text x="6" y="12.5" font-family="Poppins,sans-serif" font-size="9" font-weight="700" fill="#fff">'+ini+'</text>'
       +'<rect x="6" y="24" width="30" height="3" rx="1.5" fill="#dfe4ea"/>'
       +'<rect x="6" y="31" width="38" height="3" rx="1.5" fill="#eef1f4"/>'
       +'<rect x="6" y="38" width="24" height="3" rx="1.5" fill="#eef1f4"/>'
       +'<rect x="6" y="50" width="38" height="4" rx="2" fill="#e7eaef"/></svg>';
   }
-
-  /* --- rendu étape 2 --- */
   function renderTrancher(){
     var tb=$('.js-trancher'); tb.innerHTML='';
     TRANCHER.forEach(function(r){
       var tr=document.createElement('tr');
       var sel='<div class="acct"><select>'+r.opts.map(function(o){
         return '<option value="'+o[0]+'"'+(o[0]===r.cpt?' selected':'')+'>'+o[1]+'</option>';}).join('')+'</select></div>';
-      tr.innerHTML='<td class="dt num">'+r.dt+'</td>'
-        +'<td class="lib">'+r.lib+'</td>'
+      tr.innerHTML='<td class="dt num">'+r.dt+'</td><td class="lib">'+r.lib+'</td>'
         +'<td class="amt num">'+eur(r.m)+'</td>'
         +'<td><button class="thumb js-thumb" data-lib="'+r.lib+'" aria-label="Ouvrir le justificatif">'+thumbSVG(r.col,r.ini)+'</button></td>'
         +'<td>'+sel+'</td>';
       tb.appendChild(tr);
     });
   }
-
-  /* --- rendu étape 3 --- */
   function renderReclam(){
     var box=$('.js-reclam'); box.innerHTML='';
     RECLAM.forEach(function(r,i){
       var d=document.createElement('div');
       d.className='ritem'; d.setAttribute('aria-checked',r.on?'true':'false'); d.dataset.i=i;
       d.innerHTML='<span class="ck"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span>'
-        +'<span class="rlib">'+r.lib+'</span>'
-        +'<span class="rdt num">'+r.dt+'</span>'
-        +'<span class="ramt num">'+eur(r.m)+'</span>';
+        +'<span class="rlib">'+r.lib+'</span><span class="rdt num">'+r.dt+'</span><span class="ramt num">'+eur(r.m)+'</span>';
       d.addEventListener('click',function(){r.on=!r.on;d.setAttribute('aria-checked',r.on?'true':'false');syncMail();});
       box.appendChild(d);
     });
@@ -440,17 +464,32 @@ main.wrap{padding:34px 20px 90px}
   function go(n){
     root.dataset.step=n;
     $$('.step').forEach(function(s){s.classList.toggle('hidden',s.dataset.s!=String(n));});
-    var d=$('.js-step1only'); if(d) d.style.visibility = (n==1?'visible':'hidden');
     window.scrollTo({top:0,behavior:'smooth'});
   }
+  function openDossier(name,ex){
+    $$('.js-dossier').forEach(function(e){e.textContent=name;});
+    $$('.js-ex').forEach(function(e){e.textContent=ex;});
+    var parts=name.split('_'); var sur=parts.length>1?parts[1]:name;
+    var cap=sur.charAt(0)+sur.slice(1).toLowerCase();
+    var isSCI=/^SCI/i.test(name);
+    $$('.js-client-name').forEach(function(e){e.textContent=(isSCI?'SCI ':'M. ')+cap;});
+    $$('.js-client-mail').forEach(function(e){e.textContent='client.'+sur.toLowerCase()+'@email.fr';});
+    go(1);
+  }
+  $$('.js-open').forEach(function(b){b.addEventListener('click',function(){openDossier(b.dataset.name,b.dataset.ex);});});
   $$('.js-next').forEach(function(b){b.addEventListener('click',function(){go(Math.min(5,+root.dataset.step+1));});});
-  $$('.js-back').forEach(function(b){b.addEventListener('click',function(){go(Math.max(1,+root.dataset.step-1));});});
+  $$('.js-back').forEach(function(b){b.addEventListener('click',function(){go(Math.max(0,+root.dataset.step-1));});});
+  $('.js-home').addEventListener('click',function(){go(0);});
+  $('.js-newdossier').addEventListener('click',function(){openModal(
+    '<h3>Nouveau dossier</h3>'
+    +'<p>Dans l\'outil réel, un nouveau dossier apparaît automatiquement dès qu\'un dossier client existe sur le <b>Drive partagé</b> — pas besoin de le créer à la main.</p>'
+    +'<p>On peut aussi le saisir manuellement (nom du client + exercice) si le Drive n\'est pas encore connecté.</p>');});
 
   /* --- toggle banque --- */
   $$('.js-bq').forEach(function(b){b.addEventListener('click',function(){
     var v=b.dataset.v; root.dataset.banque=v;
     $$('.js-bq').forEach(function(x){x.setAttribute('aria-pressed',x.dataset.v===v?'true':'false');});
-    $('.js-fmt').textContent = 'Format ASCII (Quadra) · contrepartie '+(v==='oui'?'512':'108');
+    $('.js-fmt').textContent='Format ASCII (Quadra) · contrepartie '+(v==='oui'?'512':'108');
   });});
 
   /* --- modal --- */
@@ -459,24 +498,21 @@ main.wrap{padding:34px 20px 90px}
   $('.js-modal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('on');});
   $('.js-help').addEventListener('click',function(){openModal(
     '<h3>Assistant de préparation LMNP</h3>'
-    +'<p>Le collaborateur importe le FEC N-1 et, si le client tient une banque, le relevé. '
-    +'L’outil code le relevé à partir du dictionnaire de l’an dernier, lit et rapproche les factures du Drive, '
-    +'et prépare : les points à trancher, les justificatifs manquants, le mail de relance et le fichier d’import.</p>'
-    +'<p>Un seul écran à la fois — du début (importer) à la fin (fichier prêt).</p>');});
+    +'<p>On choisit un dossier (lu depuis le Drive), on importe le FEC N-1 et, s\'il y a une banque, le relevé. '
+    +'L\'outil code le relevé d\'après le dictionnaire de l\'an dernier, lit et rapproche les factures, '
+    +'et prépare : les points à trancher, les justificatifs manquants, le mail de relance et le fichier d\'import.</p>');});
   root.addEventListener('click',function(e){
     var t=e.target.closest('.js-thumb'); if(!t)return;
-    var lib=t.dataset.lib;
-    openModal('<h3>'+lib+'</h3>'
+    openModal('<h3>'+t.dataset.lib+'</h3>'
       +'<div class="paper">'+thumbSVG('#0e1c2b','FACTURE').replace('viewBox="0 0 50 64"','viewBox="0 0 50 64" style="width:100%;height:220px"')+'</div>'
-      +'<p>Aperçu du justificatif — dans l’outil réel, ce lien ouvre directement l’image dans le Drive du client.</p>');
+      +'<p>Aperçu du justificatif — dans l\'outil réel, ce lien ouvre directement l\'image dans le Drive du client.</p>');
   });
 
-  /* --- export Quadra ASCII (format réel : enregistrement M, 251 car., contrepartie en ligne) --- */
+  /* --- export Quadra ASCII (enregistrement M, 251 car., contrepartie en ligne) --- */
   function noacc(s){return (s||'').normalize('NFD').replace(/[̀-ͯ]/g,'');}
   function clean(s,n){s=noacc(s).replace(/[^0-9A-Za-z &\-.'\/,]/g,' ').replace(/\s+/g,' ').trim();return (s+Array(n+1).join(' ')).slice(0,n);}
   function cptPad(c){c=(''+c).replace(/\D/g,'');return (c+'00000000').slice(0,8);}
-  function cents(v){return (''+Math.round(v*100));}
-  function numR(v,n){var c=cents(v);return (Array(n+1).join('0')+c).slice(-n);}
+  function numR(v,n){var c=''+Math.round(v*100);return (Array(n+1).join('0')+c).slice(-n);}
   function ddmmyy(dt){var p=dt.split('/');return p[0]+p[1]+p[2].slice(2);}
   function ligneM(compte,dt,lib,sens,montant,ctp){
     var b=Array(251+1).join(' ').split('');
@@ -490,23 +526,18 @@ main.wrap{padding:34px 20px 90px}
   $('.js-download').addEventListener('click',function(){
     var avecBanque=root.dataset.banque==='oui';
     var ctp=avecBanque?'512':'108';
-    var lignes=TRANCHER.map(function(r){
-      var sens=(r.cpt==='758'||r.cpt==='108')?'C':'D';
-      var sel=null; return null;
-    });
-    // reprend les comptes réellement sélectionnés
     var rows=$$('.js-trancher tr');
     var out=TRANCHER.map(function(r,i){
       var cpt=r.cpt, s=rows[i]?rows[i].querySelector('select'):null; if(s)cpt=s.value;
       var sens=(cpt==='758'||cpt==='108')?'C':'D';
       return ligneM(cpt,r.dt,r.lib,sens,r.m,ctp);
     });
+    var name=($('.js-dossier')?$('.js-dossier').textContent:'DOSSIER')+'_'+(avecBanque?'BQ':'OD');
     var blob=new Blob([out.join('\r\n')+'\r\n'],{type:'text/plain;charset=windows-1252'});
-    var a=document.createElement('a');a.href=URL.createObjectURL(blob);
-    a.download='LMNP_DUPONT_2026_'+(avecBanque?'BQ':'OD')+'.txt';
+    var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name+'.txt';
     document.body.appendChild(a);a.click();a.remove();
   });
 
-  renderTrancher();renderReclam();go(1);
+  renderTrancher();renderReclam();go(0);
 })();
 </script>
