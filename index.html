@@ -151,6 +151,17 @@ main.wrap{padding:30px 20px 90px}
 .lmnp[data-banque="non"] .js-bankcard{opacity:.5}
 .lmnp[data-banque="non"] .js-bankcard .drop{pointer-events:none;border-style:solid;background:var(--line-2)}
 .lmnp[data-banque="non"] .js-bankcard .drop u{color:var(--muted)}
+.frow{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:6px 0}
+.flabel{font-family:var(--display);font-weight:600;font-size:17px}
+.tsel{position:relative}
+.tsel select{appearance:none;-webkit-appearance:none;background:var(--field);border:1px solid var(--field-line);
+  border-radius:11px;padding:11px 40px 11px 15px;font-family:var(--display);font-weight:600;font-size:14px}
+.tsel::after{content:"";position:absolute;right:15px;top:50%;width:8px;height:8px;
+  border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:translateY(-70%) rotate(45deg);pointer-events:none}
+.note-bnc{margin-top:16px;background:var(--wip-bg);color:var(--wip-ink);border-radius:12px;padding:13px 16px;font-weight:600;font-size:14px}
+.dcard .tags{display:flex;align-items:center;gap:10px;margin-top:16px;flex-wrap:wrap}
+.dcard .st{margin-top:0}
+.dtype{font-family:var(--display);font-weight:600;font-size:12.5px;padding:6px 12px;border-radius:99px;border:1px solid var(--line);color:var(--muted)}
 
 /* Footer action bar */
 .actionbar{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:22px;flex-wrap:wrap}
@@ -273,17 +284,21 @@ main.wrap{padding:30px 20px 90px}
     <section class="step" data-s="0">
       <div class="pagehead"><h1>Mes dossiers</h1><div class="meta">Drive partagé du cabinet</div></div>
       <div class="dossiers">
-        <button class="dcard js-open" data-name="LMNP_DUPONT_2026" data-ex="Exercice 2026 · locations meublées">
+        <button class="dcard js-open" data-name="LMNP_DUPONT_2026" data-type="lmnp" data-ex="Exercice 2026 · LMNP meublé">
           <h3>LMNP_DUPONT_2026</h3><div class="ex">Exercice 2026 · 21 pièces au Drive</div>
-          <span class="st todo">● À traiter</span>
+          <div class="tags"><span class="dtype">LMNP meublé</span><span class="st todo">● À traiter</span></div>
         </button>
-        <button class="dcard js-open" data-name="LMNP_MARTIN_2026" data-ex="Exercice 2026 · locations meublées">
+        <button class="dcard js-open" data-name="LMNP_MARTIN_2026" data-type="lmnp" data-ex="Exercice 2026 · LMNP meublé">
           <h3>LMNP_MARTIN_2026</h3><div class="ex">Exercice 2026 · 8 pièces au Drive</div>
-          <span class="st wip">● En cours</span>
+          <div class="tags"><span class="dtype">LMNP meublé</span><span class="st wip">● En cours</span></div>
         </button>
-        <button class="dcard js-open" data-name="SCI_AZUR_2025" data-ex="Exercice 2025 · locations meublées">
+        <button class="dcard js-open" data-name="SCI_AZUR_2025" data-type="sci" data-ex="Exercice 2025 · SCI (IR)">
           <h3>SCI_AZUR_2025</h3><div class="ex">Exercice 2025 · fichier importé</div>
-          <span class="st done">✓ Terminé</span>
+          <div class="tags"><span class="dtype">SCI (IR)</span><span class="st done">✓ Terminé</span></div>
+        </button>
+        <button class="dcard js-open" data-name="BNC_DR_ROUX_2026" data-type="bnc" data-ex="Exercice 2026 · BNC médecin">
+          <h3>BNC_DR_ROUX_2026</h3><div class="ex">Exercice 2026 · 63 pièces au Drive</div>
+          <div class="tags"><span class="dtype">BNC · médecin</span><span class="st todo">● À traiter</span></div>
         </button>
         <button class="dcard new js-newdossier"><span class="plus">+</span> Nouveau dossier</button>
       </div>
@@ -314,14 +329,27 @@ main.wrap{padding:30px 20px 90px}
             <span class="inp"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>31/12/2026</span>
           </div>
         </div>
-        <div class="card field-card" style="display:flex;align-items:center;justify-content:space-between;gap:16px">
-          <h3 style="margin:0">Banque</h3>
-          <div class="toggle" role="group" aria-label="Tenue de banque">
-            <button class="js-bq" data-v="oui" aria-pressed="true">Oui</button>
-            <button class="js-bq" data-v="non" aria-pressed="false">Non</button>
+        <div class="card field-card">
+          <div class="frow">
+            <span class="flabel">Type</span>
+            <div class="tsel"><select class="js-type" aria-label="Type de dossier">
+              <option value="lmnp">LMNP meublé</option>
+              <option value="lmp">LMP</option>
+              <option value="sci">SCI (IR)</option>
+              <option value="bnc">BNC · médecin</option>
+            </select></div>
+          </div>
+          <div class="frow" style="border-top:1px solid var(--line-2);margin-top:4px;padding-top:12px">
+            <span class="flabel">Banque</span>
+            <div class="toggle" role="group" aria-label="Tenue de banque">
+              <button class="js-bq" data-v="oui" aria-pressed="true">Oui</button>
+              <button class="js-bq" data-v="non" aria-pressed="false">Non</button>
+            </div>
           </div>
         </div>
       </div>
+
+      <div class="note-bnc js-bnc-note hidden">Profil médecin — les encaissements sont mis de côté (pas de justificatif attendu) et le récurrent (assurances, loyer, cotisations…) est pré-affecté automatiquement.</div>
 
       <div class="grid2" style="margin-top:18px">
         <div class="card field-card">
@@ -528,17 +556,24 @@ main.wrap{padding:30px 20px 90px}
     $$('.step').forEach(function(s){s.classList.toggle('hidden',s.dataset.s!=String(n));});
     window.scrollTo({top:0,behavior:'smooth'});
   }
-  function openDossier(name,ex){
+  function cap(s){return s?s.charAt(0)+s.slice(1).toLowerCase():s;}
+  function toggleBnc(on){$$('.js-bnc-note').forEach(function(e){e.classList.toggle('hidden',!on);});}
+  function openDossier(name,ex,type){
     $$('.js-dossier').forEach(function(e){e.textContent=name;});
     $$('.js-ex').forEach(function(e){e.textContent=ex;});
-    var parts=name.split('_'); var sur=parts.length>1?parts[1]:name;
-    var cap=sur.charAt(0)+sur.slice(1).toLowerCase();
-    var isSCI=/^SCI/i.test(name);
-    $$('.js-client-name').forEach(function(e){e.textContent=(isSCI?'SCI ':'M. ')+cap;});
-    $$('.js-client-mail').forEach(function(e){e.textContent='client.'+sur.toLowerCase()+'@email.fr';});
+    var sel=$('.js-type'); if(sel&&type)sel.value=type;
+    toggleBnc(type==='bnc');
+    var parts=name.split('_'), id=parts.slice(1,-1);
+    var key=id.length?id[id.length-1]:parts[0];
+    var disp = type==='sci' ? 'SCI '+id.map(cap).join(' ')
+             : type==='bnc' ? 'Dr '+cap(key)
+             : 'M. '+cap(key);
+    $$('.js-client-name').forEach(function(e){e.textContent=disp;});
+    $$('.js-client-mail').forEach(function(e){e.textContent='client.'+key.toLowerCase()+'@email.fr';});
     go(1);
   }
-  $$('.js-open').forEach(function(b){b.addEventListener('click',function(){openDossier(b.dataset.name,b.dataset.ex);});});
+  $$('.js-open').forEach(function(b){b.addEventListener('click',function(){openDossier(b.dataset.name,b.dataset.ex,b.dataset.type);});});
+  $('.js-type').addEventListener('change',function(){toggleBnc(this.value==='bnc');});
   $$('.js-next').forEach(function(b){b.addEventListener('click',function(){go(Math.min(5,+root.dataset.step+1));});});
   $$('.js-back').forEach(function(b){b.addEventListener('click',function(){go(Math.max(0,+root.dataset.step-1));});});
   $('.js-home').addEventListener('click',function(){go(0);});
