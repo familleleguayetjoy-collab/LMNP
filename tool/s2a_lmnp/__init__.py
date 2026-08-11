@@ -11,6 +11,9 @@ from .rapprochement import (rapprocher, manquants, sous_seuil, justifiable,
                             doublons_factures, chercher_dans_fec)
 from .quadra import to_quadratus, verifier_equilibre
 from .biens import Bien, MappingBiens, proposer_sous_compte, inferer_depuis_fec
+from .ia import (ClientIA, SEUIL_CONFIANCE_OCR, residu, questions_pour,
+                 appliquer_reponses, resoudre_residu, resolver_depuis_client,
+                 facture_depuis_ocr, lire_factures)
 
 __all__ = [
     "normalize", "parse_montant", "cents", "parse_fec", "LigneFEC",
@@ -22,4 +25,7 @@ __all__ = [
     "marquer_perso", "doublons_factures", "chercher_dans_fec",
     "to_quadratus", "verifier_equilibre",
     "Bien", "MappingBiens", "proposer_sous_compte", "inferer_depuis_fec",
+    "ClientIA", "SEUIL_CONFIANCE_OCR", "residu", "questions_pour",
+    "appliquer_reponses", "resoudre_residu", "resolver_depuis_client",
+    "facture_depuis_ocr", "lire_factures",
 ]

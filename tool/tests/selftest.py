@@ -13,7 +13,9 @@ from s2a_lmnp import (parse_montant, parse_fec, construire, Operation, Facture,
                       doublons, operations_od_factures,
                       Bien, MappingBiens, proposer_sous_compte, inferer_depuis_fec,
                       associer_factures, associer_reglements, detecter_virements_internes,
-                      marquer_perso, doublons_factures, chercher_dans_fec)
+                      marquer_perso, doublons_factures, chercher_dans_fec,
+                      residu, questions_pour, appliquer_reponses, resoudre_residu,
+                      resolver_depuis_client, facture_depuis_ocr)
 
 ok = 0
 def check(cond, label):
@@ -234,5 +236,72 @@ lignes_x = parse_fec(FECX)
 opx = Operation(date=D(2026, 1, 6), libelle="EDF", montant=69.34, sens="D"); opx.compte = "606100"
 trouve = chercher_dans_fec(opx, lignes_x)
 check(trouve is not None and trouve.compte == "606100", "écriture retrouvée dans le FEC -> ne pas recréer")
+
+print("18) Couche IA — le résidu ambigu, en lot, sans clé (client factice)")
+
+# Un faux ClientIA en mémoire : il ne fait AUCUN appel réseau. Il sert à prouver
+# le câblage et les garde-fous, pas la qualité des propositions.
+class FauxIA:
+    def __init__(self, regle):
+        self.regle = regle          # dict {libelle_substr: compte_proposé}
+        self.recu = None            # dernière charge utile reçue (contrôle)
+    def resoudre(self, questions, *, modele=None):
+        self.recu = questions
+        rep = []
+        for q in questions:
+            compte = None
+            for cle, c in self.regle.items():
+                if cle in (q["libelle"] or ""):
+                    compte = c
+            if compte is not None:
+                rep.append({"id": q["id"], "compte": compte, "confiance": 0.9,
+                            "raison": "test"})
+        return rep
+    def lire_facture(self, chemin, *, modele=None):
+        return [{"fournisseur": "EDF", "date": "2026-01-05", "ttc": 69.34,
+                 "tva": 11.56, "ht": 57.78, "numero": "F1", "confiance": 0.95}]
+
+# fabrique un résidu réaliste : mobilier au-dessus du seuil (2184/606/615)
+op_amb = Operation(date=D(2026, 3, 1), libelle="CONFORAMA CANAPE", montant=900.0, sens="D")
+coder(op_amb, construire([]))
+check(op_amb.a_revoir and len(op_amb.options) >= 2, "mobilier > seuil = résidu ambigu à trancher")
+op_clair = Operation(date=D(2026, 3, 2), libelle="LOYER APPART", montant=800.0, sens="C")
+coder(op_clair, construire([]))
+lot = [op_amb, op_clair]
+check([o.libelle for o in residu(lot)] == ["CONFORAMA CANAPE"], "seul l'ambigu part à l'IA (le loyer reste local)")
+
+q = questions_pour(lot)
+check(len(q) == 1 and "montant" in q[0] and q[0]["options"] == op_amb.options,
+      "question construite avec les options des règles + montant informatif")
+
+# garde-fou 1 : sans client injecté, no-op total (moteur déterministe)
+check(resoudre_residu(lot, None) == 0, "sans clé : couche IA = no-op")
+
+# proposition dans le cadre des options -> retenue mais NON validée
+ia = FauxIA({"CONFORAMA": "2184"})
+avant_montant, avant_sens = op_amb.montant, op_amb.sens
+n = resoudre_residu(lot, ia)
+check(n == 1 and op_amb.options[0] == "2184", "proposition IA remontée en tête des options")
+check(op_amb.a_revoir is True, "proposition ≠ validation : l'humain tranche toujours")
+check(op_amb.montant == avant_montant and op_amb.sens == avant_sens,
+      "l'IA ne touche NI au montant NI au sens")
+check(ia.recu[0]["montant"] == 900.0 and set(ia.recu[0]) == {"id", "libelle", "montant", "sens", "options", "contexte"},
+      "la question porte le montant à titre informatif, dans un schéma figé (l'IA ne décide pas d'un montant)")
+
+# garde-fou 2 : une proposition hors options est rejetée
+op_amb2 = Operation(date=D(2026, 3, 3), libelle="CONFORAMA LIT", montant=700.0, sens="D")
+coder(op_amb2, construire([]))
+rej = appliquer_reponses([op_amb2], [{"id": "op-%d" % id(op_amb2), "compte": "701",
+                                      "confiance": 0.9, "raison": "hors cadre"}])
+check(rej == 0 and "701" not in op_amb2.options, "compte hors des options -> rejeté")
+
+print("19) Couche IA — adaptateur resolver (fournisseur inconnu) + OCR->Facture")
+resolver = resolver_depuis_client(FauxIA({"WEBTECH": "606"}))
+op_inc = Operation(date=D(2026, 3, 4), libelle="WEBTECH SASU", montant=40.0, sens="D")
+coder(op_inc, construire([]), resolver)
+check(op_inc.origine == "web" and op_inc.a_revoir, "resolver IA propose un compte, remonté à l'humain")
+fac = facture_depuis_ocr(ia.lire_facture("edf.pdf")[0])
+check(fac.fournisseur == "EDF" and fac.ttc == 69.34 and fac.confiance_ocr == 0.95,
+      "OCR -> Facture (montant sert au rapprochement, jamais posté seul)")
 
 print("\n%d contrôles OK — moteur cohérent." % ok)

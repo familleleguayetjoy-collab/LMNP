@@ -6,7 +6,7 @@ jamais de l'IA. L'IA n'intervient que sur deux tâches, et seulement pour
 *proposer* (l'humain valide) : lire une facture, proposer un compte sur un
 fournisseur inconnu.
 
-## Ce qui marche déjà (testé, `python3 tool/tests/selftest.py` → 50 contrôles OK)
+## Ce qui marche déjà (testé, `python3 tool/tests/selftest.py` → 70 contrôles OK)
 
 | Module | Rôle | État |
 |---|---|---|
@@ -17,7 +17,8 @@ fournisseur inconnu.
 | `rapprochement.py` | Rapprochement facture↔banque, écarts, manquants, **anti-doublon**, **factures sans banque → OD (108)** | ✅ |
 | `quadra.py` | **Lecture + export Quadratus ASCII (251 car., contrepartie en ligne)** | ✅ **calibré au format RÉEL du cabinet, aller-retour octet à octet vérifié** |
 | `biens.py` | **Suivi par bien : sous-comptes (614/6141), routage par adresse OCR, mapping sauvegardé + revue N-1** | ✅ |
-| `ocr.py` | Lecture des factures par l'API Claude | ⛔ interface (contrat enrichi par 3 vraies factures) |
+| `ocr.py` | Lecture des factures par l'API Claude (contrat vision) | ⛔ interface (contrat enrichi par 3 vraies factures) |
+| `ia.py` | **Couche IA branchable sans clé** : contrat JSON entrée/sortie, résidu ambigu envoyé **en lot**, garde-fous (montant jamais touché, rien validé auto) | ✅ **interface + plomberie testées** ; il ne reste qu'à écrire le `ClientIA` réel |
 
 ## Cas comptables traités (demandés par le cabinet)
 
@@ -106,8 +107,13 @@ et les parties « montants » restent du code.
 
 Les fichiers d'exemple et le format Quadra sont **reçus et intégrés**. Il reste :
 
-1. **Accès API Anthropic** (clé + DPA) — sans ça l'OCR reste une interface.
-   C'est le seul vrai bloquant pour automatiser la lecture des factures.
+1. **Accès API Anthropic** (clé + DPA) — c'est le seul vrai bloquant. La couche
+   IA est déjà **entièrement posée et testée sans clé** (`ia.py`) : contrat JSON
+   figé, résidu ambigu regroupé en **un seul appel par dossier**, garde-fous
+   (compte hors options rejeté, montant/sens jamais modifiés, aucune validation
+   automatique). Le jour du câblage, il n'y a **qu'une seule classe à écrire** —
+   `ClientIA` (OCR vision + résolution JSON) — et rien d'autre à changer dans le
+   moteur. Sans clé, tout reste 100 % déterministe (la couche IA est un no-op).
 2. **Doctrine d'immobilisation** : seuil (500 € HT ?) et règle entretien /
    amélioration. Aujourd'hui toute enseigne de bricolage/mobilier est remontée
    « à trancher » ; avec un seuil je pourrai auto-coder les petits achats
