@@ -69,12 +69,13 @@
 
 /* ---------- Layout ---------- */
 main.wrap{padding:30px 20px 90px}
-.navrow{display:flex;align-items:center;gap:16px;margin-bottom:20px}
-.backbtn{display:inline-flex;align-items:center;gap:8px;color:var(--ink);font-family:var(--display);font-weight:600;
-  font-size:14px;background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:10px 17px;box-shadow:var(--shadow-sm)}
-.backbtn:hover{border-color:var(--muted)}
-.backbtn .cv{font-size:17px;line-height:1;margin-top:-1px}
-.steplbl{color:var(--muted);font-weight:600;font-size:13px}
+.steponly{margin-bottom:18px}
+.steplbl{color:var(--muted);font-family:var(--display);font-weight:600;font-size:13px}
+.btn-secondary{display:inline-flex;align-items:center;gap:8px;color:var(--ink);font-family:var(--display);font-weight:600;
+  font-size:16px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:15px 24px;box-shadow:var(--shadow-sm)}
+.btn-secondary:hover{border-color:var(--muted)}
+.btn-secondary .cv{font-size:18px;line-height:1;margin-top:-1px}
+.actionbar .right{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 
 .pagehead{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap}
 .pagehead h1{font-size:clamp(30px,4.6vw,50px);color:var(--ink)}
@@ -131,6 +132,10 @@ main.wrap{padding:30px 20px 90px}
   border:1.5px dashed var(--field-line);border-radius:12px;padding:22px 16px;font-weight:500}
 .drop svg{width:26px;height:26px;stroke:var(--muted);fill:none;stroke-width:1.6}
 .drop u{color:var(--green);text-decoration:none;font-weight:600}
+.js-bankcard{transition:opacity .15s ease}
+.lmnp[data-banque="non"] .js-bankcard{opacity:.5}
+.lmnp[data-banque="non"] .js-bankcard .drop{pointer-events:none;border-style:solid;background:var(--line-2)}
+.lmnp[data-banque="non"] .js-bankcard .drop u{color:var(--muted)}
 
 /* Footer action bar */
 .actionbar{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:22px;flex-wrap:wrap}
@@ -207,6 +212,32 @@ main.wrap{padding:30px 20px 90px}
 .modal .box .paper{width:100%;border:1px solid var(--line);border-radius:10px;margin:6px 0 4px}
 
 .footnote{color:var(--muted);font-size:12.5px;margin-top:26px;line-height:1.6}
+@media(max-width:640px){
+  .tbl thead{display:none}
+  .tbl,.tbl tbody,.tbl tr,.tbl td{display:block;width:100%}
+  .tblwrap{overflow:visible;padding:0}
+  .tbl tr{border:1px solid var(--line);border-radius:14px;margin:0 0 12px;padding:14px 16px;background:var(--surface);box-shadow:var(--shadow-sm)}
+  .tbl td{border:0;padding:7px 0}
+  .tbl td.dt{color:var(--muted);font-size:13px;padding:0 0 2px}
+  .tbl td.lib{font-family:var(--display);font-weight:700;font-size:18px;padding:0 0 8px}
+  .tbl td.amt{display:flex;justify-content:space-between;align-items:center}
+  .tbl td.amt::before{content:"Montant";color:var(--muted);font-weight:600;font-size:13px}
+  .tbl td.cell-photo{display:flex;align-items:center;gap:12px}
+  .tbl td.cell-photo::before{content:"Justificatif";color:var(--muted);font-weight:600;font-size:13px}
+  .tbl td.cell-acct::before{content:"Compte pressenti";display:block;color:var(--muted);font-weight:600;font-size:13px;margin-bottom:6px}
+  .tbl .acct select{width:100%;min-width:0}
+}
+@media(max-width:560px){
+  main.wrap{padding:22px 16px 72px}
+  .pagehead .meta{white-space:normal;padding-top:6px}
+  .actionbar .right{width:100%}
+  .actionbar .right .cta{flex:1;justify-content:center}
+  .cta,.btn-secondary{font-size:16px;padding:15px 18px}
+  .badge-h h2{font-size:21px}
+  .filebox .txt h2{font-size:27px}
+  .ritem{flex-wrap:wrap}
+  .ritem .rdt{margin-left:0}
+}
 </style>
 
 <div class="lmnp" data-step="0" data-banque="oui">
@@ -241,12 +272,11 @@ main.wrap{padding:30px 20px 90px}
         </button>
         <button class="dcard new js-newdossier"><span class="plus">+</span> Nouveau dossier</button>
       </div>
-      <p class="footnote">Les dossiers sont lus depuis le <b>Drive partagé</b> : un client = un dossier. Un <b>nouveau</b> dossier apparaît dès qu'un dossier client existe sur le Drive ; il passe en <b>« Terminé »</b> une fois le fichier comptable généré et importé. Rien n'est renommé chez le client.</p>
     </section>
 
     <!-- ÉTAPE 1 — IMPORTER -->
     <section class="step hidden" data-s="1">
-      <div class="navrow"><button class="backbtn js-back"><span class="cv">‹</span> Retour</button><span class="steplbl">Étape 1 / 5 · Importer</span></div>
+      <div class="steponly"><span class="steplbl">Étape 1 / 5 · Importer</span></div>
       <div class="card" style="padding:26px 28px">
         <div class="pagehead">
           <h1 class="js-dossier">LMNP_DUPONT_2026</h1>
@@ -287,7 +317,7 @@ main.wrap{padding:30px 20px 90px}
             <span class="ok check"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span>
           </div>
         </div>
-        <div class="card field-card">
+        <div class="card field-card js-bankcard">
           <h3>Fichier banque <span class="sub">si applicable</span></h3>
           <div class="drop">
             <svg viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
@@ -298,13 +328,16 @@ main.wrap{padding:30px 20px 90px}
 
       <div class="actionbar">
         <span class="left"><span class="check"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span> 21 pièces trouvées</span>
-        <button class="cta js-next">Analyser le dossier <span class="arw">→</span></button>
+        <div class="right">
+          <button class="btn-secondary js-back"><span class="cv">‹</span> Retour</button>
+          <button class="cta js-next">Analyser le dossier <span class="arw">→</span></button>
+        </div>
       </div>
     </section>
 
     <!-- ÉTAPE 2 — À TRANCHER -->
     <section class="step hidden" data-s="2">
-      <div class="navrow"><button class="backbtn js-back"><span class="cv">‹</span> Retour</button><span class="steplbl">Étape 2 / 5 · À trancher</span></div>
+      <div class="steponly"><span class="steplbl">Étape 2 / 5 · À trancher</span></div>
       <div class="pagehead"><h1 class="js-dossier">LMNP_DUPONT_2026</h1><div class="meta js-ex">Exercice 2026 · locations meublées</div></div>
       <div class="ready"><span class="pct">88 % <span>prêt</span></span></div>
       <div class="bar"><i></i></div>
@@ -316,14 +349,17 @@ main.wrap{padding:30px 20px 90px}
         </table></div>
       </div>
 
-      <div class="actionbar" style="justify-content:center">
-        <button class="cta js-next">Valider le choix <span class="arw">→</span></button>
+      <div class="actionbar" style="justify-content:flex-end">
+        <div class="right">
+          <button class="btn-secondary js-back"><span class="cv">‹</span> Retour</button>
+          <button class="cta js-next">Valider le choix <span class="arw">→</span></button>
+        </div>
       </div>
     </section>
 
     <!-- ÉTAPE 3 — À RÉCLAMER -->
     <section class="step hidden" data-s="3">
-      <div class="navrow"><button class="backbtn js-back"><span class="cv">‹</span> Retour</button><span class="steplbl">Étape 3 / 5 · À réclamer</span></div>
+      <div class="steponly"><span class="steplbl">Étape 3 / 5 · À réclamer</span></div>
       <div class="card" style="padding:26px 28px">
         <div class="pagehead"><h1 class="js-dossier">LMNP_DUPONT_2026</h1><div class="meta js-ex">Exercice 2026 · locations meublées</div></div>
         <div class="ready"><span class="pct">88 % <span>prêt</span></span></div>
@@ -333,14 +369,17 @@ main.wrap{padding:30px 20px 90px}
         <div class="rlist js-reclam"></div>
 
         <div class="actionbar" style="justify-content:flex-end">
-          <button class="cta js-next">Préparer le mail <span class="arw">→</span></button>
+          <div class="right">
+            <button class="btn-secondary js-back"><span class="cv">‹</span> Retour</button>
+            <button class="cta js-next">Préparer le mail <span class="arw">→</span></button>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- ÉTAPE 4 — LE MAIL -->
     <section class="step hidden" data-s="4">
-      <div class="navrow"><button class="backbtn js-back"><span class="cv">‹</span> Retour</button><span class="steplbl">Étape 4 / 5 · Le mail</span></div>
+      <div class="steponly"><span class="steplbl">Étape 4 / 5 · Le mail</span></div>
       <div class="pagehead"><h1 class="js-dossier">LMNP_DUPONT_2026</h1><div class="meta js-ex">Exercice 2026 · locations meublées</div></div>
       <div class="ready"><span class="pct">88 % <span>prêt</span></span></div>
       <div class="bar"><i></i></div>
@@ -357,12 +396,17 @@ main.wrap{padding:30px 20px 90px}
           <p>Cordialement,<br/>Cabinet S2A — Sud Alpes Audit</p>
         </div>
       </div>
-      <div style="margin-top:22px"><button class="cta block js-next">Envoyer le mail <span class="arw">→</span></button></div>
+      <div class="actionbar" style="justify-content:flex-end">
+        <div class="right">
+          <button class="btn-secondary js-back"><span class="cv">‹</span> Retour</button>
+          <button class="cta js-next">Envoyer le mail <span class="arw">→</span></button>
+        </div>
+      </div>
     </section>
 
     <!-- ÉTAPE 5 — LE FICHIER -->
     <section class="step hidden" data-s="5">
-      <div class="navrow"><button class="backbtn js-back"><span class="cv">‹</span> Retour</button><span class="steplbl">Étape 5 / 5 · Le fichier</span></div>
+      <div class="steponly"><span class="steplbl">Étape 5 / 5 · Le fichier</span></div>
       <div class="pagehead"><h1 class="js-dossier">LMNP_DUPONT_2026</h1><div class="meta js-ex">Exercice 2026 · locations meublées</div></div>
       <div class="done-head"><span class="check" style="width:32px;height:32px"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span><h2>Fichier prêt</h2></div>
 
@@ -374,7 +418,10 @@ main.wrap{padding:30px 20px 90px}
         </div>
       </div>
       <div class="actionbar" style="justify-content:flex-end">
-        <button class="cta js-download">Télécharger le fichier ASCII <span class="arw">→</span></button>
+        <div class="right">
+          <button class="btn-secondary js-back"><span class="cv">‹</span> Retour</button>
+          <button class="cta js-download">Télécharger le fichier ASCII <span class="arw">→</span></button>
+        </div>
       </div>
       <p class="footnote">Prototype interne S2A — données de démonstration. Les montants sont codés par règles (jamais par l'IA) ; l'IA n'intervient que pour lire une facture ou proposer un compte inconnu, sous validation.</p>
     </section>
@@ -432,8 +479,8 @@ main.wrap{padding:30px 20px 90px}
         return '<option value="'+o[0]+'"'+(o[0]===r.cpt?' selected':'')+'>'+o[1]+'</option>';}).join('')+'</select></div>';
       tr.innerHTML='<td class="dt num">'+r.dt+'</td><td class="lib">'+r.lib+'</td>'
         +'<td class="amt num">'+eur(r.m)+'</td>'
-        +'<td><button class="thumb js-thumb" data-lib="'+r.lib+'" aria-label="Ouvrir le justificatif">'+thumbSVG(r.col,r.ini)+'</button></td>'
-        +'<td>'+sel+'</td>';
+        +'<td class="cell-photo"><button class="thumb js-thumb" data-lib="'+r.lib+'" aria-label="Ouvrir le justificatif">'+thumbSVG(r.col,r.ini)+'</button></td>'
+        +'<td class="cell-acct">'+sel+'</td>';
       tb.appendChild(tr);
     });
   }
