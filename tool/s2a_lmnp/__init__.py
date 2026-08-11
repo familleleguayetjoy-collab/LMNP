@@ -4,13 +4,17 @@ from .fec import parse_fec, LigneFEC
 from .dico import construire, Dictionnaire
 from .model import Operation, Facture
 from .codage import coder, IMMO, SEUIL_IMMO_HT
-from .rapprochement import rapprocher, manquants, sous_seuil, justifiable
+from .rapprochement import (rapprocher, manquants, sous_seuil, justifiable,
+                            doublons, operations_od_factures)
 from .quadra import to_quadratus, verifier_equilibre
+from .biens import Bien, MappingBiens, proposer_sous_compte, inferer_depuis_fec
 
 __all__ = [
     "normalize", "parse_montant", "cents", "parse_fec", "LigneFEC",
     "construire", "Dictionnaire", "Operation", "Facture", "coder", "IMMO",
     "SEUIL_IMMO_HT",
     "rapprocher", "manquants", "sous_seuil", "justifiable",
+    "doublons", "operations_od_factures",
     "to_quadratus", "verifier_equilibre",
+    "Bien", "MappingBiens", "proposer_sous_compte", "inferer_depuis_fec",
 ]

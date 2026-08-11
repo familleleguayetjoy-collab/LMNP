@@ -60,6 +60,14 @@ def _set(op: Operation, compte, conf, origine, motif="", a_revoir=False, options
 
 def coder(op: Operation, dico: Dictionnaire,
           resolver: Optional[Callable[[str], Optional[dict]]] = None) -> Operation:
+    # 0) ligne DÉJÀ codée à l'export bancaire : le logiciel comptable a déjà
+    #    pré-affecté le compte (fournisseur paramétré). On lui fait confiance,
+    #    on ne recode pas et on ne remonte pas à l'humain. Le rapprochement
+    #    avec la facture reste fait par ailleurs (contrôle + anti-doublon).
+    if op.compte and getattr(op, "origine", "") in ("quadra", "banque"):
+        return _set(op, op.compte, 0.99, "banque",
+                    "Déjà codé à l'export bancaire — rapproché, non recodé")
+
     lib = (op.libelle or "").upper()
 
     # 1) recettes

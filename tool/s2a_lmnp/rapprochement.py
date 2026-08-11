@@ -56,3 +56,37 @@ def manquants(ops, seuil: float = 150.0):
 
 def sous_seuil(ops, seuil: float = 150.0):
     return [o for o in ops if justifiable(o) and o.facture is None and o.montant <= seuil]
+
+
+def doublons(ops):
+    """Détecte les écritures en double (même date + montant + compte + libellé).
+    Utile quand le relevé pré-codé et une saisie manuelle se recoupent : on ne
+    veut pas passer deux fois la même écriture."""
+    from .normalize import normalize, cents
+    vus, dups = {}, []
+    for o in ops:
+        cle = (o.date, cents(o.montant), o.compte or "", normalize(o.libelle))
+        if cle in vus:
+            dups.append(o)
+        else:
+            vus[cle] = o
+    return dups
+
+
+def operations_od_factures(factures, dico, resolver=None):
+    """Cas : une facture existe mais AUCUNE ligne bancaire ne lui correspond
+    (paiement hors banque, dossier sans banque, ou banque incomplète).
+    On passe alors une écriture au journal d'OD : le compte de charge codé
+    depuis le fournisseur, en contrepartie du compte 108 (décidé par le
+    cabinet). Le montant vient de la facture (seul cas où on n'a pas la banque)."""
+    from .model import Operation
+    from .codage import coder
+    ops = []
+    for f in factures:
+        if getattr(f, "op", None) is not None:
+            continue                      # déjà rapprochée à une ligne banque
+        o = Operation(date=f.date, libelle=f.fournisseur, montant=f.ttc, sens="D")
+        o.facture = f
+        coder(o, dico, resolver)
+        ops.append(o)
+    return ops

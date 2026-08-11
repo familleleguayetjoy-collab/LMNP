@@ -9,7 +9,9 @@ import sys, os, datetime
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from s2a_lmnp import (parse_montant, parse_fec, construire, Operation, Facture,
-                      coder, rapprocher, manquants, to_quadratus, verifier_equilibre)
+                      coder, rapprocher, manquants, to_quadratus, verifier_equilibre,
+                      doublons, operations_od_factures,
+                      Bien, MappingBiens, proposer_sous_compte, inferer_depuis_fec)
 
 ok = 0
 def check(cond, label):
@@ -135,5 +137,50 @@ rebuilt = format_mouvement(
     horodate=f["horodate"], folio=f["folio"], journal3=f["journal3"],
     libelle_long=f["liblong"])
 check(rebuilt == REELLE, "réécriture identique à l'original (positions exactes)")
+
+print("7) Ligne déjà codée à l'export bancaire : on ne recode pas, pas de revue")
+precode = Operation(date=D(2026, 1, 5), libelle="TOTALENERGIES", montant=197.92, sens="D")
+precode.compte = "60611000"; precode.origine = "quadra"
+coder(precode, dico)
+check(precode.compte == "60611000" and not precode.a_revoir and precode.origine == "banque",
+      "compte bancaire pré-affecté conservé (déjà codé)")
+
+print("8) Anti-doublon : même date + montant + compte + libellé")
+o1 = Operation(date=D(2026, 2, 1), libelle="EDF", montant=96.4, sens="D"); o1.compte = "606100"
+o2 = Operation(date=D(2026, 2, 1), libelle="EDF", montant=96.4, sens="D"); o2.compte = "606100"
+check(len(doublons([o1, o2])) == 1, "un doublon détecté sur deux lignes identiques")
+
+print("9) Facture sans ligne bancaire -> écriture OD, contrepartie 108")
+ops_bq = [Operation(date=D(2026, 3, 1), libelle="PRLV SYNDIC AZUR", montant=438.0, sens="D")]
+facs = [Facture("EDF", D(2026, 1, 5), 69.34, 11.55),          # aucune ligne banque -> OD
+        Facture("Syndic Azur", D(2026, 3, 1), 438.0, 0.0)]     # celle-ci se rapproche
+rapprocher(ops_bq, facs)
+od = operations_od_factures(facs, dico)
+check(len(od) == 1 and od[0].facture.fournisseur == "EDF", "seule la facture non rapprochée part en OD")
+txt_od = to_quadratus(od, avec_banque=False)
+from s2a_lmnp.quadra import parse_mouvement
+fod = parse_mouvement([l for l in txt_od.split("\r\n") if l][0])
+check(fod["journal"] == "OD" and fod["contrep"].strip() == "10800000", "journal OD + contrepartie 108")
+
+print("10) Suivi par bien : sous-comptes, routage par adresse, revue N-1")
+b1 = Bien("bonaparte", "Bonaparte", "12 rue Bonaparte 06000 Nice")
+b2 = Bien("lepante", "Lépante", "5 avenue Lépante 06000 Nice")
+mp = MappingBiens(biens=[b1, b2])
+mp.affecter("614", "bonaparte"); mp.affecter("6141", "lepante")
+check(mp.bien_du_compte("6141").nom == "Lépante", "compte 6141 -> bien Lépante")
+check(proposer_sous_compte("614", 0) == "614" and proposer_sous_compte("614", 1) == "6141",
+      "convention sous-comptes 614 -> 6141")
+check(mp.router_adresse("Facture — 5 avenue Lepante, Nice").code == "lepante",
+      "adresse facture routée vers le bon bien")
+mp2 = MappingBiens.from_json(mp.to_json())
+check(mp2.par_compte == mp.par_compte, "mapping sauvegardé/relu à l'identique (JSON)")
+ancien = MappingBiens(biens=[b1], par_compte={"614": "bonaparte"})
+check(mp.diff(ancien)["ajoutes"] == ["6141"], "revue N-1 : compte 6141 ajouté cette année")
+FEC_B = ("JournalCode|CompteNum|CompteLib|EcritureDate|EcritureLib|Debit|Credit\n"
+         "AC|614000|Charges|20250110|Charges copro Bonaparte|100,00|0,00\n"
+         "AC|614100|Charges|20250110|Charges copro Lepante|120,00|0,00\n")
+prop = inferer_depuis_fec(parse_fec(FEC_B), [b1, b2])
+check(prop.get("614000") == "bonaparte" and prop.get("614100") == "lepante",
+      "affectation compte->bien proposée depuis le libellé N-1")
 
 print("\n%d contrôles OK — moteur cohérent." % ok)

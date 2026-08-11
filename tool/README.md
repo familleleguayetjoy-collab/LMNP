@@ -6,17 +6,32 @@ jamais de l'IA. L'IA n'intervient que sur deux tâches, et seulement pour
 *proposer* (l'humain valide) : lire une facture, proposer un compte sur un
 fournisseur inconnu.
 
-## Ce qui marche déjà (testé, `python3 tool/tests/selftest.py` → 36 contrôles OK)
+## Ce qui marche déjà (testé, `python3 tool/tests/selftest.py` → 50 contrôles OK)
 
 | Module | Rôle | État |
 |---|---|---|
 | `normalize.py` | Normalisation des libellés + **parsing robuste des montants FR** | ✅ |
 | `fec.py` | Lecture du FEC (délimiteur `|`/tab/`;`, encodage, débit/crédit ou montant+sens) | ✅ **éprouvé sur le vrai FEC (684 lignes)** |
 | `dico.py` | Dictionnaire client + détection des imputations multiples N-1 | ✅ **+ exclusion des À-Nouveaux / amortissements (bug corrigé, voir + bas)** |
-| `codage.py` | Règles de codage. Ne remonte à l'humain que **immo / inconnu / multi** | ✅ |
-| `rapprochement.py` | Rapprochement facture↔banque, écarts, manquants | ✅ |
+| `codage.py` | Règles de codage. Ne remonte que **immo / inconnu / multi**. Respecte une ligne **déjà codée** à l'export bancaire | ✅ |
+| `rapprochement.py` | Rapprochement facture↔banque, écarts, manquants, **anti-doublon**, **factures sans banque → OD (108)** | ✅ |
 | `quadra.py` | **Lecture + export Quadratus ASCII (251 car., contrepartie en ligne)** | ✅ **calibré au format RÉEL du cabinet, aller-retour octet à octet vérifié** |
+| `biens.py` | **Suivi par bien : sous-comptes (614/6141), routage par adresse OCR, mapping sauvegardé + revue N-1** | ✅ |
 | `ocr.py` | Lecture des factures par l'API Claude | ⛔ interface (contrat enrichi par 3 vraies factures) |
+
+## Cas comptables traités (demandés par le cabinet)
+
+- **Ligne bancaire déjà pré-codée** (le logiciel a déjà affecté le compte) : on
+  fait confiance, on ne recode pas, ce n'est pas remonté à l'humain ; on
+  rapproche quand même la facture et on détecte les **doublons**.
+- **Facture sans ligne bancaire** (banque incomplète / paiement hors banque) :
+  écriture au **journal OD**, contrepartie **108** (compte de l'exploitant).
+- **Plusieurs biens** (LMNP/LMP/SCI) : **sous-comptes par bien** (614 Bonaparte,
+  6141 Lépante). Le mapping compte↔bien est proposé depuis le FEC N-1,
+  **sauvegardé**, **modifiable**, et **revu** d'une année sur l'autre (diff).
+  L'**adresse lue sur la facture** route vers le bon bien.
+- **Profil BNC / médecin** : recettes mises de côté (pas de justificatif
+  attendu), récurrent pré-affecté (à brancher côté règles selon le profil).
 
 ## Éprouvé sur les vrais fichiers du cabinet
 
