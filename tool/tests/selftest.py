@@ -237,6 +237,16 @@ opx = Operation(date=D(2026, 1, 6), libelle="EDF", montant=69.34, sens="D"); opx
 trouve = chercher_dans_fec(opx, lignes_x)
 check(trouve is not None and trouve.compte == "606100", "écriture retrouvée dans le FEC -> ne pas recréer")
 
+print("17b) EDF électricité ≠ travaux (faux positif regex corrigé)")
+FECE = ("JournalCode|CompteNum|CompteLib|EcritureDate|EcritureLib|Debit|Credit\n"
+        "BQ|606100|Energie|20250210|EDF energie electricite|57,79|0,00\n")
+oedf = Operation(date=D(2026, 1, 20), libelle="EDF ENERGIE ELECTRICITE", montant=69.34, sens="D")
+coder(oedf, construire(parse_fec(FECE)))
+check(oedf.compte == "606100" and not oedf.a_revoir, "EDF électricité -> énergie 606100, pas travaux")
+oelec = Operation(date=D(2026, 1, 20), libelle="TRAVAUX ELECTRICITE SALLE DE BAIN", montant=1200.0, sens="D")
+coder(oelec, construire([]))
+check(oelec.a_revoir and "615" in oelec.options, "vrais travaux (mot TRAVAUX) restent à trancher")
+
 print("18) Couche IA — le résidu ambigu, en lot, sans clé (client factice)")
 
 # Un faux ClientIA en mémoire : il ne fait AUCUN appel réseau. Il sert à prouver

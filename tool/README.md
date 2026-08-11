@@ -6,7 +6,7 @@ jamais de l'IA. L'IA n'intervient que sur deux tâches, et seulement pour
 *proposer* (l'humain valide) : lire une facture, proposer un compte sur un
 fournisseur inconnu.
 
-## Ce qui marche déjà (testé, `python3 tool/tests/selftest.py` → 70 contrôles OK)
+## Ce qui marche déjà (testé, `python3 tool/tests/selftest.py` → 72 contrôles OK)
 
 | Module | Rôle | État |
 |---|---|---|
@@ -88,6 +88,7 @@ fournisseur inconnu.
 ```bash
 python3 tool/demo/demo_sans_banque.py   # FEC N-1 -> dico -> 3 factures -> codage (ctp 108) -> Quadra OD
 python3 tool/demo/demo_avec_banque.py   # relevé Quadra ASCII : lecture -> ré-export équilibré (ctp 512)
+python3 tool/demo/demo_pipeline_complet.py  # BOUT-EN-BOUT : OCR -> codage -> à trancher (IA) -> à réclamer -> Quadra
 ```
 
 ## Architecture proposée
