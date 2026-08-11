@@ -14,6 +14,7 @@ from .biens import Bien, MappingBiens, proposer_sous_compte, inferer_depuis_fec
 from .ia import (ClientIA, SEUIL_CONFIANCE_OCR, residu, questions_pour,
                  appliquer_reponses, resoudre_residu, resolver_depuis_client,
                  facture_depuis_ocr, lire_factures)
+from .client_anthropic import ClientAnthropic
 
 __all__ = [
     "normalize", "parse_montant", "cents", "parse_fec", "LigneFEC",
@@ -27,5 +28,5 @@ __all__ = [
     "Bien", "MappingBiens", "proposer_sous_compte", "inferer_depuis_fec",
     "ClientIA", "SEUIL_CONFIANCE_OCR", "residu", "questions_pour",
     "appliquer_reponses", "resoudre_residu", "resolver_depuis_client",
-    "facture_depuis_ocr", "lire_factures",
+    "facture_depuis_ocr", "lire_factures", "ClientAnthropic",
 ]
