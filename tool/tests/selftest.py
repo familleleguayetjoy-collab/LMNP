@@ -11,7 +11,9 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from s2a_lmnp import (parse_montant, parse_fec, construire, Operation, Facture,
                       coder, rapprocher, manquants, to_quadratus, verifier_equilibre,
                       doublons, operations_od_factures,
-                      Bien, MappingBiens, proposer_sous_compte, inferer_depuis_fec)
+                      Bien, MappingBiens, proposer_sous_compte, inferer_depuis_fec,
+                      associer_factures, associer_reglements, detecter_virements_internes,
+                      marquer_perso, doublons_factures, chercher_dans_fec)
 
 ok = 0
 def check(cond, label):
@@ -182,5 +184,55 @@ FEC_B = ("JournalCode|CompteNum|CompteLib|EcritureDate|EcritureLib|Debit|Credit\
 prop = inferer_depuis_fec(parse_fec(FEC_B), [b1, b2])
 check(prop.get("614000") == "bonaparte" and prop.get("614100") == "lepante",
       "affectation compte->bien proposée depuis le libellé N-1")
+
+print("11) Un règlement = plusieurs factures (2 430 = 800 + 630 + 1 000)")
+vir = Operation(date=D(2026, 4, 10), libelle="VIR FOURNISSEURS", montant=2430.0, sens="D")
+fa = Facture("A", D(2026, 4, 8), 800.0); fb = Facture("B", D(2026, 4, 9), 630.0); fc = Facture("C", D(2026, 4, 7), 1000.0)
+st, tot = associer_factures(vir, [fa, fb, fc])
+check(st == "exact" and tot == 2430.0 and not vir.ecart, "3 factures associées, total = mouvement")
+st2, _ = associer_factures(Operation(date=D(2026,4,10), libelle="X", montant=2400.0, sens="D"), [fa, fb, fc])
+check(st2 == "ecart", "total ≠ mouvement -> à vérifier")
+
+print("12) Une facture = plusieurs règlements (3 000 = 1 000 + 2 000)")
+f3000 = Facture("Gros", D(2026, 5, 1), 3000.0)
+r1 = Operation(date=D(2026, 5, 2), libelle="ACOMPTE 1", montant=1000.0, sens="D")
+r2 = Operation(date=D(2026, 5, 20), libelle="ACOMPTE 2", montant=2000.0, sens="D")
+st, tot, reste = associer_reglements(f3000, [r1, r2])
+check(st == "solde" and tot == 3000.0 and reste == 0.0, "2 règlements soldent la facture")
+
+print("13) Règlement partiel (facture 1 200, mouvement 800 -> reste 400)")
+f1200 = Facture("Partiel", D(2026, 6, 1), 1200.0)
+p1 = Operation(date=D(2026, 6, 3), libelle="PAIEMENT", montant=800.0, sens="D")
+st, tot, reste = associer_reglements(f1200, [p1])
+check(st == "partiel" and reste == 400.0 and p1.partiel, "partiel détecté, reste 400 €, à confirmer")
+
+print("14) Virement interne entre deux comptes (-5 000 / +5 000)")
+va = Operation(date=D(2026, 7, 1), libelle="VIR COMPTE B", montant=5000.0, sens="D"); va.compte_bancaire = "A"
+vb = Operation(date=D(2026, 7, 1), libelle="VIR COMPTE A", montant=5000.0, sens="C"); vb.compte_bancaire = "B"
+autre = Operation(date=D(2026, 7, 3), libelle="LOYER", montant=850.0, sens="C"); autre.compte_bancaire = "A"
+cands = detecter_virements_internes([va, vb, autre])
+check(len(cands) == 1 and va.interne and vb.interne, "paire interne proposée (à confirmer), le loyer ignoré")
+
+print("15) Dépense personnelle confirmée -> contrepartie 108 / 455")
+perso = Operation(date=D(2026, 8, 1), libelle="ACHAT PRIVE", montant=300.0, sens="D")
+marquer_perso(perso, "exploitant")
+check(perso.traitement == "perso" and perso.compte == "108", "perso LMNP -> 108")
+perso2 = Operation(date=D(2026, 8, 1), libelle="ACHAT PRIVE", montant=300.0, sens="D")
+marquer_perso(perso2, "sci")
+check(perso2.compte == "455", "perso SCI/associé -> 455")
+
+print("16) Doublon de facture : même fichier réimporté renommé (hash)")
+d1 = Facture("EDF", D(2026, 1, 5), 69.34, fichier="edf.pdf"); d1.empreinte = "abc123"
+d2 = Facture("EDF", D(2026, 1, 5), 69.34, fichier="edf_renomme.pdf"); d2.empreinte = "abc123"
+d3 = Facture("EDF", D(2026, 2, 5), 71.20, fichier="edf_fev.pdf"); d3.empreinte = "zzz999"
+check(len(doublons_factures([d1, d2, d3])) == 1, "doublon détecté malgré le renommage")
+
+print("17) Écriture déjà présente dans le FEC (anti double comptabilisation)")
+FECX = ("JournalCode|CompteNum|CompteLib|EcritureDate|EcritureLib|Debit|Credit\n"
+        "BQ|606100|Energie|20260105|EDF|69,34|0,00\n")
+lignes_x = parse_fec(FECX)
+opx = Operation(date=D(2026, 1, 6), libelle="EDF", montant=69.34, sens="D"); opx.compte = "606100"
+trouve = chercher_dans_fec(opx, lignes_x)
+check(trouve is not None and trouve.compte == "606100", "écriture retrouvée dans le FEC -> ne pas recréer")
 
 print("\n%d contrôles OK — moteur cohérent." % ok)

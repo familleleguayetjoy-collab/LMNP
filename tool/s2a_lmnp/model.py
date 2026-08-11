@@ -31,6 +31,12 @@ class Operation:
     # rempli par le rapprochement :
     facture: "Optional[Facture]" = None
     ecart: bool = False            # écart de montant facture/banque
+    compte_bancaire: str = ""      # identifiant du compte (dossiers multi-banques)
+    factures: list = field(default_factory=list)   # plusieurs justificatifs -> 1 mouvement
+    interne: bool = False          # virement interne entre comptes de l'entreprise (proposé)
+    partiel: bool = False          # règlement partiel
+    traitement: str = ""           # "perso" = dépense personnelle, etc.
+    a_confirmer: str = ""          # motif d'une confirmation demandée à l'humain
 
 
 @dataclass
@@ -43,3 +49,9 @@ class Facture:
     fichier: str = ""              # chemin/nom dans le Drive
     confiance_ocr: float = 1.0     # confiance de l'extraction
     op: Optional[Operation] = None
+    numero: str = ""               # n° de facture (détection de doublon)
+    ht: float = 0.0                # montant HT (sert au doublon, jamais posté seul)
+    empreinte: str = ""            # hash du fichier -> doublon même si renommé
+    mode: str = "banque"           # banque | cheque | especes | autre
+    ops: list = field(default_factory=list)   # plusieurs règlements -> 1 facture
+    reste: float = 0.0             # solde non réglé (règlement partiel)

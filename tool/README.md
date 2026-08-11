@@ -33,6 +33,25 @@ fournisseur inconnu.
 - **Profil BNC / médecin** : recettes mises de côté (pas de justificatif
   attendu), récurrent pré-affecté (à brancher côté règles selon le profil).
 
+### Rapprochement — cas particuliers (le rapprochement JUSTIFIE, il ne décide pas la compta)
+
+- **1 règlement ↔ plusieurs factures** (`associer_factures`) : total des
+  justificatifs comparé au mouvement ; « exact » ou « à vérifier ».
+- **1 facture ↔ plusieurs règlements** & **règlement partiel**
+  (`associer_reglements`) : conserve la relation, empêche de réutiliser un
+  mouvement, calcule le reste ; statut solde / partiel / écart.
+- **Virement interne** entre 2 comptes (`detecter_virements_internes`) : même
+  montant, sens opposé, date proche, comptes différents → **proposé** (jamais
+  validé auto ; rien si ambigu).
+- **Dépense personnelle** (`marquer_perso`) : contrepartie 108 ou 455 selon la
+  forme — jamais conclu sur le seul fournisseur, toujours à confirmer.
+- **Doublon de justificatif** (`doublons_factures`) : hash (même fichier
+  renommé) ou (n°, fournisseur, date, TTC, HT). Doublon bancaire (`doublons`).
+- **Chèque / espèces** (`rapprocher`, champ `mode`) : fenêtre de dates élargie
+  pour les chèques ; espèces = pas d'anomalie si aucune ligne bancaire.
+- **Écriture déjà dans le FEC** (`chercher_dans_fec`) : anti double
+  comptabilisation à l'import d'un FEC couvrant déjà une partie de la période.
+
 ## Éprouvé sur les vrais fichiers du cabinet
 
 - **Quadra ASCII (dossier DUMDUM)** : format entièrement décodé et **ré-écrit à

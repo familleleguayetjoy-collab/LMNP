@@ -5,7 +5,10 @@ from .dico import construire, Dictionnaire
 from .model import Operation, Facture
 from .codage import coder, IMMO, SEUIL_IMMO_HT
 from .rapprochement import (rapprocher, manquants, sous_seuil, justifiable,
-                            doublons, operations_od_factures)
+                            doublons, operations_od_factures,
+                            associer_factures, associer_reglements,
+                            detecter_virements_internes, marquer_perso,
+                            doublons_factures, chercher_dans_fec)
 from .quadra import to_quadratus, verifier_equilibre
 from .biens import Bien, MappingBiens, proposer_sous_compte, inferer_depuis_fec
 
@@ -15,6 +18,8 @@ __all__ = [
     "SEUIL_IMMO_HT",
     "rapprocher", "manquants", "sous_seuil", "justifiable",
     "doublons", "operations_od_factures",
+    "associer_factures", "associer_reglements", "detecter_virements_internes",
+    "marquer_perso", "doublons_factures", "chercher_dans_fec",
     "to_quadratus", "verifier_equilibre",
     "Bien", "MappingBiens", "proposer_sous_compte", "inferer_depuis_fec",
 ]
