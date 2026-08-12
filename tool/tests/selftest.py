@@ -80,19 +80,19 @@ check(cas["pret"][0].split == (387.35, 643.29), "prêt : ventilation intérêts/
 print("3bis) Seuil d'immobilisation = 50 € HT (sous le seuil -> charge auto)")
 petit = op("CB LEROY MERLIN VISSERIE", 42.0)      # bricolage < 50 -> charge auto
 coder(petit, dico)
-check(not petit.a_revoir and petit.compte == "606", "petit bricolage 42 € -> 606 auto")
+check(not petit.a_revoir and petit.compte.startswith("606"), "petit bricolage 42 € -> 606x auto (adapté au plan)")
 gros = op("CB LEROY MERLIN PARQUET", 640.0)        # bricolage >= 50 -> à trancher
 coder(gros, dico)
 check(gros.a_revoir, "bricolage 640 € -> à trancher (immo possible)")
 petit_meuble = op("CB IKEA TABOURET", 39.0)        # mobilier < 50 -> charge auto
 coder(petit_meuble, dico)
-check(not petit_meuble.a_revoir and petit_meuble.compte == "606", "petit mobilier 39 € -> 606 auto")
+check(not petit_meuble.a_revoir and petit_meuble.compte.startswith("606"), "petit mobilier 39 € -> 606x auto (adapté au plan)")
 # le seuil s'apprécie en HT quand la facture donne la TVA (on poste le TTC)
 from s2a_lmnp import Facture
 o_ht = op("CB CASTORAMA ETAGERE", 58.0)            # 58 TTC mais 48,33 HT -> sous le seuil
 o_ht.facture = Facture("Castorama", D(2026, 3, 18), 58.0, 9.67)
 coder(o_ht, dico)
-check(not o_ht.a_revoir and o_ht.compte == "606",
+check(not o_ht.a_revoir and o_ht.compte.startswith("606"),
       "58 € TTC = 48,33 € HT < 50 -> charge auto (seuil apprécié en HT)")
 
 print("4) Rapprochement : exact / écart / manquant")
@@ -393,5 +393,37 @@ opx = Operation(D(2026, 1, 1), "EDF", 69.34, "D"); opx.compte = "606100"
 opy = Operation(D(2026, 1, 1), "FOURNISSEUR X", 10.0, "D"); opy.compte = "628000"
 check(comptes_absents([opx, opy], ["606100", "512000"]) == ["62800000"],
       "compte absent du plan comptable du dossier -> signalé avant import")
+
+print("21) Le FEC du dossier fait loi — adaptation au plan comptable")
+FECP = ("JournalCode|CompteNum|CompteLib|EcritureDate|EcritureLib|Debit|Credit\n"
+        "BQ|626100|Telecom|20250210|SFR fibre|30,00|0,00\n"          # télécom codé 626100 ici
+        "BQ|706000|Loyers|20250210|Loyer janvier|0,00|800,00\n"
+        "BQ|614100|Copro Bonaparte|20250210|Charges copro Bonaparte|100,00|0,00\n"
+        "BQ|614200|Copro Lepante|20250210|Charges copro Lepante|120,00|0,00\n")
+dp = construire(parse_fec(FECP))
+# loyer : règle générique 706 -> le dossier a un seul 706xxx -> adopté en silence
+olo = Operation(date=D(2026, 5, 1), libelle="VIREMENT LOYER", montant=800.0, sens="C")
+coder(olo, dp)
+check(olo.compte == "706000" and not olo.a_revoir,
+      "loyer 706 -> adopte le 706000 réel du dossier (adaptation silencieuse)")
+# copro : le dossier a DEUX comptes 614 (par bien) -> à choisir, pas d'auto
+ocp = Operation(date=D(2026, 5, 1), libelle="PRLV SYNDIC COPROPRIETE", montant=150.0, sens="D")
+coder(ocp, dp)
+check(ocp.a_revoir and {"614100", "614200"}.issubset(set(ocp.options)),
+      "compte 614 -> le dossier a 614100/614200 -> à choisir (quel bien)")
+# taxe foncière : aucune racine 635 mouvementée -> compte générique conservé
+# (le vrai contrôle "compte inexistant" est comptes_absents sur le plan Quadra)
+otf = Operation(date=D(2026, 5, 1), libelle="TAXE FONCIERE", montant=500.0, sens="D")
+coder(otf, dp)
+check(otf.compte == "63512", "racine absente du FEC -> compte générique conservé (pas de faux 'à créer')")
+# fournisseur connu du FEC -> compte du dossier direct (dico), pas d'adaptation
+osfr = Operation(date=D(2026, 5, 1), libelle="SFR FIBRE", montant=30.0, sens="D")
+coder(osfr, dp)
+check(osfr.compte == "626100" and osfr.origine in ("dict", "fuzzy"),
+      "fournisseur connu du FEC -> compte du dossier (dico), adaptation non nécessaire")
+# plan vide (pas de FEC) -> l'adaptation ne casse rien (no-op)
+ovide = Operation(date=D(2026, 5, 1), libelle="TAXE FONCIERE", montant=500.0, sens="D")
+coder(ovide, construire([]))
+check(ovide.compte == "63512", "sans FEC : compte générique conservé (adaptation no-op)")
 
 print("\n%d contrôles OK — moteur cohérent." % ok)

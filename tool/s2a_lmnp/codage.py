@@ -84,12 +84,52 @@ def coder(op: Operation, dico: Dictionnaire,
     remonte pour saisie HT + TVA déductible. Par défaut False (LMNP non assujetti,
     ~90 % des dossiers) : le TTC est passé en charge, aucune écriture de TVA."""
     r = _coder(op, dico, resolver)
+    # Le FEC du dossier fait loi : on confronte le compte générique au plan RÉEL.
+    adapter_au_plan(op, dico)
     if assujetti_tva and op.sens == "D" and (op.compte or "") not in _SANS_TVA:
         note = ("Dossier ASSUJETTI à la TVA : comptabiliser le HT + la TVA déductible "
                 "(44566) ; ne pas passer le TTC en charge — à saisir.")
         op.a_confirmer = (op.a_confirmer + " " + note) if op.a_confirmer else note
         op.a_revoir = True
     return r
+
+
+def adapter_au_plan(op: Operation, dico) -> Operation:
+    """Adapte un compte proposé par une RÈGLE GÉNÉRIQUE au plan comptable réel du
+    dossier (issu du FEC N-1). Le FEC fait loi — on n'impose jamais notre
+    numérotation standard :
+
+      - compte proposé présent dans le plan          -> on garde ;
+      - absent, UN seul compte de même racine (3 ch.) -> on l'adopte en silence
+        (le dossier code cette nature sur ce compte-là) ;
+      - absent, PLUSIEURS candidats de la racine      -> à choisir (souvent :
+        quel bien, ex. 614100 Bonaparte / 614200 Lépante) ;
+      - aucun compte de la racine                     -> on garde le compte
+        générique tel quel. (Le FEC ne liste que les comptes MOUVEMENTÉS en
+        classes 6/7/2 ; son silence ne prouve pas l'absence du compte. Le vrai
+        contrôle « compte inexistant dans le dossier » est `comptes_absents`,
+        qui lit le plan comptable complet de Quadra.)
+
+    N'agit que sur les codages 'regle' : un compte issu du dico (déjà propre au
+    dossier), de l'amortissement, de la banque ou proposé par l'IA n'est pas
+    retouché. No-op si le plan est vide (pas de FEC)."""
+    comptes = dico.comptes if hasattr(dico, "comptes") else set(dico)
+    if not comptes:
+        return op
+    c = op.compte or ""
+    if not c or op.origine != "regle" or c in comptes:
+        return op
+    cands = sorted(x for x in comptes if x[:3] == c[:3])
+    if len(cands) == 1:
+        op.compte = cands[0]
+        op.options = [cands[0]] + [o for o in (op.options or []) if o != cands[0]]
+        op.motif = (op.motif or "") + " [compte adapté au plan du dossier : %s→%s]" % (c, cands[0])
+    elif len(cands) >= 2:
+        op.a_revoir = True
+        op.options = cands + [o for o in (op.options or []) if o not in cands]
+        op.a_confirmer = ("Plusieurs comptes de racine %s dans ce dossier (%s) — à choisir "
+                          "(souvent : quel bien)" % (c[:3], ", ".join(cands)))
+    return op
 
 
 def _coder(op: Operation, dico: Dictionnaire,

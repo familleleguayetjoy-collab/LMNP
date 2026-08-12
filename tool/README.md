@@ -6,14 +6,14 @@ jamais de l'IA. L'IA n'intervient que sur deux tâches, et seulement pour
 *proposer* (l'humain valide) : lire une facture, proposer un compte sur un
 fournisseur inconnu.
 
-## Ce qui marche déjà (testé, `python3 tool/tests/selftest.py` → 105 contrôles OK)
+## Ce qui marche déjà (testé, `python3 tool/tests/selftest.py` → 110 contrôles OK)
 
 | Module | Rôle | État |
 |---|---|---|
 | `normalize.py` | Normalisation des libellés + **parsing robuste des montants FR** | ✅ |
 | `fec.py` | Lecture du FEC (délimiteur `|`/tab/`;`, encodage, débit/crédit ou montant+sens) | ✅ **éprouvé sur le vrai FEC (684 lignes)** |
 | `dico.py` | Dictionnaire client + détection des imputations multiples N-1 | ✅ **+ exclusion des À-Nouveaux / amortissements (bug corrigé, voir + bas)** |
-| `codage.py` | Règles de codage. Ne remonte que **immo / inconnu / multi**. Respecte une ligne **déjà codée** à l'export bancaire | ✅ |
+| `codage.py` | Règles de codage. Ne remonte que **immo / inconnu / multi**. Respecte une ligne **déjà codée** à l'export bancaire. **`adapter_au_plan` : le FEC du dossier fait loi** — un compte de règle générique est adapté au sous-compte réel du dossier (606→606100), et sur plusieurs candidats (614100/614200) c'est « à choisir » (souvent = quel bien) | ✅ |
 | `rapprochement.py` | Rapprochement facture↔banque, écarts, manquants, **anti-doublon**, **factures sans banque → OD (108)** | ✅ |
 | `quadra.py` | **Lecture + export Quadratus ASCII (251 car., contrepartie en ligne)** | ✅ **calibré au format RÉEL du cabinet, aller-retour octet à octet vérifié** |
 | `biens.py` | **Suivi par bien : sous-comptes (614/6141), routage par adresse OCR, mapping sauvegardé + revue N-1** | ✅ |

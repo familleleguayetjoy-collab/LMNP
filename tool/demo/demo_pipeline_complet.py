@@ -49,6 +49,9 @@ FEC = (
     "BQ\t606100\tEnergie\t20250210\tEDF energie electricite\t57,79\t0,00\n"
     "BQ\t626000\tTelecom\t20250215\tBouygues Telecom fibre\t37,49\t0,00\n"
     "BQ\t615200\tEntretien\t20250620\tEntretien et reparations\t120,00\t0,00\n"
+    "BQ\t706000\tLoyers\t20250105\tLoyer janvier\t0,00\t800,00\n"
+    "BQ\t627100\tServices bancaires\t20250131\tFrais tenue de compte\t12,00\t0,00\n"
+    "BQ\t218400\tMobilier\t20250308\tMobilier meuble\t420,00\t0,00\n"
 )
 dico = construire(parse_fec(FEC))
 

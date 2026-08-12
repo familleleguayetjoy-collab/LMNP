@@ -3,7 +3,7 @@ from .normalize import normalize, parse_montant, cents, parse_date
 from .fec import parse_fec, LigneFEC
 from .dico import construire, Dictionnaire
 from .model import Operation, Facture
-from .codage import coder, IMMO, SEUIL_IMMO_HT
+from .codage import coder, adapter_au_plan, IMMO, SEUIL_IMMO_HT
 from .rapprochement import (rapprocher, manquants, sous_seuil, justifiable,
                             doublons, operations_od_factures,
                             associer_factures, associer_reglements,
@@ -19,8 +19,8 @@ from .client_anthropic import ClientAnthropic
 __all__ = [
     "normalize", "parse_montant", "cents", "parse_date", "comptes_absents",
     "parse_fec", "LigneFEC",
-    "construire", "Dictionnaire", "Operation", "Facture", "coder", "IMMO",
-    "SEUIL_IMMO_HT",
+    "construire", "Dictionnaire", "Operation", "Facture", "coder",
+    "adapter_au_plan", "IMMO", "SEUIL_IMMO_HT",
     "rapprocher", "manquants", "sous_seuil", "justifiable",
     "doublons", "operations_od_factures",
     "associer_factures", "associer_reglements", "detecter_virements_internes",

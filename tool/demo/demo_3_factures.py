@@ -26,6 +26,7 @@ FEC = (
     "JournalCode\tCompteNum\tCompteLib\tEcritureDate\tEcritureLib\tDebit\tCredit\n"
     "BQ\t606100\tEnergie\t20250210\tEDF energie electricite\t57,79\t0,00\n"
     "BQ\t626000\tTelecom\t20250215\tBouygues Telecom fibre\t37,49\t0,00\n"
+    "BQ\t615200\tEntretien\t20250620\tEntretien et reparations\t120,00\t0,00\n"
 )
 dico = construire(parse_fec(FEC))
 

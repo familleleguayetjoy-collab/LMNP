@@ -56,8 +56,10 @@ class Entree:
 class Dictionnaire:
     def __init__(self):
         self.par_cle: dict[str, Entree] = {}
+        self.comptes: set[str] = set()   # plan comptable RÉEL du dossier (FEC N-1)
 
     def ajouter(self, libelle: str, compte: str):
+        self.comptes.add(compte)
         cle = normalize(libelle)
         if not cle:
             return
