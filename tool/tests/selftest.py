@@ -464,4 +464,38 @@ with tempfile.TemporaryDirectory() as tmp:
           for p in pieces if p.nom in ("edf.pdf", "brico.pdf")),
           "manifeste sauvegardé puis rechargé -> mémoire des pièces traitées conservée")
 
+print("23) Orchestrateur bout-en-bout (traiter_dossier)")
+from s2a_lmnp import traiter_dossier
+
+class _FauxIA23:
+    def resoudre(self, questions, *, modele=None):
+        return [{"id": q["id"], "compte": q["options"][0], "confiance": 0.8, "raison": "t"}
+                for q in questions]
+    def lire_facture(self, chemin, *, modele=None):
+        return []
+
+FEC23 = ("JournalCode|CompteNum|CompteLib|EcritureDate|EcritureLib|Debit|Credit\n"
+         "BQ|606100|Energie|20250210|EDF energie|57,79|0,00\n"
+         "BQ|706000|Loyers|20250105|Loyer|0,00|800,00\n")
+d23 = construire(parse_fec(FEC23))
+facs = [Facture("EDF", D(2026, 1, 5), 69.34, 11.55), Facture("BRICO DEPOT", D(2026, 1, 9), 71.07, 11.84)]
+ops23 = [
+    Operation(D(2026, 1, 5), "VIREMENT LOYER", 800.0, "C"),
+    Operation(D(2026, 1, 20), "EDF ENERGIE", 69.34, "D"),
+    Operation(D(2026, 1, 9), "BRICO DEPOT NICE", 71.07, "D"),
+    Operation(D(2026, 1, 12), "MOBILIER INCONNU SARL", 900.0, "D"),
+]
+res = traiter_dossier(facs, ops23, d23, client_ia=_FauxIA23(),
+                      compte_banque="51210010", journal="BQ")
+check(res["quadra"].count("\r\n") == 4, "orchestrateur : 4 lignes M produites")
+check(res["residu_resolu_par_ia"] >= 1, "orchestrateur : résidu ambigu résolu par l'IA")
+check(any(o.compte == "606100" for o in res["operations"]), "orchestrateur : EDF adapté au plan (606100)")
+check(len(res["a_reclamer"]) == 1 and res["a_reclamer"][0].montant == 900.0,
+      "orchestrateur : mobilier 900 € sans facture -> à réclamer")
+# sans banque -> écriture d'OD, contrepartie 108 (factures neuves : un autre dossier)
+facs_od = [Facture("EDF", D(2026, 1, 5), 69.34, 11.55), Facture("BRICO DEPOT", D(2026, 1, 9), 71.07, 11.84)]
+res_od = traiter_dossier(facs_od, None, d23, avec_banque=False)
+check(res_od["quadra"].count("\r\n") == 2 and "10800000" in res_od["quadra"],
+      "orchestrateur sans banque -> OD contrepartie 108")
+
 print("\n%d contrôles OK — moteur cohérent." % ok)

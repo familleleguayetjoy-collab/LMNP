@@ -18,6 +18,7 @@ from .client_anthropic import ClientAnthropic
 from .manifeste import Manifeste
 from .sources import (PieceRef, SourcePieces, DossierLocal, pieces_neuves,
                       empreinte_fichier, empreinte_bytes)
+from .pipeline import traiter_dossier, ingerer
 
 __all__ = [
     "normalize", "parse_montant", "cents", "parse_date", "comptes_absents",
@@ -35,4 +36,5 @@ __all__ = [
     "facture_depuis_ocr", "lire_factures", "ClientAnthropic",
     "Manifeste", "PieceRef", "SourcePieces", "DossierLocal", "pieces_neuves",
     "empreinte_fichier", "empreinte_bytes",
+    "traiter_dossier", "ingerer",
 ]

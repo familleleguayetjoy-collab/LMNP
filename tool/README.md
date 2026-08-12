@@ -6,7 +6,7 @@ jamais de l'IA. L'IA n'intervient que sur deux tâches, et seulement pour
 *proposer* (l'humain valide) : lire une facture, proposer un compte sur un
 fournisseur inconnu.
 
-## Ce qui marche déjà (testé, `python3 tool/tests/selftest.py` → 115 contrôles OK)
+## Ce qui marche déjà (testé, `python3 tool/tests/selftest.py` → 120 contrôles OK)
 
 | Module | Rôle | État |
 |---|---|---|
@@ -17,6 +17,7 @@ fournisseur inconnu.
 | `rapprochement.py` | Rapprochement facture↔banque, écarts, manquants, **anti-doublon**, **factures sans banque → OD (108)** | ✅ |
 | `quadra.py` | **Lecture + export Quadratus ASCII (251 car., contrepartie en ligne)** | ✅ **calibré au format RÉEL du cabinet, aller-retour octet à octet vérifié** |
 | `biens.py` | **Suivi par bien : sous-comptes (614/6141), routage par adresse OCR, mapping sauvegardé + revue N-1** | ✅ |
+| `pipeline.py` | **Orchestrateur** : `ingerer()` (OCR des seules pièces neuves) + `traiter_dossier()` (codage → adaptation plan → rapprochement → résidu IA en 1 appel → Quadra + à-réclamer). Le point d'entrée unique « presse-bouton » | ✅ |
 | `sources.py` | **Ingestion** : interface `SourcePieces` + `DossierLocal` (dossier disque, simule le Drive). Le connecteur Google Drive se branchera sur la même interface | ✅ (local) ; ⛔ connecteur Drive à câbler |
 | `manifeste.py` | **Idempotence** : suivi des pièces déjà traitées par empreinte sha256 (un fichier renommé n'est pas re-OCR). JSON, sans contenu client | ✅ |
 | `ocr.py` | Contrat vision (les 3 pièges des vraies factures) | ✅ contrat ; implémentation réelle dans `client_anthropic.py` |
