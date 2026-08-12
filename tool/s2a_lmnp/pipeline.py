@@ -62,9 +62,61 @@ def traiter_dossier(factures, ops_banque, dico, *, client_ia=None, resolver=None
                           journal=journal, source=source_quadra)
     return {
         "operations": ops,
+        "nb_factures": len(factures or []),
         "a_trancher": [o for o in ops if o.a_revoir],
         "a_reclamer": a_reclamer,
         "ecarts": [o for o in ops if getattr(o, "ecart", False)],
         "residu_resolu_par_ia": n_ia,
         "quadra": quadra,
     }
+
+
+def traiter_lot(dossiers):
+    """Traite plusieurs dossiers d'affilée (ex. tous les dossiers du cabinet, la
+    nuit) et produit un **tableau de bord de pilotage**.
+
+    `dossiers` = liste de dicts : {nom, factures, ops_banque, dico, ...} (les
+    autres clés sont passées telles quelles à `traiter_dossier`).
+
+    Renvoie {resultats, tableau_de_bord, totaux}. Le tableau de bord donne, par
+    dossier : statut (prêt / à valider / en attente de pièces), taux d'auto-codage,
+    nb à trancher / à réclamer, et une **estimation** du coût IA — la vue dont
+    Paul a besoin pour piloter et chiffrer la marge."""
+    resultats, tableau = {}, []
+    tot = {"dossiers": 0, "operations": 0, "factures": 0, "a_trancher": 0,
+           "a_reclamer": 0, "cout_ia_estime_eur": 0.0, "prets": 0}
+    for d in dossiers:
+        d = dict(d)
+        nom = d.pop("nom", "sans-nom")
+        factures = d.pop("factures", [])
+        ops_banque = d.pop("ops_banque", None)
+        dico = d.pop("dico")
+        res = traiter_dossier(factures, ops_banque, dico, **d)
+        resultats[nom] = res
+
+        nb_ops = len(res["operations"])
+        nb_tr, nb_rc = len(res["a_trancher"]), len(res["a_reclamer"])
+        taux = round(100 * (1 - nb_tr / nb_ops)) if nb_ops else 100
+        if nb_rc:
+            statut = "en attente de pièces"
+        elif nb_tr or res["ecarts"]:
+            statut = "à valider"
+        else:
+            statut = "prêt"
+        # estimation grossière : ~0,8 c / facture OCR + ~0,2 c / item résolu par l'IA
+        cout = round(0.008 * res["nb_factures"] + 0.002 * res["residu_resolu_par_ia"], 3)
+
+        tableau.append({
+            "dossier": nom, "operations": nb_ops, "factures": res["nb_factures"],
+            "a_trancher": nb_tr, "a_reclamer": nb_rc, "taux_auto_pct": taux,
+            "statut": statut, "cout_ia_estime_eur": cout,
+        })
+        tot["dossiers"] += 1
+        tot["operations"] += nb_ops
+        tot["factures"] += res["nb_factures"]
+        tot["a_trancher"] += nb_tr
+        tot["a_reclamer"] += nb_rc
+        tot["cout_ia_estime_eur"] += cout
+        tot["prets"] += (statut == "prêt")
+    tot["cout_ia_estime_eur"] = round(tot["cout_ia_estime_eur"], 2)
+    return {"resultats": resultats, "tableau_de_bord": tableau, "totaux": tot}

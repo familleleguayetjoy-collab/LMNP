@@ -498,4 +498,58 @@ res_od = traiter_dossier(facs_od, None, d23, avec_banque=False)
 check(res_od["quadra"].count("\r\n") == 2 and "10800000" in res_od["quadra"],
       "orchestrateur sans banque -> OD contrepartie 108")
 
+print("24) Revue analytique N vs N-1 (contrôles de cohérence)")
+from s2a_lmnp import revue_analytique, reference, preparer_relances, traiter_lot
+
+FEC_N1 = (
+    "JournalCode|CompteNum|CompteLib|EcritureDate|EcritureLib|Debit|Credit\n"
+    # EDF récurrent : 8 mois en N-1
+    + "".join("BQ|606100|Energie|202503%02d|EDF energie|58,00|0,00\n" % (i + 1) for i in range(8))
+    + "BQ|616000|Assurance|20250310|Assurance PNO|180,00|0,00\n"
+)
+ln1 = parse_fec(FEC_N1)
+ref = reference(ln1)
+check(ref.get("EDF ENERGIE", {}).get("count") == 8, "référence N-1 : EDF vu 8 fois")
+
+# cette année : EDF a disparu, l'assurance a doublé
+ops24 = [
+    Operation(D(2026, 3, 10), "ASSURANCE PNO", 380.00, "D"),   # 180 -> 380 : hausse
+    Operation(D(2026, 4, 1), "ACHAT PONCTUEL", 90.00, "D"),
+]
+for o in ops24:
+    coder(o, construire(ln1))
+anos = revue_analytique(ops24, ln1)
+types = {a["type"] for a in anos}
+check("recurrent_manquant" in types, "revue : EDF récurrent disparu -> signalé")
+check("ecart_montant" in types, "revue : assurance qui double -> écart signalé")
+check(anos[0]["gravite"] in ("alerte", "attention"), "revue : anomalies triées par gravité")
+
+print("25) Relance client — verrou de certitude (ne relancer que le sûr)")
+op_connu = Operation(D(2026, 5, 1), "ASSURANCE PNO", 380.00, "D"); coder(op_connu, construire(ln1))
+op_gros = Operation(D(2026, 5, 2), "GROS ACHAT FOURNISSEUR X", 900.00, "D"); coder(op_gros, construire([]))
+op_petit = Operation(D(2026, 5, 3), "PETIT FOURNISSEUR PONCTUEL", 160.00, "D"); coder(op_petit, construire([]))
+rel = preparer_relances([op_connu, op_gros, op_petit], ref, seuil=150.0)
+noms_certain = {o.libelle for o in rel["certain"]}
+check("ASSURANCE PNO" in noms_certain, "relance certaine : fournisseur récurrent N-1")
+check("GROS ACHAT FOURNISSEUR X" in noms_certain, "relance certaine : montant important")
+check(any(o.libelle == "PETIT FOURNISSEUR PONCTUEL" for o in rel["a_verifier"]),
+      "petit fournisseur ponctuel -> à vérifier avant de relancer (pas d'envoi auto)")
+check("Bonjour" in rel["brouillon"] and "ASSURANCE PNO" in rel["brouillon"],
+      "brouillon de mail généré pour les pièces certaines")
+
+print("26) Traitement en lot + tableau de bord cabinet")
+d1 = {"nom": "DUPONT", "factures": [Facture("EDF", D(2026, 1, 5), 58.0, 9.6)],
+      "ops_banque": [Operation(D(2026, 1, 6), "EDF ENERGIE", 58.0, "D")],
+      "dico": construire(ln1), "compte_banque": "512", "journal": "BQ"}
+d2 = {"nom": "MARTIN", "factures": [],
+      "ops_banque": [Operation(D(2026, 1, 8), "MOBILIER INCONNU", 900.0, "D")],
+      "dico": construire([]), "compte_banque": "512", "journal": "BQ"}
+lot = traiter_lot([d1, d2])
+check(lot["totaux"]["dossiers"] == 2, "lot : 2 dossiers traités")
+tb = {r["dossier"]: r for r in lot["tableau_de_bord"]}
+check(tb["DUPONT"]["statut"] == "prêt", "tableau de bord : DUPONT prêt (tout codé, rapproché)")
+check(tb["MARTIN"]["statut"] in ("à valider", "en attente de pièces"),
+      "tableau de bord : MARTIN à traiter (mobilier à trancher, facture manquante)")
+check(isinstance(lot["totaux"]["cout_ia_estime_eur"], float), "tableau de bord : coût IA estimé agrégé")
+
 print("\n%d contrôles OK — moteur cohérent." % ok)

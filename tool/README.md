@@ -6,7 +6,7 @@ jamais de l'IA. L'IA n'intervient que sur deux tâches, et seulement pour
 *proposer* (l'humain valide) : lire une facture, proposer un compte sur un
 fournisseur inconnu.
 
-## Ce qui marche déjà (testé, `python3 tool/tests/selftest.py` → 120 contrôles OK)
+## Ce qui marche déjà (testé, `python3 tool/tests/selftest.py` → 132 contrôles OK)
 
 | Module | Rôle | État |
 |---|---|---|
@@ -17,7 +17,9 @@ fournisseur inconnu.
 | `rapprochement.py` | Rapprochement facture↔banque, écarts, manquants, **anti-doublon**, **factures sans banque → OD (108)** | ✅ |
 | `quadra.py` | **Lecture + export Quadratus ASCII (251 car., contrepartie en ligne)** | ✅ **calibré au format RÉEL du cabinet, aller-retour octet à octet vérifié** |
 | `biens.py` | **Suivi par bien : sous-comptes (614/6141), routage par adresse OCR, mapping sauvegardé + revue N-1** | ✅ |
-| `pipeline.py` | **Orchestrateur** : `ingerer()` (OCR des seules pièces neuves) + `traiter_dossier()` (codage → adaptation plan → rapprochement → résidu IA en 1 appel → Quadra + à-réclamer). Le point d'entrée unique « presse-bouton » | ✅ |
+| `pipeline.py` | **Orchestrateur** : `ingerer()` (OCR des seules pièces neuves) + `traiter_dossier()` (codage → adaptation plan → rapprochement → résidu IA en 1 appel → Quadra + à-réclamer) + `traiter_lot()` (tous les dossiers d'un coup + **tableau de bord** : statut, taux d'auto-codage, coût IA estimé) | ✅ |
+| `controles.py` | **Revue analytique N vs N-1** : charge récurrente disparue, montant qui double, doublon, loyers incomplets — signale, ne corrige jamais | ✅ |
+| `relances.py` | **Relance client** des pièces manquantes avec **verrou de certitude** (certain → mail auto ; ponctuel/inconnu → à vérifier). Génère le brouillon ; l'envoi = connecteur mail | ✅ |
 | `sources.py` | **Ingestion** : interface `SourcePieces` + `DossierLocal` (dossier disque, simule le Drive). Le connecteur Google Drive se branchera sur la même interface | ✅ (local) ; ⛔ connecteur Drive à câbler |
 | `manifeste.py` | **Idempotence** : suivi des pièces déjà traitées par empreinte sha256 (un fichier renommé n'est pas re-OCR). JSON, sans contenu client | ✅ |
 | `ocr.py` | Contrat vision (les 3 pièges des vraies factures) | ✅ contrat ; implémentation réelle dans `client_anthropic.py` |
@@ -131,6 +133,7 @@ python3 tool/demo/demo_avec_banque.py   # relevé Quadra ASCII : lecture -> ré-
 python3 tool/demo/demo_pipeline_complet.py  # BOUT-EN-BOUT : OCR -> codage -> à trancher (IA) -> à réclamer -> Quadra
 python3 tool/demo/demo_3_factures.py    # les 3 vraies factures (valeurs OCR) du PDF à l'écriture Quadra
 python3 tool/demo/demo_ingestion.py     # ingestion 'Drive' + idempotence : on n'OCR que les pièces neuves
+python3 tool/demo/demo_pilotage.py      # revue analytique N-1 + relance (verrou) + tableau de bord cabinet
 ```
 
 ## Architecture proposée
