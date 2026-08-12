@@ -501,10 +501,11 @@
       <button class="nav-item no-present" data-target="recommandations"><span class="idx">02</span><span class="label">Recommandations</span></button>
       <div class="nav-group no-present">Le dossier en détail</div>
       <button class="nav-item" data-target="synthese"><span class="idx">03</span><span class="label">Synthèse</span></button>
-      <button class="nav-item" data-target="resultat"><span class="idx">04</span><span class="label">Compte de résultat</span></button>
-      <button class="nav-item" data-target="tresorerie"><span class="idx">05</span><span class="label">Trésorerie</span></button>
-      <button class="nav-item" data-target="bilan"><span class="idx">06</span><span class="label">Bilan</span></button>
-      <button class="nav-item" data-target="ratios"><span class="idx">07</span><span class="label">Ratios &amp; SIG</span></button>
+      <button class="nav-item" data-target="produits"><span class="idx">04</span><span class="label">Produits &amp; retraitements</span></button>
+      <button class="nav-item" data-target="resultat"><span class="idx">05</span><span class="label">Compte de résultat</span></button>
+      <button class="nav-item" data-target="tresorerie"><span class="idx">06</span><span class="label">Trésorerie</span></button>
+      <button class="nav-item" data-target="bilan"><span class="idx">07</span><span class="label">Bilan</span></button>
+      <button class="nav-item" data-target="ratios"><span class="idx">08</span><span class="label">Ratios &amp; SIG</span></button>
     </nav>
     <div class="sidebar-foot no-print">
       <button id="settings-btn">Réglages IA</button>
@@ -599,6 +600,45 @@
       <div class="card no-present">
         <h3>Contrôle d'équilibre</h3>
         <div class="control-row" id="control-row"></div>
+      </div>
+    </section>
+
+    <!-- PRODUITS & RETRAITEMENTS -->
+    <section class="section" id="section-produits">
+      <div class="section-head">
+        <div class="eyebrow">Produits</div>
+        <h2>Produits &amp; retraitements</h2>
+        <div class="lede">Ajustez la production en-cours et les produits constatés d'avance : le chiffre d'affaires et toutes les autres pages sont recalculés.</div>
+      </div>
+
+      <div class="kpi-grid" id="produits-kpis"></div>
+
+      <div class="card">
+        <h3>Retraitements de fin d'exercice</h3>
+        <div class="card-sub">Saisissez les montants ; ils sont répercutés partout et repris dans l'email au collaborateur.</div>
+        <div class="two-col">
+          <div class="settings-field">
+            <label for="adj-encours">Production / travaux en-cours — à ajouter (€)</label>
+            <input type="number" id="adj-encours" step="100" placeholder="0">
+            <div class="hint">Production réalisée non encore facturée (comptes 34 / 71). Augmente le CA économique et le résultat.</div>
+          </div>
+          <div class="settings-field">
+            <label for="adj-pca">Produits constatés d'avance — à retrancher (€)</label>
+            <input type="number" id="adj-pca" step="100" placeholder="0">
+            <div class="hint">Facturé sur l'exercice mais rattaché au suivant (compte 487). Diminue le CA et le résultat.</div>
+          </div>
+        </div>
+        <div class="control-row" style="margin-top:6px;">
+          <button class="btn btn-primary" id="adj-save">Enregistrer et recalculer</button>
+          <button class="btn btn-secondary" id="adj-email">✉ Email au collaborateur</button>
+          <button class="btn btn-secondary" id="adj-reset">Réinitialiser</button>
+        </div>
+        <div class="ai-note" id="adj-saved" style="display:none;">Retraitements enregistrés et répercutés sur toutes les pages.</div>
+      </div>
+
+      <div class="card">
+        <h3>Répartition des produits</h3>
+        <div id="produits-bars"></div>
       </div>
     </section>
 
@@ -833,6 +873,24 @@
       </div>
       <button class="btn btn-primary" id="settings-save" style="width:100%;justify-content:center;">Enregistrer</button>
       <div class="ai-note" id="settings-saved" style="display:none;">Réglages enregistrés.</div>
+    </div>
+  </div>
+</div>
+
+<div class="assist-overlay no-print" id="email-overlay">
+  <div class="assist-modal">
+    <div class="assist-head">
+      <h3>Email au collaborateur</h3>
+      <button class="ep-close" id="email-close">×</button>
+    </div>
+    <div style="padding:20px 22px;">
+      <div class="hint" style="margin-bottom:10px;">Récapitulatif des retraitements à passer en comptabilité, à envoyer au collaborateur après le rendez-vous.</div>
+      <textarea id="email-body" style="width:100%;min-height:220px;padding:12px;border:1px solid var(--line);border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:.8rem;line-height:1.5;color:var(--ink);"></textarea>
+      <div class="control-row" style="margin-top:12px;">
+        <button class="btn btn-primary" id="email-copy">Copier</button>
+        <a class="btn btn-secondary" id="email-mailto" href="#">Ouvrir dans la messagerie</a>
+        <span class="ai-note" id="email-copied" style="display:none;">Copié.</span>
+      </div>
     </div>
   </div>
 </div>
@@ -2022,6 +2080,62 @@ document.getElementById('ai-reco-btn').addEventListener('click', ()=>{
   });
 });
 
+/* ============================================================
+   PRODUITS & RETRAITEMENTS (produits constatés d'avance, en-cours)
+   ============================================================ */
+let currentArrete = null;
+let currentAdj = {encours:0, pca:0};
+function dossierKey(){ return 'balance_adj_'+(clientLabel||'dossier'); }
+function loadAdjustments(){ try{ return Object.assign({encours:0,pca:0}, JSON.parse(localStorage.getItem(dossierKey()))||{}); }catch(e){ return {encours:0,pca:0}; } }
+function saveAdjustments(adj){ localStorage.setItem(dossierKey(), JSON.stringify(adj)); }
+function applyAdjustments(ecritures, adj, dateArr){
+  if(!adj || (!adj.encours && !adj.pca)) return ecritures;
+  const d = dateArr || new Date();
+  const mk=(compte,lib,debit,credit)=>({JournalCode:'OD',JournalLib:'Retraitements',EcritureNum:'ADJ',EcritureDate:d,
+    CompteNum:compte,CompteLib:lib,CompAuxNum:'',CompAuxLib:'',PieceRef:'RETR',PieceDate:d,EcritureLib:lib,
+    Debit:debit,Credit:credit,EcritureLet:'',DateLet:'',ValidDate:d,Montantdevise:'',Idevise:''});
+  const extra=[];
+  if(adj.pca>0){ extra.push(mk('706000',"Retraitement produits constatés d'avance",adj.pca,0)); extra.push(mk('487000',"Produits constatés d'avance",0,adj.pca)); }
+  if(adj.encours>0){ extra.push(mk('345000','Production en-cours',adj.encours,0)); extra.push(mk('713000','Variation production en-cours',0,adj.encours)); }
+  return ecritures.concat(extra);
+}
+function recomputeAll(){
+  const a = computeAnalysis(applyAdjustments(rawEcritures, currentAdj, currentArrete), currentArrete);
+  renderDashboard(a);
+}
+function renderProduits(a){
+  const adj = currentAdj || {encours:0, pca:0};
+  const caFacture = Math.round((a.ratios.CA + (adj.pca||0))*100)/100;
+  const caEco = Math.round((a.ratios.CA + (adj.encours||0))*100)/100;
+  const kpis=[
+    {label:'CA facturé', value:fmtEUR(caFacture)},
+    {label:"− Produits constatés d'avance", value:fmtEUR(adj.pca||0)},
+    {label:'+ Production en-cours', value:fmtEUR(adj.encours||0)},
+    {label:'CA retraité (économique)', value:fmtEUR(caEco)}
+  ];
+  document.getElementById('produits-kpis').innerHTML = kpis.map(k=>
+    `<div class="kpi-card"><div class="label">${k.label}</div><div class="value mono">${k.value}</div></div>`).join('');
+  const eIn=document.getElementById('adj-encours'), pIn=document.getElementById('adj-pca');
+  if(document.activeElement!==eIn) eIn.value = adj.encours||'';
+  if(document.activeElement!==pIn) pIn.value = adj.pca||'';
+  renderBars('produits-bars', costBreakdown(a,'7'), 'produit', a.compteResultat.produits);
+}
+function buildCollabEmail(a){
+  const adj = currentAdj || {encours:0, pca:0};
+  const L=[];
+  L.push('Bonjour,'); L.push('');
+  L.push('Suite au rendez-vous sur le dossier '+(clientLabel||'')+', merci de passer les retraitements suivants :');
+  L.push('');
+  if(adj.pca>0) L.push("- Produits constatés d'avance (compte 487) : "+fmtEUR(adj.pca)+" — à retrancher du CA de l'exercice (débit 706 / crédit 487).");
+  if(adj.encours>0) L.push('- Production / travaux en-cours (compte 34) : '+fmtEUR(adj.encours)+' — à intégrer via la production stockée (débit 34 / crédit 713).');
+  if(!adj.pca && !adj.encours) L.push('- Aucun retraitement de produits à passer à ce stade.');
+  L.push(''); L.push('Pour information, après retraitement :');
+  L.push('  CA retraité : '+fmtEUR(a.ratios.CA + (adj.encours||0)));
+  L.push('  Résultat net : '+fmtEUR(a.compteResultat.resultatNet));
+  L.push(''); L.push('Merci,');
+  return L.join('\n');
+}
+
 function renderNarratives(a){
   document.getElementById('narrative-rentabilite').innerHTML = `<div class="narrative">${narrativeRentabilite(a)}</div>`;
   document.getElementById('narrative-treso').innerHTML = `<div class="narrative">${narrativeTresorerie(a)}</div>`;
@@ -2044,6 +2158,7 @@ function renderDashboard(a){
   renderRatios(a);
   renderSIG(a);
   renderNarratives(a);
+  renderProduits(a);
   renderFeuilleDeRoute(a);
   renderRecommandations(a);
 }
@@ -2111,6 +2226,37 @@ document.getElementById('settings-save').addEventListener('click', ()=>{
   localStorage.setItem(AI_STORE_KEY, JSON.stringify(settings));
   document.getElementById('settings-saved').style.display='block';
 });
+
+/* ---- Retraitements produits + email collaborateur ---- */
+document.getElementById('adj-save').addEventListener('click', ()=>{
+  currentAdj = {
+    encours: Math.max(0, parseFloat(document.getElementById('adj-encours').value)||0),
+    pca: Math.max(0, parseFloat(document.getElementById('adj-pca').value)||0)
+  };
+  saveAdjustments(currentAdj);
+  recomputeAll();
+  const s=document.getElementById('adj-saved'); s.style.display='block'; setTimeout(()=>s.style.display='none', 2500);
+});
+document.getElementById('adj-reset').addEventListener('click', ()=>{
+  currentAdj = {encours:0, pca:0};
+  saveAdjustments(currentAdj);
+  recomputeAll();
+});
+document.getElementById('adj-email').addEventListener('click', ()=>{
+  if(!currentAnalysis) return;
+  const body = buildCollabEmail(currentAnalysis);
+  document.getElementById('email-body').value = body;
+  const subject = 'Retraitements dossier '+(clientLabel||'');
+  document.getElementById('email-mailto').href = 'mailto:?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+  document.getElementById('email-copied').style.display='none';
+  document.getElementById('email-overlay').classList.add('active');
+});
+document.getElementById('email-close').addEventListener('click', ()=>document.getElementById('email-overlay').classList.remove('active'));
+document.getElementById('email-copy').addEventListener('click', async ()=>{
+  const t=document.getElementById('email-body').value;
+  try{ await navigator.clipboard.writeText(t); }catch(e){ const el=document.getElementById('email-body'); el.select(); document.execCommand('copy'); }
+  const c=document.getElementById('email-copied'); c.style.display='inline'; setTimeout(()=>c.style.display='none', 2000);
+});
 document.getElementById('reset-btn').addEventListener('click', ()=>{
   document.getElementById('app-shell').classList.remove('active');
   document.getElementById('setup-screen').classList.remove('active');
@@ -2153,7 +2299,9 @@ function getArreteDate(){
   const p = v.split('-'); return new Date(+p[0], +p[1]-1, +p[2]);
 }
 function enterApp(mode){
-  const analysis = computeAnalysis(rawEcritures, getArreteDate());
+  currentArrete = getArreteDate();
+  currentAdj = loadAdjustments();
+  const analysis = computeAnalysis(applyAdjustments(rawEcritures, currentAdj, currentArrete), currentArrete);
   document.getElementById('setup-screen').classList.remove('active');
   document.getElementById('app-shell').classList.add('active');
   document.getElementById('client-name').value = clientLabel;
