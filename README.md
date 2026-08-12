@@ -1,4 +1,4 @@
-# BALANCE — Lecture de clôture
+# S2A — Lecture de clôture
 
 Application mono-fichier (navigateur, sans serveur) qui lit un **FEC** (Fichier des
 Écritures Comptables) et en produit une lecture de clôture prête à présenter en
