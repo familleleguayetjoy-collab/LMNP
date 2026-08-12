@@ -29,26 +29,30 @@
 </script>
 <style>
   :root{
-    --ink:#171B24;
-    --ink-soft:#4A5164;
+    --ink:#141A22;
+    --ink-soft:#48505F;
     --muted:#7A8194;
-    --paper:#F6F4EF;
+    --paper:#F5F3EE;
+    --bg:#FAF9F6;
     --card:#FFFFFF;
-    --line:#E4E0D6;
-    --brand:#2B3F73;
-    --brand-soft:#E7EBF3;
-    --good:#2F7A52;
-    --good-soft:#E4F0E8;
-    --bad:#B23A2E;
-    --bad-soft:#F6E4E1;
-    --warn:#A67C27;
-    --warn-soft:#F2E9D4;
+    --line:#E7E3DA;
+    /* S2A — vert primaire (expert), bleu (client). Modifiables ici pour la charte. */
+    --brand:#1E7A45;
+    --brand-soft:#E4F1E9;
+    --client:#2A5FB0;
+    --client-soft:#E8EEF9;
+    --good:#1E7A45;
+    --good-soft:#E4F1E9;
+    --bad:#C0392B;
+    --bad-soft:#F8E7E4;
+    --warn:#C9871F;
+    --warn-soft:#FBEFD6;
     --charge:#9C5B45;
     --charge-soft:#F1E3DC;
     --good-ondark:#8FD1AB;
     --warn-ondark:#E3BE72;
     --bad-ondark:#EDA79C;
-    --radius:12px;
+    --radius:14px;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
@@ -83,17 +87,69 @@
   .btn-secondary:hover{border-color:var(--ink);}
   .upload-divider{display:flex;align-items:center;gap:12px;margin:24px 0;color:var(--muted);font-size:.75rem;}
   .upload-divider::before,.upload-divider::after{content:'';flex:1;height:1px;background:var(--line);}
-  #file-input{display:none;}
-  #setup-screen{display:none;min-height:100vh;align-items:center;justify-content:center;padding:24px;}
+  #file-input,#pdf-input{display:none;}
+  .upload-error{margin-top:16px;padding:12px 14px;background:var(--bad-soft);border:1px solid #E9CBC6;border-radius:8px;color:var(--bad);font-size:.82rem;display:none;}
+
+  /* ---------- Barre de marque (écrans d'entrée) ---------- */
+  .brandbar{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:22px 34px;}
+  .brandbar .logo{font-family:'Newsreader',serif;font-weight:600;font-size:1.4rem;color:var(--brand);letter-spacing:-.01em;}
+  .brandbar .logo b{font-weight:600;}
+  .brandbar .help{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--muted);font-size:.9rem;}
+
+  /* ---------- Écran d'import (2 dépôts) ---------- */
+  #upload-screen{background:var(--bg);}
+  .upload-card{padding:40px 40px 30px;}
+  .upload-card h1{font-size:2rem;margin-bottom:8px;}
+  .import-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:22px 0 18px;}
+  .import-col{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:22px 22px 20px;}
+  .import-col h3{font-size:1.05rem;font-family:'IBM Plex Sans';font-weight:600;margin-bottom:5px;}
+  .import-col .import-sub{font-size:.8rem;color:var(--muted);line-height:1.45;margin-bottom:16px;min-height:2.4em;}
+  .dropzone2{border:1.5px dashed var(--line);border-radius:12px;padding:26px 14px;text-align:center;background:var(--card);cursor:pointer;transition:.15s;}
+  .dropzone2:hover,.dropzone2.drag{border-color:var(--brand);background:var(--brand-soft);}
+  .dropzone2 .dz-ico{font-size:1.15rem;color:var(--brand);margin-bottom:8px;}
+  .dropzone2 .dz-txt{font-size:.86rem;color:var(--ink);font-weight:500;}
+  .dz-status{display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--muted);margin-top:14px;}
+  .dz-status .dot{width:16px;height:16px;border-radius:50%;background:var(--line);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.62rem;flex:0 0 16px;}
+  .dz-status.ok{color:var(--good);} .dz-status.ok .dot{background:var(--good);}
+  .btn-analyser{width:100%;background:var(--brand);color:#fff;border:none;border-radius:11px;padding:16px;font-size:1rem;font-weight:600;font-family:inherit;cursor:pointer;transition:.15s;}
+  .btn-analyser:hover{background:#186338;}
+  .btn-analyser:disabled{opacity:.45;cursor:default;}
+  .arrete-inline{display:flex;align-items:center;gap:12px;justify-content:center;margin:6px 0 18px;font-size:.85rem;color:var(--ink-soft);}
+  .arrete-inline input{padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:.85rem;}
+  .confid{display:flex;align-items:center;justify-content:center;gap:8px;font-size:.8rem;color:var(--muted);margin-top:18px;}
+
+  /* ---------- Écran de choix d'interface ---------- */
+  #setup-screen{display:none;min-height:100vh;align-items:center;justify-content:center;padding:24px;background:var(--bg);}
   #setup-screen.active{display:flex;}
-  .choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px;}
-  .choice-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 20px;text-align:left;transition:.15s;display:flex;flex-direction:column;gap:8px;}
-  .choice-card:hover{border-color:var(--brand);box-shadow:0 2px 10px rgba(43,63,115,.08);transform:translateY(-1px);}
-  .choice-card .choice-ico{font-size:1.7rem;}
-  .choice-card .choice-t{font-size:1rem;font-weight:600;color:var(--ink);}
-  .choice-card .choice-d{font-size:.8rem;color:var(--ink-soft);line-height:1.45;}
-  @media (max-width:640px){ .choice-grid{grid-template-columns:1fr;} }
-  .upload-error{margin-top:16px;padding:12px 14px;background:var(--bad-soft);border:1px solid #E4C4BA;border-radius:8px;color:var(--bad);font-size:.82rem;display:none;}
+  .choice-wrap{width:100%;max-width:1000px;text-align:center;}
+  .choice-check{width:64px;height:64px;border-radius:50%;background:var(--good);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin:0 auto 18px;}
+  .choice-client{font-size:1.5rem;font-weight:600;letter-spacing:.02em;color:var(--ink);}
+  .choice-sub{font-size:.9rem;color:var(--muted);margin-bottom:30px;}
+  .choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .choice-card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:30px 28px 64px;text-align:left;transition:.18s;display:flex;flex-direction:column;gap:10px;cursor:pointer;}
+  .choice-card.ec{background:linear-gradient(180deg,#F3F9F5 0%,var(--card) 60%);}
+  .choice-card.client{background:linear-gradient(180deg,#F1F5FC 0%,var(--card) 60%);}
+  .choice-card:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(20,26,34,.08);}
+  .choice-card.ec:hover{border-color:var(--brand);}
+  .choice-card.client:hover{border-color:var(--client);}
+  .choice-ico2{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:6px;}
+  .choice-card.ec .choice-ico2{background:var(--brand-soft);}
+  .choice-card.client .choice-ico2{background:var(--client-soft);}
+  .choice-t{font-size:1.25rem;font-weight:600;color:var(--ink);}
+  .choice-role{font-size:.82rem;font-weight:500;}
+  .choice-card.ec .choice-role{color:var(--brand);}
+  .choice-card.client .choice-role{color:var(--client);}
+  .choice-d{font-size:.9rem;color:var(--ink-soft);line-height:1.5;}
+  .choice-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+  .choice-chips span{font-size:.76rem;font-weight:500;padding:6px 12px;border-radius:20px;}
+  .choice-card.ec .choice-chips span{background:var(--brand-soft);color:var(--brand);}
+  .choice-card.client .choice-chips span{background:var(--client-soft);color:var(--client);}
+  .choice-arrow{position:absolute;right:24px;bottom:24px;width:46px;height:46px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
+  .choice-card.ec .choice-arrow{background:var(--brand);}
+  .choice-card.client .choice-arrow{background:var(--client);}
+  .choice-changer{margin-top:24px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 20px;font-size:.86rem;color:var(--ink-soft);display:inline-flex;align-items:center;gap:8px;}
+  .choice-changer:hover{border-color:var(--ink);}
+  @media (max-width:720px){ .import-grid,.choice-grid{grid-template-columns:1fr;} }
 
   /* ---------- App shell ---------- */
   #app-shell{display:none;min-height:100vh;}
@@ -434,54 +490,74 @@
 
 <!-- ============ UPLOAD SCREEN ============ -->
 <div id="upload-screen">
+  <div class="brandbar"><span class="logo">S2A<b>.</b></span></div>
   <div class="upload-card">
-    <div class="eyebrow">Lecture de FEC — prototype</div>
-    <h1>S2A.</h1>
-    <p>Importez un Fichier des Écritures Comptables pour générer une lecture de clôture prête à présenter en rendez-vous client : verdict de l'exercice, compte de résultat, trésorerie, bilan et recommandations.</p>
-    <div class="dropzone" id="dropzone">
-      <p>Glissez un fichier FEC ici, ou</p>
-      <button class="btn btn-primary" id="pick-file-btn">Choisir un fichier</button>
-      <input type="file" id="file-input" accept=".txt,.csv">
-      <div class="fmt">Format légal FEC (.txt) — votre fichier est traité dans le navigateur et n'est jamais transmis à un serveur.</div>
+    <h1>Préparer le dossier</h1>
+    <p>Importez les documents nécessaires pour analyser les comptes et préparer votre rendez-vous.</p>
+
+    <div class="import-grid">
+      <div class="import-col">
+        <h3>FEC</h3>
+        <div class="import-sub">Fichier des écritures comptables de l'exercice.</div>
+        <div class="dropzone2" id="fec-drop">
+          <div class="dz-ico">↥</div>
+          <div class="dz-txt">Déposer ou sélectionner le FEC</div>
+        </div>
+        <div class="dz-status" id="fec-status"><span class="dot">✓</span> Aucun fichier sélectionné</div>
+        <input type="file" id="file-input" accept=".txt,.csv">
+      </div>
+      <div class="import-col">
+        <h3>Comptes annuels</h3>
+        <div class="import-sub">PDF contenant les SIG, le compte de résultat et le bilan N / N-1.</div>
+        <div class="dropzone2" id="pdf-drop">
+          <div class="dz-ico">↥</div>
+          <div class="dz-txt">Déposer ou sélectionner le PDF</div>
+        </div>
+        <div class="dz-status" id="pdf-status"><span class="dot">✓</span> Aucun fichier sélectionné</div>
+        <input type="file" id="pdf-input" accept=".pdf">
+      </div>
     </div>
+
+    <div class="arrete-inline" id="arrete-inline" style="display:none;">
+      <span>Date d'arrêté</span>
+      <input type="date" id="arrete-date">
+    </div>
+
+    <button class="btn-analyser" id="analyser-btn" disabled>Analyser le dossier</button>
     <div class="upload-divider">ou</div>
-    <button class="btn btn-secondary" id="demo-btn" style="width:100%;justify-content:center;">Essayer avec un jeu de démonstration (données fictives)</button>
+    <button class="btn btn-secondary" id="demo-btn" style="width:100%;justify-content:center;">Essayer avec un jeu de démonstration</button>
+    <div class="confid">🔒 Les données restent confidentielles et sécurisées.</div>
     <div class="upload-error" id="upload-error"></div>
   </div>
 </div>
 
-<!-- ============ SETUP : date d'arrêté + choix d'interface ============ -->
+<!-- ============ CHOIX D'INTERFACE ============ -->
 <div id="setup-screen">
-  <div class="upload-card" style="max-width:640px;">
-    <div class="eyebrow">Dossier importé</div>
-    <h1 id="setup-title" style="font-size:1.8rem;">Préparer le dossier</h1>
-    <p id="setup-periode">—</p>
-
-    <div class="settings-field">
-      <label for="arrete-date">Date d'arrêté</label>
-      <input type="date" id="arrete-date">
-      <div class="hint">Détectée à partir du FEC. Modifiez-la pour un exercice non calendaire (30/09, 30/06…) ou une situation intermédiaire : seules les écritures jusqu'à cette date seront prises en compte.</div>
-    </div>
-
-    <div class="settings-field">
-      <label for="pdf-input">États financiers N (PDF) — optionnel</label>
-      <input type="file" id="pdf-input" accept=".pdf" style="width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;font-size:.82rem;background:var(--card);">
-      <div class="hint" id="pdf-hint">Déposez la plaquette / liasse (colonnes N et N-1) pour activer les comparaisons N-1 et vérifier les calculs. Lecture par l'IA — nécessite une clé (Réglages IA). Bientôt disponible.</div>
-    </div>
+  <div class="brandbar"><span class="logo">S2A<b>.</b></span></div>
+  <div class="choice-wrap">
+    <div class="choice-check">✓</div>
+    <div class="choice-client" id="setup-title">DOSSIER</div>
+    <div class="choice-sub" id="setup-periode">Analyse terminée avec succès</div>
 
     <div class="choice-grid">
-      <button class="choice-card" id="choice-ec">
-        <div class="choice-ico">👔</div>
-        <div class="choice-t">Interface expert-comptable</div>
-        <div class="choice-d">Analyse poussée (SIG, ratios, variations) et recommandations enrichies par l'IA. À lire avant l'entretien.</div>
+      <button class="choice-card ec" id="choice-ec">
+        <div class="choice-ico2">👤</div>
+        <div class="choice-t">Préparer le rendez-vous</div>
+        <div class="choice-role">Interface expert-comptable</div>
+        <div class="choice-d">Consultez les chiffres essentiels et les recommandations préparées par S2A.</div>
+        <div class="choice-chips"><span>L'essentiel</span><span>Recommandations IA</span></div>
+        <div class="choice-arrow">→</div>
       </button>
-      <button class="choice-card" id="choice-client">
-        <div class="choice-ico">🖥️</div>
-        <div class="choice-t">Interface client</div>
-        <div class="choice-d">Présentation claire pour le rendez-vous : soldes, produits, charges, bilan et trésorerie. Prête pour grand écran.</div>
+      <button class="choice-card client" id="choice-client">
+        <div class="choice-ico2">🖥️</div>
+        <div class="choice-t">Présenter au client</div>
+        <div class="choice-role">Interface client</div>
+        <div class="choice-d">Présentez les comptes de manière simple, visuelle et interactive.</div>
+        <div class="choice-chips"><span>Synthèse</span><span>Produits</span><span>Charges</span><span>Bilan</span><span>Trésorerie</span></div>
+        <div class="choice-arrow">→</div>
       </button>
     </div>
-    <button class="btn btn-secondary no-print" id="setup-back" style="margin-top:16px;">← Changer de fichier</button>
+    <button class="choice-changer no-print" id="setup-back">📁 Changer de dossier</button>
   </div>
 </div>
 
@@ -2279,17 +2355,25 @@ function ecrituresBounds(ecr){
     if(!mn||e.EcritureDate<mn) mn=e.EcritureDate; if(!mx||e.EcritureDate>mx) mx=e.EcritureDate; }
   return {mn, mx};
 }
+let selectedPdf = null;
+function cleanLabel(name){ return name.replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ').trim(); }
 function onFecParsed(ecritures, label){
   rawEcritures = ecritures;
   clientLabel = label;
   const {mn, mx} = ecrituresBounds(ecritures);
-  document.getElementById('setup-title').textContent = label;
-  document.getElementById('setup-periode').textContent = (mn&&mx)
-    ? 'Écritures du '+mn.toLocaleDateString('fr-FR')+' au '+mx.toLocaleDateString('fr-FR')+'.'
-    : 'Période non déterminée à partir des dates du fichier.';
   const inp = document.getElementById('arrete-date');
   inp.value = fmtDateInput(mx);
   if(mn) inp.min = fmtDateInput(mn);
+  document.getElementById('arrete-inline').style.display='flex';
+  const st = document.getElementById('fec-status');
+  st.className = 'dz-status ok';
+  st.innerHTML = '<span class="dot">✓</span> '+label+(mx? ' — exercice '+mx.getFullYear() : '');
+  document.getElementById('analyser-btn').disabled = false;
+}
+function showChoiceScreen(){
+  const {mn, mx} = ecrituresBounds(rawEcritures);
+  document.getElementById('setup-title').textContent = (clientLabel||'DOSSIER').toUpperCase();
+  document.getElementById('setup-periode').textContent = mx ? 'Exercice '+mx.getFullYear()+' — analyse terminée' : 'Analyse terminée avec succès';
   document.getElementById('upload-screen').style.display='none';
   document.getElementById('setup-screen').classList.add('active');
 }
@@ -2324,35 +2408,47 @@ document.getElementById('choice-client').addEventListener('click', ()=>enterApp(
 document.getElementById('setup-back').addEventListener('click', ()=>{
   document.getElementById('setup-screen').classList.remove('active');
   document.getElementById('upload-screen').style.display='flex';
-  document.getElementById('file-input').value='';
 });
-document.getElementById('pick-file-btn').addEventListener('click', ()=>document.getElementById('file-input').click());
-document.getElementById('file-input').addEventListener('change', async (e)=>{
-  const file = e.target.files[0];
+document.getElementById('analyser-btn').addEventListener('click', ()=>{
+  if(!rawEcritures.length){ showError("Sélectionnez d'abord un FEC."); return; }
+  showChoiceScreen();
+});
+/* --- Dépôt du FEC --- */
+async function handleFecFile(file){
   if(!file) return;
   try{
     const text = await readFileSmart(file);
     const {ecritures, errors} = parseFECText(text);
-    if(ecritures.length===0){ showError("Aucune écriture exploitable n'a été trouvée dans ce fichier. Vérifiez qu'il s'agit bien d'un export FEC."); return; }
+    if(ecritures.length===0){ showError("Aucune écriture exploitable n'a été trouvée. Vérifiez qu'il s'agit bien d'un export FEC."); return; }
     document.getElementById('upload-error').style.display='none';
-    onFecParsed(ecritures, file.name.replace(/\.[^.]+$/,''));
+    onFecParsed(ecritures, cleanLabel(file.name));
     if(errors.length) console.warn('Lignes ignorées :', errors);
-  }catch(err){
-    showError("Erreur de lecture du fichier : "+err.message);
-  }
+  }catch(err){ showError("Erreur de lecture du fichier : "+err.message); }
+}
+document.getElementById('fec-drop').addEventListener('click', ()=>document.getElementById('file-input').click());
+document.getElementById('file-input').addEventListener('change', e=>handleFecFile(e.target.files[0]));
+/* --- Dépôt du PDF (états financiers) — stocké pour la lecture IA du N-1 --- */
+document.getElementById('pdf-drop').addEventListener('click', ()=>document.getElementById('pdf-input').click());
+document.getElementById('pdf-input').addEventListener('change', e=>{
+  selectedPdf = e.target.files[0] || null;
+  const st = document.getElementById('pdf-status');
+  if(selectedPdf){ st.className='dz-status ok'; st.innerHTML='<span class="dot">✓</span> '+selectedPdf.name; }
+  else { st.className='dz-status'; st.innerHTML='<span class="dot">✓</span> Aucun fichier sélectionné'; }
 });
-const dz = document.getElementById('dropzone');
-['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev, e=>{ e.preventDefault(); dz.classList.add('drag'); }));
-['dragleave','drop'].forEach(ev=>dz.addEventListener(ev, e=>{ e.preventDefault(); dz.classList.remove('drag'); }));
-dz.addEventListener('drop', e=>{
-  const file = e.dataTransfer.files[0];
-  if(file){ document.getElementById('file-input').files = e.dataTransfer.files; document.getElementById('file-input').dispatchEvent(new Event('change')); }
-});
+/* --- Glisser-déposer --- */
+function wireDrop(zoneId, handler){
+  const z=document.getElementById(zoneId);
+  ['dragenter','dragover'].forEach(ev=>z.addEventListener(ev,e=>{e.preventDefault();z.classList.add('drag');}));
+  ['dragleave','drop'].forEach(ev=>z.addEventListener(ev,e=>{e.preventDefault();z.classList.remove('drag');}));
+  z.addEventListener('drop', e=>{ if(e.dataTransfer.files[0]) handler(e.dataTransfer.files[0]); });
+}
+wireDrop('fec-drop', handleFecFile);
+wireDrop('pdf-drop', f=>{ document.getElementById('pdf-input').files=null; selectedPdf=f; const st=document.getElementById('pdf-status'); st.className='dz-status ok'; st.innerHTML='<span class="dot">✓</span> '+f.name; });
 document.getElementById('demo-btn').addEventListener('click', ()=>{
   const ecritures = generateDemoEcritures();
-  const text = ecrituresToFECText(ecritures);
-  const {ecritures:parsed} = parseFECText(text);
-  onFecParsed(parsed, 'SARL ATELIER LUMEN (données fictives de démonstration)');
+  const {ecritures:parsed} = parseFECText(ecrituresToFECText(ecritures));
+  onFecParsed(parsed, 'Atelier Lumen (démonstration)');
+  showChoiceScreen();
 });
 
 /* ============================================================
