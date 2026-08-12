@@ -145,6 +145,22 @@ def _compte_pad(compte, n=8):
     return (c + "0" * n)[:n]
 
 
+def comptes_absents(ops, comptes_existants):
+    """Comptes utilisés par les opérations mais ABSENTS du plan comptable du
+    dossier. Quadra rejette un fichier qui référence un compte inexistant :
+    on le contrôle AVANT l'import plutôt que de se faire rejeter.
+
+    `comptes_existants` = liste des comptes du dossier (ex. via `lire_comptes`).
+    Retourne la liste (sans doublon) des comptes manquants, cadrés Quadra."""
+    presents = {_compte_pad(c) for c in comptes_existants}
+    absents = []
+    for o in ops:
+        c = _compte_pad(getattr(o, "compte", None) or "471")
+        if c not in presents and c not in absents:
+            absents.append(c)
+    return absents
+
+
 def to_quadratus(ops, avec_banque: bool = True, compte_banque: str = "512",
                  journal: str = None, source: str = "_IMP",
                  horodate=None, piece_depart: int = 1) -> str:

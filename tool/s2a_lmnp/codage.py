@@ -47,6 +47,24 @@ _RE_LOYER = re.compile(r"LOYER")
 _RE_INDEMN = re.compile(r"INDEMNI|SINISTRE|REMB.*ASSURANCE")
 _RE_APPORT = re.compile(r"APPORT|COMPTE COURANT")
 
+# --- charges & recettes récurrentes spécifiques LMNP/LMP/SCI -----------------
+_RE_DEPOT   = re.compile(r"DEPOT DE GARANTIE|DEPOT GARANTIE|\bCAUTION\b")
+_RE_CAF     = re.compile(r"\bCAF\b|\bAPL\b|ALLOCATION LOGEMENT|ALLOCATIONS FAMILIALES")
+_RE_PLATE   = re.compile(r"AIRBNB|BOOKING|ABRITEL|EXPEDIA")
+_RE_AVOIR   = re.compile(r"\bAVOIR\b|NOTE DE CREDIT|REMBOURSEMENT")
+_RE_EMPRUNT = re.compile(r"EMPRUNT|\bPRET\b|ECHEANCE.*PRET|CREDIT IMMO|CREDIT LOGEMENT|CREDIT HABITAT")
+_RE_TXFONC  = re.compile(r"TAXE FONCIERE|TAXE FONC|TX FONC")
+_RE_CFE     = re.compile(r"\bCFE\b|COTISATION FONCIERE")
+_RE_HONOR   = re.compile(r"HONORAIRE|GESTION LOCATIVE|AGENCE IMMO|EXPERT.?COMPTABLE|\bCOMPTABLE\b")
+_RE_ASSUR   = re.compile(r"ASSURANCE|\bPNO\b|\bGLI\b|\bMRH\b|MULTIRISQUE|\bADI\b")
+_RE_COPRO   = re.compile(r"SYNDIC|COPROPRIETE|CHARGES COPRO|APPEL DE CHARGES")
+_RE_EAU     = re.compile(r"\bEAU\b|VEOLIA|\bSUEZ\b|\bSAUR\b|ASSAINISSEMENT")
+_RE_GAZ     = re.compile(r"\bGAZ\b|GRDF|\bGDF\b")
+_RE_NOTAIRE = re.compile(r"NOTAIRE|OFFICE NOTARIAL|ACTE AUTHENTIQUE")
+
+# Comptes qui n'appellent jamais de TVA déductible (garde-fou para-hôtelier).
+_SANS_TVA = {"165", "108", "455", "512", "51210010", "661", "164", "627", "706", "758"}
+
 
 def _set(op: Operation, compte, conf, origine, motif="", a_revoir=False, options=None):
     op.compte = compte
@@ -59,7 +77,23 @@ def _set(op: Operation, compte, conf, origine, motif="", a_revoir=False, options
 
 
 def coder(op: Operation, dico: Dictionnaire,
-          resolver: Optional[Callable[[str], Optional[dict]]] = None) -> Operation:
+          resolver: Optional[Callable[[str], Optional[dict]]] = None,
+          assujetti_tva: bool = False) -> Operation:
+    """Code une opération. `assujetti_tva=True` (LMNP para-hôtelier, SCI à l'IS,
+    meublé de tourisme classé...) : on ne comptabilise PAS le TTC en charge — on
+    remonte pour saisie HT + TVA déductible. Par défaut False (LMNP non assujetti,
+    ~90 % des dossiers) : le TTC est passé en charge, aucune écriture de TVA."""
+    r = _coder(op, dico, resolver)
+    if assujetti_tva and op.sens == "D" and (op.compte or "") not in _SANS_TVA:
+        note = ("Dossier ASSUJETTI à la TVA : comptabiliser le HT + la TVA déductible "
+                "(44566) ; ne pas passer le TTC en charge — à saisir.")
+        op.a_confirmer = (op.a_confirmer + " " + note) if op.a_confirmer else note
+        op.a_revoir = True
+    return r
+
+
+def _coder(op: Operation, dico: Dictionnaire,
+           resolver: Optional[Callable[[str], Optional[dict]]] = None) -> Operation:
     # 0) ligne DÉJÀ codée à l'export bancaire : le logiciel comptable a déjà
     #    pré-affecté le compte (fournisseur paramétré). On lui fait confiance,
     #    on ne recode pas et on ne remonte pas à l'humain. Le rapprochement
@@ -72,11 +106,29 @@ def coder(op: Operation, dico: Dictionnaire,
 
     # 1) recettes
     if op.sens == "C":
-        if _RE_LOYER.search(lib):
-            return _set(op, "706", 0.99, "regle", "Loyer (recette récurrente)")
+        # dépôt de garantie reçu : DETTE (165), surtout PAS un produit. Testé
+        # avant le loyer car un libellé "CAUTION LOYER" contient le mot LOYER.
+        if _RE_DEPOT.search(lib):
+            return _set(op, "165", 0.85, "regle",
+                        "Dépôt de garantie reçu : dette (165), ne compte PAS en recette",
+                        options=["165"])
+        # recette encaissée via une plateforme : le montant reçu est NET de
+        # commission -> la recette brute + la commission (622) doivent être
+        # rétablies. On propose, on ne tranche pas.
+        if _RE_PLATE.search(lib):
+            return _set(op, "706", 0.60, "regle",
+                        "Recette plateforme (Airbnb/Booking...) : montant NET de commission — "
+                        "rétablir la recette brute et la commission en 622",
+                        a_revoir=True, options=["706", "622"])
+        if _RE_LOYER.search(lib) or _RE_CAF.search(lib):
+            return _set(op, "706", 0.99, "regle", "Loyer / aide au logement (recette récurrente)")
         if _RE_INDEMN.search(lib):
             return _set(op, "758", 0.80, "regle", "Indemnité d'assurance",
                         options=["758", "791", "616"])          # AUTO (non immo/inconnu/multi)
+        if _RE_AVOIR.search(lib):
+            return _set(op, "471", 0.0, "regle",
+                        "Avoir / remboursement reçu : rattacher au compte de charge d'origine",
+                        a_revoir=True, options=["471", "606", "615", "616"])
         if _RE_APPORT.search(lib):
             return _set(op, "108", 0.80, "regle", "Apport de l'exploitant",
                         options=["108", "455"])                 # AUTO
@@ -89,6 +141,13 @@ def coder(op: Operation, dico: Dictionnaire,
         return _set(op, "661", 0.97, "amort",
                     "Échéance de prêt : intérêts (661) + capital (164) selon tableau d'amortissement",
                     options=["661"])
+    # échéance de prêt SANS tableau d'amortissement : on ne peut pas ventiler
+    # intérêts/capital nous-mêmes -> remonté (surtout ne pas passer 100 % en charge).
+    if _RE_EMPRUNT.search(lib):
+        return _set(op, "661", 0.50, "regle",
+                    "Échéance de prêt : ventiler intérêts (661) / capital (164) — "
+                    "tableau d'amortissement requis",
+                    a_revoir=True, options=["661", "164", "616"])
 
     # 3) travaux / appel de fonds -> IMMO à trancher (au-dessus du seuil)
     if _RE_APPELFONDS.search(lib):
@@ -131,6 +190,28 @@ def coder(op: Operation, dico: Dictionnaire,
         return _set(op, compte, 0.97, "dict",
                     ("Immobilisation — à valider" if rev else "Identique au FEC N-1"),
                     a_revoir=rev, options=[compte])
+
+    # 4b) charges récurrentes LMNP/SCI (fournisseur non connu du FEC N-1).
+    #     Ordre : honoraires avant copro (un 'SYNDIC HONORAIRES' = 622, pas 614).
+    if _RE_TXFONC.search(lib):
+        return _set(op, "63512", 0.90, "regle", "Taxe foncière")
+    if _RE_CFE.search(lib):
+        return _set(op, "63511", 0.85, "regle", "CFE (cotisation foncière des entreprises)")
+    if _RE_HONOR.search(lib):
+        return _set(op, "622", 0.85, "regle", "Honoraires (gestion locative / agence / comptable)")
+    if _RE_ASSUR.search(lib):
+        return _set(op, "616", 0.85, "regle", "Assurance (PNO / GLI / emprunteur)")
+    if _RE_COPRO.search(lib):
+        return _set(op, "614", 0.80, "regle",
+                    "Charges de copropriété courantes (syndic)", options=["614", "615"])
+    if _RE_EAU.search(lib):
+        return _set(op, "606", 0.80, "regle", "Eau / assainissement")
+    if _RE_GAZ.search(lib):
+        return _set(op, "606", 0.80, "regle", "Gaz / énergie")
+    if _RE_NOTAIRE.search(lib):
+        return _set(op, "6226", 0.55, "regle",
+                    "Frais de notaire : coût d'acquisition à immobiliser, ou charge sur option — à trancher",
+                    a_revoir=True, options=["6226", "2115", "213"])
 
     # 5) frais bancaires (libellés variables)
     if _RE_FRAIS.search(lib):

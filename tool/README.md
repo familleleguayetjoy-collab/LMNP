@@ -6,7 +6,7 @@ jamais de l'IA. L'IA n'intervient que sur deux tâches, et seulement pour
 *proposer* (l'humain valide) : lire une facture, proposer un compte sur un
 fournisseur inconnu.
 
-## Ce qui marche déjà (testé, `python3 tool/tests/selftest.py` → 72 contrôles OK)
+## Ce qui marche déjà (testé, `python3 tool/tests/selftest.py` → 105 contrôles OK)
 
 | Module | Rôle | État |
 |---|---|---|
@@ -34,6 +34,43 @@ fournisseur inconnu.
   L'**adresse lue sur la facture** route vers le bon bien.
 - **Profil BNC / médecin** : recettes mises de côté (pas de justificatif
   attendu), récurrent pré-affecté (à brancher côté règles selon le profil).
+
+### Durcissement LMNP — 30 cas à risque anticipés et traités (section 20 des tests)
+
+Revue préventive des pièges propres au meublé. Chaque cas ci-dessous a un
+contrôle de non-régression :
+
+**Recettes piégeuses** — dépôt de garantie reçu → **165 (dette, jamais 706)**,
+même quand le libellé contient « loyer » ; APL/CAF → loyer 706 (pas une
+subvention) ; recette **Airbnb/Booking** → 706 mais signalée « montant net de
+commission, ventiler 622 » ; avoir/remboursement reçu → à rattacher.
+
+**Emprunt** — échéance de prêt **sans** tableau d'amortissement → remontée pour
+ventiler 661/164 (jamais passée à 100 % en charge) ; **avec** tableau →
+ventilée auto. Garde-fou : une banque nommée « CREDIT MUTUEL/AGRICOLE » n'est
+pas confondue avec un prêt.
+
+**Charges récurrentes** — taxe foncière → 63512 ; CFE → 63511 ; honoraires
+(gestion/agence/comptable) → 622 ; assurance PNO/GLI/emprunteur → 616 ; charges
+de copropriété courantes → 614 ; eau/assainissement, gaz → 606 ; frais de
+notaire → à trancher (immo vs charge sur option). « Syndic **honoraires** » →
+622 (l'ordre honoraires-avant-copro évite le faux positif).
+
+**TVA para-hôtelier** — `coder(..., assujetti_tva=True)` : sur un dossier
+assujetti (meublé de tourisme classé, SCI à l'IS…), on **ne poste pas le TTC en
+charge** — l'opération est remontée pour saisie HT + TVA déductible (44566). Par
+défaut `False` (LMNP non assujetti, ~90 %).
+
+**Montants** — signe négatif **en fin** de ligne (`120,00-`), symbole € et
+espace insécable, signe en tête, parenthèses comptables `(89,90)`.
+
+**Dates** — ISO, `JJ/MM/AAAA`, `AAAAMMJJ`, **n° de série Excel**, `datetime`
+(`parse_date`, pour les relevés bancaires hétérogènes).
+
+**Quadra (avant import)** — montant > 12 chiffres **rejeté** (jamais tronqué en
+silence) ; libellé nettoyé (accents/caractères spéciaux) ; `comptes_absents`
+signale un compte absent du plan comptable du dossier avant que Quadra ne
+rejette le fichier.
 
 ### Rapprochement — cas particuliers (le rapprochement JUSTIFIE, il ne décide pas la compta)
 

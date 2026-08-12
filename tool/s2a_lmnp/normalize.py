@@ -53,7 +53,10 @@ def parse_montant(v) -> float:
     neg = s.startswith("(") and s.endswith(")")   # comptable : (1 200,00) = négatif
     s = s.strip("()")
     s = _NUM.sub("", s)                             # ne garde que chiffres , . -
-    if not s or s in ("-", ".", ","):
+    if "-" in s:                                    # signe en tête OU en fin ('120,00-')
+        neg = True
+        s = s.replace("-", "")
+    if not s or s in (".", ","):
         raise ValueError(f"montant non parsable: {v!r}")
     # Déterminer le séparateur décimal = le dernier ',' ou '.' rencontré.
     last_c, last_d = s.rfind(","), s.rfind(".")
@@ -66,6 +69,39 @@ def parse_montant(v) -> float:
         num = ent + "." + frac
     val = float(num)
     return -val if neg and val > 0 else val
+
+
+def parse_date(v):
+    """Date robuste -> datetime.date. Ne devine jamais : lève ValueError sinon.
+
+    Accepte : date/datetime ; 'AAAA-MM-JJ', 'JJ/MM/AAAA', 'JJ/MM/AA', 'AAAAMMJJ',
+    'JJ-MM-AAAA', 'JJ.MM.AAAA' ; et le **numéro de série Excel** (int/float ou
+    petite chaîne de chiffres, base 1899-12-30) — fréquent dans les relevés Excel.
+    """
+    import datetime as _dt
+    if v is None or v == "":
+        raise ValueError("date vide")
+    if isinstance(v, _dt.datetime):
+        return v.date()
+    if isinstance(v, _dt.date):
+        return v
+    if isinstance(v, (int, float)):
+        n = int(v)
+        if n >= 3_000_000:                       # trop grand pour Excel -> AAAAMMJJ
+            return _dt.datetime.strptime(str(n), "%Y%m%d").date()
+        return _dt.date(1899, 12, 30) + _dt.timedelta(days=n)
+    s = str(v).strip()
+    if s.isdigit():
+        if len(s) == 8:                          # AAAAMMJJ (FEC)
+            return _dt.datetime.strptime(s, "%Y%m%d").date()
+        if len(s) <= 5:                          # n° de série Excel
+            return _dt.date(1899, 12, 30) + _dt.timedelta(days=int(s))
+    for fmt in ("%Y-%m-%d", "%d/%m/%Y", "%d/%m/%y", "%d-%m-%Y", "%d.%m.%Y"):
+        try:
+            return _dt.datetime.strptime(s, fmt).date()
+        except ValueError:
+            continue
+    raise ValueError("date non parsable: %r" % (v,))
 
 
 def cents(v: float) -> int:

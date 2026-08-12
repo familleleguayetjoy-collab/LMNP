@@ -8,9 +8,9 @@ manquant), export Quadra équilibré à 256 caractères.
 import sys, os, datetime
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from s2a_lmnp import (parse_montant, parse_fec, construire, Operation, Facture,
+from s2a_lmnp import (parse_montant, parse_date, parse_fec, construire, Operation, Facture,
                       coder, rapprocher, manquants, to_quadratus, verifier_equilibre,
-                      doublons, operations_od_factures,
+                      comptes_absents, doublons, operations_od_factures,
                       Bien, MappingBiens, proposer_sous_compte, inferer_depuis_fec,
                       associer_factures, associer_reglements, detecter_virements_internes,
                       marquer_perso, doublons_factures, chercher_dans_fec,
@@ -313,5 +313,85 @@ check(op_inc.origine == "web" and op_inc.a_revoir, "resolver IA propose un compt
 fac = facture_depuis_ocr(ia.lire_facture("edf.pdf")[0])
 check(fac.fournisseur == "EDF" and fac.ttc == 69.34 and fac.confiance_ocr == 0.95,
       "OCR -> Facture (montant sert au rapprochement, jamais posté seul)")
+
+print("20) Durcissement LMNP — 30 cas à risque anticipés")
+
+def _c(lib, sens="D", montant=100.0, amort=None, assujetti=False):
+    o = Operation(date=D(2026, 5, 1), libelle=lib, montant=montant, sens=sens, amort=amort)
+    coder(o, construire([]), assujetti_tva=assujetti)
+    return o
+
+# -- recettes piégeuses --------------------------------------------------------
+check(_c("VIR DEPOT DE GARANTIE LOCATAIRE", "C").compte == "165",
+      "dépôt de garantie reçu -> 165 (dette), PAS 706")
+check(_c("CAUTION LOYER STUDIO", "C").compte == "165",
+      "'caution loyer' -> 165 malgré le mot LOYER")
+check(_c("VIR CAF ALLOCATION LOGEMENT", "C").compte == "706",
+      "APL versée par la CAF -> loyer 706 (pas une subvention)")
+o = _c("VIREMENT AIRBNB PAYMENTS", "C", 742.0)
+check(o.compte == "706" and o.a_revoir and "622" in o.options,
+      "recette Airbnb -> 706 mais NET de commission (ventiler 622), à confirmer")
+check(_c("AVOIR FOURNISSEUR MATERIAUX", "C").a_revoir,
+      "avoir/remboursement reçu -> à rattacher (à confirmer)")
+
+# -- emprunt / prêt ------------------------------------------------------------
+o = _c("ECHEANCE PRET IMMOBILIER", "D", 650.0)
+check(o.compte == "661" and o.a_revoir and "164" in o.options,
+      "échéance de prêt sans tableau -> à ventiler 661/164 (jamais 100 % en charge)")
+o = _c("ECHEANCE PRET", "D", 650.0, amort=(120.0, 530.0))
+check(o.split == (120.0, 530.0) and not o.a_revoir,
+      "échéance AVEC tableau -> ventilée automatiquement 661 + 164")
+
+# -- charges récurrentes LMNP --------------------------------------------------
+check(_c("TAXE FONCIERE 2026 TRESOR PUBLIC").compte == "63512", "taxe foncière -> 63512")
+check(_c("PRLV CFE TRESOR PUBLIC").compte == "63511", "CFE -> 63511")
+check(_c("HONORAIRES GESTION LOCATIVE AGENCE").compte == "622", "honoraires gestion -> 622")
+check(_c("HONORAIRES EXPERT COMPTABLE").compte == "622", "honoraires comptable -> 622")
+check(_c("ASSURANCE PNO APPARTEMENT").compte == "616", "assurance PNO -> 616")
+check(_c("PRLV GLI LOYERS IMPAYES").compte == "616", "assurance GLI -> 616")
+check(_c("PRLV SYNDIC COPROPRIETE T2").compte == "614", "charges de copro courantes -> 614")
+o = _c("SYNDIC HONORAIRES DE GESTION")
+check(o.compte == "622", "'syndic honoraires' -> 622 (honoraires avant copro)")
+check(_c("VEOLIA EAU ASSAINISSEMENT").compte == "606", "eau/assainissement -> 606")
+check(_c("GRDF GAZ").compte == "606", "gaz -> 606")
+check(_c("FRAIS OFFICE NOTARIAL ACTE").a_revoir, "frais de notaire -> à trancher (immo/charge)")
+
+# -- garde-fou : une BANQUE nommée 'CREDIT ...' n'est pas un prêt --------------
+check(not _c("CB CREDIT MUTUEL PARIS", "D", 30.0).compte == "661",
+      "'CREDIT MUTUEL' (banque) n'est pas confondu avec une échéance de prêt")
+
+# -- TVA para-hôtelier : garde-fou anti-comptabilisation TTC ------------------
+o = _c("BRICO DEPOT PEINTURE", "D", 71.07, assujetti=True)
+check(o.a_revoir and "TVA" in (o.a_confirmer or ""),
+      "dossier assujetti TVA -> ne PAS poster le TTC en charge (remonté)")
+o2 = _c("BRICO DEPOT PEINTURE", "D", 71.07, assujetti=False)
+check(not o2.a_confirmer or "TVA" not in o2.a_confirmer,
+      "dossier NON assujetti -> pas de note TVA (TTC en charge, cas courant)")
+
+# -- montants : formats bancaires piégeux -------------------------------------
+check(parse_montant("120,00-") == -120.00, "signe négatif en fin de montant (relevé)")
+check(parse_montant("1 234,56 €") == 1234.56, "symbole € et espace insécable")
+check(parse_montant("-1 200,00") == -1200.00, "signe négatif en tête")
+check(parse_montant("(89,90)") == -89.90, "parenthèses comptables = négatif")
+
+# -- dates : formats hétérogènes des relevés ----------------------------------
+check(parse_date("2026-01-05") == D(2026, 1, 5), "date ISO")
+check(parse_date("05/01/2026") == D(2026, 1, 5), "date FR JJ/MM/AAAA")
+check(parse_date("20260105") == D(2026, 1, 5), "date compacte AAAAMMJJ (FEC)")
+check(parse_date(46027) == D(2026, 1, 5), "n° de série Excel -> date")
+check(parse_date(datetime.datetime(2026, 1, 5, 9, 0)) == D(2026, 1, 5), "datetime -> date")
+
+# -- Quadra : garde-fous export ------------------------------------------------
+try:
+    to_quadratus([Operation(D(2026, 1, 1), "TROP GROS", 99_999_999_999.0, "D")])
+    check(False, "montant hors capacité Quadra doit lever")
+except ValueError:
+    check(True, "montant > 12 chiffres -> rejeté (jamais tronqué en silence)")
+ligne = to_quadratus([Operation(D(2026, 1, 1), "ÉLECTRICITÉ DÉCEMBRE — 1er étage", 50.0, "D")])
+check("É" not in ligne and "—" not in ligne, "libellé nettoyé (accents/caractères spéciaux) pour Quadra")
+opx = Operation(D(2026, 1, 1), "EDF", 69.34, "D"); opx.compte = "606100"
+opy = Operation(D(2026, 1, 1), "FOURNISSEUR X", 10.0, "D"); opy.compte = "628000"
+check(comptes_absents([opx, opy], ["606100", "512000"]) == ["62800000"],
+      "compte absent du plan comptable du dossier -> signalé avant import")
 
 print("\n%d contrôles OK — moteur cohérent." % ok)
