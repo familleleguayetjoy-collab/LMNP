@@ -84,6 +84,15 @@
   .upload-divider{display:flex;align-items:center;gap:12px;margin:24px 0;color:var(--muted);font-size:.75rem;}
   .upload-divider::before,.upload-divider::after{content:'';flex:1;height:1px;background:var(--line);}
   #file-input{display:none;}
+  #setup-screen{display:none;min-height:100vh;align-items:center;justify-content:center;padding:24px;}
+  #setup-screen.active{display:flex;}
+  .choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px;}
+  .choice-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 20px;text-align:left;transition:.15s;display:flex;flex-direction:column;gap:8px;}
+  .choice-card:hover{border-color:var(--brand);box-shadow:0 2px 10px rgba(43,63,115,.08);transform:translateY(-1px);}
+  .choice-card .choice-ico{font-size:1.7rem;}
+  .choice-card .choice-t{font-size:1rem;font-weight:600;color:var(--ink);}
+  .choice-card .choice-d{font-size:.8rem;color:var(--ink-soft);line-height:1.45;}
+  @media (max-width:640px){ .choice-grid{grid-template-columns:1fr;} }
   .upload-error{margin-top:16px;padding:12px 14px;background:var(--bad-soft);border:1px solid #E4C4BA;border-radius:8px;color:var(--bad);font-size:.82rem;display:none;}
 
   /* ---------- App shell ---------- */
@@ -441,6 +450,41 @@
   </div>
 </div>
 
+<!-- ============ SETUP : date d'arrêté + choix d'interface ============ -->
+<div id="setup-screen">
+  <div class="upload-card" style="max-width:640px;">
+    <div class="eyebrow">Dossier importé</div>
+    <h1 id="setup-title" style="font-size:1.8rem;">Préparer le dossier</h1>
+    <p id="setup-periode">—</p>
+
+    <div class="settings-field">
+      <label for="arrete-date">Date d'arrêté</label>
+      <input type="date" id="arrete-date">
+      <div class="hint">Détectée à partir du FEC. Modifiez-la pour un exercice non calendaire (30/09, 30/06…) ou une situation intermédiaire : seules les écritures jusqu'à cette date seront prises en compte.</div>
+    </div>
+
+    <div class="settings-field">
+      <label for="pdf-input">États financiers N (PDF) — optionnel</label>
+      <input type="file" id="pdf-input" accept=".pdf" style="width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;font-size:.82rem;background:var(--card);">
+      <div class="hint" id="pdf-hint">Déposez la plaquette / liasse (colonnes N et N-1) pour activer les comparaisons N-1 et vérifier les calculs. Lecture par l'IA — nécessite une clé (Réglages IA). Bientôt disponible.</div>
+    </div>
+
+    <div class="choice-grid">
+      <button class="choice-card" id="choice-ec">
+        <div class="choice-ico">👔</div>
+        <div class="choice-t">Interface expert-comptable</div>
+        <div class="choice-d">Analyse poussée (SIG, ratios, variations) et recommandations enrichies par l'IA. À lire avant l'entretien.</div>
+      </button>
+      <button class="choice-card" id="choice-client">
+        <div class="choice-ico">🖥️</div>
+        <div class="choice-t">Interface client</div>
+        <div class="choice-d">Présentation claire pour le rendez-vous : soldes, produits, charges, bilan et trésorerie. Prête pour grand écran.</div>
+      </button>
+    </div>
+    <button class="btn btn-secondary no-print" id="setup-back" style="margin-top:16px;">← Changer de fichier</button>
+  </div>
+</div>
+
 <!-- ============ APP SHELL ============ -->
 <div id="app-shell">
   <aside class="sidebar">
@@ -453,8 +497,8 @@
     <div class="verdict-chip" id="verdict-chip"></div>
     <nav class="navlist">
       <div class="nav-group no-present">Avant l'entretien</div>
-      <button class="nav-item active" data-target="feuille"><span class="idx">01</span><span class="label">Feuille de route</span></button>
-      <button class="nav-item" data-target="recommandations"><span class="idx">02</span><span class="label">Recommandations</span></button>
+      <button class="nav-item active no-present" data-target="feuille"><span class="idx">01</span><span class="label">Feuille de route</span></button>
+      <button class="nav-item no-present" data-target="recommandations"><span class="idx">02</span><span class="label">Recommandations</span></button>
       <div class="nav-group no-present">Le dossier en détail</div>
       <button class="nav-item" data-target="synthese"><span class="idx">03</span><span class="label">Synthèse</span></button>
       <button class="nav-item" data-target="resultat"><span class="idx">04</span><span class="label">Compte de résultat</span></button>
@@ -1048,7 +1092,12 @@ const CR_LABELS = {
   '74':"Subventions d'exploitation",'75':'Autres produits de gestion courante',
   '76':'Produits financiers','77':'Produits exceptionnels','78':'Reprises amortissements et provisions','79':'Transferts de charges'
 };
-function computeAnalysis(ecritures){
+function computeAnalysis(ecritures, arreteDate){
+  // Filtre date d'arrêté : on conserve toujours les À-nouveaux (ouverture) et les
+  // écritures non datées ; on exclut les écritures postérieures à l'arrêté.
+  if(arreteDate){
+    ecritures = ecritures.filter(e => e.JournalCode==='AN' || !e.EcritureDate || e.EcritureDate<=arreteDate);
+  }
   const byKey = {};
   let totalDebit=0, totalCredit=0, dateMin=null, dateMax=null, remboursementsEmprunt=0;
   const compteSet = new Set();
@@ -2064,6 +2113,9 @@ document.getElementById('settings-save').addEventListener('click', ()=>{
 });
 document.getElementById('reset-btn').addEventListener('click', ()=>{
   document.getElementById('app-shell').classList.remove('active');
+  document.getElementById('setup-screen').classList.remove('active');
+  document.documentElement.classList.remove('present');
+  document.getElementById('present-btn').classList.remove('on');
   document.getElementById('upload-screen').style.display='flex';
   document.getElementById('file-input').value='';
 });
@@ -2071,13 +2123,61 @@ function showError(msg){
   const el = document.getElementById('upload-error');
   el.textContent = msg; el.style.display='block';
 }
-function loadEcritures(ecritures, clientLabel){
-  const analysis = computeAnalysis(ecritures);
+/* ---- Flux d'entrée : import FEC → écran de préparation → choix d'interface ---- */
+let rawEcritures = [];
+let clientLabel = '';
+function fmtDateInput(d){ return d ? d.getFullYear()+'-'+pad(d.getMonth()+1,2)+'-'+pad(d.getDate(),2) : ''; }
+function ecrituresBounds(ecr){
+  let mn=null, mx=null;
+  for(const e of ecr){ if(e.JournalCode==='AN'||!e.EcritureDate) continue;
+    if(!mn||e.EcritureDate<mn) mn=e.EcritureDate; if(!mx||e.EcritureDate>mx) mx=e.EcritureDate; }
+  return {mn, mx};
+}
+function onFecParsed(ecritures, label){
+  rawEcritures = ecritures;
+  clientLabel = label;
+  const {mn, mx} = ecrituresBounds(ecritures);
+  document.getElementById('setup-title').textContent = label;
+  document.getElementById('setup-periode').textContent = (mn&&mx)
+    ? 'Écritures du '+mn.toLocaleDateString('fr-FR')+' au '+mx.toLocaleDateString('fr-FR')+'.'
+    : 'Période non déterminée à partir des dates du fichier.';
+  const inp = document.getElementById('arrete-date');
+  inp.value = fmtDateInput(mx);
+  if(mn) inp.min = fmtDateInput(mn);
   document.getElementById('upload-screen').style.display='none';
+  document.getElementById('setup-screen').classList.add('active');
+}
+function getArreteDate(){
+  const v = document.getElementById('arrete-date').value;
+  if(!v) return null;
+  const p = v.split('-'); return new Date(+p[0], +p[1]-1, +p[2]);
+}
+function enterApp(mode){
+  const analysis = computeAnalysis(rawEcritures, getArreteDate());
+  document.getElementById('setup-screen').classList.remove('active');
   document.getElementById('app-shell').classList.add('active');
   document.getElementById('client-name').value = clientLabel;
   renderDashboard(analysis);
+  const present = document.getElementById('present-btn');
+  if(mode==='client'){
+    document.documentElement.classList.add('present');
+    present.classList.add('on');
+    document.querySelector('.nav-item[data-target="synthese"]').click();
+  } else {
+    document.documentElement.classList.remove('present');
+    present.classList.remove('on');
+    document.querySelector('.nav-item[data-target="feuille"]').click();
+    // Recommandations enrichies par l'IA, systématiquement, si une clé est configurée
+    if(aiConfig().key){ setTimeout(()=>document.getElementById('ai-reco-btn').click(), 100); }
+  }
 }
+document.getElementById('choice-ec').addEventListener('click', ()=>enterApp('ec'));
+document.getElementById('choice-client').addEventListener('click', ()=>enterApp('client'));
+document.getElementById('setup-back').addEventListener('click', ()=>{
+  document.getElementById('setup-screen').classList.remove('active');
+  document.getElementById('upload-screen').style.display='flex';
+  document.getElementById('file-input').value='';
+});
 document.getElementById('pick-file-btn').addEventListener('click', ()=>document.getElementById('file-input').click());
 document.getElementById('file-input').addEventListener('change', async (e)=>{
   const file = e.target.files[0];
@@ -2087,7 +2187,7 @@ document.getElementById('file-input').addEventListener('change', async (e)=>{
     const {ecritures, errors} = parseFECText(text);
     if(ecritures.length===0){ showError("Aucune écriture exploitable n'a été trouvée dans ce fichier. Vérifiez qu'il s'agit bien d'un export FEC."); return; }
     document.getElementById('upload-error').style.display='none';
-    loadEcritures(ecritures, file.name.replace(/\.[^.]+$/,''));
+    onFecParsed(ecritures, file.name.replace(/\.[^.]+$/,''));
     if(errors.length) console.warn('Lignes ignorées :', errors);
   }catch(err){
     showError("Erreur de lecture du fichier : "+err.message);
@@ -2104,7 +2204,7 @@ document.getElementById('demo-btn').addEventListener('click', ()=>{
   const ecritures = generateDemoEcritures();
   const text = ecrituresToFECText(ecritures);
   const {ecritures:parsed} = parseFECText(text);
-  loadEcritures(parsed, 'SARL ATELIER LUMEN (données fictives de démonstration)');
+  onFecParsed(parsed, 'SARL ATELIER LUMEN (données fictives de démonstration)');
 });
 
 /* ============================================================

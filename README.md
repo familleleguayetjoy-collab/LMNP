@@ -16,6 +16,22 @@ particulier.
 
 Un jeu de démonstration (données fictives) est disponible sur l'écran d'accueil.
 
+## Parcours
+
+1. **Import du FEC** (ou jeu de démonstration).
+2. **Écran de préparation** : la période est détectée automatiquement ; on choisit
+   la **date d'arrêté** (exercice non calendaire type 30/09, ou situation
+   intermédiaire — seules les écritures jusqu'à cette date sont retenues) et, à
+   terme, on dépose le **PDF des états financiers** pour activer les comparaisons
+   N-1 et la vérification.
+3. **Choix de l'interface** : **expert-comptable** (avant l'entretien) ou
+   **client** (pendant le rendez-vous), clairement séparées.
+
+> À venir : lecture du PDF états financiers par l'IA (N-1 + contrôle),
+> produits éditables (produits constatés d'avance, en-cours) répercutés dans tous
+> les calculs, comparatifs de charges N-1, mode grand écran synchronisé
+> tablette ↔ TV.
+
 ## Deux interfaces
 
 ### Espace expert-comptable (avant l'entretien)
