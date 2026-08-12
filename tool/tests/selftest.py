@@ -11,6 +11,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from s2a_lmnp import (parse_montant, parse_date, parse_fec, construire, Operation, Facture,
                       coder, rapprocher, manquants, to_quadratus, verifier_equilibre,
                       comptes_absents, doublons, operations_od_factures,
+                      Manifeste, DossierLocal, pieces_neuves,
                       Bien, MappingBiens, proposer_sous_compte, inferer_depuis_fec,
                       associer_factures, associer_reglements, detecter_virements_internes,
                       marquer_perso, doublons_factures, chercher_dans_fec,
@@ -425,5 +426,42 @@ check(osfr.compte == "626100" and osfr.origine in ("dict", "fuzzy"),
 ovide = Operation(date=D(2026, 5, 1), libelle="TAXE FONCIERE", montant=500.0, sens="D")
 coder(ovide, construire([]))
 check(ovide.compte == "63512", "sans FEC : compte générique conservé (adaptation no-op)")
+
+print("22) Ingestion & idempotence — on ne re-traite jamais une pièce (ni re-OCR)")
+import tempfile, shutil
+with tempfile.TemporaryDirectory() as tmp:
+    for nom, contenu in (("edf.pdf", b"FACTURE EDF 69.34"),
+                         ("brico.pdf", b"TICKET BRICO 71.07"),
+                         ("bouygues.pdf", b"FACTURE BYG 44.99")):
+        with open(os.path.join(tmp, nom), "wb") as f:
+            f.write(contenu)
+    src = DossierLocal(tmp)
+    pieces = src.lister()
+    check(len(pieces) == 3 and len({p.empreinte for p in pieces}) == 3,
+          "3 pièces listées, empreintes distinctes")
+
+    man = Manifeste()
+    check(len(pieces_neuves(src, man)) == 3, "manifeste vide -> les 3 pièces sont neuves")
+
+    # on 'traite' EDF et Brico (1er passage)
+    for p in pieces:
+        if p.nom in ("edf.pdf", "brico.pdf"):
+            man.marquer(p.empreinte, p.nom)
+    check(len(pieces_neuves(src, man)) == 1, "après traitement de 2 -> 1 seule pièce neuve")
+
+    # un fichier RENOMMÉ (même contenu) n'est PAS re-traité (empreinte = contenu)
+    shutil.copy(os.path.join(tmp, "edf.pdf"), os.path.join(tmp, "EDF_janvier_RENOMME.pdf"))
+    neuves = pieces_neuves(src, man)
+    check(len(neuves) == 1 and neuves[0].nom == "bouygues.pdf",
+          "fichier renommé (même contenu) -> non re-traité (anti re-OCR)")
+
+    # persistance du manifeste (le cabinet le garde d'une période à l'autre)
+    chemin = os.path.join(tmp, "manifeste.json")
+    man.chemin = chemin
+    man.sauver()
+    man2 = Manifeste(chemin)
+    check(len(man2) == 2 and all(man2.est_traite(p.empreinte)
+          for p in pieces if p.nom in ("edf.pdf", "brico.pdf")),
+          "manifeste sauvegardé puis rechargé -> mémoire des pièces traitées conservée")
 
 print("\n%d contrôles OK — moteur cohérent." % ok)
