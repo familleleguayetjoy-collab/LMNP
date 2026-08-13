@@ -29,30 +29,37 @@
 </script>
 <style>
   :root{
-    --ink:#141A22;
-    --ink-soft:#48505F;
-    --muted:#7A8194;
-    --paper:#F5F3EE;
-    --bg:#FAF9F6;
+    /* ===== Charte S2A (Sud Alpes Audit) ===== */
+    --ink:#102A35;
+    --ink-soft:#33474E;
+    --muted:#64747B;
+    --paper:#F7F4EE;
+    --bg:#FBFAF7;
     --card:#FFFFFF;
-    --line:#E7E3DA;
-    /* S2A — vert primaire (expert), bleu (client). Modifiables ici pour la charte. */
-    --brand:#1E7A45;
-    --brand-soft:#E4F1E9;
-    --client:#2A5FB0;
-    --client-soft:#E8EEF9;
-    --good:#1E7A45;
-    --good-soft:#E4F1E9;
-    --bad:#C0392B;
-    --bad-soft:#F8E7E4;
-    --warn:#C9871F;
-    --warn-soft:#FBEFD6;
+    --line:#D9DFDE;
+    --navy:#0B2430;        /* primaire — boutons, marque */
+    --navy-2:#123847;
+    --brand:#2F6A57;       /* vert profond — accent expert */
+    --brand-soft:#E7EFEA;
+    --client:#0B2430;      /* navy — accent client */
+    --client-soft:#E4EAEC;
+    --gold:#C4A36F;        /* or — accent premium */
+    --gold-soft:#F3EBDC;
+    --sage:#8FB5A2;
+    --good:#2F6A57;
+    --good-soft:#E7EFEA;
+    --bad:#A85D54;
+    --bad-soft:#F4E6E3;
+    --warn:#C4A36F;
+    --warn-soft:#F3EBDC;
     --charge:#9C5B45;
     --charge-soft:#F1E3DC;
-    --good-ondark:#8FD1AB;
-    --warn-ondark:#E3BE72;
-    --bad-ondark:#EDA79C;
-    --radius:14px;
+    --good-ondark:#8FB5A2;
+    --warn-ondark:#D8BE8A;
+    --bad-ondark:#D8A39A;
+    --radius:16px;
+    --logo-s2a:url('assets/img/logo-s2a.webp');
+    --logo-s2a-light:url('assets/img/logo-s2a-light.webp');
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
@@ -92,9 +99,10 @@
 
   /* ---------- Barre de marque (écrans d'entrée) ---------- */
   .brandbar{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:22px 34px;}
-  .brandbar .logo{font-family:'Newsreader',serif;font-weight:600;font-size:1.4rem;color:var(--brand);letter-spacing:-.01em;}
-  .brandbar .logo b{font-weight:600;}
   .brandbar .help{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--muted);font-size:.9rem;}
+  /* Logo S2A */
+  .s2a-logo{display:inline-block;height:38px;width:118px;background:var(--logo-s2a) no-repeat left center/contain;}
+  .s2a-logo.on-dark{background-image:var(--logo-s2a-light);}
 
   /* ---------- Écran d'import (2 dépôts) ---------- */
   #upload-screen{background:var(--bg);}
@@ -111,8 +119,8 @@
   .dz-status{display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--muted);margin-top:14px;}
   .dz-status .dot{width:16px;height:16px;border-radius:50%;background:var(--line);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.62rem;flex:0 0 16px;}
   .dz-status.ok{color:var(--good);} .dz-status.ok .dot{background:var(--good);}
-  .btn-analyser{width:100%;background:var(--brand);color:#fff;border:none;border-radius:11px;padding:16px;font-size:1rem;font-weight:600;font-family:inherit;cursor:pointer;transition:.15s;}
-  .btn-analyser:hover{background:#186338;}
+  .btn-analyser{width:100%;background:var(--navy);color:#fff;border:none;border-radius:11px;padding:16px;font-size:1rem;font-weight:600;font-family:inherit;cursor:pointer;transition:.15s;}
+  .btn-analyser:hover{background:var(--navy-2);}
   .btn-analyser:disabled{opacity:.45;cursor:default;}
   .arrete-inline{display:flex;align-items:center;gap:12px;justify-content:center;margin:6px 0 18px;font-size:.85rem;color:var(--ink-soft);}
   .arrete-inline input{padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:.85rem;}
@@ -128,7 +136,7 @@
   .choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
   .choice-card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:30px 28px 64px;text-align:left;transition:.18s;display:flex;flex-direction:column;gap:10px;cursor:pointer;}
   .choice-card.ec{background:linear-gradient(180deg,#F3F9F5 0%,var(--card) 60%);}
-  .choice-card.client{background:linear-gradient(180deg,#F1F5FC 0%,var(--card) 60%);}
+  .choice-card.client{background:linear-gradient(180deg,#EEF1F2 0%,var(--card) 60%);}
   .choice-card:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(20,26,34,.08);}
   .choice-card.ec:hover{border-color:var(--brand);}
   .choice-card.client:hover{border-color:var(--client);}
@@ -490,7 +498,7 @@
 
 <!-- ============ UPLOAD SCREEN ============ -->
 <div id="upload-screen">
-  <div class="brandbar"><span class="logo">S2A<b>.</b></span></div>
+  <div class="brandbar"><span class="s2a-logo" role="img" aria-label="S2A — Sud Alpes Audit"></span></div>
   <div class="upload-card">
     <h1>Préparer le dossier</h1>
     <p>Importez les documents nécessaires pour analyser les comptes et préparer votre rendez-vous.</p>
@@ -533,7 +541,7 @@
 
 <!-- ============ CHOIX D'INTERFACE ============ -->
 <div id="setup-screen">
-  <div class="brandbar"><span class="logo">S2A<b>.</b></span></div>
+  <div class="brandbar"><span class="s2a-logo" role="img" aria-label="S2A — Sud Alpes Audit"></span></div>
   <div class="choice-wrap">
     <div class="choice-check">✓</div>
     <div class="choice-client" id="setup-title">DOSSIER</div>
@@ -564,7 +572,7 @@
 <!-- ============ APP SHELL ============ -->
 <div id="app-shell">
   <aside class="sidebar">
-    <div class="brand">S2A.</div>
+    <div class="brand"><span class="s2a-logo on-dark" style="height:30px;width:98px;"></span></div>
     <div class="brand-sub">LECTURE DE CLÔTURE</div>
     <div class="client-box no-present">
       <input type="text" id="client-name" value="Dossier client">
@@ -824,7 +832,7 @@
 <!-- ============ MODE PRESENTATION CLIENT ============ -->
 <div id="pres-overlay">
   <div class="pres-header">
-    <div class="pres-brand">S2A.</div>
+    <div class="pres-brand"><span class="s2a-logo on-dark" style="height:26px;width:84px;vertical-align:middle;"></span></div>
     <div class="pres-client">
       <div id="pres-client-name">SARL Atelier Lumen</div>
       <div class="periode" id="pres-periode">Exercice 2026 — comparé à 2025</div>
