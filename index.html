@@ -517,7 +517,7 @@
   .kpi-value{font-size:1.9rem;font-weight:700;color:var(--ink);letter-spacing:-.02em;line-height:1.1;}
   .kpi-meta{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline;font-size:.82rem;margin-top:2px;}
   .kpi-delta{font-weight:600;}
-  .kpi-delta.up{color:var(--good);} .kpi-delta.down{color:var(--bad);} .kpi-delta.warn{color:var(--warn);}
+  .kpi-delta.up{color:var(--good);} .kpi-delta.down{color:var(--bad);} .kpi-delta.warn{color:var(--warn);} .kpi-delta.muted{color:var(--muted);}
   .kpi-vs{color:var(--muted);}
   .kpi-pctca{color:var(--ink-soft);}
 
@@ -3282,20 +3282,22 @@ function sparklineSVG(series, color){
   }).join(' ');
   return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><polyline points="${pts}" fill="none" stroke="${color||'#08783E'}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
 }
-function lineNN1(canvasId, serieN, serieN1){
+function lineNN1(canvasId, serieN, serieN1, opts){
+  opts=opts||{};
   const cv=document.getElementById(canvasId);
   if(!cv || typeof Chart==='undefined') return;
   if(clientCharts[canvasId]) clientCharts[canvasId].destroy();
   const ds=[{label:'N', data:serieN, borderColor:'#08783E', backgroundColor:'rgba(8,120,62,.08)', borderWidth:2.6, tension:.35, fill:true, pointRadius:0, pointHoverRadius:4}];
   if(serieN1 && serieN1.some(v=>v!=null))
     ds.push({label:'N-1', data:serieN1, borderColor:'#B8BDC4', borderWidth:2, borderDash:[5,4], tension:.35, fill:false, pointRadius:0, pointHoverRadius:4});
+  const yScale={grid:{color:'#F0EFEA'},border:{display:false},ticks:{maxTicksLimit:6,font:{size:11},color:'#8A909B',callback:v=>Math.abs(v)>=1000?(v/1000).toLocaleString('fr-FR',{maximumFractionDigits:1})+'k':Math.round(v)}};
+  if(opts.zero){ yScale.beginAtZero=true; yScale.suggestedMin=0; }
   clientCharts[canvasId]=new Chart(cv.getContext('2d'),{
     type:'line',
     data:{labels:MONTHS, datasets:ds},
     options:{responsive:true, maintainAspectRatio:false, interaction:{mode:'index',intersect:false},
       plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>c.dataset.label+' : '+fmtEUR(c.parsed.y)}}},
-      scales:{x:{grid:{display:false},ticks:{font:{size:11},color:'#8A909B'}},
-        y:{grid:{color:'#F0EFEA'},border:{display:false},ticks:{maxTicksLimit:6,font:{size:11},color:'#8A909B',callback:v=>Math.abs(v)>=1000?(v/1000).toLocaleString('fr-FR',{maximumFractionDigits:1})+'k':Math.round(v)}}}}
+      scales:{x:{grid:{display:false},ticks:{font:{size:11},color:'#8A909B'}}, y:yScale}}
   });
 }
 
@@ -3491,33 +3493,34 @@ function renderChargeRight(){
     <div class="mini-card"><div class="mc-l">Variation</div><div class="mc-v ${n1!=null?chgVarCls(n,n1):''}">${varEur}</div><div class="mc-s">${n1&&n1>0.5?signPct((n-n1)/n1):''}</div></div>
   </div>`;
   const mN=monthlyAccount(ecrituresN,compte), mN1=AN1?monthlyAccount(ecrituresN1,compte):null;
-  // répartition par mois (top)
+  // répartition par mois (top) — ou dépense régulière ?
   const idx=mN.map((v,i)=>({m:i,v})).filter(x=>x.v>0.5).sort((a,b)=>b.v-a.v);
   const top3=idx.slice(0,3); const top3sum=top3.reduce((s,x)=>s+x.v,0); const totM=mN.reduce((s,v)=>s+v,0)||1;
-  const repHtml=`<div class="bcard" style="margin-top:18px;"><div class="card-h">Répartition des dépenses</div><div class="card-sub2">Mois les plus chargés sur l'exercice.</div>`+
-    top3.map(x=>{const pc=x.v/totM;return `<div class="rep-row"><span class="rep-name">${MONTHS[x.m]}</span><span class="rep-eur">${fmtEUR(x.v)}</span><span class="rep-pct">${fmtPct(pc)}</span><div class="rep-bar"><i style="width:${(pc*100).toFixed(0)}%"></i></div></div>`;}).join('')+
-    (top3.length?`<div style="margin-top:10px;font-size:.82rem;color:var(--muted);">Les ${top3.length} premiers mois représentent ${fmtPct(top3sum/totM)} de la dépense annuelle.</div>`:'<div style="font-size:.85rem;color:var(--muted);">Dépense répartie régulièrement sur l\'année.</div>')+`</div>`;
+  const vals=mN.filter(v=>v>0.5); const mx=Math.max(...mN,0), mn=vals.length?Math.min(...vals):0;
+  const reguliere = vals.length>=8 && mx>0 && (mx-mn)/mx < 0.25;
+  const repHtml = reguliere
+    ? `<div class="bcard" style="margin-top:18px;"><div class="card-h">Répartition des dépenses</div><div class="card-sub2">Rythme de la dépense sur l'exercice.</div><div style="font-size:.92rem;color:var(--ink-soft);line-height:1.5;">Dépense régulière, autour de <b>${fmtEUR(n/12)}</b> chaque mois, sans concentration particulière sur un mois donné.</div></div>`
+    : `<div class="bcard" style="margin-top:18px;"><div class="card-h">Répartition des dépenses</div><div class="card-sub2">Mois les plus chargés sur l'exercice.</div>`+
+      top3.map(x=>{const pc=x.v/totM;return `<div class="rep-row"><span class="rep-name">${moisLabel(x.m+1)}</span><span class="rep-eur">${fmtEUR(x.v)}</span><span class="rep-pct">${fmtPct(pc)}</span><div class="rep-bar"><i style="width:${(pc*100).toFixed(0)}%"></i></div></div>`;}).join('')+
+      (top3.length?`<div style="margin-top:10px;font-size:.82rem;color:var(--muted);">À eux seuls, ces ${top3.length} mois représentent ${fmtPct(top3sum/totM)} de la dépense annuelle.</div>`:'')+`</div>`;
   const lecture=chargeLecture(acc,n,n1,mN,idx);
   const lectHtml=`<div class="bcard" style="margin-top:18px;"><div class="card-h">Lecture</div><ul class="retenir-ul">${lecture.map(l=>`<li>${l}</li>`).join('')}</ul></div>`;
   box.innerHTML=`<h1 style="margin-bottom:4px;">${acc.lib}</h1><div class="page-sub">Compte ${acc.compte}</div>${cards}
     <div class="bcard"><div class="card-h">Évolution mensuelle</div><div class="card-sub2">N (vert) / N-1 (pointillé).</div><div class="chart-wrap sm"><canvas id="detail-chart"></canvas></div></div>
     ${repHtml}${lectHtml}
     <div class="retenir-client" style="margin-top:18px;"><h3><span class="b">✦</span>Ce qu'il faut retenir</h3><ul><li>${chargeRetenir(acc,n,n1)}</li></ul></div>`;
-  lineNN1('detail-chart', mN, mN1);
+  lineNN1('detail-chart', mN, mN1, {zero:true});
 }
 function chargeLecture(acc,n,n1,mN,idx){
-  const out=[];
+  const out=[]; const ca=AN.ratios.CA;
   if(n1!=null && n1>0.5){ const d=(n-n1)/n1; out.push(`Ce poste ${d>=0?'augmente':'diminue'} de ${signPct(d)} par rapport à l'an dernier (${signEUR(n-n1)}).`); }
   else if(n1===0) out.push(`Ce poste n'existait pas l'an dernier : c'est une dépense nouvelle sur l'exercice.`);
   // distribution : régulière ou concentrée sur quelques mois ?
   const vals=mN.filter(v=>v>0.5);
   const mx=Math.max(...mN), mn=vals.length?Math.min(...vals):0;
   const reguliere = vals.length>=8 && mx>0 && (mx-mn)/mx < 0.25;
-  if(reguliere) out.push(`La dépense est régulière tout au long de l'année, autour de ${fmtEUR(n/12)} par mois.`);
-  else {
-    if(idx.length) out.push(`La dépense se concentre surtout sur ${moisLabel(idx[0].m+1)}${idx[1]?' et '+moisLabel(idx[1].m+1):''}.`);
-    out.push(`En moyenne, cela représente ${fmtEUR(n/12)} par mois.`);
-  }
+  if(!reguliere && idx.length) out.push(`La dépense se concentre surtout sur ${moisLabel(idx[0].m+1)}${idx[1]?' et '+moisLabel(idx[1].m+1):''}.`);
+  out.push(`Cela représente ${fmtEUR(n/12)} par mois en moyenne${ca?`, soit ${fmtPct(n/ca)} du chiffre d'affaires`:''}.`);
   return out.slice(0,3);
 }
 function chargeRetenir(acc,n,n1){
