@@ -652,6 +652,7 @@
   .bilan-card .bc-l{font-size:.9rem;color:var(--muted);}
   .bilan-card .bc-v{font-size:1.8rem;font-weight:700;color:var(--ink);letter-spacing:-.02em;margin:4px 0;}
   .bilan-card .bc-s{font-size:.82rem;color:var(--brand);font-weight:500;}
+  .bilan-card .bc-s.up{color:var(--good);} .bilan-card .bc-s.warn{color:var(--warn);} .bilan-card .bc-s.neu{color:var(--muted);}
 
   /* Drawer Ajustements */
   .drawer-ov{display:none;position:fixed;inset:0;background:rgba(21,24,28,.35);z-index:1200;}
@@ -1609,6 +1610,116 @@ function generateDemoEcritures(){
         {compte:'512000', lib:'Banque', debit:0, credit:1800}
       ]);
       op(E, {date:fmtDate(YEAR,12,31), journalCode:'OD', journalLib:'Opérations diverses', pieceRef:'DOT2025', libelle:'Dotation aux amortissements'}, [
+        {compte:'681100', lib:'Dotations aux amortissements', debit:4800, credit:0},
+        {compte:'281800', lib:'Amort. matériel et outillage', debit:0, credit:4800}
+      ]);
+    }
+  }
+  return E;
+}
+/* Exercice N-1 (2024) — jeu de démonstration différencié et réaliste :
+   activité plus faible (~226 000 €), marge un peu meilleure (contraction cette
+   année), charges récurrentes et personnel plus bas (hausses cette année),
+   délai clients plus court (allongement cette année). Sert à faire vivre les
+   comparaisons N/N-1 sans que tout varie du même pourcentage. */
+function generateDemoEcrituresN1(){
+  const E = [];
+  _ecrNum = 0;
+  const YEAR = 2024;
+  op(E, {date:fmtDate(YEAR,1,1), journalCode:'AN', journalLib:'A Nouveaux', pieceRef:'OUV2024', libelle:"Solde d'ouverture"}, [
+    {compte:'218300', lib:'Matériel et outillage', debit:24000, credit:0},
+    {compte:'512000', lib:'Banque', debit:3000, credit:0},
+    {compte:'530000', lib:'Caisse', debit:300, credit:0},
+    {compte:'281800', lib:'Amort. matériel et outillage', debit:0, credit:4800},
+    {compte:'164000', lib:'Emprunts établissements de crédit', debit:0, credit:12000},
+    {compte:'101000', lib:'Capital social', debit:0, credit:10000},
+    {compte:'106100', lib:'Réserve légale', debit:0, credit:500}
+  ]);
+  const caMensuel = [16500,15000,17500,18500,20500,22000,18000,11500,19000,20500,23500,23500];
+  const achatRatio = 0.52;   // meilleure marge en N-1 (0,55 en N) → marge en repli cette année
+  const joursMois = [31,29,31,30,31,30,31,31,30,31,30,31];
+  const recur = {loc:1080, entretien:280, assur:220, honoraires:430, pub:190, telecom:135, voyages:290};
+  const salaireStd=6300, salaireDec=8500, chargePatr=2600;
+  let prevVenteTTC=0, prevAchatTTC=0, prevChargePatr=0;
+  for(let m=1;m<=12;m++){
+    const dateFacture = fmtDate(YEAR,m,Math.min(20,joursMois[m-1]));
+    const dateFin = fmtDate(YEAR,m,joursMois[m-1]);
+    const caHT = caMensuel[m-1];
+    const caMarch = Math.round(caHT*0.6*100)/100;
+    const caPrest = Math.round((caHT-caMarch)*100)/100;
+    const tvaVente = Math.round(caHT*0.20*100)/100;
+    const venteTTC = Math.round((caHT+tvaVente)*100)/100;
+    op(E, {date:dateFacture, journalCode:'VE', journalLib:'Ventes', pieceRef:'FA'+pad(m,2), libelle:'Factures clients du mois'}, [
+      {compte:'411000', lib:'Clients', debit:venteTTC, credit:0},
+      {compte:'707000', lib:'Ventes de marchandises', debit:0, credit:caMarch},
+      {compte:'706000', lib:'Prestations de services', debit:0, credit:caPrest},
+      {compte:'445711', lib:'TVA collectée', debit:0, credit:tvaVente}
+    ]);
+    if(m>1){
+      op(E, {date:fmtDate(YEAR,m,5), journalCode:'BQ', journalLib:'Banque', pieceRef:'ENC'+pad(m,2), libelle:'Encaissement clients mois précédent'}, [
+        {compte:'512000', lib:'Banque', debit:prevVenteTTC, credit:0},
+        {compte:'411000', lib:'Clients', debit:0, credit:prevVenteTTC}
+      ]);
+    }
+    prevVenteTTC = venteTTC;
+    const achatHT = Math.round(caMarch*achatRatio*100)/100;
+    const tvaAchat = Math.round(achatHT*0.20*100)/100;
+    const achatTTC = Math.round((achatHT+tvaAchat)*100)/100;
+    op(E, {date:dateFacture, journalCode:'AC', journalLib:'Achats', pieceRef:'FF'+pad(m,2), libelle:'Factures fournisseurs marchandises'}, [
+      {compte:'607000', lib:'Achats de marchandises', debit:achatHT, credit:0},
+      {compte:'445661', lib:'TVA déductible', debit:tvaAchat, credit:0},
+      {compte:'401000', lib:'Fournisseurs', debit:0, credit:achatTTC}
+    ]);
+    if(m>1){
+      op(E, {date:fmtDate(YEAR,m,10), journalCode:'BQ', journalLib:'Banque', pieceRef:'PF'+pad(m,2), libelle:'Paiement fournisseurs mois précédent'}, [
+        {compte:'401000', lib:'Fournisseurs', debit:prevAchatTTC, credit:0},
+        {compte:'512000', lib:'Banque', debit:0, credit:prevAchatTTC}
+      ]);
+    }
+    prevAchatTTC = achatTTC;
+    const chargesExt = [
+      ['613000','Locations',recur.loc],['615000','Entretien et réparations',recur.entretien],
+      ['616000',"Primes d'assurances",recur.assur],['622600','Honoraires comptables',recur.honoraires],
+      ['623000','Publicité, communication',recur.pub],['626000','Frais postaux et télécom',recur.telecom],
+      ['625100','Voyages et déplacements',recur.voyages]
+    ];
+    for(const [compte,lib,montant] of chargesExt){
+      op(E, {date:dateFin, journalCode:'BQ', journalLib:'Banque', pieceRef:'CE'+m+'-'+compte, libelle:lib+' - '+moisLabel(m)}, [
+        {compte, lib, debit:montant, credit:0},
+        {compte:'512000', lib:'Banque', debit:0, credit:montant}
+      ]);
+    }
+    const salaireBase = m===12 ? salaireDec : salaireStd;
+    op(E, {date:dateFin, journalCode:'OD', journalLib:'Opérations diverses', pieceRef:'PAIE'+m, libelle:'Salaires du mois - '+moisLabel(m)}, [
+      {compte:'641000', lib:'Rémunérations du personnel', debit:salaireBase, credit:0},
+      {compte:'421000', lib:'Personnel - rémunérations dues', debit:0, credit:salaireBase}
+    ]);
+    op(E, {date:fmtDate(YEAR,m,28), journalCode:'BQ', journalLib:'Banque', pieceRef:'VIRSAL'+m, libelle:'Virement salaires nets'}, [
+      {compte:'421000', lib:'Personnel - rémunérations dues', debit:salaireBase, credit:0},
+      {compte:'512000', lib:'Banque', debit:0, credit:salaireBase}
+    ]);
+    op(E, {date:dateFin, journalCode:'OD', journalLib:'Opérations diverses', pieceRef:'CHPAT'+m, libelle:'Charges sociales patronales - '+moisLabel(m)}, [
+      {compte:'645000', lib:'Charges de sécurité sociale', debit:chargePatr, credit:0},
+      {compte:'431000', lib:'Sécurité sociale', debit:0, credit:chargePatr}
+    ]);
+    if(m>1){
+      op(E, {date:fmtDate(YEAR,m,15), journalCode:'BQ', journalLib:'Banque', pieceRef:'PCHPAT'+m, libelle:'Paiement charges sociales mois précédent'}, [
+        {compte:'431000', lib:'Sécurité sociale', debit:prevChargePatr, credit:0},
+        {compte:'512000', lib:'Banque', debit:0, credit:prevChargePatr}
+      ]);
+    }
+    prevChargePatr = chargePatr;
+    op(E, {date:fmtDate(YEAR,m,5), journalCode:'BQ', journalLib:'Banque', pieceRef:'EMP'+m, libelle:'Échéance emprunt'}, [
+      {compte:'164000', lib:'Emprunts établissements de crédit', debit:500, credit:0},
+      {compte:'661000', lib:"Charges d'intérêts", debit:100, credit:0},
+      {compte:'512000', lib:'Banque', debit:0, credit:600}
+    ]);
+    if(m===12){
+      op(E, {date:fmtDate(YEAR,12,15), journalCode:'BQ', journalLib:'Banque', pieceRef:'CFE2024', libelle:'Cotisation foncière des entreprises'}, [
+        {compte:'635100', lib:'Impôts et taxes', debit:1650, credit:0},
+        {compte:'512000', lib:'Banque', debit:0, credit:1650}
+      ]);
+      op(E, {date:fmtDate(YEAR,12,31), journalCode:'OD', journalLib:'Opérations diverses', pieceRef:'DOT2024', libelle:'Dotation aux amortissements'}, [
         {compte:'681100', lib:'Dotations aux amortissements', debit:4800, credit:0},
         {compte:'281800', lib:'Amort. matériel et outillage', debit:0, credit:4800}
       ]);
@@ -2873,7 +2984,7 @@ function scaleEcritures(ecr, factor, deltaYear){
 }
 document.getElementById('demo-btn').addEventListener('click', ()=>{
   const ecrN = generateDemoEcritures();               // 2025 : CA 254 000, marge 68 580, résultat 5 850…
-  const ecrN1 = scaleEcritures(ecrN, 226/254, -1);    // 2024 : ~226 000 (N-1)
+  const ecrN1 = generateDemoEcrituresN1();            // 2024 : ~226 000, marge 28,8 %, charges plus basses…
   rawExercices = { ecrN, ecrN1 };
   rawEcritures = ecrN;
   onFecParsed(rawEcritures, 'Atelier Lumen (démonstration)');
@@ -2908,6 +3019,9 @@ function signEUR(n){ return (n>=0?'+':'')+fmtEUR(n); }
 function signPct(n){ return (n>=0?'+':'')+fmtPct(n); }
 function joursTxt(n){ return n+' jour'+(Math.abs(n)>1?'s':''); }
 function joursDelta(d){ return (d>=0?'+':'')+joursTxt(d); }
+function dec1(n){ return (n||0).toLocaleString('fr-FR',{minimumFractionDigits:1,maximumFractionDigits:1}); }
+function ptDelta(n){ return (n>=0?'+':'')+dec1(n)+' pt'; }
+function moisLong(key){ if(!key||key==='Ouverture') return "l'ouverture"; const [y,m]=key.split('-'); return moisLabel(+m)+' '+y; }
 
 function expertKpis(){
   const g=computeSIG(AN), g1=AN1?computeSIG(AN1):null;
@@ -2923,7 +3037,7 @@ function expertKpis(){
   const margeDpt=(margePctN1!=null)?(margePctN-margePctN1)*100:null;
   K.push({ico:'◧',label:'Marge',value:fmtEUR(g.margeCommerciale),
     pctca:fmtPct(margePctN)+' du CA',
-    delta: (margeDpt!=null && Math.abs(margeDpt)>=0.1)?{txt:(margeDpt>=0?'+':'')+margeDpt.toFixed(1)+' pt',cls:margeDpt>=0?'up':'warn'}:null,
+    delta: (margeDpt!=null && Math.abs(margeDpt)>=0.1)?{txt:ptDelta(margeDpt),cls:margeDpt>=0?'up':'warn'}:null,
     vs: margePctN1!=null?('vs '+fmtPct(margePctN1)):''});
   K.push({ico:'▲',label:'EBE',value:fmtEUR(g.ebe),
     pctca:(r.CA?fmtPct(g.ebe/r.CA):'')+' du CA',
@@ -2961,8 +3075,8 @@ function retenirEssentielRuleBased(){
     const margePctN=r.CA?g.margeCommerciale/r.CA:0, margePctN1=r1.CA?g1.margeCommerciale/r1.CA:0;
     const dPt=(margePctN-margePctN1)*100;
     const dso=r.delaiClients-r1.delaiClients;
-    if(Math.abs(dPt)>=0.2) parts.push(`La marge ${dPt<0?'se contracte':'se renforce'} (${dPt>=0?'+':''}${dPt.toFixed(1)} pt)${dso>0?` tandis que le délai de règlement des clients s'allonge (+${dso} j)`:''}.`);
-    else if(dso>0) parts.push(`Le délai de règlement des clients s'allonge (+${dso} j), à surveiller.`);
+    if(Math.abs(dPt)>=0.2) parts.push(`La marge ${dPt<0?'se contracte':'se renforce'} (${ptDelta(dPt)})${dso>0?` tandis que le délai de règlement des clients s'allonge (+${joursTxt(dso)})`:''}.`);
+    else if(dso>0) parts.push(`Le délai de règlement des clients s'allonge (+${joursTxt(dso)}), à surveiller.`);
     else parts.push(`La rentabilité et les délais restent stables par rapport à N-1.`);
   } else {
     parts.push(`Résultat net de ${fmtEUR(AN.compteResultat.resultatNet)} (${fmtPct(r.tauxResultatNet)} du CA), EBE de ${fmtEUR(g.ebe)}.`);
@@ -2978,27 +3092,27 @@ function recoRuleBased(){
   if(r1 && r.delaiClients>r1.delaiClients){
     const dj=r.delaiClients-r1.delaiClients;
     const impact=Math.round(r.CA/365*dj);
-    out.push({title:"Réduire le délai d'encaissement client",
-      probleme:`Le délai clients passe de ${r1.delaiClients} à ${r.delaiClients} jours, soit ${dj} jours supplémentaires. Impact estimé : environ ${fmtEUR(impact)} de trésorerie immobilisée.`,
-      correctif:`Mettre en place des acomptes sur les nouvelles affaires, renforcer les relances et cibler en priorité les clients ayant les délais les plus longs.`,
-      forecast:{label:`Scénario N+1 : réduction de ${Math.min(dj,6)} jours du délai clients`, low:Math.round(r.CA/365*Math.min(dj,6)*0.9), high:Math.round(r.CA/365*Math.min(dj,6))} });
+    out.push({title:"Raccourcir le délai d'encaissement client",
+      probleme:`Le délai de règlement des clients passe de ${joursTxt(r1.delaiClients)} à ${joursTxt(r.delaiClients)}, soit ${joursTxt(dj)} de plus. À ce niveau d'activité, cela immobilise environ ${fmtEUR(impact)} de trésorerie supplémentaire.`,
+      correctif:`Demander un acompte de 30 % à la commande sur les nouvelles affaires, envoyer la facture le jour de la livraison, et relancer par téléphone les 5 clients dont l'encours est le plus ancien.`,
+      forecast:{label:`Scénario N+1 : en revenant à ${joursTxt(r1.delaiClients)}`, low:Math.round(r.CA/365*Math.min(dj,6)*0.9), high:Math.round(r.CA/365*Math.min(dj,6))} });
   }
   // 2. Marge / rentabilité
   const margePctN=r.CA?g.margeCommerciale/r.CA:0, margePctN1=(g1&&r1.CA)?g1.margeCommerciale/r1.CA:null;
   if(margePctN1!=null && margePctN<margePctN1){
     const dPt=(margePctN1-margePctN)*100; const perte=Math.round((margePctN1-margePctN)*r.CA);
     out.push({title:'Enrayer la contraction de la marge',
-      probleme:`La marge passe de ${fmtPct(margePctN1)} à ${fmtPct(margePctN)} du CA (−${dPt.toFixed(1)} pt), soit une marge perdue d'environ ${fmtEUR(perte)} sur l'exercice.`,
-      correctif:`Réviser les prix des prestations les moins rentables, renégocier les principaux postes d'achats et suivre la marge par activité chaque trimestre.`,
-      forecast:{label:'Scénario N+1 : récupération de la moitié de la marge perdue', low:Math.round(perte*0.4), high:Math.round(perte*0.6)} });
+      probleme:`La marge commerciale passe de ${fmtPct(margePctN1)} à ${fmtPct(margePctN)} du CA (${ptDelta(-dPt)}). Sur le chiffre d'affaires de l'exercice, cela représente environ ${fmtEUR(perte)} de marge en moins.`,
+      correctif:`Répercuter la hausse des achats dans les tarifs (au moins ${dec1(dPt)} pt), renégocier les 3 principaux fournisseurs à l'échéance des contrats, et revoir le prix (ou arrêter) les prestations dont la marge est inférieure à la moyenne.`,
+      forecast:{label:'Scénario N+1 : en récupérant la moitié de la marge perdue', low:Math.round(perte*0.4), high:Math.round(perte*0.6)} });
   }
   // 3. Charges récurrentes
   const chargesRec = recurringDelta();
   if(chargesRec){
-    out.push({title:'Optimiser les charges récurrentes',
-      probleme:`Les charges récurrentes (assurances, énergie, télécoms, frais bancaires) augmentent d'environ ${fmtEUR(chargesRec.delta)} sur l'exercice (${signPct(chargesRec.pct)}).`,
-      correctif:`Mettre en concurrence les contrats arrivés à échéance, supprimer les doublons et renégocier les postes en hausse de plus de 10 %.`,
-      forecast:{label:'Scénario N+1 : économie potentielle', low:Math.round(chargesRec.delta*0.3), high:Math.round(chargesRec.delta*0.5)} });
+    out.push({title:'Reprendre la main sur les charges récurrentes',
+      probleme:`Les charges récurrentes (assurances, énergie, télécoms, loyers) augmentent d'environ ${fmtEUR(chargesRec.delta)} sur l'exercice (${signPct(chargesRec.pct)}), plus vite que l'activité.`,
+      correctif:`Mettre en concurrence les contrats d'assurance et de télécoms à leur date anniversaire, résilier les abonnements en doublon, et demander un geste au bailleur sur les postes en hausse de plus de 10 %.`,
+      forecast:{label:'Scénario N+1 : économie réaliste sur ces postes', low:Math.round(chargesRec.delta*0.3), high:Math.round(chargesRec.delta*0.5)} });
   }
   // Compléments génériques si moins de 3
   const fallback=[
@@ -3017,7 +3131,7 @@ function recurringDelta(){
   return {delta:Math.round(sumN-sumN1), pct:(sumN-sumN1)/sumN1};
 }
 function renderReco(recos){
-  const colors=['var(--brand)','var(--warn)','var(--blue)'];
+  const colors=['var(--brand)','var(--brand)','var(--brand)'];
   document.getElementById('x-reco3').innerHTML = recos.slice(0,3).map((rc,i)=>{
     const g=rc.forecast;
     return `<div class="reco-col">
@@ -3246,7 +3360,7 @@ function retenirSynthese(){
     const caD=pctDelta(r.CA,r1.CA);
     out.push(`Le chiffre d'affaires ${caD>=0?'progresse':'recule'} de ${signPct(caD)} par rapport à l'an dernier, pour atteindre ${fmtEUR(r.CA+clientAdj.pr)}.`);
     const mN=r.CA?g.margeCommerciale/r.CA:0, mN1=r1.CA?g1.margeCommerciale/r1.CA:0, dPt=(mN-mN1)*100;
-    if(Math.abs(dPt)>=0.3) out.push(`La marge ${dPt<0?'se réduit':'se renforce'} de ${Math.abs(dPt).toFixed(1)} point${Math.abs(dPt)>=2?'s':''} : chaque vente laisse ${dPt<0?'un peu moins':'un peu plus'} qu'avant.`);
+    if(Math.abs(dPt)>=0.3) out.push(`La marge ${dPt<0?'se réduit':'se renforce'} de ${dec1(Math.abs(dPt))} point${Math.abs(dPt)>=2?'s':''} : chaque vente laisse ${dPt<0?'un peu moins':'un peu plus'} qu'avant.`);
     out.push(`Après toutes les charges, l'entreprise conserve un résultat net de ${fmtEUR(rn)}, soit ${fmtPct(caN0(r)?rn/caN0(r):0)} de ce qu'elle a facturé.`);
   } else {
     out.push(`L'entreprise a facturé ${fmtEUR(r.CA)} sur l'exercice.`);
@@ -3276,11 +3390,13 @@ function renderActivite(){
 }
 function retenirActivite(parts,tot){
   const r=AN.ratios, r1=AN1?AN1.ratios:null, out=[];
-  if(r1){ const d=pctDelta(r.CA,r1.CA); out.push(`L'activité ${d>=0?'a progressé':'a reculé'} de ${signPct(d)} sur l'année (${fmtEUR(r.CA-r1.CA)}).`); }
-  if(parts.length){ const top=parts[0]; out.push(`${top.label} reste la première source de revenus (${fmtPct(top.v/tot)} du chiffre d'affaires).`); }
-  const mc=monthlyByPrefix(ecrituresN,['70'],'credit'); const mx=mc.indexOf(Math.max(...mc));
+  if(r1){ const d=pctDelta(r.CA,r1.CA); out.push(`L'activité ${d>=0?'a progressé':'a reculé'} de ${signPct(d)} sur l'année, soit ${fmtEUR(r.CA-r1.CA)} de chiffre d'affaires ${d>=0?'en plus':'en moins'}.`); }
+  if(parts.length){ const top=parts[0]; out.push(`${top.label} ${/s$/.test(top.label)?'restent':'reste'} la première source de revenus (${fmtPct(top.v/tot)} du chiffre d'affaires).`); }
+  const mc=monthlyByPrefix(ecrituresN,['70'],'credit'); const mx=mc.indexOf(Math.max(...mc)), mn=mc.indexOf(Math.min(...mc));
   const amplitude=(Math.max(...mc)-Math.min(...mc))/(Math.max(...mc)||1);
-  out.push(`L'activité est ${amplitude>0.5?'marquée par une saisonnalité':'assez régulière'} : le meilleur mois est ${MONTHS[mx]}.`);
+  out.push(amplitude>0.5
+    ? `L'activité est saisonnière : elle culmine en ${moisLabel(mx+1)} et ralentit en ${moisLabel(mn+1)}.`
+    : `L'activité est assez régulière d'un mois sur l'autre, sans à-coup marqué.`);
   return out.slice(0,3);
 }
 
@@ -3393,13 +3509,22 @@ function chargeLecture(acc,n,n1,mN,idx){
   const out=[];
   if(n1!=null && n1>0.5){ const d=(n-n1)/n1; out.push(`Ce poste ${d>=0?'augmente':'diminue'} de ${signPct(d)} par rapport à l'an dernier (${signEUR(n-n1)}).`); }
   else if(n1===0) out.push(`Ce poste n'existait pas l'an dernier : c'est une dépense nouvelle sur l'exercice.`);
-  if(idx.length){ out.push(`La dépense se concentre surtout sur ${MONTHS[idx[0].m]}${idx[1]?' et '+MONTHS[idx[1].m]:''}.`); }
-  out.push(`En moyenne, cela représente ${fmtEUR(n/12)} par mois.`);
+  // distribution : régulière ou concentrée sur quelques mois ?
+  const vals=mN.filter(v=>v>0.5);
+  const mx=Math.max(...mN), mn=vals.length?Math.min(...vals):0;
+  const reguliere = vals.length>=8 && mx>0 && (mx-mn)/mx < 0.25;
+  if(reguliere) out.push(`La dépense est régulière tout au long de l'année, autour de ${fmtEUR(n/12)} par mois.`);
+  else {
+    if(idx.length) out.push(`La dépense se concentre surtout sur ${moisLabel(idx[0].m+1)}${idx[1]?' et '+moisLabel(idx[1].m+1):''}.`);
+    out.push(`En moyenne, cela représente ${fmtEUR(n/12)} par mois.`);
+  }
   return out.slice(0,3);
 }
 function chargeRetenir(acc,n,n1){
-  if(n1!=null && n1>0.5){ const d=(n-n1)/n1; if(Math.abs(d)>0.1) return `${acc.lib} ${d>=0?'progresse':'baisse'} nettement cette année (${signPct(d)}) : un poste à ${d>=0?'suivre':'valoriser'}.`; return `${acc.lib} reste stable par rapport à l'an dernier.`; }
-  return `${acc.lib} représente ${fmtEUR(n)} sur l'exercice.`;
+  if(n1!=null && n1>0.5){ const d=(n-n1)/n1;
+    if(Math.abs(d)>0.1) return `Ce poste ${d>=0?'progresse nettement':'baisse nettement'} cette année (${signPct(d)}) : ${d>=0?'à surveiller de près':'un effort à confirmer l\'an prochain'}.`;
+    return `Ce poste reste stable par rapport à l'an dernier.`; }
+  return `Ce poste représente ${fmtEUR(n)} sur l'exercice.`;
 }
 
 /* ---- CHARGES RÉCURRENTES ---- */
@@ -3471,24 +3596,28 @@ function renderBilanStructure(){
 }
 function renderBilanRatios(){
   const r=AN.ratios, r1=AN1?AN1.ratios:null;
-  const g=computeSIG(AN); const caf=AN.compteResultat.resultatNet+(AN.compteResultat.detail['68']||0);
+  const caf=AN.compteResultat.resultatNet+(AN.compteResultat.detail['68']||0);
   const stocks=sumComptes(AN.soldes,['3'],'debit');
+  // cls : 'up' (favorable), 'warn' (défavorable), '' (neutre) — sens propre à chaque ratio
+  const dirDelai = r1? (r.delaiClients<=r1.delaiClients?'up':'warn') : '';
   const cards=[];
-  cards.push({ico:'↦',l:'Délai de règlement clients',v:r.delaiClients+' j',s:r1?`vs ${r1.delaiClients} j`:'',dcls:r1?(r.delaiClients<=r1.delaiClients?'':''):''});
-  cards.push({ico:'↤',l:'Délai de paiement fournisseurs',v:r.delaiFournisseurs+' j',s:r1?`vs ${r1.delaiFournisseurs} j`:''});
-  cards.push({ico:'◧',l:'Besoin en fonds de roulement',v:fmtEUR(r.BFR),s:r1?`vs ${fmtEUR(r1.BFR)}`:''});
-  cards.push({ico:'▮',l:'Trésorerie nette',v:fmtEUR(r.tresorerieNette),s:r1?`vs ${fmtEUR(r1.tresorerieNette)}`:''});
-  if(AN.bilan.dettesFinancieres>0.5 && caf>0.5) cards.push({ico:'≡',l:'Capacité de remboursement',v:(AN.bilan.dettesFinancieres/caf).toFixed(1)+' ans',s:'dettes fin. / CAF'});
-  if(stocks>0.5){ const achats=AN.compteResultat.detail['60']||1; cards.push({ico:'▤',l:'Rotation des stocks',v:Math.round(stocks/achats*365)+' j',s:'de stock moyen'}); }
+  cards.push({ico:'↦',l:'Délai de règlement clients',v:joursTxt(r.delaiClients),s:r1?`vs ${joursTxt(r1.delaiClients)}`:'',cls:dirDelai});
+  cards.push({ico:'↤',l:'Délai de paiement fournisseurs',v:joursTxt(r.delaiFournisseurs),s:r1?`vs ${joursTxt(r1.delaiFournisseurs)}`:'',cls:''});
+  cards.push({ico:'◧',l:'Besoin en fonds de roulement',v:fmtEUR(r.BFR),s:r.BFR<0?'ressource pour l\'entreprise':'à financer',cls:r.BFR<=0?'up':''});
+  cards.push({ico:'▮',l:'Trésorerie nette',v:fmtEUR(r.tresorerieNette),s:r1?`vs ${fmtEUR(r1.tresorerieNette)}`:'',cls:r1?(r.tresorerieNette>=r1.tresorerieNette?'up':'warn'):''});
+  if(AN.bilan.dettesFinancieres>0.5 && caf>0.5){ const ans=AN.bilan.dettesFinancieres/caf; cards.push({ico:'≡',l:'Capacité de remboursement',v:dec1(ans)+' '+(ans>=2?'ans':'an'),s:'dettes financières / CAF',cls:ans<=3?'up':'warn'}); }
+  if(stocks>0.5){ const achats=AN.compteResultat.detail['60']||1; cards.push({ico:'▤',l:'Rotation des stocks',v:joursTxt(Math.round(stocks/achats*365)),s:'de stock en moyenne',cls:''}); }
   document.getElementById('bil-ratios').innerHTML=cards.slice(0,6).map(c=>
-    `<div class="bilan-card"><div class="bc-ico">${c.ico}</div><div class="bc-l">${c.l}</div><div class="bc-v">${c.v}</div><div class="bc-s">${c.s||''}</div></div>`).join('');
+    `<div class="bilan-card"><div class="bc-ico">${c.ico}</div><div class="bc-l">${c.l}</div><div class="bc-v">${c.v}</div><div class="bc-s ${c.cls||'neu'}">${c.s||''}</div></div>`).join('');
   retenirHTML('bil-ratios-retenir', (clientAI&&clientAI.bilan_ratios) || retenirRatios(r,r1));
 }
 function retenirRatios(r,r1){
   const out=[];
-  if(r1 && r.delaiClients>r1.delaiClients+2) out.push(`Les clients paient plus lentement qu'avant (${r.delaiClients} jours contre ${r1.delaiClients}), ce qui immobilise de la trésorerie.`);
-  else if(r1) out.push(`Les délais de paiement restent maîtrisés (${r.delaiClients} jours côté clients, ${r.delaiFournisseurs} jours côté fournisseurs).`);
-  out.push(`La trésorerie nette de ${fmtEUR(r.tresorerieNette)} ${r.tresorerieNette>=r.BFR?'couvre':'ne couvre pas entièrement'} le besoin de financement du cycle d'exploitation.`);
+  if(r1 && r.delaiClients>r1.delaiClients+2) out.push(`Les clients paient plus lentement qu'avant (${joursTxt(r.delaiClients)} contre ${joursTxt(r1.delaiClients)}) : c'est autant de trésorerie immobilisée.`);
+  else if(r1 && r.delaiClients<r1.delaiClients-2) out.push(`Les clients paient plus vite qu'avant (${joursTxt(r.delaiClients)} contre ${joursTxt(r1.delaiClients)}), ce qui soulage la trésorerie.`);
+  else if(r1) out.push(`Les délais de paiement restent maîtrisés (${joursTxt(r.delaiClients)} côté clients, ${joursTxt(r.delaiFournisseurs)} côté fournisseurs).`);
+  if(r.BFR<0) out.push(`Le besoin en fonds de roulement est négatif : le cycle d'exploitation dégage de la trésorerie plutôt qu'il n'en consomme, ce qui est favorable.`);
+  else out.push(`La trésorerie nette de ${fmtEUR(r.tresorerieNette)} ${r.tresorerieNette>=r.BFR?'couvre':'ne couvre pas entièrement'} le besoin de financement du cycle d'exploitation.`);
   return out.slice(0,3);
 }
 
@@ -3513,7 +3642,7 @@ function renderTresorerie(){
 function retenirTresorerie(debut,fin,bas){
   const out=[];
   out.push(`La trésorerie ${fin>=debut?'s\'est renforcée':'s\'est réduite'} de ${fmtEUR(Math.abs(fin-debut))} sur l'année, pour finir à ${fmtEUR(fin)}.`);
-  out.push(`Le point le plus tendu a été atteint en ${moisCourt(bas.mois)} (${fmtEUR(bas.solde)}) : l'entreprise ${bas.solde>0?'est toujours restée positive':'a connu une tension'}.`);
+  out.push(`Le point le plus bas a été atteint en ${moisLong(bas.mois)} (${fmtEUR(bas.solde)}) : la trésorerie ${bas.solde>0?'est restée positive toute l\'année':'est passée en tension à ce moment-là'}.`);
   return out.slice(0,2);
 }
 
