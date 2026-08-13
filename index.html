@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BALANCE. — Présentation des comptes</title>
+<title>S2A — Présentation des comptes</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -101,6 +101,10 @@
   .brand-logo{font-family:var(--font);font-weight:800;font-size:1.45rem;letter-spacing:-.02em;color:var(--ink);}
   .brand-logo .dot{color:var(--brand);}
   .brand-logo.on-dark{color:#fff;}
+  /* Logo S2A (image) — fond image pour être embarqué dans l'artefact */
+  .brand-img{display:inline-block;height:30px;aspect-ratio:560/220;background:url('assets/img/logo-s2a.webp') no-repeat left center/contain;vertical-align:middle;}
+  .brand-img.lg{height:46px;}
+  .brand-img.on-dark{background-image:url('assets/img/logo-s2a-light.webp');}
 
   /* ---------- Écran d'import (2 dépôts) ---------- */
   #upload-screen{background:var(--bg);}
@@ -688,7 +692,7 @@
 
 <!-- ============ UPLOAD SCREEN ============ -->
 <div id="upload-screen">
-  <div class="brandbar"><span class="brand-logo">BALANCE<span class="dot">.</span></span></div>
+  <div class="brandbar"><span class="brand-img lg" role="img" aria-label="S2A — Sud Alpes Audit"></span></div>
   <div class="upload-card">
     <h1>Préparer le dossier</h1>
     <p>Importez les documents nécessaires pour analyser les comptes et préparer votre rendez-vous.</p>
@@ -731,7 +735,7 @@
 
 <!-- ============ CHOIX D'INTERFACE ============ -->
 <div id="setup-screen">
-  <div class="brandbar"><span class="brand-logo">BALANCE<span class="dot">.</span></span></div>
+  <div class="brandbar"><span class="brand-img lg" role="img" aria-label="S2A — Sud Alpes Audit"></span></div>
   <div class="choice-wrap">
     <div class="choice-check">✓</div>
     <div class="choice-client" id="setup-title">DOSSIER</div>
@@ -763,7 +767,7 @@
 <div id="expert-app">
   <header class="topbar-app">
     <div class="tb-left">
-      <span class="brand-logo">BALANCE<span class="dot">.</span></span>
+      <span class="brand-img" role="img" aria-label="S2A — Sud Alpes Audit"></span>
       <span class="tb-client"><b id="x-client">Dossier</b> — <span id="x-exercice">Exercice</span></span>
     </div>
     <nav class="tb-nav">
@@ -951,7 +955,7 @@
 <!-- ============ APP SHELL ============ -->
 <div id="app-shell">
   <aside class="sidebar">
-    <div class="brand brand-logo on-dark">BALANCE<span class="dot">.</span></div>
+    <div class="brand"><span class="brand-img on-dark" role="img" aria-label="S2A — Sud Alpes Audit"></span></div>
     <div class="brand-sub">LECTURE DE CLÔTURE</div>
     <div class="client-box no-present">
       <input type="text" id="client-name" value="Dossier client">
@@ -1211,7 +1215,7 @@
 <!-- ============ MODE PRESENTATION CLIENT ============ -->
 <div id="pres-overlay">
   <div class="pres-header">
-    <div class="pres-brand brand-logo on-dark">BALANCE<span class="dot">.</span></div>
+    <div class="pres-brand"><span class="brand-img on-dark" role="img" aria-label="S2A — Sud Alpes Audit"></span></div>
     <div class="pres-client">
       <div id="pres-client-name">SARL Atelier Lumen</div>
       <div class="periode" id="pres-periode">Exercice 2026 — comparé à 2025</div>

@@ -1,4 +1,4 @@
-# BALANCE.
+# S2A — Présentation des comptes
 
 Application mono-fichier (navigateur, sans serveur) qui prépare et déroule le
 **rendez-vous annuel de présentation des comptes**. Elle lit un **FEC** (Fichier
