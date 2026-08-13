@@ -491,8 +491,9 @@
   .tb-left .brand-logo{font-size:1.2rem;}
   .tb-client{font-size:.9rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .tb-client b{color:var(--ink);font-weight:600;}
-  .tb-nav{display:flex;gap:6px;flex:1;}
-  .tb-tab{background:none;border:none;font-family:var(--font);font-size:.95rem;font-weight:600;color:var(--muted);padding:10px 4px;position:relative;}
+  .tb-nav{display:flex;gap:16px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none;justify-content:center;}
+  .tb-nav::-webkit-scrollbar{display:none;}
+  .tb-tab{background:none;border:none;font-family:var(--font);font-size:.95rem;font-weight:600;color:var(--muted);padding:10px 2px;position:relative;white-space:nowrap;flex:0 0 auto;}
   .tb-tab:hover{color:var(--ink);}
   .tb-tab.active{color:var(--brand);}
   .tb-tab.active::after{content:'';position:absolute;left:0;right:0;bottom:-15px;height:2.5px;background:var(--brand);border-radius:2px;}
@@ -566,7 +567,9 @@
   .sig-line .sl-meta .d{font-weight:600;}
   .sig-line .sl-meta .d.up{color:var(--good);} .sig-line .sl-meta .d.down{color:var(--bad);} .sig-line .sl-meta .d.warn{color:var(--warn);}
   .spark{width:96px;height:34px;}
-  @media (max-width:900px){ .sig-line{grid-template-columns:1fr auto;} .sig-line .sl-meta,.spark{display:none;} }
+  /* tablette : on garde la comparaison N-1, on masque seulement la sparkline */
+  @media (max-width:1000px){ .sig-line{grid-template-columns:1.4fr auto auto;} .spark{display:none;} }
+  @media (max-width:600px){ .sig-line{grid-template-columns:1fr auto;} .sig-line .sl-meta{display:none;} }
 
   /* Ce qu'il faut retenir (client) */
   .retenir-client{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;}
@@ -674,6 +677,32 @@
   .adj-note{font-size:.78rem;color:var(--muted);margin-top:10px;line-height:1.45;}
 
   @media (max-width:1000px){ .two-70-30,.two-60-40,.detail-grid{grid-template-columns:1fr;} .bilan-grid,.kpi-row4,.three-cards{grid-template-columns:1fr 1fr;} }
+
+  /* ===== Affichage duo TV + tablette ===== */
+  /* Tablette (paysage et portrait) : la barre de navigation reste sur une seule
+     ligne, chaque onglet lisible ; le nom du dossier se tronque si nécessaire. */
+  @media (max-width:1280px){
+    .topbar-app{gap:16px;padding:14px 20px;}
+    .tb-nav{gap:12px;}
+    .tb-tab{font-size:.9rem;}
+    .tb-left.stack{flex:0 1 auto;min-width:0;}
+    .tb-left.stack b{max-width:34vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  }
+  @media (max-width:1080px){
+    .tb-nav{gap:9px;justify-content:flex-start;}
+    .tb-tab{font-size:.85rem;}
+    .tb-left.stack b{max-width:26vw;}
+  }
+  /* TV / très grand écran 16:9 : on élargit la zone utile pour de plus grands
+     chiffres, visibles depuis l'autre bout de la pièce. */
+  @media (min-width:1600px){
+    .app-wide{max-width:1480px;}
+    .app-main{padding:44px 44px 70px;}
+    .big-figure{font-size:2.9rem;}
+    .sig-line .sl-val{font-size:1.7rem;}
+    .bilan-card .bc-v{font-size:2rem;}
+    .mini-card .mc-v{font-size:1.7rem;}
+  }
 
   @media print{
     .nav-group{color:#000 !important;}
@@ -2877,6 +2906,8 @@ function computeNN1(){
 function pctDelta(n, n1){ return (n1 && Math.abs(n1)>0.5) ? (n-n1)/Math.abs(n1) : null; }
 function signEUR(n){ return (n>=0?'+':'')+fmtEUR(n); }
 function signPct(n){ return (n>=0?'+':'')+fmtPct(n); }
+function joursTxt(n){ return n+' jour'+(Math.abs(n)>1?'s':''); }
+function joursDelta(d){ return (d>=0?'+':'')+joursTxt(d); }
 
 function expertKpis(){
   const g=computeSIG(AN), g1=AN1?computeSIG(AN1):null;
@@ -2901,12 +2932,12 @@ function expertKpis(){
     pctca:(r.CA?fmtPct(AN.compteResultat.resultatNet/r.CA):'')+' du CA', delta:null, vs:''});
   K.push({ico:'▮',label:'Trésorerie',value:fmtEUR(fin),
     delta:{txt:signEUR(fin-debut),cls:(fin-debut)>=0?'up':'down'}, vs:''});
-  K.push({ico:'↦',label:'Délai clients',value:r.delaiClients+' jours',
-    delta: r1?{txt:(r.delaiClients-r1.delaiClients>=0?'+':'')+(r.delaiClients-r1.delaiClients)+' jours',cls:(r.delaiClients-r1.delaiClients)<=0?'up':'warn'}:null,
-    vs: r1?('vs '+r1.delaiClients+' jours'):''});
-  K.push({ico:'↤',label:'Délai fournisseurs',value:r.delaiFournisseurs+' jours',
-    delta: r1?{txt:(r.delaiFournisseurs-r1.delaiFournisseurs>=0?'+':'')+(r.delaiFournisseurs-r1.delaiFournisseurs)+' jours',cls:'muted'}:null,
-    vs: r1?('vs '+r1.delaiFournisseurs+' jours'):''});
+  K.push({ico:'↦',label:'Délai clients',value:joursTxt(r.delaiClients),
+    delta: r1?{txt:joursDelta(r.delaiClients-r1.delaiClients),cls:(r.delaiClients-r1.delaiClients)<=0?'up':'warn'}:null,
+    vs: r1?('vs '+joursTxt(r1.delaiClients)):''});
+  K.push({ico:'↤',label:'Délai fournisseurs',value:joursTxt(r.delaiFournisseurs),
+    delta: r1?{txt:joursDelta(r.delaiFournisseurs-r1.delaiFournisseurs),cls:'muted'}:null,
+    vs: r1?('vs '+joursTxt(r1.delaiFournisseurs)):''});
   return K;
 }
 function renderEssentiel(){
