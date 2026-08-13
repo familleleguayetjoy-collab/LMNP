@@ -1,80 +1,88 @@
-# S2A — Lecture de clôture
+# BALANCE.
 
-Application mono-fichier (navigateur, sans serveur) qui lit un **FEC** (Fichier des
-Écritures Comptables) et en produit une lecture de clôture prête à présenter en
-rendez-vous client. Tout le traitement se fait dans le navigateur ; le fichier
-n'est jamais transmis à un serveur.
+Application mono-fichier (navigateur, sans serveur) qui prépare et déroule le
+**rendez-vous annuel de présentation des comptes**. Elle lit un **FEC** (Fichier
+des Écritures Comptables, contenant N et N-1) et en tire, d'un côté, une
+préparation express pour l'expert-comptable et, de l'autre, une présentation
+claire à dérouler devant le client. Tout le traitement se fait dans le
+navigateur ; le fichier n'est jamais transmis à un serveur.
 
 Ouvrez simplement `index.html` (ou déposez-le sur un hébergement statique).
+
+## Parcours
+
+1. **Préparer le dossier** — on importe le **FEC** (écritures N et N-1) et,
+   éventuellement, le **PDF des comptes annuels** (SIG, compte de résultat,
+   bilan N/N-1). La date d'arrêté est détectée automatiquement.
+2. **Choix de l'interface** — **Préparer le rendez-vous** (expert-comptable) ou
+   **Présenter au client**, clairement séparées.
+
+Un jeu de démonstration (Atelier Lumen, données fictives) est disponible sur
+l'écran d'accueil.
+
+## Interface expert-comptable — à lire avant l'entretien
+
+Deux écrans, rien de plus :
+
+- **L'essentiel** — les indicateurs clés de l'exercice (CA, marge, EBE,
+  résultat, trésorerie, délais clients/fournisseurs) avec la comparaison N-1, et
+  une synthèse « à retenir ».
+- **Recommandations IA** — exactement trois recommandations, chacune structurée
+  en *problème identifié* (chiffré, N/N-1), *correctif précis* (actionnable) et
+  *scénario N+1* (fourchette de gain estimé).
+
+## Interface client — pendant le rendez-vous
+
+Pensée pour être projetée simultanément sur un grand écran et sur la tablette
+posée devant le client : numéros très lisibles, textes courts, graphiques
+simples, navigation horizontale.
+
+- **Synthèse de l'exercice** — les soldes intermédiaires de gestion en clair
+  (CA, marge, valeur ajoutée, EBE, résultat courant, résultat net) avec %CA,
+  variation N-1 et courbe de tendance. Un bouton **Ajustements** ouvre un tiroir
+  de *simulation en direct* (produits à recevoir, stocks / en-cours) qui
+  recalcule instantanément le résultat et le bilan — sans toucher à la
+  trésorerie.
+- **Activité** — chiffre d'affaires, répartition et évolution mensuelle N/N-1.
+- **Charges** — charges d'exploitation, évolution mensuelle et détail par
+  catégorie, jusqu'au suivi mensuel de chaque compte de charge.
+- **Charges récurrentes** — comparaison N-1 des postes récurrents (assurances,
+  loyers, énergie, télécoms…) et détail des contrats.
+- **Bilan** — structure (postes clés en % de l'actif / du passif) et ratios
+  essentiels (délais, BFR, trésorerie nette, capacité de remboursement…).
+- **Trésorerie** — trésorerie de clôture, évolution mensuelle N/N-1, points
+  haut/bas et variation annuelle.
+
+Chaque écran répond à trois questions : quel est le chiffre, comment évolue-t-il
+par rapport à N-1, et qu'est-ce que cela veut dire concrètement. La rubrique
+« ce qu'il faut retenir » propose une lecture pédagogique, enrichie par l'IA
+lorsqu'une clé est configurée.
 
 ## Import du FEC
 
 Le FEC est, par la loi, un fichier **texte plat** (ASCII/ANSI). Le parser accepte
 `.txt` / `.csv`, les délimiteurs tabulation / `;` / `|` / `,`, et l'encodage
 UTF-8 comme windows-1252. Un export ASCII fonctionne donc sans réglage
-particulier.
-
-Un jeu de démonstration (données fictives) est disponible sur l'écran d'accueil.
-
-## Parcours
-
-1. **Import du FEC** (ou jeu de démonstration).
-2. **Écran de préparation** : la période est détectée automatiquement ; on choisit
-   la **date d'arrêté** (exercice non calendaire type 30/09, ou situation
-   intermédiaire — seules les écritures jusqu'à cette date sont retenues) et, à
-   terme, on dépose le **PDF des états financiers** pour activer les comparaisons
-   N-1 et la vérification.
-3. **Choix de l'interface** : **expert-comptable** (avant l'entretien) ou
-   **client** (pendant le rendez-vous), clairement séparées.
-
-> À venir : lecture du PDF états financiers par l'IA (N-1 + contrôle),
-> produits éditables (produits constatés d'avance, en-cours) répercutés dans tous
-> les calculs, comparatifs de charges N-1, mode grand écran synchronisé
-> tablette ↔ TV.
-
-## Deux interfaces
-
-### Espace expert-comptable (avant l'entretien)
-
-- **Feuille de route** — la page à lire en 2-3 minutes avant le rendez-vous :
-  verdict de l'exercice, chiffres clés, et **points à aborder** (cases à cocher
-  pour dérouler l'entretien). Elle inclut des **contrôles de cohérence à
-  l'import** (équilibre débit = crédit, actif = passif, résultat net = produits −
-  charges via les SIG, taux de TVA) pour vérifier que les montants calculés
-  correspondent aux documents remis avant de les présenter au client.
-- **Recommandations** — pistes de travail par thème (trésorerie, activité,
-  structure financière, social, fiscal), calculées localement.
-- **Le dossier en détail** — synthèse, compte de résultat, trésorerie, bilan,
-  ratios et **soldes intermédiaires de gestion (SIG)**.
-
-### Espace client (pendant le rendez-vous)
-
-- **Vue client** masque les éléments techniques et agrandit la présentation.
-- **Présentation client** déroule un jeu de diapositives. La comparaison N/N-1
-  s'appuie pour l'instant sur des données de démonstration (le comparatif réel
-  sera branché lorsque l'exercice N-1 sera fourni).
+particulier. Le comparatif N-1 est reconstitué à partir du FEC, qui contient les
+deux exercices.
 
 ## Analyse par IA (optionnelle)
 
-Les boutons « **Enrichir avec l'IA** » de la feuille de route et des
-recommandations appellent l'API Claude pour produire une analyse approfondie et
-davantage de sujets à aborder.
-
-Renseignez votre clé dans **Réglages IA** (barre latérale) :
+L'IA n'effectue aucun calcul : le code produit tous les chiffres (SIG, ratios,
+variations, séries mensuelles, délais, BFR, trésorerie), et l'IA se contente de
+les interpréter, de les hiérarchiser et d'en tirer recommandations et
+commentaires pédagogiques.
 
 - **Clé API Claude** — stockée uniquement dans ce navigateur (`localStorage`),
   transmise seulement à l'API Anthropic.
-- **Modèle** — Opus 5 par défaut (qualité maximale) ; Sonnet 5 ou Haiku 4.5 pour
-  réduire le coût. Comptez de l'ordre de 0,10 à 0,50 € par génération.
-- **Point d'accès (avancé)** — laissez vide pour l'API directe, ou indiquez l'URL
-  d'un proxy de cabinet (la clé n'est alors plus exposée dans le navigateur).
+- **Modèle** — Opus par défaut (qualité maximale). Comptez de l'ordre de 3 € par
+  dossier au maximum.
 
-En l'absence de clé, l'application reste entièrement fonctionnelle : la feuille de
-route et les recommandations sont générées localement, sans coût.
+En l'absence de clé, l'application reste entièrement fonctionnelle : synthèses et
+recommandations sont générées localement, sans coût.
 
 ## Notes
 
-- Chart.js est embarqué localement (aucun appel réseau) ; seules les polices
-  Google Fonts sont chargées depuis le web pour la typographie.
+- Chart.js est embarqué localement (aucun appel réseau).
 - Le bilan et les SIG sont reconstitués à partir des soldes du FEC, à titre
   d'analyse indicative ; ils ne se substituent pas à la liasse fiscale déposée.
