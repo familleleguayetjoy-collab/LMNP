@@ -3314,13 +3314,13 @@ function retenirHTML(id, bullets){
 function currentPR(){ return sumComptes(AN.soldes,['418'],'debit'); }
 function currentST(){ return sumComptes(AN.soldes,['3'],'debit'); }
 // variation d'une charge : baisse = économie (vert), hausse modérée = neutre, hausse forte = attention (orange)
-function chgVarCls(n, n1){
+function chgVarCls(n, n1, thr){
   if(n1==null||n1<0.5) return 'var-flat';
   const d=n-n1;
   if(d<0) return 'var-up';
-  return (d/n1>0.15) ? 'var-warn' : 'var-flat';
+  return (d/n1 > (thr||0.15)) ? 'var-warn' : 'var-flat';
 }
-function chgVarHTML(n, n1){ return n1!=null? `<span class="${chgVarCls(n,n1)}">${signEUR(n-n1)}</span>` : '—'; }
+function chgVarHTML(n, n1, thr){ return n1!=null? `<span class="${chgVarCls(n,n1,thr)}">${signEUR(n-n1)}</span>` : '—'; }
 
 /* ---- SYNTHÈSE (SIG) ---- */
 function sigRows(){
@@ -3550,7 +3550,7 @@ function renderRecurrentes(){
   if(!cats.length){ document.getElementById('rec-list').innerHTML='<div class="rec-item"><span class="ri-name">Aucune charge récurrente identifiée</span></div>'; document.getElementById('rec-detail').innerHTML=''; return; }
   if(!curRec || !cats.find(c=>c.id===curRec)) curRec=cats[0].id;
   document.getElementById('rec-list').innerHTML = cats.map(c=>{
-    const varTxt = c.n1!=null && c.n1>0.5? `<span class="ri-var ${chgVarCls(c.n,c.n1)}">${signPct((c.n-c.n1)/c.n1)}</span>` : '<span class="ri-var var-flat">nouveau</span>';
+    const varTxt = c.n1!=null && c.n1>0.5? `<span class="ri-var ${chgVarCls(c.n,c.n1,0.10)}">${signPct((c.n-c.n1)/c.n1)}</span>` : '<span class="ri-var var-flat">nouveau</span>';
     return `<div class="rec-item ${c.id===curRec?'sel':''}" data-rec="${c.id}"><span class="ri-name">${c.label}</span><div class="ri-fig"><span class="ri-eur">${fmtEUR(c.n)}</span>${varTxt}</div></div>`;
   }).join('');
   document.querySelectorAll('#rec-list .rec-item[data-rec]').forEach(el=>el.addEventListener('click',()=>{ curRec=el.dataset.rec; renderRecurrentes(); }));
@@ -3561,7 +3561,7 @@ function renderRecDetail(cat){
   const cards=`<div class="three-cards">
     <div class="mini-card"><div class="mc-l">Exercice N</div><div class="mc-v">${fmtEUR(n)}</div></div>
     <div class="mini-card"><div class="mc-l">Exercice N-1</div><div class="mc-v">${n1!=null?fmtEUR(n1):'—'}</div></div>
-    <div class="mini-card"><div class="mc-l">Variation</div><div class="mc-v ${n1!=null?chgVarCls(n,n1):''}">${n1!=null?signEUR(n-n1):'—'}</div><div class="mc-s">${n1&&n1>0.5?signPct((n-n1)/n1):''}</div></div>
+    <div class="mini-card"><div class="mc-l">Variation</div><div class="mc-v ${n1!=null?chgVarCls(n,n1,0.10):''}">${n1!=null?signEUR(n-n1):'—'}</div><div class="mc-s">${n1&&n1>0.5?signPct((n-n1)/n1):''}</div></div>
   </div>`;
   const accs=recAccounts(cat.id);
   const head=`<tr><th>Compte</th><th>Libellé</th><th class="num">N</th><th class="num">N-1</th><th class="num">Variation</th><th>Observation</th></tr>`;
@@ -3569,7 +3569,7 @@ function renderRecDetail(cat){
     let obs='';
     if(a.n1===0||a.n1==null) obs=`<span class="badge2 new">Nouveau contrat</span>`;
     else if((a.n-a.n1)/a.n1>0.1) obs=`<span class="badge2 warn">Hausse significative</span>`;
-    return `<tr><td>${a.compte}</td><td>${a.lib}</td><td class="num">${fmtEUR(a.n)}</td><td class="num">${a.n1!=null?fmtEUR(a.n1):'—'}</td><td class="num">${chgVarHTML(a.n,a.n1)}</td><td>${obs}</td></tr>`;
+    return `<tr><td>${a.compte}</td><td>${a.lib}</td><td class="num">${fmtEUR(a.n)}</td><td class="num">${a.n1!=null?fmtEUR(a.n1):'—'}</td><td class="num">${chgVarHTML(a.n,a.n1,0.10)}</td><td>${obs}</td></tr>`;
   }).join('');
   document.getElementById('rec-detail').innerHTML=`<h1 style="margin-bottom:16px;">${cat.label}</h1>${cards}
     <div class="bcard" style="margin-top:6px;"><div class="card-h" style="margin-bottom:12px;">Détail des contrats / sous-comptes</div><table class="ctab">${head}${body}</table></div>`;
