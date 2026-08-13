@@ -532,18 +532,19 @@
   /* Recommandations IA (3 colonnes) */
   .reco3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
   .reco-col{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px 22px;display:flex;flex-direction:column;gap:16px;}
-  .reco-col .rc-badge{width:40px;height:40px;border-radius:50%;color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:.95rem;}
-  .reco-col .rc-title{font-size:1.1rem;font-weight:700;line-height:1.25;margin-top:2px;}
+  .reco-col .rc-top{display:flex;align-items:center;gap:14px;}
+  .reco-col .rc-badge{width:42px;height:42px;flex:0 0 42px;border-radius:50%;color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:.98rem;}
+  .reco-col .rc-title{font-size:1.08rem;font-weight:700;line-height:1.25;}
   .rc-block{border-top:1px solid var(--line);padding-top:14px;}
-  .rc-block .rc-h{display:flex;align-items:center;gap:8px;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:7px;}
-  .rc-block .rc-h .n{width:22px;height:22px;border-radius:6px;background:var(--brand-soft);color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:.72rem;}
+  .rc-block .rc-h{display:flex;align-items:center;gap:9px;margin-bottom:8px;}
+  .rc-block .rc-h .rc-h-t{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;}
   .rc-block p{font-size:.9rem;line-height:1.55;color:var(--ink-soft);margin:0;}
-  .rc-impact{font-weight:600;color:var(--ink);}
-  .rc-gauge{margin-top:8px;background:var(--brand-soft);border-radius:10px;padding:12px 14px;}
-  .rc-gauge .g-label{font-size:.74rem;color:var(--muted);margin-bottom:6px;}
-  .rc-gauge .g-val{font-size:1.15rem;font-weight:700;color:var(--brand);}
-  .rc-gauge .g-bar{height:6px;background:#fff;border-radius:4px;margin-top:8px;overflow:hidden;}
-  .rc-gauge .g-fill{height:100%;background:var(--brand);border-radius:4px;}
+  .rc-gauge2{display:flex;align-items:center;gap:11px;margin-top:12px;}
+  .rc-gauge2 .g-lo,.rc-gauge2 .g-hi{font-size:.92rem;font-weight:700;white-space:nowrap;}
+  .rc-gauge2 .g-track{flex:1;height:3px;border-radius:2px;background:var(--line);position:relative;}
+  .rc-gauge2 .g-track b{position:absolute;left:8%;right:8%;top:0;height:3px;border-radius:2px;background:var(--c);}
+  .rc-gauge2 .g-track::before{content:'';position:absolute;left:8%;top:50%;width:9px;height:9px;border-radius:50%;background:var(--c);transform:translate(-50%,-50%);}
+  .rc-gauge2 .g-track::after{content:'';position:absolute;right:8%;top:50%;width:9px;height:9px;border-radius:50%;background:var(--c);transform:translate(50%,-50%);}
 
   @media (max-width:1000px){ .kpi7{grid-template-columns:repeat(2,1fr);} .reco3{grid-template-columns:1fr;} }
 
@@ -555,6 +556,7 @@
   .two-70-30{display:grid;grid-template-columns:1.9fr 1fr;gap:20px;align-items:start;}
   .two-60-40{display:grid;grid-template-columns:1.35fr 1fr;gap:20px;align-items:start;}
   .card-h{font-size:1rem;font-weight:700;margin-bottom:2px;}
+  .card-h.ico-h{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
   .card-sub2{font-size:.82rem;color:var(--muted);margin-bottom:16px;}
 
   /* Lignes SIG (Synthèse) */
@@ -571,13 +573,41 @@
   @media (max-width:1000px){ .sig-line{grid-template-columns:1.4fr auto auto;} .spark{display:none;} }
   @media (max-width:600px){ .sig-line{grid-template-columns:1fr auto;} .sig-line .sl-meta{display:none;} }
 
+  /* ===== Pastilles d'icônes (formes + couleurs) ===== */
+  .ic{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;border-radius:12px;}
+  .ic svg{width:56%;height:56%;}
+  .ic-sm{width:34px;height:34px;border-radius:10px;} .ic-md{width:44px;height:44px;} .ic-lg{width:52px;height:52px;border-radius:14px;}
+  .ic:not(.ic-sm):not(.ic-lg){width:44px;height:44px;}
+  .ic-green{background:var(--brand-soft);color:var(--brand);}
+  .ic-orange{background:var(--warn-soft);color:var(--warn);}
+  .ic-blue{background:#EAF0FA;color:var(--blue);}
+  .ic-purple{background:#EFEAFB;color:#6A4CC0;}
+  .ic-red{background:var(--bad-soft);color:var(--bad);}
+  .ic-slate{background:#EEF1F4;color:#5B6472;}
+  .ic-solid{background:var(--brand);color:#fff;}
+  .ic.txt{font-size:.74rem;font-weight:700;letter-spacing:-.02em;}
+  /* icône dans une ligne SIG */
+  .sig-line .sl-label{display:flex;align-items:center;gap:14px;}
+  /* nav avec icônes */
+  .tb-tab{display:inline-flex;align-items:center;gap:8px;}
+  .tb-tab svg{width:17px;height:17px;stroke-width:2;}
+  @media (max-width:1080px){ .tb-tab svg{display:none;} }
+  /* Bande « Ce qu'il faut retenir » (couche de lecture / IA) */
+  .retenir-band{display:flex;gap:16px;align-items:flex-start;background:linear-gradient(180deg,var(--brand-soft),#fff);border:1px solid #DCEEE3;border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 24px;}
+  .retenir-band .rb-ico{width:46px;height:46px;flex:0 0 46px;border-radius:13px;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;}
+  .retenir-band .rb-ico svg{width:24px;height:24px;}
+  .retenir-band .rb-body{flex:1;}
+  .retenir-band h3{font-size:1rem;font-weight:700;color:var(--brand-2);margin-bottom:8px;}
+  .retenir-band p{font-size:1rem;line-height:1.62;color:var(--ink-soft);margin:0 0 8px;}
+  .retenir-band p:last-child{margin-bottom:0;}
+
   /* Ce qu'il faut retenir (client) */
   .retenir-client{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;}
-  .retenir-client h3{display:flex;align-items:center;gap:9px;font-size:1rem;font-weight:700;margin-bottom:14px;}
-  .retenir-client h3 .b{width:30px;height:30px;border-radius:9px;background:var(--brand-soft);color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:.95rem;}
-  .retenir-client ul{list-style:none;margin:0;padding:0;}
-  .retenir-client li{display:flex;gap:10px;padding:9px 0;font-size:.92rem;color:var(--ink-soft);line-height:1.5;}
-  .retenir-client li::before{content:'';flex:0 0 7px;height:7px;width:7px;border-radius:50%;background:var(--brand);margin-top:8px;}
+  .retenir-client .rc-ico{width:46px;height:46px;border-radius:13px;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
+  .retenir-client .rc-ico svg{width:24px;height:24px;}
+  .retenir-client h3{font-size:1rem;font-weight:700;color:var(--brand-2);margin-bottom:10px;}
+  .retenir-client p{font-size:.98rem;line-height:1.6;color:var(--ink-soft);margin:0 0 9px;}
+  .retenir-client p:last-child{margin-bottom:0;}
   ul.retenir-ul{list-style:none;margin:8px 0 0;padding:0;}
   ul.retenir-ul li{display:flex;gap:10px;padding:7px 0;font-size:.9rem;color:var(--ink-soft);line-height:1.5;}
   ul.retenir-ul li::before{content:'';flex:0 0 6px;height:6px;width:6px;border-radius:50%;background:var(--brand);margin-top:8px;}
@@ -596,6 +626,8 @@
   .chart-wrap.sm{height:260px;}
   .kpi-row4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:20px;}
   .mini-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 20px;}
+  .mini-card .mc-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+  .mini-card .mc-head .mc-l{margin-bottom:0;}
   .mini-card .mc-l{font-size:.8rem;color:var(--muted);margin-bottom:6px;}
   .mini-card .mc-v{font-size:1.5rem;font-weight:700;color:var(--ink);letter-spacing:-.02em;}
   .mini-card .mc-s{font-size:.78rem;color:var(--muted);margin-top:3px;}
@@ -634,13 +666,13 @@
 
   /* Charges récurrentes : liste de gauche */
   .rec-list{display:flex;flex-direction:column;gap:10px;}
-  .rec-item{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;cursor:pointer;display:flex;flex-direction:column;gap:3px;}
+  .rec-item{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 15px;cursor:pointer;display:flex;align-items:center;gap:13px;}
   .rec-item:hover{border-color:#CDE8D8;}
   .rec-item.sel{background:var(--brand-soft);border-color:var(--brand);}
-  .rec-item .ri-name{font-size:.92rem;font-weight:600;color:var(--ink);}
-  .rec-item .ri-fig{display:flex;justify-content:space-between;align-items:baseline;}
-  .rec-item .ri-eur{font-size:1.1rem;font-weight:700;color:var(--ink);}
-  .rec-item .ri-var{font-size:.82rem;font-weight:600;}
+  .rec-item .ri-txt{display:flex;flex-direction:column;gap:1px;flex:1;min-width:0;}
+  .rec-item .ri-name{font-size:.9rem;font-weight:600;color:var(--ink);}
+  .rec-item .ri-eur{font-size:1.15rem;font-weight:700;color:var(--ink);letter-spacing:-.01em;}
+  .rec-item .ri-var{font-size:.85rem;font-weight:600;white-space:nowrap;}
 
   /* Bilan subnav */
   .subnav{display:inline-flex;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:4px;margin-bottom:22px;}
@@ -648,8 +680,8 @@
   .subnav button.active{background:var(--brand-soft);color:var(--brand);}
   .bilan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px;}
   .bilan-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;}
-  .bilan-card .bc-ico{width:40px;height:40px;border-radius:11px;background:var(--brand-soft);color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:1.05rem;margin-bottom:12px;}
-  .bilan-card .bc-l{font-size:.9rem;color:var(--muted);}
+  .bilan-card .bc-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+  .bilan-card .bc-l{font-size:.95rem;color:var(--ink-soft);font-weight:600;}
   .bilan-card .bc-v{font-size:1.8rem;font-weight:700;color:var(--ink);letter-spacing:-.02em;margin:4px 0;}
   .bilan-card .bc-s{font-size:.82rem;color:var(--brand);font-weight:500;}
   .bilan-card .bc-s.up{color:var(--good);} .bilan-card .bc-s.warn{color:var(--warn);} .bilan-card .bc-s.neu{color:var(--muted);}
@@ -853,7 +885,7 @@
       </div>
       <div class="two-70-30" style="margin-top:20px;">
         <div class="bcard"><div id="c-sig"></div></div>
-        <div class="retenir-client"><h3><span class="b">✦</span>Ce qu'il faut retenir</h3><ul id="c-synth-retenir"></ul></div>
+        <div class="retenir-client"><div class="rc-ico" id="c-synth-ico"></div><h3>Ce qu'il faut retenir</h3><div id="c-synth-retenir"></div></div>
       </div>
     </section>
 
@@ -863,6 +895,7 @@
       <div class="page-sub">Évolution du chiffre d'affaires et répartition de l'activité.</div>
       <div class="two-60-40">
         <div class="bcard">
+          <div class="ic ic-blue" id="act-ca-ico" style="margin-bottom:14px;"></div>
           <div class="card-h">Chiffre d'affaires</div>
           <div class="big-figure" id="act-ca">—</div>
           <div class="big-figure-sub" id="act-ca-delta"></div>
@@ -870,11 +903,10 @@
         </div>
         <div class="bcard">
           <div class="card-h">Évolution mensuelle</div>
-          <div class="card-sub2">Chiffre d'affaires N (vert) / N-1 (pointillé).</div>
           <div class="chart-wrap sm"><canvas id="act-chart"></canvas></div>
         </div>
       </div>
-      <div class="retenir-client" style="margin-top:20px;"><h3><span class="b">✦</span>Ce qu'il faut retenir</h3><ul id="act-retenir"></ul></div>
+      <div class="retenir-band" style="margin-top:20px;"><div class="rb-ico" id="act-ico"></div><div class="rb-body"><h3>Ce qu'il faut retenir</h3><div id="act-retenir"></div></div></div>
     </section>
 
     <!-- CHARGES (liste) -->
@@ -883,20 +915,20 @@
         <h1>Charges d'exploitation</h1>
         <div class="two-60-40" style="margin-top:6px;">
           <div class="bcard">
+            <div class="ic ic-orange" id="chg-total-ico" style="margin-bottom:14px;"></div>
             <div class="card-h">Total charges d'exploitation</div>
             <div class="big-figure" id="chg-total">—</div>
             <div class="big-figure-sub" id="chg-total-sub"></div>
           </div>
           <div class="bcard">
             <div class="card-h">Évolution mensuelle</div>
-            <div class="card-sub2">Charges d'exploitation N / N-1.</div>
             <div class="chart-wrap sm"><canvas id="chg-chart"></canvas></div>
           </div>
         </div>
         <div class="bcard" style="margin-top:20px;">
           <table class="ctab" id="chg-table"></table>
         </div>
-        <div class="retenir-client" style="margin-top:20px;"><h3><span class="b">✦</span>Ce qu'il faut retenir</h3><ul id="chg-retenir"></ul></div>
+        <div class="retenir-band" style="margin-top:20px;"><div class="rb-ico" id="chg-ico"></div><div class="rb-body"><h3>Ce qu'il faut retenir</h3><div id="chg-retenir"></div></div></div>
       </div>
       <div id="charge-detail" style="display:none;"></div>
     </section>
@@ -920,12 +952,12 @@
       <div id="bilan-structure">
         <h1 style="margin-bottom:22px;">Bilan — Structure</h1>
         <div class="bilan-grid" id="bil-struct"></div>
-        <div class="retenir-client"><h3><span class="b">✦</span>Ce qu'il faut retenir</h3><ul id="bil-struct-retenir"></ul></div>
+        <div class="retenir-band"><div class="rb-ico" id="bil-struct-ico"></div><div class="rb-body"><h3>Ce qu'il faut retenir</h3><div id="bil-struct-retenir"></div></div></div>
       </div>
       <div id="bilan-ratios" style="display:none;">
         <h1 style="margin-bottom:22px;">Bilan — Ratios</h1>
         <div class="bilan-grid" id="bil-ratios"></div>
-        <div class="retenir-client"><h3><span class="b">✦</span>Ce qu'il faut retenir</h3><ul id="bil-ratios-retenir"></ul></div>
+        <div class="retenir-band"><div class="rb-ico" id="bil-ratios-ico"></div><div class="rb-body"><h3>Ce qu'il faut retenir</h3><div id="bil-ratios-retenir"></div></div></div>
       </div>
     </section>
 
@@ -934,18 +966,18 @@
       <h1>Trésorerie</h1>
       <div class="two-60-40" style="margin-top:6px;">
         <div class="bcard">
+          <div class="ic ic-green" id="tre-close-ico" style="margin-bottom:14px;"></div>
           <div class="card-h">Trésorerie de clôture</div>
           <div class="big-figure" id="tre-close">—</div>
           <div class="big-figure-sub" id="tre-close-sub"></div>
         </div>
         <div class="bcard">
           <div class="card-h">Évolution de la trésorerie mensuelle</div>
-          <div class="card-sub2">N (vert) / N-1 (pointillé).</div>
           <div class="chart-wrap sm"><canvas id="tre-chart"></canvas></div>
         </div>
       </div>
       <div class="kpi-row4" id="tre-cards"></div>
-      <div class="retenir-client" style="margin-top:20px;"><h3><span class="b">✦</span>Ce qu'il faut retenir</h3><ul id="tre-retenir"></ul></div>
+      <div class="retenir-band" style="margin-top:20px;"><div class="rb-ico" id="tre-ico"></div><div class="rb-body"><h3>Ce qu'il faut retenir</h3><div id="tre-retenir"></div></div></div>
     </section>
 
   </main>
@@ -3031,25 +3063,25 @@ function expertKpis(){
   const margePctN = r.CA?g.margeCommerciale/r.CA:0, margePctN1 = (g1&&r1.CA)?g1.margeCommerciale/r1.CA:null;
   const ebeDelta = g1? g.ebe-g1.ebe : null;
   const K=[];
-  K.push({ico:'€',label:"Chiffre d'affaires",value:fmtEUR(r.CA),
+  K.push({ico:'activity',tone:'blue',label:"Chiffre d'affaires",value:fmtEUR(r.CA),
     delta: caDelta!=null?{txt:signPct(caDelta),cls:caDelta>=0?'up':'down'}:null,
     vs: r1?('vs '+fmtEUR(r1.CA)):''});
   const margeDpt=(margePctN1!=null)?(margePctN-margePctN1)*100:null;
-  K.push({ico:'◧',label:'Marge',value:fmtEUR(g.margeCommerciale),
+  K.push({ico:'pie',tone:'orange',label:'Marge',value:fmtEUR(g.margeCommerciale),
     pctca:fmtPct(margePctN)+' du CA',
     delta: (margeDpt!=null && Math.abs(margeDpt)>=0.1)?{txt:ptDelta(margeDpt),cls:margeDpt>=0?'up':'warn'}:null,
     vs: margePctN1!=null?('vs '+fmtPct(margePctN1)):''});
-  K.push({ico:'▲',label:'EBE',value:fmtEUR(g.ebe),
+  K.push({ico:'bars',tone:'purple',label:'EBE',value:fmtEUR(g.ebe),
     pctca:(r.CA?fmtPct(g.ebe/r.CA):'')+' du CA',
     delta: ebeDelta!=null?{txt:signEUR(ebeDelta),cls:ebeDelta>=0?'up':'down'}:null, vs:''});
-  K.push({ico:'●',label:'Résultat',value:fmtEUR(AN.compteResultat.resultatNet),
+  K.push({ico:'euro',tone:'green',label:'Résultat',value:fmtEUR(AN.compteResultat.resultatNet),
     pctca:(r.CA?fmtPct(AN.compteResultat.resultatNet/r.CA):'')+' du CA', delta:null, vs:''});
-  K.push({ico:'▮',label:'Trésorerie',value:fmtEUR(fin),
+  K.push({ico:'wallet',tone:'green',label:'Trésorerie',value:fmtEUR(fin),
     delta:{txt:signEUR(fin-debut),cls:(fin-debut)>=0?'up':'down'}, vs:''});
-  K.push({ico:'↦',label:'Délai clients',value:joursTxt(r.delaiClients),
+  K.push({ico:'user',tone:'blue',label:'Délai clients',value:joursTxt(r.delaiClients),
     delta: r1?{txt:joursDelta(r.delaiClients-r1.delaiClients),cls:(r.delaiClients-r1.delaiClients)<=0?'up':'warn'}:null,
     vs: r1?('vs '+joursTxt(r1.delaiClients)):''});
-  K.push({ico:'↤',label:'Délai fournisseurs',value:joursTxt(r.delaiFournisseurs),
+  K.push({ico:'users',tone:'slate',label:'Délai fournisseurs',value:joursTxt(r.delaiFournisseurs),
     delta: r1?{txt:joursDelta(r.delaiFournisseurs-r1.delaiFournisseurs),cls:'muted'}:null,
     vs: r1?('vs '+joursTxt(r1.delaiFournisseurs)):''});
   return K;
@@ -3060,7 +3092,7 @@ function renderEssentiel(){
     if(k.pctca) meta+=`<span class="kpi-pctca">${k.pctca}</span>`;
     if(k.delta) meta+=`<span class="kpi-delta ${k.delta.cls}">${k.delta.txt}</span>`;
     if(k.vs) meta+=`<span class="kpi-vs">${k.vs}</span>`;
-    return `<div class="bcard"><div class="kpi-ico">${k.ico}</div><div class="kpi-label">${k.label}</div>
+    return `<div class="bcard">${chip(k.ico,k.tone)}<div class="kpi-label">${k.label}</div>
       <div class="kpi-value">${k.value}</div><div class="kpi-meta">${meta}</div></div>`;
   }).join('');
   document.getElementById('x-kpis').innerHTML = html;
@@ -3131,19 +3163,17 @@ function recurringDelta(){
   return {delta:Math.round(sumN-sumN1), pct:(sumN-sumN1)/sumN1};
 }
 function renderReco(recos){
-  const colors=['var(--brand)','var(--brand)','var(--brand)'];
+  const themes=[{tone:'green',hex:'#08783E'},{tone:'orange',hex:'#E08A2B'},{tone:'blue',hex:'#2A5FB0'}];
   document.getElementById('x-reco3').innerHTML = recos.slice(0,3).map((rc,i)=>{
-    const g=rc.forecast;
+    const g=rc.forecast, t=themes[i%3];
+    const step=(ico,label,body)=>`<div class="rc-block"><div class="rc-h">${chip(ico,t.tone,'sm')}<span class="rc-h-t" style="color:${t.hex}">${label}</span></div><p>${body}</p></div>`;
     return `<div class="reco-col">
-      <div class="rc-badge" style="background:${colors[i]};">0${i+1}</div>
-      <div class="rc-title">${rc.title}</div>
-      <div class="rc-block"><div class="rc-h"><span class="n">1</span>Problème identifié</div><p>${rc.probleme}</p></div>
-      <div class="rc-block"><div class="rc-h"><span class="n">2</span>Correctif précis</div><p>${rc.correctif}</p></div>
-      <div class="rc-block"><div class="rc-h"><span class="n">3</span>Forecast N+1</div>
+      <div class="rc-top"><div class="rc-badge" style="background:${t.hex};">0${i+1}</div><div class="rc-title">${rc.title}</div></div>
+      ${step('search','Problème identifié',rc.probleme)}
+      ${step('wrench','Correctif précis',rc.correctif)}
+      <div class="rc-block"><div class="rc-h">${chip('bars',t.tone,'sm')}<span class="rc-h-t" style="color:${t.hex}">Forecast N+1</span></div>
         <p>${g.label}.</p>
-        <div class="rc-gauge"><div class="g-label">Gain estimé</div>
-          <div class="g-val">${signEUR(g.low)} à ${signEUR(g.high)}</div>
-          <div class="g-bar"><div class="g-fill" style="width:70%"></div></div></div>
+        <div class="rc-gauge2"><span class="g-lo" style="color:${t.hex}">${signEUR(g.low)}</span><span class="g-track" style="--c:${t.hex}"><b></b></span><span class="g-hi" style="color:${t.hex}">${signEUR(g.high)}</span></div>
       </div>
     </div>`;
   }).join('');
@@ -3202,6 +3232,35 @@ async function enrichExpertWithAI(){
    INTERFACE CLIENT — présentation en rendez-vous (TV + tablette)
    ============================================================ */
 const MONTHS = ['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Août','Sep','Oct','Nov','Déc'];
+/* ---- bibliothèque d'icônes (SVG en ligne, style trait) ---- */
+const ICONS = {
+  home:'<path d="M3 10.5 12 4l9 6.5"/><path d="M5 9.5V20h14V9.5"/>',
+  activity:'<path d="M3 12h4l2.5 7 4-15L16 12h5"/>',
+  pie:'<path d="M21 12A9 9 0 1 1 12 3v9z"/><path d="M12 3a9 9 0 0 1 9 9h-9z"/>',
+  refresh:'<path d="M20 11a8 8 0 0 0-14-4L3 9"/><path d="M4 13a8 8 0 0 0 14 4l3-2"/><path d="M3 5v4h4"/><path d="M21 19v-4h-4"/>',
+  scale:'<path d="M12 4v16"/><path d="M7 20h10"/><path d="M4 8l4-2 4 2"/><path d="M12 8l4-2 4 2"/><path d="M4 8l-1.5 4a2.5 2.5 0 0 0 5 0L6 8"/><path d="M20 8l-1.5 4a2.5 2.5 0 0 1-5 0L15 8"/>',
+  bank:'<path d="M3 21h18"/><path d="M4 10h16"/><path d="M5 10 12 5l7 5"/><path d="M6 10v8"/><path d="M10 10v8"/><path d="M14 10v8"/><path d="M18 10v8"/>',
+  bars:'<path d="M4 20V11"/><path d="M10 20V5"/><path d="M16 20v-6"/><path d="M3 20h18"/>',
+  euro:'<path d="M17 6.5A6.5 6.5 0 1 0 17 17.5"/><path d="M5 10.5h8"/><path d="M5 13.5h6"/>',
+  user:'<circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.5 3-5.5 7-5.5s7 2 7 5.5"/>',
+  users:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 2.5-4.8 6-4.8s6 1.8 6 4.8"/><path d="M16 5.2a3 3 0 0 1 0 5.6"/><path d="M17 15.4c2.3.5 4 1.9 4 4.1"/>',
+  wallet:'<rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10h18"/><circle cx="16.5" cy="13.5" r="1.2"/>',
+  box:'<path d="M12 3 20 7.2v9.6L12 21 4 16.8V7.2z"/><path d="M4 7.2 12 11l8-3.8"/><path d="M12 11v10"/>',
+  shield:'<path d="M12 3 19 6v5c0 4.5-3 7.6-7 9-4-1.4-7-4.5-7-9V6z"/>',
+  zap:'<path d="M13 3 5 13h6l-1 8 8-10h-6z"/>',
+  phone:'<path d="M5 3.5h3.6l1.6 4.2-2.1 1.5a11 11 0 0 0 5.2 5.2l1.5-2.1 4.2 1.6V19a2 2 0 0 1-2 2A16 16 0 0 1 3 5.5a2 2 0 0 1 2-2z"/>',
+  droplet:'<path d="M12 3.5s6 5.6 6 10.2a6 6 0 0 1-12 0C6 9.1 12 3.5 12 3.5z"/>',
+  bulb:'<path d="M9.5 18h5"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-3.8 10.7c.6.5 1 1.1 1.1 2.3h5.4c.1-1.2.5-1.8 1.1-2.3A6 6 0 0 0 12 3z"/>',
+  search:'<circle cx="11" cy="11" r="6.5"/><path d="M20.5 20.5 16 16"/>',
+  wrench:'<path d="M15.5 6.5a4.5 4.5 0 0 1-5.9 5.9L5 17l2 2 4.6-4.6a4.5 4.5 0 0 0 5.9-5.9l-2.5 2.5-2-2z"/>',
+  login:'<path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/><path d="M10 12H3"/><path d="M6.5 8.5 3 12l3.5 3.5"/>',
+  up:'<path d="M4 16 10 10l4 4 6-6"/><path d="M15 8h5v5"/>',
+  down:'<path d="M4 8 10 14l4-4 6 6"/><path d="M15 16h5v-5"/>',
+  arrowUR:'<path d="M7 17 17 7"/><path d="M8 7h9v9"/>',
+  calendar:'<rect x="3.5" y="5" width="17" height="16" rx="2.5"/><path d="M3.5 9.5h17"/><path d="M8 3v4"/><path d="M16 3v4"/>'
+};
+function svgIcon(name){ return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${ICONS[name]||''}</svg>`; }
+function chip(name, tone, size){ return `<span class="ic ic-${tone||'green'}${size?' ic-'+size:''}">${svgIcon(name)}</span>`; }
 let ecrituresN = [], ecrituresN1 = [];      // écritures brutes par exercice (pour séries mensuelles)
 let clientCharts = {};                        // instances Chart.js côté client
 let clientAdj = {pr:0, st:0};                 // ajustements en direct (deltas €) : produits à recevoir, stocks/en-cours
@@ -3287,16 +3346,18 @@ function lineNN1(canvasId, serieN, serieN1, opts){
   const cv=document.getElementById(canvasId);
   if(!cv || typeof Chart==='undefined') return;
   if(clientCharts[canvasId]) clientCharts[canvasId].destroy();
-  const ds=[{label:'N', data:serieN, borderColor:'#08783E', backgroundColor:'rgba(8,120,62,.08)', borderWidth:2.6, tension:.35, fill:true, pointRadius:0, pointHoverRadius:4}];
+  const lblN=opts.labelN||'N', lblN1=opts.labelN1||'N-1';
+  const ds=[{label:lblN, data:serieN, borderColor:'#08783E', backgroundColor:'rgba(8,120,62,.09)', borderWidth:2.6, tension:.35, fill:true, pointRadius:3, pointBackgroundColor:'#08783E', pointBorderColor:'#08783E', pointHoverRadius:5}];
   if(serieN1 && serieN1.some(v=>v!=null))
-    ds.push({label:'N-1', data:serieN1, borderColor:'#B8BDC4', borderWidth:2, borderDash:[5,4], tension:.35, fill:false, pointRadius:0, pointHoverRadius:4});
+    ds.push({label:lblN1, data:serieN1, borderColor:'#B8BDC4', borderWidth:2, borderDash:[5,4], tension:.35, fill:false, pointRadius:2.6, pointBackgroundColor:'#fff', pointBorderColor:'#B8BDC4', pointBorderWidth:1.5, pointHoverRadius:4.5});
   const yScale={grid:{color:'#F0EFEA'},border:{display:false},ticks:{maxTicksLimit:6,font:{size:11},color:'#8A909B',callback:v=>Math.abs(v)>=1000?(v/1000).toLocaleString('fr-FR',{maximumFractionDigits:1})+'k':Math.round(v)}};
   if(opts.zero){ yScale.beginAtZero=true; yScale.suggestedMin=0; }
   clientCharts[canvasId]=new Chart(cv.getContext('2d'),{
     type:'line',
     data:{labels:MONTHS, datasets:ds},
     options:{responsive:true, maintainAspectRatio:false, interaction:{mode:'index',intersect:false},
-      plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>c.dataset.label+' : '+fmtEUR(c.parsed.y)}}},
+      plugins:{legend:{display:true, position:'top', align:'end', labels:{usePointStyle:true, pointStyle:'line', boxWidth:22, boxHeight:2, font:{size:11.5}, color:'#5B6472', padding:16}},
+        tooltip:{callbacks:{label:c=>c.dataset.label+' : '+fmtEUR(c.parsed.y)}}},
       scales:{x:{grid:{display:false},ticks:{font:{size:11},color:'#8A909B'}}, y:yScale}}
   });
 }
@@ -3309,7 +3370,13 @@ function deltaSpan(n, n1, mode){ // mode: 'eur' | 'pct' | 'j'
   const d=n-n1; return `<span class="d ${d>=0?'up':'down'}">${signEUR(d)}</span>`;
 }
 function retenirHTML(id, bullets){
-  document.getElementById(id).innerHTML = (bullets||[]).map(b=>`<li>${b}</li>`).join('');
+  const el=document.getElementById(id); if(!el) return;
+  el.innerHTML = (bullets||[]).map(b=>`<p>${b}</p>`).join('');
+}
+function yearLabels(){
+  const yN=AN&&AN.periode.fin?AN.periode.fin.getFullYear():null;
+  const yN1=AN1&&AN1.periode.fin?AN1.periode.fin.getFullYear():null;
+  return {labelN:yN?yN+' (N)':'N', labelN1:yN1?yN1+' (N-1)':'N-1'};
 }
 function currentPR(){ return sumComptes(AN.soldes,['418'],'debit'); }
 function currentST(){ return sumComptes(AN.soldes,['3'],'debit'); }
@@ -3327,25 +3394,31 @@ function sigRows(){
   const g=computeSIG(AN), g1=AN1?computeSIG(AN1):null;
   const d=clientAdj.pr+clientAdj.st;
   const caN=AN.ratios.CA+clientAdj.pr, caN1=AN1?AN1.ratios.CA:null;
-  return {caN, rows:[
-    {key:'ca', label:"Chiffre d'affaires", n:caN, n1:caN1},
-    {key:'margeCommerciale', label:'Marge commerciale', n:g.margeCommerciale, n1:g1?g1.margeCommerciale:null},
-    {key:'valeurAjoutee', label:'Valeur ajoutée', n:g.valeurAjoutee+d, n1:g1?g1.valeurAjoutee:null},
-    {key:'ebe', label:"Excédent brut d'exploitation", n:g.ebe+d, n1:g1?g1.ebe:null},
-    {key:'rcai', label:'Résultat courant avant impôt', n:g.rcai+d, n1:g1?g1.rcai:null},
-    {key:'resultatNet', label:'Résultat net', n:AN.compteResultat.resultatNet+d, n1:AN1?AN1.compteResultat.resultatNet:null}
+  return {caN, caN1, rows:[
+    {key:'ca', label:"Chiffre d'affaires", ico:'activity', tone:'blue', n:caN, n1:caN1},
+    {key:'margeCommerciale', label:'Marge commerciale', ico:'pie', tone:'orange', n:g.margeCommerciale, n1:g1?g1.margeCommerciale:null},
+    {key:'valeurAjoutee', label:'Valeur ajoutée', ico:'up', tone:'green', n:g.valeurAjoutee+d, n1:g1?g1.valeurAjoutee:null},
+    {key:'ebe', label:"Excédent brut d'exploitation", ico:'bars', tone:'purple', n:g.ebe+d, n1:g1?g1.ebe:null},
+    {key:'rcai', label:'Résultat courant avant impôt', ico:'euro', tone:'blue', n:g.rcai+d, n1:g1?g1.rcai:null},
+    {key:'resultatNet', label:'Résultat net', ico:'user', tone:'green', n:AN.compteResultat.resultatNet+d, n1:AN1?AN1.compteResultat.resultatNet:null}
   ]};
 }
 function renderSynthese(){
-  const {caN, rows}=sigRows();
+  const {caN, caN1, rows}=sigRows();
   const ms=monthlySIG(ecrituresN);
   const html=rows.map(r=>{
-    const pctca = caN? `<span class="pct">${fmtPct(r.n/caN)} du CA</span>` : '';
-    const vs = r.n1!=null? `<span class="vs">vs ${fmtEUR(r.n1)}</span>` : '';
-    const meta = `${deltaSpan(r.n,r.n1,'pct')}${r.key!=='ca'?pctca:''}${vs}`;
-    const spark = sparklineSVG(ms[r.key]||[], (r.n>=0?'#08783E':'#C4362F'));
+    let meta, up;
+    if(r.key==='ca'){
+      const dv=(r.n1&&Math.abs(r.n1)>0.5)?(r.n-r.n1)/Math.abs(r.n1):null; up=(dv==null||dv>=0);
+      meta = `${dv!=null?`<span class="d ${up?'up':'down'}">${signPct(dv)}</span>`:''}${r.n1!=null?`<span class="vs">vs ${fmtEUR(r.n1)}</span>`:''}`;
+    } else {
+      const rate=caN?r.n/caN:0, rate1=(caN1&&r.n1!=null)?r.n1/caN1:null;
+      const dPt=(rate1!=null)?(rate-rate1)*100:null; up=(dPt==null||dPt>=-0.05);
+      meta = `${dPt!=null&&Math.abs(dPt)>=0.05?`<span class="d ${up?'up':'down'}">${ptDelta(dPt)}</span>`:''}<span class="pct">${fmtPct(rate)} du CA</span>${rate1!=null?`<span class="vs">vs ${fmtPct(rate1)}</span>`:''}`;
+    }
+    const spark = sparklineSVG(ms[r.key]||[], up?'#08783E':'#C4362F');
     return `<div class="sig-line">
-      <div class="sl-label">${r.label}</div>
+      <div class="sl-label">${chip(r.ico,r.tone)}<span>${r.label}</span></div>
       <div class="sl-val">${fmtEUR(r.n)}</div>
       <div class="sl-meta">${meta}</div>
       <div>${spark}</div>
@@ -3387,7 +3460,7 @@ function renderActivite(){
   const totRep=parts.reduce((s,p)=>s+p.v,0)||1;
   document.getElementById('act-repartition').innerHTML = `<div class="card-h" style="margin-bottom:10px;">Répartition du chiffre d'affaires</div>`+
     parts.map(p=>{const pc=p.v/totRep;return `<div class="rep-row"><span class="rep-name">${p.label}</span><span class="rep-eur">${fmtEUR(p.v)}</span><span class="rep-pct">${fmtPct(pc)}</span><div class="rep-bar"><i style="width:${(pc*100).toFixed(0)}%"></i></div></div>`;}).join('');
-  lineNN1('act-chart', monthlyByPrefix(ecrituresN,['70'],'credit'), AN1?monthlyByPrefix(ecrituresN1,['70'],'credit'):null);
+  lineNN1('act-chart', monthlyByPrefix(ecrituresN,['70'],'credit'), AN1?monthlyByPrefix(ecrituresN1,['70'],'credit'):null, yearLabels());
   retenirHTML('act-retenir', (clientAI&&clientAI.activite) || retenirActivite(parts,totRep));
 }
 function retenirActivite(parts,tot){
@@ -3425,7 +3498,7 @@ function renderCharges(){
   document.getElementById('chg-total').textContent=fmtEUR(total);
   document.getElementById('chg-total-sub').innerHTML = (total1!=null?`${signEUR(total-total1)} · ${signPct((total-total1)/total1)} vs N-1 · `:'')+`${fmtPct(ca?total/ca:0)} du CA`;
   const pref=['60','61','62','63','64','65','681'];
-  lineNN1('chg-chart', monthlyByPrefix(ecrituresN,pref,'debit'), AN1?monthlyByPrefix(ecrituresN1,pref,'debit'):null);
+  lineNN1('chg-chart', monthlyByPrefix(ecrituresN,pref,'debit'), AN1?monthlyByPrefix(ecrituresN1,pref,'debit'):null, yearLabels());
   const head=`<tr><th>Catégorie</th><th class="num">N</th><th class="num">N-1</th><th class="num">Variation</th><th class="num">% du CA</th><th></th></tr>`;
   const body=cats.filter(c=>c.n>0.5||(c.n1&&c.n1>0.5)).map(c=>{
     return `<tr class="clickable" data-cat="${c.id}"><td>${c.label}</td><td class="num">${fmtEUR(c.n)}</td><td class="num">${c.n1!=null?fmtEUR(c.n1):'—'}</td><td class="num">${chgVarHTML(c.n,c.n1)}</td><td class="num">${fmtPct(ca?c.n/ca:0)}</td><td class="num chev">›</td></tr>`;
@@ -3488,9 +3561,9 @@ function renderChargeRight(){
   const n=acc.n, n1=accN1(compte);
   const varEur = n1!=null? signEUR(n-n1):'—';
   const cards=`<div class="three-cards">
-    <div class="mini-card"><div class="mc-l">Exercice N</div><div class="mc-v">${fmtEUR(n)}</div></div>
-    <div class="mini-card"><div class="mc-l">Exercice N-1</div><div class="mc-v">${n1!=null?fmtEUR(n1):'—'}</div></div>
-    <div class="mini-card"><div class="mc-l">Variation</div><div class="mc-v ${n1!=null?chgVarCls(n,n1):''}">${varEur}</div><div class="mc-s">${n1&&n1>0.5?signPct((n-n1)/n1):''}</div></div>
+    <div class="mini-card"><div class="mc-head"><span class="ic ic-green ic-sm txt">N</span><span class="mc-l">Exercice N</span></div><div class="mc-v">${fmtEUR(n)}</div></div>
+    <div class="mini-card"><div class="mc-head"><span class="ic ic-slate ic-sm txt">N-1</span><span class="mc-l">Exercice N-1</span></div><div class="mc-v">${n1!=null?fmtEUR(n1):'—'}</div></div>
+    <div class="mini-card"><div class="mc-head">${chip('arrowUR', n1!=null?chgVarCls(n,n1).replace('var-up','green').replace('var-warn','orange').replace('var-flat','slate'):'slate','sm')}<span class="mc-l">Variation</span></div><div class="mc-v ${n1!=null?chgVarCls(n,n1):''}">${varEur}</div><div class="mc-s">${n1&&n1>0.5?signPct((n-n1)/n1):''}</div></div>
   </div>`;
   const mN=monthlyAccount(ecrituresN,compte), mN1=AN1?monthlyAccount(ecrituresN1,compte):null;
   // répartition par mois (top) — ou dépense régulière ?
@@ -3499,17 +3572,17 @@ function renderChargeRight(){
   const vals=mN.filter(v=>v>0.5); const mx=Math.max(...mN,0), mn=vals.length?Math.min(...vals):0;
   const reguliere = vals.length>=8 && mx>0 && (mx-mn)/mx < 0.25;
   const repHtml = reguliere
-    ? `<div class="bcard" style="margin-top:18px;"><div class="card-h">Répartition des dépenses</div><div class="card-sub2">Rythme de la dépense sur l'exercice.</div><div style="font-size:.92rem;color:var(--ink-soft);line-height:1.5;">Dépense régulière, autour de <b>${fmtEUR(n/12)}</b> chaque mois, sans concentration particulière sur un mois donné.</div></div>`
-    : `<div class="bcard" style="margin-top:18px;"><div class="card-h">Répartition des dépenses</div><div class="card-sub2">Mois les plus chargés sur l'exercice.</div>`+
+    ? `<div class="bcard" style="margin-top:18px;"><div class="card-h ico-h">${chip('pie','green','sm')}<span>Répartition des dépenses</span></div><div class="card-sub2">Rythme de la dépense sur l'exercice.</div><div style="font-size:.92rem;color:var(--ink-soft);line-height:1.5;">Dépense régulière, autour de <b>${fmtEUR(n/12)}</b> chaque mois, sans concentration particulière sur un mois donné.</div></div>`
+    : `<div class="bcard" style="margin-top:18px;"><div class="card-h ico-h">${chip('pie','green','sm')}<span>Répartition des dépenses</span></div><div class="card-sub2">Mois les plus chargés sur l'exercice.</div>`+
       top3.map(x=>{const pc=x.v/totM;return `<div class="rep-row"><span class="rep-name">${moisLabel(x.m+1)}</span><span class="rep-eur">${fmtEUR(x.v)}</span><span class="rep-pct">${fmtPct(pc)}</span><div class="rep-bar"><i style="width:${(pc*100).toFixed(0)}%"></i></div></div>`;}).join('')+
       (top3.length?`<div style="margin-top:10px;font-size:.82rem;color:var(--muted);">À eux seuls, ces ${top3.length} mois représentent ${fmtPct(top3sum/totM)} de la dépense annuelle.</div>`:'')+`</div>`;
   const lecture=chargeLecture(acc,n,n1,mN,idx);
-  const lectHtml=`<div class="bcard" style="margin-top:18px;"><div class="card-h">Lecture</div><ul class="retenir-ul">${lecture.map(l=>`<li>${l}</li>`).join('')}</ul></div>`;
+  const lectHtml=`<div class="bcard" style="margin-top:18px;"><div class="card-h ico-h">${chip('bars','blue','sm')}<span>Lecture</span></div><ul class="retenir-ul">${lecture.map(l=>`<li>${l}</li>`).join('')}</ul></div>`;
   box.innerHTML=`<h1 style="margin-bottom:4px;">${acc.lib}</h1><div class="page-sub">Compte ${acc.compte}</div>${cards}
-    <div class="bcard"><div class="card-h">Évolution mensuelle</div><div class="card-sub2">N (vert) / N-1 (pointillé).</div><div class="chart-wrap sm"><canvas id="detail-chart"></canvas></div></div>
+    <div class="bcard"><div class="card-h">Évolution mensuelle</div><div class="chart-wrap sm"><canvas id="detail-chart"></canvas></div></div>
     ${repHtml}${lectHtml}
-    <div class="retenir-client" style="margin-top:18px;"><h3><span class="b">✦</span>Ce qu'il faut retenir</h3><ul><li>${chargeRetenir(acc,n,n1)}</li></ul></div>`;
-  lineNN1('detail-chart', mN, mN1, {zero:true});
+    <div class="retenir-band" style="margin-top:18px;"><div class="rb-ico">${svgIcon('bulb')}</div><div class="rb-body"><h3>Ce qu'il faut retenir</h3><p>${chargeRetenir(acc,n,n1)}</p></div></div>`;
+  lineNN1('detail-chart', mN, mN1, Object.assign({zero:true}, yearLabels()));
 }
 function chargeLecture(acc,n,n1,mN,idx){
   const out=[]; const ca=AN.ratios.CA;
@@ -3532,12 +3605,12 @@ function chargeRetenir(acc,n,n1){
 
 /* ---- CHARGES RÉCURRENTES ---- */
 const REC_CATS=[
-  {id:'assurances', label:'Assurances', pref:['616']},
-  {id:'banque', label:'Frais bancaires', pref:['627']},
-  {id:'energie', label:'Énergie', pref:['6061','6063','60611','60613']},
-  {id:'telecom', label:'Télécommunications', pref:['626']},
-  {id:'eau', label:'Eau', pref:['60612','6062']},
-  {id:'loyers', label:'Loyers', pref:['613','614']}
+  {id:'assurances', label:'Assurances', ico:'shield', tone:'green', pref:['616']},
+  {id:'banque', label:'Frais bancaires', ico:'bank', tone:'slate', pref:['627']},
+  {id:'energie', label:'Énergie', ico:'zap', tone:'orange', pref:['6061','6063','60611','60613']},
+  {id:'telecom', label:'Télécommunications', ico:'phone', tone:'purple', pref:['626']},
+  {id:'eau', label:'Eau', ico:'droplet', tone:'blue', pref:['60612','6062']},
+  {id:'loyers', label:'Loyers', ico:'home', tone:'green', pref:['613','614']}
 ];
 function recAccounts(cat){
   const pref=REC_CATS.find(c=>c.id===cat).pref;
@@ -3550,8 +3623,10 @@ function renderRecurrentes(){
   if(!cats.length){ document.getElementById('rec-list').innerHTML='<div class="rec-item"><span class="ri-name">Aucune charge récurrente identifiée</span></div>'; document.getElementById('rec-detail').innerHTML=''; return; }
   if(!curRec || !cats.find(c=>c.id===curRec)) curRec=cats[0].id;
   document.getElementById('rec-list').innerHTML = cats.map(c=>{
-    const varTxt = c.n1!=null && c.n1>0.5? `<span class="ri-var ${chgVarCls(c.n,c.n1,0.10)}">${signPct((c.n-c.n1)/c.n1)}</span>` : '<span class="ri-var var-flat">nouveau</span>';
-    return `<div class="rec-item ${c.id===curRec?'sel':''}" data-rec="${c.id}"><span class="ri-name">${c.label}</span><div class="ri-fig"><span class="ri-eur">${fmtEUR(c.n)}</span>${varTxt}</div></div>`;
+    let varTxt;
+    if(c.n1!=null && c.n1>0.5){ const d=(c.n-c.n1)/c.n1; const arrow=Math.abs(d)<0.005?'':(d>0?' ↑':' ↓'); varTxt=`<span class="ri-var ${chgVarCls(c.n,c.n1,0.10)}">${signPct(d)}${arrow}</span>`; }
+    else varTxt='<span class="ri-var var-flat">nouveau</span>';
+    return `<div class="rec-item ${c.id===curRec?'sel':''}" data-rec="${c.id}">${chip(c.ico,c.tone)}<div class="ri-txt"><span class="ri-name">${c.label}</span><span class="ri-eur">${fmtEUR(c.n)}</span></div>${varTxt}</div>`;
   }).join('');
   document.querySelectorAll('#rec-list .rec-item[data-rec]').forEach(el=>el.addEventListener('click',()=>{ curRec=el.dataset.rec; renderRecurrentes(); }));
   renderRecDetail(cats.find(c=>c.id===curRec));
@@ -3559,9 +3634,9 @@ function renderRecurrentes(){
 function renderRecDetail(cat){
   const n=cat.n, n1=cat.n1;
   const cards=`<div class="three-cards">
-    <div class="mini-card"><div class="mc-l">Exercice N</div><div class="mc-v">${fmtEUR(n)}</div></div>
-    <div class="mini-card"><div class="mc-l">Exercice N-1</div><div class="mc-v">${n1!=null?fmtEUR(n1):'—'}</div></div>
-    <div class="mini-card"><div class="mc-l">Variation</div><div class="mc-v ${n1!=null?chgVarCls(n,n1,0.10):''}">${n1!=null?signEUR(n-n1):'—'}</div><div class="mc-s">${n1&&n1>0.5?signPct((n-n1)/n1):''}</div></div>
+    <div class="mini-card"><div class="mc-head"><span class="ic ic-green ic-sm txt">N</span><span class="mc-l">Exercice N</span></div><div class="mc-v">${fmtEUR(n)}</div></div>
+    <div class="mini-card"><div class="mc-head"><span class="ic ic-slate ic-sm txt">N-1</span><span class="mc-l">Exercice N-1</span></div><div class="mc-v">${n1!=null?fmtEUR(n1):'—'}</div></div>
+    <div class="mini-card"><div class="mc-head">${chip('arrowUR', n1!=null?chgVarCls(n,n1,0.10).replace('var-up','green').replace('var-warn','orange').replace('var-flat','slate'):'slate','sm')}<span class="mc-l">Variation</span></div><div class="mc-v ${n1!=null?chgVarCls(n,n1,0.10):''}">${n1!=null?signEUR(n-n1):'—'}</div><div class="mc-s">${n1&&n1>0.5?signPct((n-n1)/n1):''}</div></div>
   </div>`;
   const accs=recAccounts(cat.id);
   const head=`<tr><th>Compte</th><th>Libellé</th><th class="num">N</th><th class="num">N-1</th><th class="num">Variation</th><th>Observation</th></tr>`;
@@ -3583,18 +3658,18 @@ function renderBilanStructure(){
   const fournisseurs=sumComptes(AN.soldes,['401'],'credit');
   const A=b.totalActif||1, P=b.totalPassif||1;
   const cards=[
-    {ico:'↦',l:'Créances clients',v:creances,pct:creances/A,side:"de l'actif"},
-    {ico:'▤',l:'Stocks / en-cours',v:stocks,pct:stocks/A,side:"de l'actif",skipIf:stocks<0.5},
-    {ico:'▮',l:'Disponibilités',v:b.treso,pct:b.treso/A,side:"de l'actif"},
-    {ico:'◆',l:'Capitaux propres',v:b.capitauxPropres,pct:b.capitauxPropres/P,side:'du passif'},
-    {ico:'≡',l:'Dettes financières',v:b.dettesFinancieres,pct:b.dettesFinancieres/P,side:'du passif'},
-    {ico:'↤',l:'Dettes fournisseurs',v:fournisseurs,pct:fournisseurs/P,side:'du passif'}
+    {ico:'user',tone:'green',l:'Créances clients',v:creances,pct:creances/A,side:"de l'actif"},
+    {ico:'box',tone:'orange',l:'Stocks / en-cours',v:stocks,pct:stocks/A,side:"de l'actif",skipIf:stocks<0.5},
+    {ico:'wallet',tone:'green',l:'Disponibilités',v:b.treso,pct:b.treso/A,side:"de l'actif"},
+    {ico:'up',tone:'green',l:'Capitaux propres',v:b.capitauxPropres,pct:b.capitauxPropres/P,side:'du passif'},
+    {ico:'bank',tone:'red',l:'Dettes financières',v:b.dettesFinancieres,pct:b.dettesFinancieres/P,side:'du passif'},
+    {ico:'users',tone:'red',l:'Dettes fournisseurs',v:fournisseurs,pct:fournisseurs/P,side:'du passif'}
   ].filter(c=>!c.skipIf);
   document.getElementById('bil-struct').innerHTML=cards.map(c=>
-    `<div class="bilan-card"><div class="bc-ico">${c.ico}</div><div class="bc-l">${c.l}</div><div class="bc-v">${fmtEUR(c.v)}</div><div class="bc-s">${fmtPct(c.pct)} ${c.side}</div></div>`).join('');
+    `<div class="bilan-card"><div class="bc-head">${chip(c.ico,c.tone)}<span class="bc-l">${c.l}</span></div><div class="bc-v">${fmtEUR(c.v)}</div><div class="bc-s">${fmtPct(c.pct)} ${c.side}</div></div>`).join('');
   retenirHTML('bil-struct-retenir', (clientAI&&clientAI.bilan_structure) || [
     `L'entreprise dispose de ${fmtEUR(b.capitauxPropres)} de capitaux propres, ${b.capitauxPropres>=b.dettesFinancieres?'davantage que':'moins que'} ses dettes financières (${fmtEUR(b.dettesFinancieres)}) : la structure est ${b.capitauxPropres>=b.dettesFinancieres?'solide':'à surveiller'}.`,
-    `Les disponibilités s'élèvent à ${fmtEUR(b.treso)}, ce qui couvre ${b.dettesFinancieres?(b.treso/b.dettesFinancieres).toFixed(1):'—'}× les dettes financières.`
+    `Les disponibilités s'élèvent à ${fmtEUR(b.treso)}, ce qui couvre ${b.dettesFinancieres?dec1(b.treso/b.dettesFinancieres):'—'}× les dettes financières.`
   ]);
 }
 function renderBilanRatios(){
@@ -3604,14 +3679,14 @@ function renderBilanRatios(){
   // cls : 'up' (favorable), 'warn' (défavorable), '' (neutre) — sens propre à chaque ratio
   const dirDelai = r1? (r.delaiClients<=r1.delaiClients?'up':'warn') : '';
   const cards=[];
-  cards.push({ico:'↦',l:'Délai de règlement clients',v:joursTxt(r.delaiClients),s:r1?`vs ${joursTxt(r1.delaiClients)}`:'',cls:dirDelai});
-  cards.push({ico:'↤',l:'Délai de paiement fournisseurs',v:joursTxt(r.delaiFournisseurs),s:r1?`vs ${joursTxt(r1.delaiFournisseurs)}`:'',cls:''});
-  cards.push({ico:'◧',l:'Besoin en fonds de roulement',v:fmtEUR(r.BFR),s:r.BFR<0?'ressource pour l\'entreprise':'à financer',cls:r.BFR<=0?'up':''});
-  cards.push({ico:'▮',l:'Trésorerie nette',v:fmtEUR(r.tresorerieNette),s:r1?`vs ${fmtEUR(r1.tresorerieNette)}`:'',cls:r1?(r.tresorerieNette>=r1.tresorerieNette?'up':'warn'):''});
-  if(AN.bilan.dettesFinancieres>0.5 && caf>0.5){ const ans=AN.bilan.dettesFinancieres/caf; cards.push({ico:'≡',l:'Capacité de remboursement',v:dec1(ans)+' '+(ans>=2?'ans':'an'),s:'dettes financières / CAF',cls:ans<=3?'up':'warn'}); }
-  if(stocks>0.5){ const achats=AN.compteResultat.detail['60']||1; cards.push({ico:'▤',l:'Rotation des stocks',v:joursTxt(Math.round(stocks/achats*365)),s:'de stock en moyenne',cls:''}); }
+  cards.push({ico:'user',tone:'blue',l:'Délai de règlement clients',v:joursTxt(r.delaiClients),s:r1?`vs ${joursTxt(r1.delaiClients)}`:'',cls:dirDelai});
+  cards.push({ico:'users',tone:'slate',l:'Délai de paiement fournisseurs',v:joursTxt(r.delaiFournisseurs),s:r1?`vs ${joursTxt(r1.delaiFournisseurs)}`:'',cls:''});
+  cards.push({ico:'refresh',tone:'purple',l:'Besoin en fonds de roulement',v:fmtEUR(r.BFR),s:r.BFR<0?'ressource pour l\'entreprise':'à financer',cls:r.BFR<=0?'up':''});
+  cards.push({ico:'wallet',tone:'green',l:'Trésorerie nette',v:fmtEUR(r.tresorerieNette),s:r1?`vs ${fmtEUR(r1.tresorerieNette)}`:'',cls:r1?(r.tresorerieNette>=r1.tresorerieNette?'up':'warn'):''});
+  if(AN.bilan.dettesFinancieres>0.5 && caf>0.5){ const ans=AN.bilan.dettesFinancieres/caf; cards.push({ico:'bank',tone:'slate',l:'Capacité de remboursement',v:dec1(ans)+' '+(ans>=2?'ans':'an'),s:'dettes financières / CAF',cls:ans<=3?'up':'warn'}); }
+  if(stocks>0.5){ const achats=AN.compteResultat.detail['60']||1; cards.push({ico:'box',tone:'orange',l:'Rotation des stocks',v:joursTxt(Math.round(stocks/achats*365)),s:'de stock en moyenne',cls:''}); }
   document.getElementById('bil-ratios').innerHTML=cards.slice(0,6).map(c=>
-    `<div class="bilan-card"><div class="bc-ico">${c.ico}</div><div class="bc-l">${c.l}</div><div class="bc-v">${c.v}</div><div class="bc-s ${c.cls||'neu'}">${c.s||''}</div></div>`).join('');
+    `<div class="bilan-card"><div class="bc-head">${chip(c.ico,c.tone)}<span class="bc-l">${c.l}</span></div><div class="bc-v">${c.v}</div><div class="bc-s ${c.cls||'neu'}">${c.s||''}</div></div>`).join('');
   retenirHTML('bil-ratios-retenir', (clientAI&&clientAI.bilan_ratios) || retenirRatios(r,r1));
 }
 function retenirRatios(r,r1){
@@ -3629,17 +3704,17 @@ function renderTresorerie(){
   const {debut,fin}=tresoFinDebut(AN);
   document.getElementById('tre-close').textContent=fmtEUR(fin);
   document.getElementById('tre-close-sub').textContent=`${signEUR(fin-debut)} sur l'exercice`;
-  lineNN1('tre-chart', tresoMonthly(AN), AN1?tresoMonthly(AN1):null);
+  lineNN1('tre-chart', tresoMonthly(AN), AN1?tresoMonthly(AN1):null, yearLabels());
   const bas=pointBasTreso(AN);
   let haut={mois:'Ouverture',solde:debut}; for(const c of AN.tresorerieMensuelle){ if(c.solde>haut.solde) haut=c; }
   const varPct = debut!==0? (fin-debut)/Math.abs(debut) : null;
   const cards=[
-    {l:'Ouverture',v:fmtEUR(debut),s:'début d\'exercice'},
-    {l:'Point bas',v:fmtEUR(bas.solde),s:moisCourt(bas.mois)},
-    {l:'Point haut',v:fmtEUR(haut.solde),s:moisCourt(haut.mois)},
-    {l:'Variation annuelle',v:(varPct!=null?signPct(varPct):signEUR(fin-debut)),s:signEUR(fin-debut)}
+    {ico:'login',tone:'green',l:'Ouverture',v:fmtEUR(debut),s:'début d\'exercice'},
+    {ico:'down',tone:'orange',l:'Point bas',v:fmtEUR(bas.solde),s:moisCourt(bas.mois)},
+    {ico:'up',tone:'green',l:'Point haut',v:fmtEUR(haut.solde),s:moisCourt(haut.mois)},
+    {ico:'arrowUR',tone:'green',l:'Variation annuelle',v:(varPct!=null?signPct(varPct):signEUR(fin-debut)),s:signEUR(fin-debut)}
   ];
-  document.getElementById('tre-cards').innerHTML=cards.map(c=>`<div class="mini-card"><div class="mc-l">${c.l}</div><div class="mc-v">${c.v}</div><div class="mc-s">${c.s}</div></div>`).join('');
+  document.getElementById('tre-cards').innerHTML=cards.map(c=>`<div class="mini-card"><div class="mc-head">${chip(c.ico,c.tone,'sm')}<span class="mc-l">${c.l}</span></div><div class="mc-v">${c.v}</div><div class="mc-s">${c.s}</div></div>`).join('');
   retenirHTML('tre-retenir', (clientAI&&clientAI.tresorerie) || retenirTresorerie(debut,fin,bas));
 }
 function retenirTresorerie(debut,fin,bas){
@@ -3661,7 +3736,20 @@ function setClientTab(tab){
   else if(tab==='bilan'){ renderBilanStructure(); renderBilanRatios(); }
   else if(tab==='tresorerie') renderTresorerie();
 }
+const CTAB_ICONS={synthese:'home',activite:'activity',charges:'pie',recurrentes:'refresh',bilan:'scale',tresorerie:'bank'};
+function initClientNavIcons(){
+  document.querySelectorAll('#client-app .tb-tab').forEach(b=>{
+    if(b.querySelector('svg')) return;
+    const ic=CTAB_ICONS[b.dataset.ctab]; if(ic) b.insertAdjacentHTML('afterbegin', svgIcon(ic));
+  });
+  ['c-synth-ico','act-ico','chg-ico','bil-struct-ico','bil-ratios-ico','tre-ico'].forEach(id=>{
+    const el=document.getElementById(id); if(el && !el.querySelector('svg')) el.innerHTML=svgIcon('bulb');
+  });
+  const heroes={'act-ca-ico':'activity','chg-total-ico':'pie','tre-close-ico':'bank'};
+  Object.entries(heroes).forEach(([id,ic])=>{ const el=document.getElementById(id); if(el && !el.querySelector('svg')) el.innerHTML=svgIcon(ic); });
+}
 function enterClient(){
+  initClientNavIcons();
   computeNN1();
   ecrituresN  = rawExercices ? rawExercices.ecrN : rawEcritures.filter(e=>e.EcritureDate && e.EcritureDate.getFullYear()===(AN.periode.fin?AN.periode.fin.getFullYear():0)).concat(rawEcritures.filter(e=>e.JournalCode==='AN'));
   ecrituresN1 = rawExercices ? (rawExercices.ecrN1||[]) : (AN1?rawEcritures.filter(e=>e.EcritureDate && AN1.periode.fin && e.EcritureDate.getFullYear()===AN1.periode.fin.getFullYear()):[]);
