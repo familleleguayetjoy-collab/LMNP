@@ -524,6 +524,7 @@
   /* Carte À retenir */
   .retenir{background:var(--brand-soft);border:1px solid #D6EBDF;border-radius:var(--radius);padding:24px 26px;display:flex;gap:18px;align-items:flex-start;}
   .retenir .r-ico{width:44px;height:44px;flex:0 0 44px;border-radius:12px;background:#fff;color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
+  .retenir .r-ico svg{width:24px;height:24px;}
   .retenir .r-body h3{font-size:1rem;font-weight:700;margin-bottom:6px;}
   .retenir .r-body p{font-size:1.02rem;line-height:1.6;color:var(--ink-soft);margin:0;}
   .retenir.plain{background:var(--card);border-color:var(--line);}
@@ -844,7 +845,7 @@
       <h1>L'essentiel du dossier</h1>
       <div class="kpi7" id="x-kpis"></div>
       <div class="retenir" id="x-retenir-card">
-        <div class="r-ico">✦</div>
+        <div class="r-ico" id="x-retenir-ico"></div>
         <div class="r-body">
           <h3>À retenir</h3>
           <p id="x-retenir">—</p>
@@ -3097,6 +3098,7 @@ function renderEssentiel(){
   }).join('');
   document.getElementById('x-kpis').innerHTML = html;
   document.getElementById('x-retenir').textContent = retenirEssentielRuleBased();
+  const xri=document.getElementById('x-retenir-ico'); if(xri && !xri.querySelector('svg')) xri.innerHTML=svgIcon('bulb');
 }
 function retenirEssentielRuleBased(){
   const g=computeSIG(AN), g1=AN1?computeSIG(AN1):null; const r=AN.ratios, r1=AN1?AN1.ratios:null;
