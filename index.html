@@ -284,6 +284,10 @@ main.wrap{padding:30px 20px 90px}
     <section class="step" data-s="0">
       <div class="pagehead"><h1>Mes dossiers</h1><div class="meta">Drive partagé du cabinet</div></div>
       <div class="dossiers">
+        <button class="dcard js-open" data-name="LMNP_POLO_TEST" data-type="lmnp" data-ex="Exercice 2026 · LMNP · sans banque">
+          <h3>LMNP Polo test</h3><div class="ex">Exercice 2026 · 3 pièces · sans banque</div>
+          <div class="tags"><span class="dtype">LMNP meublé</span><span class="st todo">● À traiter</span></div>
+        </button>
         <button class="dcard js-open" data-name="LMNP_DUPONT_2026" data-type="lmnp" data-ex="Exercice 2026 · LMNP meublé">
           <h3>LMNP_DUPONT_2026</h3><div class="ex">Exercice 2026 · 21 pièces au Drive</div>
           <div class="tags"><span class="dtype">LMNP meublé</span><span class="st todo">● À traiter</span></div>
@@ -385,9 +389,11 @@ main.wrap{padding:30px 20px 90px}
       <div class="ready"><span class="pct">88 % <span>prêt</span></span></div>
       <div class="bar"><i></i></div>
 
+      <p class="js-trancher-note hidden" style="margin:14px 0 0;padding:12px 16px;background:#fbf6ee;border:1px solid #e7d9c2;border-radius:12px;color:#6b5836;font-size:14px"></p>
+
       <div class="card" style="margin-top:20px">
         <div class="tblwrap"><table class="tbl">
-          <thead><tr><th>Date</th><th>Libellé</th><th>Montant</th><th>Photo associée</th><th>Compte pressenti</th></tr></thead>
+          <thead><tr><th>Date</th><th>Fournisseur (facture)</th><th>Montant</th><th>Facture</th><th>Comptabiliser en</th></tr></thead>
           <tbody class="js-trancher"></tbody>
         </table></div>
       </div>
@@ -485,7 +491,7 @@ main.wrap{padding:30px 20px 90px}
   var $=function(s,c){return (c||root).querySelector(s)};
   var $$=function(s,c){return Array.prototype.slice.call((c||root).querySelectorAll(s))};
 
-  var TRANCHER=[
+  var DEFAULT_TRANCHER=[
     {dt:"18/03/2026",lib:"Menuiserie Des Cimes",m:3480.00,cpt:"2135",col:"#8a7355",ini:"M",
       opts:[["2135","2135 — Agencements, installations"],["615","615 — Entretien et réparations"],["2313","2313 — Constructions"]]},
     {dt:"20/04/2026",lib:"M Dupont Apport Cc",m:2500.00,cpt:"108",col:"#3f7d9c",ini:"V",
@@ -497,12 +503,32 @@ main.wrap{padding:30px 20px 90px}
     {dt:"08/11/2026",lib:"Axa Indemnisation Sinistre",m:640.00,cpt:"758",col:"#1f4fa3",ini:"A",
       opts:[["758","758 — Produits divers (indemnités)"],["791","791 — Transfert de charges"]]}
   ];
-  var RECLAM=[
+  var DEFAULT_RECLAM=[
     {lib:"Menuiserie Des Cimes",dt:"18/03/2026",m:3480.00,on:true},
     {lib:"Copro Azur Appel Fonds Travaux",dt:"12/09/2026",m:720.00,on:true},
     {lib:"Syndic Azur Appel T3",dt:"09/07/2026",m:438.00,on:true},
     {lib:"Chubb GLI",dt:"16/05/2026",m:168.00,on:true}
   ];
+  // Jeux de données par dossier (dans l'outil réel : produits par le moteur).
+  var DOSSIERS={
+    "LMNP_POLO_TEST":{
+      banque:"non",
+      note:"Dossier SANS banque : pas de relevé. Chaque règlement est identifié à partir de la facture (le fournisseur) — l'outil lit le fournisseur et demande simplement comment comptabiliser le paiement de la facture jointe.",
+      trancher:[
+        {dt:"05/01/2026",lib:"EDF",m:69.34,cpt:"606",col:"#1f6fb2",ini:"E",
+          opts:[["606","606 — Énergie / électricité"],["6061","6061 — Fournitures non stockables"],["615","615 — Entretien"]]},
+        {dt:"09/01/2026",lib:"Brico Dépôt",m:71.07,cpt:"615",col:"#c0392b",ini:"B",
+          opts:[["615","615 — Entretien et réparations"],["606","606 — Petit équipement"],["2184","2184 — Mobilier (immobilisation)"]]},
+        {dt:"16/01/2026",lib:"Bouygues Telecom",m:44.99,cpt:"626",col:"#0e7a63",ini:"B",
+          opts:[["626","626 — Télécom / internet"],["606","606 — Autres achats"]]}
+      ],
+      reclam:[
+        {lib:"Assurance PNO (récurrent N-1)",dt:"réf. N-1",m:182.00,on:true},
+        {lib:"Taxe foncière 2026 (récurrent N-1)",dt:"réf. N-1",m:520.00,on:true}
+      ]
+    }
+  };
+  var TRANCHER=DEFAULT_TRANCHER, RECLAM=DEFAULT_RECLAM, CURNOTE="";
   var eur=function(n){return n.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €'};
 
   function thumbSVG(col,ini){
@@ -515,6 +541,7 @@ main.wrap{padding:30px 20px 90px}
       +'<rect x="6" y="50" width="38" height="4" rx="2" fill="#e7eaef"/></svg>';
   }
   function renderTrancher(){
+    var np=$('.js-trancher-note'); if(np){np.textContent=CURNOTE||'';np.classList.toggle('hidden',!CURNOTE);}
     var tb=$('.js-trancher'); tb.innerHTML='';
     TRANCHER.forEach(function(r){
       var tr=document.createElement('tr');
@@ -570,6 +597,15 @@ main.wrap{padding:30px 20px 90px}
              : 'M. '+cap(key);
     $$('.js-client-name').forEach(function(e){e.textContent=disp;});
     $$('.js-client-mail').forEach(function(e){e.textContent='client.'+key.toLowerCase()+'@email.fr';});
+    var ds=DOSSIERS[name];
+    TRANCHER=(ds&&ds.trancher)||DEFAULT_TRANCHER;
+    RECLAM=(ds&&ds.reclam)||DEFAULT_RECLAM;
+    CURNOTE=(ds&&ds.note)||"";
+    var bq=(ds&&ds.banque)||'oui';
+    root.dataset.banque=bq;
+    $$('.js-bq').forEach(function(x){x.setAttribute('aria-pressed',x.dataset.v===bq?'true':'false');});
+    var fmt=$('.js-fmt'); if(fmt)fmt.textContent='Format ASCII (Quadra) · contrepartie '+(bq==='oui'?'512':'108');
+    renderTrancher();renderReclam();
     go(1);
   }
   $$('.js-open').forEach(function(b){b.addEventListener('click',function(){openDossier(b.dataset.name,b.dataset.ex,b.dataset.type);});});
@@ -611,23 +647,25 @@ main.wrap{padding:30px 20px 90px}
   function cptPad(c){c=(''+c).replace(/\D/g,'');return (c+'00000000').slice(0,8);}
   function numR(v,n){var c=''+Math.round(v*100);return (Array(n+1).join('0')+c).slice(-n);}
   function ddmmyy(dt){var p=dt.split('/');return p[0]+p[1]+p[2].slice(2);}
-  function ligneM(compte,dt,lib,sens,montant,ctp){
+  function ligneM(compte,dt,lib,sens,montant,ctp,jr){
+    jr=(jr||'BQ');
     var b=Array(251+1).join(' ').split('');
     function put(pos,s){for(var i=0;i<s.length;i++){b[pos-1+i]=s[i];}}
-    put(1,'M');put(2,cptPad(compte));put(10,'BQ');put(12,'000');put(15,ddmmyy(dt));
+    put(1,'M');put(2,cptPad(compte));put(10,jr);put(12,'000');put(15,ddmmyy(dt));
     put(22,clean(lib,20));put(42,sens);put(43,'+');put(44,numR(montant,12));
-    put(56,cptPad(ctp));put(64,'000000');put(108,'EUR');put(111,'BQ1');
+    put(56,cptPad(ctp));put(64,'000000');put(108,'EUR');put(111,jr+'1');
     put(117,clean(lib,87));put(204,'0000000001');put(214,'_IMP');put(218,'12062026120000');
     return b.join('');
   }
   $('.js-download').addEventListener('click',function(){
     var avecBanque=root.dataset.banque==='oui';
     var ctp=avecBanque?'512':'108';
+    var jr=avecBanque?'BQ':'OD';
     var rows=$$('.js-trancher tr');
     var out=TRANCHER.map(function(r,i){
       var cpt=r.cpt, s=rows[i]?rows[i].querySelector('select'):null; if(s)cpt=s.value;
       var sens=(cpt==='758'||cpt==='108')?'C':'D';
-      return ligneM(cpt,r.dt,r.lib,sens,r.m,ctp);
+      return ligneM(cpt,r.dt,r.lib,sens,r.m,ctp,jr);
     });
     var name=($('.js-dossier')?$('.js-dossier').textContent:'DOSSIER')+'_'+(avecBanque?'BQ':'OD');
     var blob=new Blob([out.join('\r\n')+'\r\n'],{type:'text/plain;charset=windows-1252'});
