@@ -1559,7 +1559,8 @@ function generateDemoEcritures(){
     {compte:'164000', lib:'Emprunts établissements de crédit', debit:0, credit:18000},
     {compte:'101000', lib:'Capital social', debit:0, credit:10000},
     {compte:'106100', lib:'Réserve légale', debit:0, credit:1000},
-    {compte:'110000', lib:'Report à nouveau', debit:0, credit:900}
+    {compte:'355000', lib:'Stocks de produits finis', debit:9600, credit:0},
+    {compte:'110000', lib:'Report à nouveau', debit:0, credit:10500}
   ]);
   const caMensuel = [18000,16500,19000,21000,22500,24000,19500,12000,21000,23500,26000,31000];
   const joursMois = [31,28,31,30,31,30,31,31,30,31,30,31];
@@ -1673,7 +1674,9 @@ function generateDemoEcrituresN1(){
     {compte:'281800', lib:'Amort. matériel et outillage', debit:0, credit:4800},
     {compte:'164000', lib:'Emprunts établissements de crédit', debit:0, credit:12000},
     {compte:'101000', lib:'Capital social', debit:0, credit:10000},
-    {compte:'106100', lib:'Réserve légale', debit:0, credit:500}
+    {compte:'106100', lib:'Réserve légale', debit:0, credit:500},
+    {compte:'355000', lib:'Stocks de produits finis', debit:8500, credit:0},
+    {compte:'110000', lib:'Report à nouveau', debit:0, credit:8500}
   ]);
   const caMensuel = [16500,15000,17500,18500,20500,22000,18000,11500,19000,20500,23500,23500];
   const achatRatio = 0.52;   // meilleure marge en N-1 (0,55 en N) → marge en repli cette année
@@ -3048,6 +3051,7 @@ function computeNN1(){
     if(AN1){
       AN.ratios.delaiClients=47; AN.ratios.delaiFournisseurs=38;
       AN1.ratios.delaiClients=39; AN1.ratios.delaiFournisseurs=41;
+      AN.ratios.BFR=20150; AN1.ratios.BFR=16770;
       AN1.compteResultat.resultatNet=4100;
       AN1._sig = computeSIG(AN1);
       AN1._sig.ebe=10280; AN1._sig.valeurAjoutee=122944; AN1._sig.rcai=4520;
@@ -3625,15 +3629,15 @@ function renderChargeRight(){
   const vals=mN.filter(v=>v>0.5); const mx=Math.max(...mN,0), mn=vals.length?Math.min(...vals):0;
   const reguliere = vals.length>=8 && mx>0 && (mx-mn)/mx < 0.25;
   const repHtml = reguliere
-    ? `<div class="bcard" style="margin-top:18px;"><div class="card-h ico-h">${chip('pie','green','sm')}<span>Répartition des dépenses</span></div><div class="card-sub2">Rythme de la dépense sur l'exercice.</div><div style="font-size:.92rem;color:var(--ink-soft);line-height:1.5;">Dépense régulière, autour de <b>${fmtEUR(n/12)}</b> chaque mois, sans concentration particulière sur un mois donné.</div></div>`
-    : `<div class="bcard" style="margin-top:18px;"><div class="card-h ico-h">${chip('pie','green','sm')}<span>Répartition des dépenses</span></div><div class="card-sub2">Mois les plus chargés sur l'exercice.</div>`+
+    ? `<div class="bcard"><div class="card-h ico-h">${chip('pie','green','sm')}<span>Répartition des dépenses</span></div><div class="card-sub2">Rythme de la dépense sur l'exercice.</div><div style="font-size:.92rem;color:var(--ink-soft);line-height:1.5;">Dépense régulière, autour de <b>${fmtEUR(n/12)}</b> chaque mois, sans concentration particulière sur un mois donné.</div></div>`
+    : `<div class="bcard"><div class="card-h ico-h">${chip('pie','green','sm')}<span>Répartition des dépenses</span></div><div class="card-sub2">Mois les plus chargés sur l'exercice.</div>`+
       top3.map(x=>{const pc=x.v/totM;return `<div class="rep-row"><span class="rep-name">${moisLabel(x.m+1)}</span><span class="rep-eur">${fmtEUR(x.v)}</span><span class="rep-pct">${fmtPct(pc)}</span><div class="rep-bar"><i style="width:${(pc*100).toFixed(0)}%"></i></div></div>`;}).join('')+
       (top3.length?`<div style="margin-top:10px;font-size:.82rem;color:var(--muted);">À eux seuls, ces ${top3.length} mois représentent ${fmtPct(top3sum/totM)} de la dépense annuelle.</div>`:'')+`</div>`;
   const lecture=chargeLecture(acc,n,n1,mN,idx);
-  const lectHtml=`<div class="bcard" style="margin-top:18px;"><div class="card-h ico-h">${chip('bars','blue','sm')}<span>Lecture</span></div><ul class="retenir-ul">${lecture.map(l=>`<li>${l}</li>`).join('')}</ul></div>`;
+  const lectHtml=`<div class="bcard"><div class="card-h ico-h">${chip('bars','blue','sm')}<span>Lecture</span></div><ul class="retenir-ul">${lecture.map(l=>`<li>${l}</li>`).join('')}</ul></div>`;
   box.innerHTML=`<h1 style="margin-bottom:4px;">${acc.lib}</h1><div class="page-sub">Compte ${acc.compte}</div>${cards}
     <div class="bcard"><div class="card-h">Évolution mensuelle</div><div class="chart-wrap sm"><canvas id="detail-chart"></canvas></div></div>
-    ${repHtml}${lectHtml}
+    <div class="two-60-40" style="margin-top:18px;">${repHtml}${lectHtml}</div>
     <div class="retenir-band" style="margin-top:18px;"><div class="rb-ico">${svgIcon('bulb')}</div><div class="rb-body"><h3>Ce qu'il faut retenir</h3><p>${chargeRetenir(acc,n,n1)}</p></div></div>`;
   lineNN1('detail-chart', mN, mN1, Object.assign({zero:true}, yearLabels()));
 }
@@ -3734,7 +3738,7 @@ function renderBilanRatios(){
   const cards=[];
   cards.push({ico:'user',tone:'blue',l:'Délai de règlement clients',v:joursTxt(r.delaiClients),s:r1?`vs ${joursTxt(r1.delaiClients)}`:'',cls:dirDelai});
   cards.push({ico:'users',tone:'slate',l:'Délai de paiement fournisseurs',v:joursTxt(r.delaiFournisseurs),s:r1?`vs ${joursTxt(r1.delaiFournisseurs)}`:'',cls:''});
-  cards.push({ico:'refresh',tone:'purple',l:'Besoin en fonds de roulement',v:fmtEUR(r.BFR),s:r.BFR<0?'ressource pour l\'entreprise':'à financer',cls:r.BFR<=0?'up':''});
+  cards.push({ico:'refresh',tone:'purple',l:'Besoin en fonds de roulement',v:fmtEUR(r.BFR),s:r1?('vs '+fmtEUR(r1.BFR)):(r.BFR<0?'ressource pour l\'entreprise':'à financer'),cls:(r1&&r.BFR<=r1.BFR)?'up':'neu'});
   cards.push({ico:'wallet',tone:'green',l:'Trésorerie nette',v:fmtEUR(r.tresorerieNette),s:r1?`vs ${fmtEUR(r1.tresorerieNette)}`:'',cls:r1?(r.tresorerieNette>=r1.tresorerieNette?'up':'warn'):''});
   if(AN.bilan.dettesFinancieres>0.5 && caf>0.5){ const ans=AN.bilan.dettesFinancieres/caf; cards.push({ico:'bank',tone:'slate',l:'Capacité de remboursement',v:dec1(ans)+' '+(ans>=2?'ans':'an'),s:'dettes financières / CAF',cls:ans<=3?'up':'warn'}); }
   if(stocks>0.5){ const achats=AN.compteResultat.detail['60']||1; cards.push({ico:'box',tone:'orange',l:'Rotation des stocks',v:joursTxt(Math.round(stocks/achats*365)),s:'de stock en moyenne',cls:''}); }
@@ -3744,12 +3748,10 @@ function renderBilanRatios(){
 }
 function retenirRatios(r,r1){
   const out=[];
-  if(r1 && r.delaiClients>r1.delaiClients+2) out.push(`Les clients paient plus lentement qu'avant (${joursTxt(r.delaiClients)} contre ${joursTxt(r1.delaiClients)}) : c'est autant de trésorerie immobilisée.`);
-  else if(r1 && r.delaiClients<r1.delaiClients-2) out.push(`Les clients paient plus vite qu'avant (${joursTxt(r.delaiClients)} contre ${joursTxt(r1.delaiClients)}), ce qui soulage la trésorerie.`);
-  else if(r1) out.push(`Les délais de paiement restent maîtrisés (${joursTxt(r.delaiClients)} côté clients, ${joursTxt(r.delaiFournisseurs)} côté fournisseurs).`);
-  if(r.BFR<0) out.push(`Le besoin en fonds de roulement est négatif : le cycle d'exploitation dégage de la trésorerie plutôt qu'il n'en consomme, ce qui est favorable.`);
-  else out.push(`La trésorerie nette de ${fmtEUR(r.tresorerieNette)} ${r.tresorerieNette>=r.BFR?'couvre':'ne couvre pas entièrement'} le besoin de financement du cycle d'exploitation.`);
-  return out.slice(0,3);
+  out.push(`La structure financière est saine, avec une trésorerie nette solide et une bonne capacité de remboursement.`);
+  if(r1 && r.delaiClients>r1.delaiClients+2) out.push(`Le besoin en fonds de roulement reste maîtrisé, malgré un allongement du délai clients (${joursTxt(r.delaiClients)}) à surveiller.`);
+  else out.push(`Le besoin en fonds de roulement reste maîtrisé au regard de l'activité.`);
+  return out.slice(0,2);
 }
 
 /* ---- TRÉSORERIE ---- */
