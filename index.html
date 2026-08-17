@@ -930,10 +930,13 @@
             <div class="chart-wrap sm"><canvas id="chg-chart"></canvas></div>
           </div>
         </div>
-        <div class="bcard" style="margin-top:20px;">
-          <table class="ctab" id="chg-table"></table>
+        <div class="two-70-30" style="margin-top:20px;">
+          <div class="bcard">
+            <div class="card-h" style="margin-bottom:14px;">Détail des charges d'exploitation</div>
+            <table class="ctab" id="chg-table"></table>
+          </div>
+          <div class="retenir-client"><div class="rc-ico" id="chg-ico"></div><h3>Ce qu'il faut retenir</h3><div id="chg-retenir"></div></div>
         </div>
-        <div class="retenir-band" style="margin-top:20px;"><div class="rb-ico" id="chg-ico"></div><div class="rb-body"><h3>Ce qu'il faut retenir</h3><div id="chg-retenir"></div></div></div>
       </div>
       <div id="charge-detail" style="display:none;"></div>
     </section>
@@ -3415,10 +3418,13 @@ function retenirHTML(id, bullets){
   const el=document.getElementById(id); if(!el) return;
   el.innerHTML = (bullets||[]).map(b=>`<p>${b}</p>`).join('');
 }
+function yN(){ return (AN&&AN.periode.fin)?AN.periode.fin.getFullYear():null; }
+function yN1(){ return (AN1&&AN1.periode.fin)?AN1.periode.fin.getFullYear():null; }
+function labN(){ const y=yN(); return y?('N ('+y+')'):'Exercice N'; }
+function labN1(){ const y=yN1(); return y?('N-1 ('+y+')'):'Exercice N-1'; }
 function yearLabels(){
-  const yN=AN&&AN.periode.fin?AN.periode.fin.getFullYear():null;
-  const yN1=AN1&&AN1.periode.fin?AN1.periode.fin.getFullYear():null;
-  return {labelN:yN?yN+' (N)':'N', labelN1:yN1?yN1+' (N-1)':'N-1'};
+  const a=yN(), b=yN1();
+  return {labelN:a?a+' (N)':'N', labelN1:b?b+' (N-1)':'N-1'};
 }
 function currentPR(){ return sumComptes(AN.soldes,['418'],'debit'); }
 function currentST(){ return sumComptes(AN.soldes,['3'],'debit'); }
@@ -3456,7 +3462,7 @@ function renderSynthese(){
     } else {
       const rate=caN?r.n/caN:0, rate1=(caN1&&r.n1!=null)?r.n1/caN1:null;
       const dPt=(rate1!=null)?(rate-rate1)*100:null; up=(dPt==null||dPt>=-0.05);
-      meta = `${dPt!=null&&Math.abs(dPt)>=0.05?`<span class="d ${up?'up':'down'}">${ptDelta(dPt)}</span>`:''}<span class="pct">${fmtPct(rate)} du CA</span>${rate1!=null?`<span class="vs">vs ${fmtPct(rate1)}</span>`:''}`;
+      meta = `${dPt!=null&&Math.abs(dPt)>=0.05?`<span class="d ${up?'up':'down'}">${ptDelta(dPt)}</span>`:''}<span class="pct">${fmtPct1(rate)} du CA</span>${rate1!=null?`<span class="vs">vs ${fmtPct1(rate1)}</span>`:''}`;
     }
     const spark = sparklineSVG(ms[r.key]||[], up?'#08783E':'#C4362F');
     return `<div class="sig-line">
@@ -3538,10 +3544,15 @@ function renderCharges(){
   const total1=AN1?cats.reduce((s,c)=>s+(c.n1||0),0):null;
   const ca=AN.ratios.CA;
   document.getElementById('chg-total').textContent=fmtEUR(total);
-  document.getElementById('chg-total-sub').innerHTML = (total1!=null?`${signEUR(total-total1)} · ${signPct((total-total1)/total1)} vs N-1 · `:'')+`${fmtPct(ca?total/ca:0)} du CA`;
+  if(total1!=null){
+    const d=(total-total1)/total1, cls=d>0?'var-warn':'var-up', arr=d>0?'↑':'↓';
+    document.getElementById('chg-total-sub').innerHTML = `<span class="${cls}" style="font-size:1rem;">${arr} ${signPct(d)}</span><br><span style="color:var(--muted);">${signEUR(total-total1)} vs ${fmtEUR(total1)} · ${fmtPct(ca?total/ca:0)} du CA</span>`;
+  } else {
+    document.getElementById('chg-total-sub').innerHTML = `${fmtPct(ca?total/ca:0)} du CA`;
+  }
   const pref=['60','61','62','63','64','65','681'];
   lineNN1('chg-chart', monthlyByPrefix(ecrituresN,pref,'debit'), AN1?monthlyByPrefix(ecrituresN1,pref,'debit'):null, yearLabels());
-  const head=`<tr><th>Catégorie</th><th class="num">N</th><th class="num">N-1</th><th class="num">Variation</th><th class="num">% du CA</th><th></th></tr>`;
+  const head=`<tr><th>Catégorie</th><th class="num">${yN()||'N'}</th><th class="num">${yN1()||'N-1'}</th><th class="num">Variation</th><th class="num">% du CA</th><th></th></tr>`;
   const body=cats.filter(c=>c.n>0.5||(c.n1&&c.n1>0.5)).map(c=>{
     return `<tr class="clickable" data-cat="${c.id}"><td>${c.label}</td><td class="num">${fmtEUR(c.n)}</td><td class="num">${c.n1!=null?fmtEUR(c.n1):'—'}</td><td class="num">${chgVarHTML(c.n,c.n1)}</td><td class="num">${fmtPct(ca?c.n/ca:0)}</td><td class="num chev">›</td></tr>`;
   }).join('');
@@ -3603,9 +3614,9 @@ function renderChargeRight(){
   const n=acc.n, n1=accN1(compte);
   const varEur = n1!=null? signEUR(n-n1):'—';
   const cards=`<div class="three-cards">
-    <div class="mini-card"><div class="mc-head"><span class="ic ic-green ic-sm txt">N</span><span class="mc-l">Exercice N</span></div><div class="mc-v">${fmtEUR(n)}</div></div>
-    <div class="mini-card"><div class="mc-head"><span class="ic ic-slate ic-sm txt">N-1</span><span class="mc-l">Exercice N-1</span></div><div class="mc-v">${n1!=null?fmtEUR(n1):'—'}</div></div>
-    <div class="mini-card"><div class="mc-head">${chip('arrowUR', n1!=null?chgVarCls(n,n1).replace('var-up','green').replace('var-warn','orange').replace('var-flat','slate'):'slate','sm')}<span class="mc-l">Variation</span></div><div class="mc-v ${n1!=null?chgVarCls(n,n1):''}">${varEur}</div><div class="mc-s">${n1&&n1>0.5?signPct((n-n1)/n1):''}</div></div>
+    <div class="mini-card"><div class="mc-head"><span class="ic ic-green ic-sm txt">N</span><span class="mc-l">${labN()}</span></div><div class="mc-v">${fmtEUR(n)}</div></div>
+    <div class="mini-card"><div class="mc-head"><span class="ic ic-slate ic-sm txt">N-1</span><span class="mc-l">${labN1()}</span></div><div class="mc-v">${n1!=null?fmtEUR(n1):'—'}</div></div>
+    <div class="mini-card"><div class="mc-head">${chip('arrowUR', n1!=null?chgVarCls(n,n1).replace('var-up','green').replace('var-warn','orange').replace('var-flat','slate'):'slate','sm')}<span class="mc-l">Variation</span></div><div class="mc-v ${n1!=null?chgVarCls(n,n1):''}">${n1&&n1>0.5?signPct((n-n1)/n1):varEur}</div><div class="mc-s">${n1!=null?signEUR(n-n1):''}</div></div>
   </div>`;
   const mN=monthlyAccount(ecrituresN,compte), mN1=AN1?monthlyAccount(ecrituresN1,compte):null;
   // répartition par mois (top) — ou dépense régulière ?
@@ -3676,12 +3687,12 @@ function renderRecurrentes(){
 function renderRecDetail(cat){
   const n=cat.n, n1=cat.n1;
   const cards=`<div class="three-cards">
-    <div class="mini-card"><div class="mc-head"><span class="ic ic-green ic-sm txt">N</span><span class="mc-l">Exercice N</span></div><div class="mc-v">${fmtEUR(n)}</div></div>
-    <div class="mini-card"><div class="mc-head"><span class="ic ic-slate ic-sm txt">N-1</span><span class="mc-l">Exercice N-1</span></div><div class="mc-v">${n1!=null?fmtEUR(n1):'—'}</div></div>
+    <div class="mini-card"><div class="mc-head"><span class="ic ic-green ic-sm txt">N</span><span class="mc-l">${labN()}</span></div><div class="mc-v">${fmtEUR(n)}</div></div>
+    <div class="mini-card"><div class="mc-head"><span class="ic ic-slate ic-sm txt">N-1</span><span class="mc-l">${labN1()}</span></div><div class="mc-v">${n1!=null?fmtEUR(n1):'—'}</div></div>
     <div class="mini-card"><div class="mc-head">${chip('arrowUR', n1!=null?chgVarCls(n,n1,0.10).replace('var-up','green').replace('var-warn','orange').replace('var-flat','slate'):'slate','sm')}<span class="mc-l">Variation</span></div><div class="mc-v ${n1!=null?chgVarCls(n,n1,0.10):''}">${n1!=null?signEUR(n-n1):'—'}</div><div class="mc-s">${n1&&n1>0.5?signPct((n-n1)/n1):''}</div></div>
   </div>`;
   const accs=recAccounts(cat.id);
-  const head=`<tr><th>Compte</th><th>Libellé</th><th class="num">N</th><th class="num">N-1</th><th class="num">Variation</th><th>Observation</th></tr>`;
+  const head=`<tr><th>Compte</th><th>Libellé</th><th class="num">${yN()||'N'}</th><th class="num">${yN1()||'N-1'}</th><th class="num">Variation</th><th>Observation</th></tr>`;
   const body=accs.map(a=>{
     let obs='';
     if(a.n1===0||a.n1==null) obs=`<span class="badge2 new">Nouveau contrat</span>`;
