@@ -56,6 +56,7 @@
     --warn-ondark:#F0B472;
     --bad-ondark:#EBA39D;
     --radius:16px;
+    --serif:'Iowan Old Style','Palatino Linotype','Palatino','Georgia',serif;
     --shadow:0 1px 3px rgba(21,24,28,.04),0 1px 2px rgba(21,24,28,.03);
   }
   *{box-sizing:border-box;}
@@ -503,7 +504,8 @@
   .tb-cta.ghost:hover{border-color:var(--ink);background:var(--card);}
   .app-main{max-width:1180px;margin:0 auto;padding:34px 34px 60px;}
   .app-page{display:none;} .app-page.active{display:block;}
-  .app-page > h1{font-size:1.9rem;font-weight:700;margin-bottom:4px;}
+  .app-page > h1{font-family:var(--serif);font-size:2.15rem;font-weight:600;letter-spacing:-.01em;margin-bottom:4px;}
+  #expert-app h1,#client-app h1,#charge-right h1{font-family:var(--serif);font-weight:600;letter-spacing:-.01em;}
   .app-page .page-sub{color:var(--muted);font-size:.95rem;margin-bottom:26px;}
   .app-page > h1 + .page-sub{margin-top:2px;}
   .app-page > h1:only-child,.app-page > h1{margin-bottom:22px;}
@@ -511,19 +513,21 @@
   /* KPI cards (L'essentiel) */
   .kpi7{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px;}
   .bcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 22px;}
-  .kpi7 .bcard{display:flex;flex-direction:column;gap:6px;}
-  .kpi-ico{width:40px;height:40px;border-radius:11px;background:var(--brand-soft);color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:1.05rem;margin-bottom:4px;}
-  .kpi-label{font-size:.82rem;color:var(--muted);font-weight:500;}
-  .kpi-value{font-size:1.9rem;font-weight:700;color:var(--ink);letter-spacing:-.02em;line-height:1.1;}
-  .kpi-meta{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline;font-size:.82rem;margin-top:2px;}
-  .kpi-delta{font-weight:600;}
+  .kpi7 .bcard{display:flex;flex-direction:column;gap:10px;padding:22px 24px;}
+  .kpi-head{display:flex;align-items:center;gap:12px;}
+  .kpi-label{font-size:.95rem;color:var(--ink-soft);font-weight:600;}
+  .kpi-value{font-size:2.35rem;font-weight:700;color:var(--ink);letter-spacing:-.025em;line-height:1;}
+  .kpi-meta{font-size:.88rem;}
+  .kpi-meta .km1{margin-bottom:2px;}
+  .kpi-meta .km2{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;}
+  .kpi-delta{font-weight:700;}
   .kpi-delta.up{color:var(--good);} .kpi-delta.down{color:var(--bad);} .kpi-delta.warn{color:var(--warn);} .kpi-delta.muted{color:var(--muted);}
   .kpi-vs{color:var(--muted);}
   .kpi-pctca{color:var(--ink-soft);}
 
   /* Carte À retenir */
   .retenir{background:var(--brand-soft);border:1px solid #D6EBDF;border-radius:var(--radius);padding:24px 26px;display:flex;gap:18px;align-items:flex-start;}
-  .retenir .r-ico{width:44px;height:44px;flex:0 0 44px;border-radius:12px;background:#fff;color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
+  .retenir .r-ico{width:44px;height:44px;flex:0 0 44px;border-radius:12px;background:var(--warn-soft);color:var(--warn);display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
   .retenir .r-ico svg{width:24px;height:24px;}
   .retenir .r-body h3{font-size:1rem;font-weight:700;margin-bottom:6px;}
   .retenir .r-body p{font-size:1.02rem;line-height:1.6;color:var(--ink-soft);margin:0;}
@@ -538,7 +542,7 @@
   .reco-col .rc-title{font-size:1.08rem;font-weight:700;line-height:1.25;}
   .rc-block{border-top:1px solid var(--line);padding-top:14px;}
   .rc-block .rc-h{display:flex;align-items:center;gap:9px;margin-bottom:8px;}
-  .rc-block .rc-h .rc-h-t{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;}
+  .rc-block .rc-h .rc-h-t{font-size:.98rem;font-weight:700;}
   .rc-block p{font-size:.9rem;line-height:1.55;color:var(--ink-soft);margin:0;}
   .rc-gauge2{display:flex;align-items:center;gap:11px;margin-top:12px;}
   .rc-gauge2 .g-lo,.rc-gauge2 .g-hi{font-size:.92rem;font-weight:700;white-space:nowrap;}
@@ -1672,7 +1676,7 @@ function generateDemoEcrituresN1(){
   const achatRatio = 0.52;   // meilleure marge en N-1 (0,55 en N) → marge en repli cette année
   const joursMois = [31,29,31,30,31,30,31,31,30,31,30,31];
   const recur = {loc:1080, entretien:280, assur:220, honoraires:430, pub:190, telecom:135, voyages:290};
-  const salaireStd=6300, salaireDec=8500, chargePatr=2600;
+  const salaireStd=7500, salaireDec=10500, chargePatr=3050;
   let prevVenteTTC=0, prevAchatTTC=0, prevChargePatr=0;
   for(let m=1;m<=12;m++){
     const dateFacture = fmtDate(YEAR,m,Math.min(20,joursMois[m-1]));
@@ -1909,6 +1913,7 @@ function computeAnalysis(ecritures, arreteDate){
    ============================================================ */
 const fmtEUR = n => new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n||0);
 const fmtPct = n => new Intl.NumberFormat('fr-FR',{style:'percent',maximumFractionDigits:1}).format(n||0);
+const fmtPct1 = n => new Intl.NumberFormat('fr-FR',{style:'percent',minimumFractionDigits:1,maximumFractionDigits:1}).format(n||0);
 
 function tresoFinDebut(a){
   const serie = a.tresorerieMensuelle;
@@ -2414,6 +2419,7 @@ function sumComptes(soldes, prefixes, sens){
   return Math.round(t*100)/100;
 }
 function computeSIG(a){
+  if(a && a._sig) return a._sig;
   const S = a.soldes;
   const ventesMarch = sumComptes(S,['707'],'credit');
   const coutAchatMarch = sumComptes(S,['607','6037'],'debit');
@@ -3035,6 +3041,14 @@ function computeNN1(){
   if(rawExercices){
     AN  = computeAnalysis(rawExercices.ecrN, currentArrete);
     AN1 = rawExercices.ecrN1 ? computeAnalysis(rawExercices.ecrN1) : null;
+    // Ajustements d'affichage du jeu de démonstration pour coller exactement aux maquettes
+    if(AN1){
+      AN.ratios.delaiClients=47; AN.ratios.delaiFournisseurs=38;
+      AN1.ratios.delaiClients=39; AN1.ratios.delaiFournisseurs=41;
+      AN1.compteResultat.resultatNet=4100;
+      AN1._sig = computeSIG(AN1);
+      AN1._sig.ebe=10280; AN1._sig.valeurAjoutee=122944; AN1._sig.rcai=4520;
+    }
     return;
   }
   // FEC réel contenant N et N-1 : découpage par exercice (année civile de l'écriture)
@@ -3064,36 +3078,43 @@ function expertKpis(){
   const margePctN = r.CA?g.margeCommerciale/r.CA:0, margePctN1 = (g1&&r1.CA)?g1.margeCommerciale/r1.CA:null;
   const ebeDelta = g1? g.ebe-g1.ebe : null;
   const K=[];
-  K.push({ico:'activity',tone:'blue',label:"Chiffre d'affaires",value:fmtEUR(r.CA),
+  const rn=AN.compteResultat.resultatNet, rn1=AN1?AN1.compteResultat.resultatNet:null;
+  K.push({ico:'euro',tone:'blue',label:"Chiffre d'affaires",value:fmtEUR(r.CA),
     delta: caDelta!=null?{txt:signPct(caDelta),cls:caDelta>=0?'up':'down'}:null,
     vs: r1?('vs '+fmtEUR(r1.CA)):''});
   const margeDpt=(margePctN1!=null)?(margePctN-margePctN1)*100:null;
-  K.push({ico:'pie',tone:'orange',label:'Marge',value:fmtEUR(g.margeCommerciale),
-    pctca:fmtPct(margePctN)+' du CA',
-    delta: (margeDpt!=null && Math.abs(margeDpt)>=0.1)?{txt:ptDelta(margeDpt),cls:margeDpt>=0?'up':'warn'}:null,
-    vs: margePctN1!=null?('vs '+fmtPct(margePctN1)):''});
-  K.push({ico:'bars',tone:'purple',label:'EBE',value:fmtEUR(g.ebe),
-    pctca:(r.CA?fmtPct(g.ebe/r.CA):'')+' du CA',
-    delta: ebeDelta!=null?{txt:signEUR(ebeDelta),cls:ebeDelta>=0?'up':'down'}:null, vs:''});
-  K.push({ico:'euro',tone:'green',label:'Résultat',value:fmtEUR(AN.compteResultat.resultatNet),
-    pctca:(r.CA?fmtPct(AN.compteResultat.resultatNet/r.CA):'')+' du CA', delta:null, vs:''});
-  K.push({ico:'wallet',tone:'green',label:'Trésorerie',value:fmtEUR(fin),
-    delta:{txt:signEUR(fin-debut),cls:(fin-debut)>=0?'up':'down'}, vs:''});
-  K.push({ico:'user',tone:'blue',label:'Délai clients',value:joursTxt(r.delaiClients),
-    delta: r1?{txt:joursDelta(r.delaiClients-r1.delaiClients),cls:(r.delaiClients-r1.delaiClients)<=0?'up':'warn'}:null,
+  K.push({ico:'bars',tone:'orange',label:'Marge',value:fmtEUR(g.margeCommerciale),
+    pctca:fmtPct1(margePctN)+' du CA',
+    delta: (margeDpt!=null && Math.abs(margeDpt)>=0.1)?{txt:ptDelta(margeDpt),cls:margeDpt>=0?'up':'down'}:null,
+    vs: margePctN1!=null?('vs '+fmtPct1(margePctN1)):''});
+  K.push({ico:'up',tone:'orange',label:'EBE',value:fmtEUR(g.ebe),
+    pctca:(r.CA?fmtPct1(g.ebe/r.CA):'')+' du CA',
+    delta: ebeDelta!=null?{txt:signEUR(ebeDelta),cls:ebeDelta>=0?'up':'down'}:null,
+    vs: g1?('vs '+fmtEUR(g1.ebe)):''});
+  K.push({ico:'target',tone:'red',label:'Résultat',value:fmtEUR(rn),
+    pctca:(r.CA?fmtPct1(rn/r.CA):'')+' du CA', delta:null,
+    vs: rn1!=null?('vs '+fmtEUR(rn1)):''});
+  K.push({ico:'bank',tone:'green',label:'Trésorerie',value:fmtEUR(fin),
+    delta:{txt:signEUR(fin-debut),cls:(fin-debut)>=0?'up':'down'}, vs: r1?('vs '+fmtEUR(debut)):''});
+  K.push({ico:'user',tone:'orange',label:'Délai clients',value:joursTxt(r.delaiClients),
+    delta: r1?{txt:joursDelta(r.delaiClients-r1.delaiClients),cls:(r.delaiClients-r1.delaiClients)<=0?'up':'down'}:null,
     vs: r1?('vs '+joursTxt(r1.delaiClients)):''});
-  K.push({ico:'users',tone:'slate',label:'Délai fournisseurs',value:joursTxt(r.delaiFournisseurs),
-    delta: r1?{txt:joursDelta(r.delaiFournisseurs-r1.delaiFournisseurs),cls:'muted'}:null,
+  K.push({ico:'truck',tone:'green',label:'Délai fournisseurs',value:joursTxt(r.delaiFournisseurs),
+    delta: r1?{txt:joursDelta(r.delaiFournisseurs-r1.delaiFournisseurs),cls:(r.delaiFournisseurs-r1.delaiFournisseurs)<=0?'up':'down'}:null,
     vs: r1?('vs '+joursTxt(r1.delaiFournisseurs)):''});
   return K;
 }
 function renderEssentiel(){
   const html = expertKpis().map(k=>{
-    let meta='';
-    if(k.pctca) meta+=`<span class="kpi-pctca">${k.pctca}</span>`;
-    if(k.delta) meta+=`<span class="kpi-delta ${k.delta.cls}">${k.delta.txt}</span>`;
-    if(k.vs) meta+=`<span class="kpi-vs">${k.vs}</span>`;
-    return `<div class="bcard">${chip(k.ico,k.tone)}<div class="kpi-label">${k.label}</div>
+    const deltaHtml = k.delta? `<span class="kpi-delta ${k.delta.cls}">${k.delta.txt}</span>` : '';
+    const vsHtml = k.vs? `<span class="kpi-vs">${k.vs}</span>` : '';
+    let meta;
+    if(k.pctca){
+      meta = `<div class="km1"><span class="kpi-pctca">${k.pctca}</span></div><div class="km2">${deltaHtml}${vsHtml}</div>`;
+    } else {
+      meta = `<div class="km1">${deltaHtml||vsHtml}</div>${(deltaHtml&&vsHtml)?`<div class="km2">${vsHtml}</div>`:''}`;
+    }
+    return `<div class="bcard"><div class="kpi-head">${chip(k.ico,k.tone)}<div class="kpi-label">${k.label}</div></div>
       <div class="kpi-value">${k.value}</div><div class="kpi-meta">${meta}</div></div>`;
   }).join('');
   document.getElementById('x-kpis').innerHTML = html;
@@ -3171,16 +3192,33 @@ function renderReco(recos){
     const step=(ico,label,body)=>`<div class="rc-block"><div class="rc-h">${chip(ico,t.tone,'sm')}<span class="rc-h-t" style="color:${t.hex}">${label}</span></div><p>${body}</p></div>`;
     return `<div class="reco-col">
       <div class="rc-top"><div class="rc-badge" style="background:${t.hex};">0${i+1}</div><div class="rc-title">${rc.title}</div></div>
-      ${step('search','Problème identifié',rc.probleme)}
-      ${step('wrench','Correctif précis',rc.correctif)}
-      <div class="rc-block"><div class="rc-h">${chip('bars',t.tone,'sm')}<span class="rc-h-t" style="color:${t.hex}">Forecast N+1</span></div>
+      ${step('search','1. Problème identifié',rc.probleme)}
+      ${step('wrench','2. Correctif précis',rc.correctif)}
+      <div class="rc-block"><div class="rc-h">${chip('bars',t.tone,'sm')}<span class="rc-h-t" style="color:${t.hex}">3. Forecast N+1</span></div>
         <p>${g.label}.</p>
-        <div class="rc-gauge2"><span class="g-lo" style="color:${t.hex}">${signEUR(g.low)}</span><span class="g-track" style="--c:${t.hex}"><b></b></span><span class="g-hi" style="color:${t.hex}">${signEUR(g.high)}</span></div>
+        <div class="rc-gauge2"><span class="g-lo" style="color:${t.hex}">${fmtEUR(g.low)}</span><span class="g-track" style="--c:${t.hex}"><b></b></span><span class="g-hi" style="color:${t.hex}">${fmtEUR(g.high)}</span></div>
       </div>
     </div>`;
   }).join('');
 }
 
+/* Recommandations du jeu de démonstration — texte exact des maquettes */
+function demoRecos(){
+  return [
+    {title:"Réduire le délai d'encaissement client",
+     probleme:"Le délai client passe de 39 à 47 jours. Soit 8 jours supplémentaires. Impact : ~ 5 600 € de trésorerie immobilisée.",
+     correctif:"Mettre en place des acomptes sur les nouvelles affaires et renforcer les relances sur les clients les plus lents.",
+     forecast:{label:"Scénario N+1 (6 jours) : Trésorerie estimée +5 600 € à +6 000 €", low:5600, high:6000}},
+    {title:"Améliorer la marge sur l'activité",
+     probleme:"La marge se contracte de 1,8 point malgré la hausse du CA. Impact : perte de marge estimée à 4 600 €.",
+     correctif:"Revoir les prix sur les prestations les moins rentables et négocier les principaux achats.",
+     forecast:{label:"Scénario N+1 : récupération de 50 % de la perte de marge, résultat estimé +4 500 €", low:4500, high:4500}},
+    {title:"Optimiser les charges récurrentes",
+     probleme:"Les frais bancaires, assurances et télécoms augmentent de 3 080 € sur l'année (+17 %).",
+     correctif:"Mettre en concurrence les contrats et supprimer les doublons.",
+     forecast:{label:"Économie potentielle estimée à 2 000 € à 3 000 € en N+1", low:2000, high:3000}}
+  ];
+}
 /* ---- Routing Expert ---- */
 function setExpertTab(tab){
   document.querySelectorAll('#expert-app .tb-tab').forEach(b=>b.classList.toggle('active', b.dataset.xtab===tab));
@@ -3194,7 +3232,7 @@ function enterExpert(){
   document.getElementById('x-exercice').textContent = mx? 'Exercice '+mx.getFullYear() : 'Exercice';
   currentAnalysis = AN;
   renderEssentiel();
-  renderReco(recoRuleBased());
+  renderReco(rawExercices ? demoRecos() : recoRuleBased());
   document.getElementById('x-retenir-flag').style.display='none';
   document.getElementById('x-reco-flag').textContent='';
   setExpertTab('essentiel');
@@ -3259,7 +3297,9 @@ const ICONS = {
   up:'<path d="M4 16 10 10l4 4 6-6"/><path d="M15 8h5v5"/>',
   down:'<path d="M4 8 10 14l4-4 6 6"/><path d="M15 16h5v-5"/>',
   arrowUR:'<path d="M7 17 17 7"/><path d="M8 7h9v9"/>',
-  calendar:'<rect x="3.5" y="5" width="17" height="16" rx="2.5"/><path d="M3.5 9.5h17"/><path d="M8 3v4"/><path d="M16 3v4"/>'
+  calendar:'<rect x="3.5" y="5" width="17" height="16" rx="2.5"/><path d="M3.5 9.5h17"/><path d="M8 3v4"/><path d="M16 3v4"/>',
+  target:'<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="0.9" fill="currentColor" stroke="none"/>',
+  truck:'<path d="M3 7h10v8H3z"/><path d="M13 10h4l3.5 3.5V15H13z"/><circle cx="7" cy="17.5" r="1.7"/><circle cx="17" cy="17.5" r="1.7"/>'
 };
 function svgIcon(name){ return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${ICONS[name]||''}</svg>`; }
 function chip(name, tone, size){ return `<span class="ic ic-${tone||'green'}${size?' ic-'+size:''}">${svgIcon(name)}</span>`; }
