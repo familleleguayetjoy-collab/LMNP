@@ -38,26 +38,29 @@
     --bg:#FAFAF7;
     --card:#FFFFFF;
     --line:#ECEBE5;        /* bordure gris très clair */
-    --brand:#08783E;       /* vert BALANCE */
-    --brand-2:#066231;
-    --brand-soft:#EEF7F1;  /* vert clair fonds d'icônes */
-    --client:#08783E;      /* pas de second design system : client = vert */
-    --client-soft:#EEF7F1;
-    --good:#08783E;
-    --good-soft:#EEF7F1;
+    --brand:#1B3A5C;       /* bleu marine Sud Alpes Audit */
+    --brand-2:#12293F;
+    --brand-soft:#EAF1F8;  /* bleu clair — fonds d'accent */
+    --client:#1B3A5C;
+    --client-soft:#EAF1F8;
+    --good:#08783E;        /* vert — variation FAVORABLE uniquement (ne pas réutiliser) */
+    --good-soft:#EAF3EE;
     --bad:#C4362F;         /* rouge — évolution défavorable uniquement */
     --bad-soft:#FBE9E7;
     --warn:#E08A2B;        /* orange — points d'attention / dégradations */
     --warn-soft:#FCF1E3;
-    --blue:#2A5FB0;        /* extrêmement secondaire */
-    --charge:#08783E;
-    --charge-soft:#EEF7F1;
+    --blue:#2F6DB0;        /* bleu clair S2A */
+    --gold:#9A6E1E;        /* or S2A (accent) */
+    --gold-soft:#F5EEDD;
+    --charge:#1B3A5C;
+    --charge-soft:#EAF1F8;
     --good-ondark:#7FD3A2;
     --warn-ondark:#F0B472;
     --bad-ondark:#EBA39D;
     --radius:16px;
     --serif:'Iowan Old Style','Palatino Linotype','Palatino','Georgia',serif;
-    --shadow:0 1px 3px rgba(21,24,28,.04),0 1px 2px rgba(21,24,28,.03);
+    --shadow:0 1px 2px rgba(21,24,28,.05),0 6px 18px rgba(21,24,28,.05);
+    --line-card:#E4E3DC;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
@@ -488,8 +491,12 @@
   #expert-app,#client-app{display:none;min-height:100vh;background:var(--bg);}
   #expert-app.active,#client-app.active{display:block;}
   .topbar-app{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:28px;padding:14px 34px;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
-  .tb-left{display:flex;align-items:baseline;gap:16px;min-width:0;}
+  .tb-left{display:flex;align-items:center;gap:13px;min-width:0;flex:0 1 auto;}
   .tb-left .brand-logo{font-size:1.2rem;}
+  .tb-left .brand-img{flex:0 0 auto;}
+  .tb-left-txt{display:flex;flex-direction:column;min-width:0;}
+  .tb-left-txt b{font-size:1rem;font-weight:700;color:var(--ink);line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:230px;}
+  .tb-left-txt span{font-size:.78rem;color:var(--muted);white-space:nowrap;}
   .tb-client{font-size:.9rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .tb-client b{color:var(--ink);font-weight:600;}
   .tb-nav{display:flex;gap:16px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none;justify-content:center;}
@@ -524,9 +531,11 @@
   .kpi-delta.up{color:var(--good);} .kpi-delta.down{color:var(--bad);} .kpi-delta.warn{color:var(--warn);} .kpi-delta.muted{color:var(--muted);}
   .kpi-vs{color:var(--muted);}
   .kpi-pctca{color:var(--ink-soft);}
+  .km-note{font-size:.8rem;margin-top:6px;padding-top:6px;border-top:1px dashed var(--line);}
+  .km-note.warn{color:var(--warn);font-weight:600;} .km-note.down{color:var(--bad);font-weight:600;} .km-note.muted{color:var(--muted);}
 
   /* Carte À retenir */
-  .retenir{background:var(--brand-soft);border:1px solid #D6EBDF;border-radius:var(--radius);padding:24px 26px;display:flex;gap:18px;align-items:flex-start;}
+  .retenir{background:var(--brand-soft);border:1px solid #D6E2F0;border-radius:var(--radius);padding:24px 26px;display:flex;gap:18px;align-items:flex-start;}
   .retenir .r-ico{width:44px;height:44px;flex:0 0 44px;border-radius:12px;background:var(--warn-soft);color:var(--warn);display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
   .retenir .r-ico svg{width:24px;height:24px;}
   .retenir .r-body h3{font-size:1rem;font-weight:700;margin-bottom:6px;}
@@ -565,27 +574,29 @@
   .card-sub2{font-size:.82rem;color:var(--muted);margin-bottom:16px;}
 
   /* Lignes SIG (Synthèse) */
-  .sig-line{display:grid;grid-template-columns:1.4fr auto auto 96px;gap:18px;align-items:center;padding:18px 4px;border-bottom:1px solid var(--line);}
+  .sig-line{display:grid;grid-template-columns:minmax(0,1.7fr) auto 92px 128px 100px;gap:20px;align-items:center;padding:20px 6px;border-bottom:1px solid var(--line);}
   .sig-line:last-child{border-bottom:none;}
-  .sig-line .sl-label{font-size:.95rem;color:var(--ink);font-weight:500;}
-  .sig-line .sl-val{font-size:1.5rem;font-weight:700;color:var(--ink);letter-spacing:-.02em;text-align:right;white-space:nowrap;}
-  .sig-line .sl-meta{font-size:.8rem;color:var(--muted);text-align:right;line-height:1.4;white-space:nowrap;}
-  .sig-line .sl-meta .d,.sig-line .sl-meta .pct,.sig-line .sl-meta .vs{display:block;}
-  .sig-line .sl-meta .d{font-weight:600;}
-  .sig-line .sl-meta .d.up{color:var(--good);} .sig-line .sl-meta .d.down{color:var(--bad);} .sig-line .sl-meta .d.warn{color:var(--warn);}
-  .spark{width:96px;height:34px;}
-  /* tablette : on garde la comparaison N-1, on masque seulement la sparkline */
-  @media (max-width:1000px){ .sig-line{grid-template-columns:1.4fr auto auto;} .spark{display:none;} }
-  @media (max-width:600px){ .sig-line{grid-template-columns:1fr auto;} .sig-line .sl-meta{display:none;} }
+  .sig-line .sl-label{font-size:1rem;color:var(--ink);font-weight:600;}
+  .sig-line .sl-val{font-size:1.55rem;font-weight:700;color:var(--ink);letter-spacing:-.02em;text-align:right;white-space:nowrap;}
+  .sig-line .sl-delta{font-size:1rem;font-weight:700;text-align:right;white-space:nowrap;}
+  .sig-line .sl-delta.up{color:var(--good);} .sig-line .sl-delta.down{color:var(--bad);} .sig-line .sl-delta.warn{color:var(--warn);} .sig-line .sl-delta.flat{color:var(--muted);}
+  .sig-line .sl-meta{font-size:.86rem;color:var(--muted);text-align:right;line-height:1.5;white-space:nowrap;}
+  .sig-line .sl-meta .pct{display:block;color:var(--ink-soft);}
+  .sig-line .sl-meta .vs{display:block;}
+  .spark{width:104px;height:36px;}
+  @media (max-width:1050px){ .sig-line{grid-template-columns:1.4fr 1fr 80px 130px;gap:16px;} .spark{display:none;} }
+  @media (max-width:680px){ .sig-line{grid-template-columns:1fr auto auto;} .sig-line .sl-meta{display:none;} }
 
   /* ===== Pastilles d'icônes (formes + couleurs) ===== */
   .ic{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;border-radius:12px;}
   .ic svg{width:56%;height:56%;}
   .ic-sm{width:34px;height:34px;border-radius:10px;} .ic-md{width:44px;height:44px;} .ic-lg{width:52px;height:52px;border-radius:14px;}
   .ic:not(.ic-sm):not(.ic-lg){width:44px;height:44px;}
-  .ic-green{background:var(--brand-soft);color:var(--brand);}
+  .ic-green{background:var(--good-soft);color:var(--good);}
   .ic-orange{background:var(--warn-soft);color:var(--warn);}
   .ic-blue{background:#EAF0FA;color:var(--blue);}
+  .ic-navy{background:var(--brand-soft);color:var(--brand);}
+  .ic-gold{background:var(--gold-soft);color:var(--gold);}
   .ic-purple{background:#EFEAFB;color:#6A4CC0;}
   .ic-red{background:var(--bad-soft);color:var(--bad);}
   .ic-slate{background:#EEF1F4;color:#5B6472;}
@@ -598,13 +609,17 @@
   .tb-tab svg{width:17px;height:17px;stroke-width:2;}
   @media (max-width:1080px){ .tb-tab svg{display:none;} }
   /* Bande « Ce qu'il faut retenir » (couche de lecture / IA) */
-  .retenir-band{display:flex;gap:16px;align-items:flex-start;background:linear-gradient(180deg,var(--brand-soft),#fff);border:1px solid #DCEEE3;border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 24px;}
+  .retenir-band{display:flex;gap:16px;align-items:flex-start;background:linear-gradient(180deg,var(--brand-soft),#fff);border:1px solid #D6E2F0;border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 24px;}
   .retenir-band .rb-ico{width:46px;height:46px;flex:0 0 46px;border-radius:13px;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;}
   .retenir-band .rb-ico svg{width:24px;height:24px;}
   .retenir-band .rb-body{flex:1;}
   .retenir-band h3{font-size:1rem;font-weight:700;color:var(--brand-2);margin-bottom:8px;}
   .retenir-band p{font-size:1rem;line-height:1.62;color:var(--ink-soft);margin:0 0 8px;}
   .retenir-band p:last-child{margin-bottom:0;}
+  /* Listes à puces « ce qu'il faut retenir » */
+  .ret-ul{list-style:none;margin:0;padding:0;}
+  .ret-ul li{position:relative;padding:7px 0 7px 20px;font-size:.98rem;line-height:1.55;color:var(--ink-soft);}
+  .ret-ul li::before{content:'';position:absolute;left:2px;top:14px;width:7px;height:7px;border-radius:50%;background:var(--brand);}
 
   /* Ce qu'il faut retenir (client) */
   .retenir-client{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;}
@@ -650,20 +665,54 @@
   .badge2{display:inline-block;font-size:.72rem;font-weight:600;padding:3px 10px;border-radius:20px;}
   .badge2.warn{background:var(--warn-soft);color:var(--warn);}
   .badge2.new{background:var(--brand-soft);color:var(--brand);}
+  .badge2.soft{background:#EEF1F4;color:#5B6472;}
+  /* Panneau « postes du mois » (clic sur le graphique charges) */
+  .cmp{border-left:3px solid var(--brand);}
+  .cmp-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px;}
+  .cmp-close{background:none;border:none;color:var(--muted);font-size:1rem;cursor:pointer;padding:2px 6px;border-radius:6px;}
+  .cmp-close:hover{background:var(--paper);color:var(--ink);}
+  .cmp-list{display:flex;flex-direction:column;gap:2px;}
+  .cmp-row{display:grid;grid-template-columns:26px 1fr auto 150px;gap:14px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line);}
+  .cmp-row:last-child{border-bottom:none;}
+  .cmp-rank{width:24px;height:24px;border-radius:7px;background:var(--brand-soft);color:var(--brand);font-size:.8rem;font-weight:700;display:flex;align-items:center;justify-content:center;}
+  .cmp-name{font-weight:600;color:var(--ink);}
+  .cmp-eur{font-variant-numeric:tabular-nums;color:var(--ink-soft);}
+  .cmp-var{text-align:right;font-weight:700;font-variant-numeric:tabular-nums;}
+  .cmp-note{margin-top:12px;font-size:.82rem;color:var(--muted);}
+  /* Charges récurrentes — groupes par catégorie */
+  .rec-group{margin-bottom:18px;}
+  .rec-cat-head{display:flex;align-items:center;gap:14px;width:100%;background:none;border:none;text-align:left;cursor:pointer;font-family:var(--font);padding:2px 0;}
+  .rec-group .rec-body{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);}
+  .rec-group.collapsed .rec-body{display:none;}
+  .rec-chevron{color:var(--muted);display:flex;transition:transform .2s ease;flex:0 0 auto;}
+  .rec-chevron svg{width:20px;height:20px;}
+  .rec-group.collapsed .rec-chevron{transform:rotate(-90deg);}
+  .rec-cat-head .rc-cat-txt{display:flex;flex-direction:column;flex:1;min-width:0;}
+  .rec-cat-head .rc-cat-name{font-size:1.2rem;font-weight:700;color:var(--ink);letter-spacing:-.01em;}
+  .rec-cat-head .rc-cat-sub{font-size:.82rem;color:var(--muted);}
+  .rec-cat-head .rc-cat-fig{text-align:right;display:flex;flex-direction:column;gap:1px;}
+  .rec-cat-head .rc-cat-eur{font-size:1.35rem;font-weight:700;color:var(--ink);letter-spacing:-.02em;}
+  .rec-cat-head .rc-cat-fig .var-warn{font-size:.9rem;font-weight:700;}
 
   /* Détail d'une charge */
-  .detail-grid{display:grid;grid-template-columns:300px 1fr;gap:20px;align-items:start;}
+  .detail-grid{display:grid;grid-template-columns:300px 1fr;gap:20px;align-items:stretch;}
+  .detail-grid .acc-list{align-self:stretch;}
   .acc-list{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;}
   .acc-list h3{font-size:1rem;font-weight:700;margin-bottom:12px;}
   .acc-search{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:9px;font-family:var(--font);font-size:.85rem;margin-bottom:12px;}
   .acc-item{display:flex;flex-direction:column;gap:1px;padding:11px 12px;border-radius:10px;cursor:pointer;border:1px solid transparent;}
   .acc-item:hover{background:var(--paper);}
-  .acc-item.sel{background:var(--brand-soft);border-color:#CDE8D8;}
+  .acc-item.sel{background:var(--brand-soft);border-color:#C6D6E8;border-left:3px solid var(--brand);box-shadow:0 1px 6px rgba(27,58,92,.14);}
   .acc-item .ai-num{font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums;}
   .acc-item.sel .ai-num{color:var(--brand);}
   .acc-item .ai-lib{font-size:.88rem;color:var(--ink);}
   .acc-item.sel .ai-lib{font-weight:600;}
   .three-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px;}
+  .two-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .var-wide .var-wide-row{display:flex;align-items:baseline;gap:16px;margin-top:2px;}
+  .var-wide .vw-pct{font-size:2.1rem;font-weight:700;letter-spacing:-.02em;}
+  .var-wide .vw-eur{font-size:1.1rem;font-weight:600;color:var(--muted);}
+  .var-wide .vw-pct.var-up{color:var(--good);} .var-wide .vw-pct.var-warn{color:var(--warn);} .var-wide .vw-pct.var-flat{color:var(--muted);} .var-wide .vw-pct.var-down{color:var(--bad);}
   .breadcrumb{font-size:.82rem;color:var(--muted);margin:8px 0 18px;}
   .breadcrumb b{color:var(--ink);font-weight:600;}
   .backlink{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:9px 14px;font-size:.85rem;font-weight:600;color:var(--brand);font-family:var(--font);}
@@ -672,7 +721,7 @@
   /* Charges récurrentes : liste de gauche */
   .rec-list{display:flex;flex-direction:column;gap:10px;}
   .rec-item{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 15px;cursor:pointer;display:flex;align-items:center;gap:13px;}
-  .rec-item:hover{border-color:#CDE8D8;}
+  .rec-item:hover{border-color:#C6D6E8;}
   .rec-item.sel{background:var(--brand-soft);border-color:var(--brand);}
   .rec-item .ri-txt{display:flex;flex-direction:column;gap:1px;flex:1;min-width:0;}
   .rec-item .ri-name{font-size:.9rem;font-weight:600;color:var(--ink);}
@@ -835,7 +884,7 @@
   <header class="topbar-app">
     <div class="tb-left">
       <span class="brand-img" role="img" aria-label="S2A — Sud Alpes Audit"></span>
-      <span class="tb-client"><b id="x-client">Dossier</b> — <span id="x-exercice">Exercice</span></span>
+      <span class="tb-left-txt"><b id="x-client">Dossier</b><span id="x-exercice">Exercice</span></span>
     </div>
     <nav class="tb-nav">
       <button class="tb-tab active" data-xtab="essentiel">L'essentiel</button>
@@ -859,7 +908,7 @@
     </section>
     <section class="app-page" id="x-page-reco">
       <h1>Recommandations IA</h1>
-      <div class="page-sub" id="x-reco-sub">Trois pistes prioritaires identifiées pour préparer le rendez-vous.</div>
+      <div class="page-sub" id="x-reco-sub">Cinq pistes prioritaires, chiffrées, identifiées pour préparer le rendez-vous.</div>
       <div class="reco3" id="x-reco3"></div>
       <div class="ai-flag" id="x-reco-flag" style="margin-top:16px;"></div>
     </section>
@@ -876,6 +925,7 @@
       <button class="tb-tab" data-ctab="charges">Charges</button>
       <button class="tb-tab" data-ctab="recurrentes">Charges récurrentes</button>
       <button class="tb-tab" data-ctab="bilan">Bilan</button>
+      <button class="tb-tab" data-ctab="ratios">Ratios</button>
       <button class="tb-tab" data-ctab="tresorerie">Trésorerie</button>
     </nav>
     <button class="tb-cta ghost" id="c-quit">Quitter</button>
@@ -890,7 +940,7 @@
       </div>
       <div class="two-70-30" style="margin-top:20px;">
         <div class="bcard"><div id="c-sig"></div></div>
-        <div class="retenir-client"><div class="rc-ico" id="c-synth-ico"></div><h3>Ce qu'il faut retenir</h3><div id="c-synth-retenir"></div></div>
+        <div class="retenir-client" style="align-self:center;"><div class="rc-ico" id="c-synth-ico"></div><h3>Ce qu'il faut retenir</h3><div id="c-synth-retenir"></div></div>
       </div>
     </section>
 
@@ -927,9 +977,11 @@
           </div>
           <div class="bcard">
             <div class="card-h">Évolution mensuelle</div>
+            <div class="card-sub2" style="margin-bottom:10px;">Cliquez un mois pour voir les postes qui ont le plus évolué.</div>
             <div class="chart-wrap sm"><canvas id="chg-chart"></canvas></div>
           </div>
         </div>
+        <div id="chg-month-panel" style="display:none;margin-top:20px;"></div>
         <div class="two-70-30" style="margin-top:20px;">
           <div class="bcard">
             <div class="card-h" style="margin-bottom:14px;">Détail des charges d'exploitation</div>
@@ -943,30 +995,25 @@
 
     <!-- CHARGES RÉCURRENTES -->
     <section class="app-page" id="c-page-recurrentes">
-      <h1>Charges récurrentes</h1>
-      <div class="page-sub">Vue d'ensemble des principales charges récurrentes de l'exercice.</div>
-      <div class="detail-grid">
-        <div class="rec-list" id="rec-list"></div>
-        <div id="rec-detail"></div>
-      </div>
+      <h1 style="margin-bottom:6px;">Charges récurrentes</h1>
+      <div class="page-sub">Les contrats en hausse cette année, groupés par nature et triés par impact — à renégocier en priorité.</div>
+      <div id="rec-groups"></div>
     </section>
 
-    <!-- BILAN -->
+    <!-- BILAN — STRUCTURE -->
     <section class="app-page" id="c-page-bilan">
-      <div class="subnav">
-        <button class="active" data-btab="structure">Structure</button>
-        <button data-btab="ratios">Ratios</button>
-      </div>
-      <div id="bilan-structure">
-        <h1 style="margin-bottom:22px;">Bilan — Structure</h1>
-        <div class="bilan-grid" id="bil-struct"></div>
-        <div class="retenir-band"><div class="rb-ico" id="bil-struct-ico"></div><div class="rb-body"><h3>Ce qu'il faut retenir</h3><div id="bil-struct-retenir"></div></div></div>
-      </div>
-      <div id="bilan-ratios" style="display:none;">
-        <h1 style="margin-bottom:22px;">Bilan — Ratios</h1>
-        <div class="bilan-grid" id="bil-ratios"></div>
-        <div class="retenir-band"><div class="rb-ico" id="bil-ratios-ico"></div><div class="rb-body"><h3>Ce qu'il faut retenir</h3><div id="bil-ratios-retenir"></div></div></div>
-      </div>
+      <h1 style="margin-bottom:6px;">Bilan</h1>
+      <div class="page-sub">Vue d'ensemble de la structure financière de l'entreprise.</div>
+      <div class="bilan-grid" id="bil-struct"></div>
+      <div class="retenir-band"><div class="rb-ico" id="bil-struct-ico"></div><div class="rb-body"><h3>Ce qu'il faut retenir</h3><div id="bil-struct-retenir"></div></div></div>
+    </section>
+
+    <!-- RATIOS -->
+    <section class="app-page" id="c-page-ratios">
+      <h1 style="margin-bottom:6px;">Ratios</h1>
+      <div class="page-sub">Les indicateurs essentiels de gestion et de solidité financière.</div>
+      <div class="bilan-grid" id="bil-ratios"></div>
+      <div class="retenir-band"><div class="rb-ico" id="bil-ratios-ico"></div><div class="rb-body"><h3>Ce qu'il faut retenir</h3><div id="bil-ratios-retenir"></div></div></div>
     </section>
 
     <!-- TRÉSORERIE -->
@@ -1603,8 +1650,10 @@ function generateDemoEcritures(){
     prevAchatTTC = achatTTC;
     const chargesExt = [
       ['613000','Locations',1200],['615000','Entretien et réparations',300],
-      ['616000',"Primes d'assurances",250],['622600','Honoraires comptables',450],
-      ['623000','Publicité, communication',200],['626000','Frais postaux et télécom',150],
+      ['616100','Assurance multirisque professionnelle',150],['616200','Assurance responsabilité civile',100],
+      ['622600','Honoraires comptables',450],
+      ['623000','Publicité, communication',200],
+      ['626100','Téléphonie & internet',100],['626200','Frais postaux',50],
       ['625100','Voyages et déplacements',300]
     ];
     for(const [compte,lib,montant] of chargesExt){
@@ -1722,8 +1771,10 @@ function generateDemoEcrituresN1(){
     prevAchatTTC = achatTTC;
     const chargesExt = [
       ['613000','Locations',recur.loc],['615000','Entretien et réparations',recur.entretien],
-      ['616000',"Primes d'assurances",recur.assur],['622600','Honoraires comptables',recur.honoraires],
-      ['623000','Publicité, communication',recur.pub],['626000','Frais postaux et télécom',recur.telecom],
+      ['616100','Assurance multirisque professionnelle',130],['616200','Assurance responsabilité civile',90],
+      ['622600','Honoraires comptables',recur.honoraires],
+      ['623000','Publicité, communication',recur.pub],
+      ['626100','Téléphonie & internet',90],['626200','Frais postaux',45],
       ['625100','Voyages et déplacements',recur.voyages]
     ];
     for(const [compte,lib,montant] of chargesExt){
@@ -3101,8 +3152,14 @@ function expertKpis(){
   K.push({ico:'target',tone:'red',label:'Résultat',value:fmtEUR(rn),
     pctca:(r.CA?fmtPct1(rn/r.CA):'')+' du CA', delta:null,
     vs: rn1!=null?('vs '+fmtEUR(rn1)):''});
+  const bas=pointBasTreso(AN), moisCharges=AN.compteResultat.charges/12;
+  const basCls = bas.solde<0?'down':(bas.solde<moisCharges?'warn':'muted');
+  const basTxt = bas.solde<0
+    ? `Passée en négatif en ${moisLong(bas.mois)} (${fmtEUR(bas.solde)})`
+    : `Point bas ${fmtEUR(bas.solde)} en ${moisLong(bas.mois)}`;
   K.push({ico:'bank',tone:'green',label:'Trésorerie',value:fmtEUR(fin),
-    delta:{txt:signEUR(fin-debut),cls:(fin-debut)>=0?'up':'down'}, vs: r1?('vs '+fmtEUR(debut)):''});
+    delta:{txt:signEUR(fin-debut),cls:(fin-debut)>=0?'up':'down'}, vs: r1?('vs '+fmtEUR(debut)):'',
+    note:{txt:basTxt, cls:basCls}});
   K.push({ico:'user',tone:'orange',label:'Délai clients',value:joursTxt(r.delaiClients),
     delta: r1?{txt:joursDelta(r.delaiClients-r1.delaiClients),cls:(r.delaiClients-r1.delaiClients)<=0?'up':'down'}:null,
     vs: r1?('vs '+joursTxt(r1.delaiClients)):''});
@@ -3121,8 +3178,9 @@ function renderEssentiel(){
     } else {
       meta = `<div class="km1">${deltaHtml||vsHtml}</div>${(deltaHtml&&vsHtml)?`<div class="km2">${vsHtml}</div>`:''}`;
     }
+    const noteHtml = k.note? `<div class="km-note ${k.note.cls}">${k.note.txt}</div>` : '';
     return `<div class="bcard"><div class="kpi-head">${chip(k.ico,k.tone)}<div class="kpi-label">${k.label}</div></div>
-      <div class="kpi-value">${k.value}</div><div class="kpi-meta">${meta}</div></div>`;
+      <div class="kpi-value">${k.value}</div><div class="kpi-meta">${meta}${noteHtml}</div></div>`;
   }).join('');
   document.getElementById('x-kpis').innerHTML = html;
   document.getElementById('x-retenir').textContent = retenirEssentielRuleBased();
@@ -3193,8 +3251,8 @@ function recurringDelta(){
   return {delta:Math.round(sumN-sumN1), pct:(sumN-sumN1)/sumN1};
 }
 function renderReco(recos){
-  const themes=[{tone:'green',hex:'#08783E'},{tone:'orange',hex:'#E08A2B'},{tone:'blue',hex:'#2A5FB0'}];
-  document.getElementById('x-reco3').innerHTML = recos.slice(0,3).map((rc,i)=>{
+  const themes=[{tone:'navy',hex:'#1B3A5C'},{tone:'blue',hex:'#2F6DB0'},{tone:'gold',hex:'#9A6E1E'}];
+  document.getElementById('x-reco3').innerHTML = recos.slice(0,5).map((rc,i)=>{
     const g=rc.forecast, t=themes[i%3];
     const step=(ico,label,body)=>`<div class="rc-block"><div class="rc-h">${chip(ico,t.tone,'sm')}<span class="rc-h-t" style="color:${t.hex}">${label}</span></div><p>${body}</p></div>`;
     return `<div class="reco-col">
@@ -3213,17 +3271,25 @@ function renderReco(recos){
 function demoRecos(){
   return [
     {title:"Réduire le délai d'encaissement client",
-     probleme:"Le délai client passe de 39 à 47 jours. Soit 8 jours supplémentaires. Impact : ~ 5 600 € de trésorerie immobilisée.",
-     correctif:"Mettre en place des acomptes sur les nouvelles affaires et renforcer les relances sur les clients les plus lents.",
-     forecast:{label:"Scénario N+1 (6 jours) : Trésorerie estimée +5 600 € à +6 000 €", low:5600, high:6000}},
-    {title:"Améliorer la marge sur l'activité",
-     probleme:"La marge se contracte de 1,8 point malgré la hausse du CA. Impact : perte de marge estimée à 4 600 €.",
-     correctif:"Revoir les prix sur les prestations les moins rentables et négocier les principaux achats.",
-     forecast:{label:"Scénario N+1 : récupération de 50 % de la perte de marge, résultat estimé +4 500 €", low:4500, high:4500}},
-    {title:"Optimiser les charges récurrentes",
-     probleme:"Les frais bancaires, assurances et télécoms augmentent de 3 080 € sur l'année (+17 %).",
-     correctif:"Mettre en concurrence les contrats et supprimer les doublons.",
-     forecast:{label:"Économie potentielle estimée à 2 000 € à 3 000 € en N+1", low:2000, high:3000}}
+     probleme:"Le délai clients passe de 39 à 47 jours (+8 jours). Sur un CA de 254 000 €, ces 8 jours immobilisent environ 5 600 € de trésorerie supplémentaire.",
+     correctif:"Demander un acompte de 30 % à la commande, facturer le jour de la livraison et relancer par téléphone les 5 clients dont l'encours dépasse 60 jours.",
+     forecast:{label:"En revenant à 39 jours, ~5 600 € à 6 000 € de trésorerie libérés dès N+1", low:5600, high:6000}},
+    {title:"Enrayer la contraction de la marge",
+     probleme:"La marge commerciale recule de 28,8 % à 27,0 % du CA (−1,8 pt), soit environ 4 600 € de marge en moins sur l'exercice, alors que l'activité progresse de +12,4 %.",
+     correctif:"Répercuter la hausse des achats dans les tarifs (au moins +1,8 pt), renégocier les 3 principaux fournisseurs à l'échéance et arrêter les prestations sous la marge moyenne.",
+     forecast:{label:"En récupérant la moitié de la marge perdue, résultat estimé à +4 500 €", low:2300, high:4500}},
+    {title:"Renégocier les charges récurrentes en hausse",
+     probleme:"Assurances (+13,6 %) et télécommunications (+11,1 %) progressent plus vite que l'inflation : environ 3 080 € de charges récurrentes en plus sur l'année (+17 %).",
+     correctif:"Mettre en concurrence les contrats d'assurance et de télécoms à leur date anniversaire et résilier les abonnements en doublon.",
+     forecast:{label:"Économie réaliste de 2 000 € à 3 000 € par an dès N+1", low:2000, high:3000}},
+    {title:"Reprendre la main sur le poste achats",
+     probleme:"Les achats passent de 70 512 € à 83 820 € (+18,9 %), soit plus vite que le chiffre d'affaires (+12,4 %) : c'est le premier facteur de contraction de la marge.",
+     correctif:"Consolider les volumes sur 2 fournisseurs principaux, négocier une remise de 2 à 3 % et suivre le taux de marge par famille de produits chaque trimestre.",
+     forecast:{label:"Une remise de 2 à 3 % sur les achats représente 1 700 € à 2 500 €", low:1700, high:2500}},
+    {title:"Constituer une trésorerie de sécurité",
+     probleme:"Le point bas de trésorerie tombe à 5 060 € en janvier, soit moins d'un mois de charges : une baisse d'activité ou un impayé exposerait l'entreprise à une tension immédiate.",
+     correctif:"Placer chaque mois 3 000 € sur un compte dédié jusqu'à atteindre 2 mois de charges (~40 000 €), et lisser les grosses échéances (CFE, charges sociales).",
+     forecast:{label:"Objectif : un matelas de 2 mois de charges, soit ~40 000 € en 12 mois", low:36000, high:40000}}
   ];
 }
 /* ---- Routing Expert ---- */
@@ -3261,8 +3327,8 @@ document.getElementById('x-present-btn').addEventListener('click', ()=>{
 async function enrichExpertWithAI(){
   const g=computeSIG(AN);
   const summary = buildDossierSummary(AN) + (AN1? '\n\nEXERCICE N-1 :\n'+buildDossierSummary(AN1) : '');
-  const system = "Tu es un expert-comptable français qui prépare un rendez-vous annuel. À partir des données comptables (calculées par le logiciel, N et N-1), tu produis (1) une synthèse « à retenir » de 2 phrases maximum, et (2) exactement 3 recommandations concrètes et chiffrées. Ne recalcule pas les chiffres, appuie-toi sur ceux fournis. Chaque recommandation : un problème précis (avec chiffres N/N-1), un correctif réellement actionnable (jamais « surveiller/optimiser »), et un scénario N+1 (fourchette de gain). Réponds STRICTEMENT en JSON.";
-  const prompt = `Données du dossier :\n${summary}\n\nRéponds en JSON avec ce schéma exact :\n{"retenir":"...","recommandations":[{"title":"...","probleme":"...","correctif":"...","forecast":{"label":"Scénario N+1 : ...","low":<nombre €>,"high":<nombre €>}}]}\nExactement 3 recommandations, sujets les plus pertinents (marge/rentabilité, BFR/délais/trésorerie, charges récurrentes).`;
+  const system = "Tu es un expert-comptable français qui prépare un rendez-vous annuel. À partir des données comptables (calculées par le logiciel, N et N-1), tu produis (1) une synthèse « à retenir » de 2 phrases maximum, et (2) exactement 5 recommandations concrètes et chiffrées. Ne recalcule pas les chiffres, appuie-toi sur ceux fournis. Chaque recommandation : un problème précis (avec chiffres N/N-1 et l'euro d'impact), un correctif réellement actionnable et détaillé (jamais « surveiller/optimiser » seul), et un scénario N+1 (fourchette de gain en €). Réponds STRICTEMENT en JSON.";
+  const prompt = `Données du dossier :\n${summary}\n\nRéponds en JSON avec ce schéma exact :\n{"retenir":"...","recommandations":[{"title":"...","probleme":"...","correctif":"...","forecast":{"label":"...","low":<nombre €>,"high":<nombre €>}}]}\nExactement 5 recommandations, triées par impact décroissant, sur les sujets les plus pertinents (marge/rentabilité, BFR/délais clients, trésorerie de sécurité, poste achats, charges récurrentes/contrats). Chaque « probleme » cite un chiffre N, un chiffre N-1 et l'euro d'impact.`;
   try{
     const txt = await callClaude(system, prompt);
     const j = JSON.parse(txt.replace(/^```json\s*/,'').replace(/```\s*$/,'').trim());
@@ -3306,7 +3372,8 @@ const ICONS = {
   arrowUR:'<path d="M7 17 17 7"/><path d="M8 7h9v9"/>',
   calendar:'<rect x="3.5" y="5" width="17" height="16" rx="2.5"/><path d="M3.5 9.5h17"/><path d="M8 3v4"/><path d="M16 3v4"/>',
   target:'<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="0.9" fill="currentColor" stroke="none"/>',
-  truck:'<path d="M3 7h10v8H3z"/><path d="M13 10h4l3.5 3.5V15H13z"/><circle cx="7" cy="17.5" r="1.7"/><circle cx="17" cy="17.5" r="1.7"/>'
+  truck:'<path d="M3 7h10v8H3z"/><path d="M13 10h4l3.5 3.5V15H13z"/><circle cx="7" cy="17.5" r="1.7"/><circle cx="17" cy="17.5" r="1.7"/>',
+  chevron:'<path d="M6 9l6 6 6-6"/>'
 };
 function svgIcon(name){ return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${ICONS[name]||''}</svg>`; }
 function chip(name, tone, size){ return `<span class="ic ic-${tone||'green'}${size?' ic-'+size:''}">${svgIcon(name)}</span>`; }
@@ -3396,7 +3463,7 @@ function lineNN1(canvasId, serieN, serieN1, opts){
   if(!cv || typeof Chart==='undefined') return;
   if(clientCharts[canvasId]) clientCharts[canvasId].destroy();
   const lblN=opts.labelN||'N', lblN1=opts.labelN1||'N-1';
-  const ds=[{label:lblN, data:serieN, borderColor:'#08783E', backgroundColor:'rgba(8,120,62,.09)', borderWidth:2.6, tension:.35, fill:true, pointRadius:3, pointBackgroundColor:'#08783E', pointBorderColor:'#08783E', pointHoverRadius:5}];
+  const ds=[{label:lblN, data:serieN, borderColor:'#1B3A5C', backgroundColor:'rgba(27,58,92,.08)', borderWidth:2.6, tension:.35, fill:true, pointRadius:3, pointBackgroundColor:'#1B3A5C', pointBorderColor:'#1B3A5C', pointHoverRadius:5}];
   if(serieN1 && serieN1.some(v=>v!=null))
     ds.push({label:lblN1, data:serieN1, borderColor:'#B8BDC4', borderWidth:2, borderDash:[5,4], tension:.35, fill:false, pointRadius:2.6, pointBackgroundColor:'#fff', pointBorderColor:'#B8BDC4', pointBorderWidth:1.5, pointHoverRadius:4.5});
   const yScale={grid:{color:'#F0EFEA'},border:{display:false},ticks:{maxTicksLimit:6,font:{size:11},color:'#8A909B',callback:v=>Math.abs(v)>=1000?(v/1000).toLocaleString('fr-FR',{maximumFractionDigits:1})+'k':Math.round(v)}};
@@ -3405,6 +3472,8 @@ function lineNN1(canvasId, serieN, serieN1, opts){
     type:'line',
     data:{labels:MONTHS, datasets:ds},
     options:{responsive:true, maintainAspectRatio:false, interaction:{mode:'index',intersect:false},
+      onClick:(evt)=>{ if(!opts.onMonthClick) return; const ch=clientCharts[canvasId]; const pts=ch.getElementsAtEventForMode(evt,'index',{intersect:false},true); if(pts&&pts.length) opts.onMonthClick(pts[0].index); },
+      onHover:(evt,els)=>{ if(opts.onMonthClick){ evt.native.target.style.cursor = els&&els.length?'pointer':'default'; } },
       plugins:{legend:{display:true, position:'top', align:'end', labels:{usePointStyle:true, pointStyle:'line', boxWidth:22, boxHeight:2, font:{size:11.5}, color:'#5B6472', padding:16}},
         tooltip:{callbacks:{label:c=>c.dataset.label+' : '+fmtEUR(c.parsed.y)}}},
       scales:{x:{grid:{display:false},ticks:{font:{size:11},color:'#8A909B'}}, y:yScale}}
@@ -3420,7 +3489,7 @@ function deltaSpan(n, n1, mode){ // mode: 'eur' | 'pct' | 'j'
 }
 function retenirHTML(id, bullets){
   const el=document.getElementById(id); if(!el) return;
-  el.innerHTML = (bullets||[]).map(b=>`<p>${b}</p>`).join('');
+  el.innerHTML = '<ul class="ret-ul">'+(bullets||[]).map(b=>`<li>${b}</li>`).join('')+'</ul>';
 }
 function yN(){ return (AN&&AN.periode.fin)?AN.periode.fin.getFullYear():null; }
 function yN1(){ return (AN1&&AN1.periode.fin)?AN1.periode.fin.getFullYear():null; }
@@ -3459,20 +3528,23 @@ function renderSynthese(){
   const {caN, caN1, rows}=sigRows();
   const ms=monthlySIG(ecrituresN);
   const html=rows.map(r=>{
-    let meta, up;
+    let deltaCell='', metaCell='', up;
     if(r.key==='ca'){
       const dv=(r.n1&&Math.abs(r.n1)>0.5)?(r.n-r.n1)/Math.abs(r.n1):null; up=(dv==null||dv>=0);
-      meta = `${dv!=null?`<span class="d ${up?'up':'down'}">${signPct(dv)}</span>`:''}${r.n1!=null?`<span class="vs">vs ${fmtEUR(r.n1)}</span>`:''}`;
+      deltaCell = dv!=null? `<div class="sl-delta ${up?'up':'down'}">${signPct(dv)}</div>` : '<div class="sl-delta"></div>';
+      metaCell = `<div class="sl-meta">${r.n1!=null?`<span class="vs">vs ${fmtEUR(r.n1)}</span>`:''}</div>`;
     } else {
       const rate=caN?r.n/caN:0, rate1=(caN1&&r.n1!=null)?r.n1/caN1:null;
       const dPt=(rate1!=null)?(rate-rate1)*100:null; up=(dPt==null||dPt>=-0.05);
-      meta = `${dPt!=null&&Math.abs(dPt)>=0.05?`<span class="d ${up?'up':'down'}">${ptDelta(dPt)}</span>`:''}<span class="pct">${fmtPct1(rate)} du CA</span>${rate1!=null?`<span class="vs">vs ${fmtPct1(rate1)}</span>`:''}`;
+      deltaCell = (dPt!=null&&Math.abs(dPt)>=0.05)? `<div class="sl-delta ${up?'up':'down'}">${ptDelta(dPt)}</div>` : '<div class="sl-delta flat">—</div>';
+      metaCell = `<div class="sl-meta"><span class="pct">${fmtPct1(rate)} du CA</span>${rate1!=null?`<span class="vs">vs ${fmtPct1(rate1)}</span>`:''}</div>`;
     }
     const spark = sparklineSVG(ms[r.key]||[], up?'#08783E':'#C4362F');
     return `<div class="sig-line">
       <div class="sl-label">${chip(r.ico,r.tone)}<span>${r.label}</span></div>
       <div class="sl-val">${fmtEUR(r.n)}</div>
-      <div class="sl-meta">${meta}</div>
+      ${deltaCell}
+      ${metaCell}
       <div>${spark}</div>
     </div>`;
   }).join('');
@@ -3555,13 +3627,36 @@ function renderCharges(){
     document.getElementById('chg-total-sub').innerHTML = `${fmtPct(ca?total/ca:0)} du CA`;
   }
   const pref=['60','61','62','63','64','65','681'];
-  lineNN1('chg-chart', monthlyByPrefix(ecrituresN,pref,'debit'), AN1?monthlyByPrefix(ecrituresN1,pref,'debit'):null, yearLabels());
+  lineNN1('chg-chart', monthlyByPrefix(ecrituresN,pref,'debit'), AN1?monthlyByPrefix(ecrituresN1,pref,'debit'):null, Object.assign({onMonthClick:showChargesMonth}, yearLabels()));
+  const mp=document.getElementById('chg-month-panel'); if(mp) mp.style.display='none';
   const head=`<tr><th>Catégorie</th><th class="num">${yN()||'N'}</th><th class="num">${yN1()||'N-1'}</th><th class="num">Variation</th><th class="num">% du CA</th><th></th></tr>`;
   const body=cats.filter(c=>c.n>0.5||(c.n1&&c.n1>0.5)).map(c=>{
     return `<tr class="clickable" data-cat="${c.id}"><td>${c.label}</td><td class="num">${fmtEUR(c.n)}</td><td class="num">${c.n1!=null?fmtEUR(c.n1):'—'}</td><td class="num">${chgVarHTML(c.n,c.n1)}</td><td class="num">${fmtPct(ca?c.n/ca:0)}</td><td class="num chev">›</td></tr>`;
   }).join('');
   document.getElementById('chg-table').innerHTML=head+body;
   retenirHTML('chg-retenir', (clientAI&&clientAI.charges) || retenirCharges(cats,total,total1,ca));
+}
+function showChargesMonth(m){
+  const panel=document.getElementById('chg-month-panel'); if(!panel) return;
+  const rows=CHG_CATS.map(c=>{
+    const nMonth=monthlyByPrefix(ecrituresN,c.pref,'debit')[m];
+    const n1Month=AN1?monthlyByPrefix(ecrituresN1,c.pref,'debit')[m]:0;
+    return {label:c.label, id:c.id, n:nMonth, n1:n1Month, d:nMonth-n1Month};
+  }).filter(r=>r.n>0.5||r.n1>0.5);
+  const totN=rows.reduce((s,r)=>s+r.n,0), totN1=rows.reduce((s,r)=>s+r.n1,0);
+  const top=[...rows].sort((a,b)=>Math.abs(b.d)-Math.abs(a.d)).slice(0,3);
+  const yn=yN()||'N', yn1=yN1()||'N-1';
+  panel.innerHTML=`<div class="bcard cmp">
+    <div class="cmp-head"><div><div class="card-h">${moisLabel(m+1)} — postes de charges</div><div class="card-sub2">Total du mois ${fmtEUR(totN)} · ${signEUR(totN-totN1)} vs ${yn1}. Cliquez un autre mois pour comparer.</div></div><button class="cmp-close" id="cmp-close">✕</button></div>
+    <div class="cmp-list">${top.map((r,i)=>{
+      const cls=chgVarCls(r.n,r.n1,0.10);
+      return `<div class="cmp-row"><span class="cmp-rank">${i+1}</span><span class="cmp-name">${r.label}</span><span class="cmp-eur">${fmtEUR(r.n)}</span><span class="cmp-var ${cls}">${signEUR(r.d)}${r.n1>0.5?' · '+signPct(r.d/r.n1):''}</span></div>`;
+    }).join('')}</div>
+    <div class="cmp-note">Les 3 postes qui ont le plus évolué ce mois-ci par rapport à ${yn1}.</div>
+  </div>`;
+  panel.style.display='block';
+  const cc=document.getElementById('cmp-close'); if(cc) cc.addEventListener('click',()=>{panel.style.display='none';});
+  panel.scrollIntoView({behavior:'smooth', block:'nearest'});
 }
 function retenirCharges(cats,total,total1,ca){
   const out=[];
@@ -3616,29 +3711,23 @@ function renderChargeRight(){
   const acc=chargeAccounts(cat).find(a=>a.compte===compte) || {compte:'—',lib:'—',n:0};
   document.getElementById('chg-bc').innerHTML=`Charges d'exploitation <span>›</span> <b>${catLabel}</b> <span>›</span> <b>${acc.compte} ${acc.lib}</b>`;
   const n=acc.n, n1=accN1(compte);
-  const varEur = n1!=null? signEUR(n-n1):'—';
-  const cards=`<div class="three-cards">
+  const dPct = (n1&&n1>0.5)? (n-n1)/n1 : null;
+  const vcls = n1!=null? chgVarCls(n,n1) : 'var-flat';
+  const cards=`<div class="two-cards">
     <div class="mini-card"><div class="mc-head"><span class="ic ic-green ic-sm txt">N</span><span class="mc-l">${labN()}</span></div><div class="mc-v">${fmtEUR(n)}</div></div>
     <div class="mini-card"><div class="mc-head"><span class="ic ic-slate ic-sm txt">N-1</span><span class="mc-l">${labN1()}</span></div><div class="mc-v">${n1!=null?fmtEUR(n1):'—'}</div></div>
-    <div class="mini-card"><div class="mc-head">${chip('arrowUR', n1!=null?chgVarCls(n,n1).replace('var-up','green').replace('var-warn','orange').replace('var-flat','slate'):'slate','sm')}<span class="mc-l">Variation</span></div><div class="mc-v ${n1!=null?chgVarCls(n,n1):''}">${n1&&n1>0.5?signPct((n-n1)/n1):varEur}</div><div class="mc-s">${n1!=null?signEUR(n-n1):''}</div></div>
+  </div>
+  <div class="mini-card var-wide" style="margin-top:14px;">
+    <div class="mc-head">${chip('arrowUR', vcls.replace('var-up','green').replace('var-warn','orange').replace('var-flat','slate'),'sm')}<span class="mc-l">Variation ${labN1()} → ${labN()}</span></div>
+    <div class="var-wide-row"><span class="vw-pct ${vcls}">${dPct!=null?signPct(dPct):'—'}</span><span class="vw-eur">${n1!=null?signEUR(n-n1):''}</span></div>
   </div>`;
   const mN=monthlyAccount(ecrituresN,compte), mN1=AN1?monthlyAccount(ecrituresN1,compte):null;
-  // répartition par mois (top) — ou dépense régulière ?
   const idx=mN.map((v,i)=>({m:i,v})).filter(x=>x.v>0.5).sort((a,b)=>b.v-a.v);
-  const top3=idx.slice(0,3); const top3sum=top3.reduce((s,x)=>s+x.v,0); const totM=mN.reduce((s,v)=>s+v,0)||1;
-  const vals=mN.filter(v=>v>0.5); const mx=Math.max(...mN,0), mn=vals.length?Math.min(...vals):0;
-  const reguliere = vals.length>=8 && mx>0 && (mx-mn)/mx < 0.25;
-  const repHtml = reguliere
-    ? `<div class="bcard"><div class="card-h ico-h">${chip('pie','green','sm')}<span>Répartition des dépenses</span></div><div class="card-sub2">Rythme de la dépense sur l'exercice.</div><div style="font-size:.92rem;color:var(--ink-soft);line-height:1.5;">Dépense régulière, autour de <b>${fmtEUR(n/12)}</b> chaque mois, sans concentration particulière sur un mois donné.</div></div>`
-    : `<div class="bcard"><div class="card-h ico-h">${chip('pie','green','sm')}<span>Répartition des dépenses</span></div><div class="card-sub2">Mois les plus chargés sur l'exercice.</div>`+
-      top3.map(x=>{const pc=x.v/totM;return `<div class="rep-row"><span class="rep-name">${moisLabel(x.m+1)}</span><span class="rep-eur">${fmtEUR(x.v)}</span><span class="rep-pct">${fmtPct(pc)}</span><div class="rep-bar"><i style="width:${(pc*100).toFixed(0)}%"></i></div></div>`;}).join('')+
-      (top3.length?`<div style="margin-top:10px;font-size:.82rem;color:var(--muted);">À eux seuls, ces ${top3.length} mois représentent ${fmtPct(top3sum/totM)} de la dépense annuelle.</div>`:'')+`</div>`;
   const lecture=chargeLecture(acc,n,n1,mN,idx);
-  const lectHtml=`<div class="bcard"><div class="card-h ico-h">${chip('bars','blue','sm')}<span>Lecture</span></div><ul class="retenir-ul">${lecture.map(l=>`<li>${l}</li>`).join('')}</ul></div>`;
+  const lectHtml=`<div class="bcard" style="margin-top:18px;"><div class="card-h ico-h">${chip('bars','blue','sm')}<span>Lecture</span></div><ul class="retenir-ul">${lecture.map(l=>`<li>${l}</li>`).join('')}</ul></div>`;
   box.innerHTML=`<h1 style="margin-bottom:4px;">${acc.lib}</h1><div class="page-sub">Compte ${acc.compte}</div>${cards}
-    <div class="bcard"><div class="card-h">Évolution mensuelle</div><div class="chart-wrap sm"><canvas id="detail-chart"></canvas></div></div>
-    <div class="two-60-40" style="margin-top:18px;">${repHtml}${lectHtml}</div>
-    <div class="retenir-band" style="margin-top:18px;"><div class="rb-ico">${svgIcon('bulb')}</div><div class="rb-body"><h3>Ce qu'il faut retenir</h3><p>${chargeRetenir(acc,n,n1)}</p></div></div>`;
+    <div class="bcard" style="margin-top:18px;"><div class="card-h">Évolution mensuelle</div><div class="chart-wrap sm"><canvas id="detail-chart"></canvas></div></div>
+    ${lectHtml}`;
   lineNN1('detail-chart', mN, mN1, Object.assign({zero:true}, yearLabels()));
 }
 function chargeLecture(acc,n,n1,mN,idx){
@@ -3676,35 +3765,34 @@ function recAccounts(cat){
     .sort((a,b)=>b.n-a.n);
 }
 function renderRecurrentes(){
-  const cats=REC_CATS.map(c=>({...c, n:chgSum(AN,c.pref), n1:AN1?chgSum(AN1,c.pref):null})).filter(c=>c.n>0.5||(c.n1&&c.n1>0.5));
-  if(!cats.length){ document.getElementById('rec-list').innerHTML='<div class="rec-item"><span class="ri-name">Aucune charge récurrente identifiée</span></div>'; document.getElementById('rec-detail').innerHTML=''; return; }
-  if(!curRec || !cats.find(c=>c.id===curRec)) curRec=cats[0].id;
-  document.getElementById('rec-list').innerHTML = cats.map(c=>{
-    let varTxt;
-    if(c.n1!=null && c.n1>0.5){ const d=(c.n-c.n1)/c.n1; const arrow=Math.abs(d)<0.005?'':(d>0?' ↑':' ↓'); varTxt=`<span class="ri-var ${chgVarCls(c.n,c.n1,0.10)}">${signPct(d)}${arrow}</span>`; }
-    else varTxt='<span class="ri-var var-flat">nouveau</span>';
-    return `<div class="rec-item ${c.id===curRec?'sel':''}" data-rec="${c.id}">${chip(c.ico,c.tone)}<div class="ri-txt"><span class="ri-name">${c.label}</span><span class="ri-eur">${fmtEUR(c.n)}</span></div>${varTxt}</div>`;
+  // Uniquement les contrats DISPOSANT d'un historique N-1 et EN HAUSSE ; groupés par catégorie ; triés par impact décroissant.
+  const groups = REC_CATS.map(cat=>{
+    const all = recAccounts(cat.id).filter(a=> a.n1!=null && a.n1>0.5); // exclure les comptes sans historique N-1
+    const hausse = all.filter(a=> a.n>a.n1).sort((x,y)=> (y.n-y.n1) - (x.n-x.n1));
+    const totN=hausse.reduce((s,a)=>s+a.n,0), totN1=hausse.reduce((s,a)=>s+a.n1,0);
+    const totInc=hausse.reduce((s,a)=>s+(a.n-a.n1),0);
+    return {cat, hausse, totN, totN1, totInc};
+  }).filter(g=>g.hausse.length>0).sort((a,b)=>b.totInc-a.totInc);
+
+  const box=document.getElementById('rec-groups');
+  if(!groups.length){ box.innerHTML='<div class="bcard" style="text-align:center;padding:34px;color:var(--ink-soft);">Aucun contrat récurrent en hausse cette année. La base de charges récurrentes est maîtrisée. ✦</div>'; return; }
+
+  box.innerHTML = groups.map((g,gi)=>{
+    const cat=g.cat;
+    const varPct = g.totN1>0.5? (g.totN-g.totN1)/g.totN1 : null;
+    const open = gi===0; // le premier groupe (impact le plus fort) ouvert par défaut
+    const head = `<button class="rec-cat-head" data-rec-toggle>${chip(cat.ico,cat.tone,'')}
+      <div class="rc-cat-txt"><span class="rc-cat-name">${cat.label}</span><span class="rc-cat-sub">${g.hausse.length} contrat${g.hausse.length>1?'s':''} en hausse · +${fmtEUR(g.totInc)} sur l'année</span></div>
+      <div class="rc-cat-fig"><span class="rc-cat-eur">${fmtEUR(g.totN)}</span><span class="var-warn">${varPct!=null?signPct(varPct)+' ↑':''}</span></div>
+      <span class="rec-chevron">${svgIcon('chevron')}</span></button>`;
+    const rows = g.hausse.map(a=>{
+      const d=(a.n-a.n1)/a.n1;
+      const obs = d>0.1?`<span class="badge2 warn">Hausse significative</span>`:`<span class="badge2 soft">À suivre</span>`;
+      return `<tr><td>${a.compte}</td><td>${a.lib}</td><td class="num">${fmtEUR(a.n)}</td><td class="num">${fmtEUR(a.n1)}</td><td class="num"><span class="${chgVarCls(a.n,a.n1,0.10)}">${signEUR(a.n-a.n1)} · ${signPct(d)}</span></td><td>${obs}</td></tr>`;
+    }).join('');
+    return `<div class="bcard rec-group${open?'':' collapsed'}">${head}<div class="rec-body"><table class="ctab"><tr><th>Compte</th><th>Contrat</th><th class="num">${yN()||'N'}</th><th class="num">${yN1()||'N-1'}</th><th class="num">Variation</th><th>Observation</th></tr>${rows}</table></div></div>`;
   }).join('');
-  document.querySelectorAll('#rec-list .rec-item[data-rec]').forEach(el=>el.addEventListener('click',()=>{ curRec=el.dataset.rec; renderRecurrentes(); }));
-  renderRecDetail(cats.find(c=>c.id===curRec));
-}
-function renderRecDetail(cat){
-  const n=cat.n, n1=cat.n1;
-  const cards=`<div class="three-cards">
-    <div class="mini-card"><div class="mc-head"><span class="ic ic-green ic-sm txt">N</span><span class="mc-l">${labN()}</span></div><div class="mc-v">${fmtEUR(n)}</div></div>
-    <div class="mini-card"><div class="mc-head"><span class="ic ic-slate ic-sm txt">N-1</span><span class="mc-l">${labN1()}</span></div><div class="mc-v">${n1!=null?fmtEUR(n1):'—'}</div></div>
-    <div class="mini-card"><div class="mc-head">${chip('arrowUR', n1!=null?chgVarCls(n,n1,0.10).replace('var-up','green').replace('var-warn','orange').replace('var-flat','slate'):'slate','sm')}<span class="mc-l">Variation</span></div><div class="mc-v ${n1!=null?chgVarCls(n,n1,0.10):''}">${n1!=null?signEUR(n-n1):'—'}</div><div class="mc-s">${n1&&n1>0.5?signPct((n-n1)/n1):''}</div></div>
-  </div>`;
-  const accs=recAccounts(cat.id);
-  const head=`<tr><th>Compte</th><th>Libellé</th><th class="num">${yN()||'N'}</th><th class="num">${yN1()||'N-1'}</th><th class="num">Variation</th><th>Observation</th></tr>`;
-  const body=accs.map(a=>{
-    let obs='';
-    if(a.n1===0||a.n1==null) obs=`<span class="badge2 new">Nouveau contrat</span>`;
-    else if((a.n-a.n1)/a.n1>0.1) obs=`<span class="badge2 warn">Hausse significative</span>`;
-    return `<tr><td>${a.compte}</td><td>${a.lib}</td><td class="num">${fmtEUR(a.n)}</td><td class="num">${a.n1!=null?fmtEUR(a.n1):'—'}</td><td class="num">${chgVarHTML(a.n,a.n1,0.10)}</td><td>${obs}</td></tr>`;
-  }).join('');
-  document.getElementById('rec-detail').innerHTML=`<h1 style="margin-bottom:16px;">${cat.label}</h1>${cards}
-    <div class="bcard" style="margin-top:6px;"><div class="card-h" style="margin-bottom:12px;">Détail des contrats / sous-comptes</div><table class="ctab">${head}${body}</table></div>`;
+  box.querySelectorAll('[data-rec-toggle]').forEach(h=>h.addEventListener('click',()=>h.closest('.rec-group').classList.toggle('collapsed')));
 }
 
 /* ---- BILAN ---- */
@@ -3741,7 +3829,9 @@ function renderBilanRatios(){
   cards.push({ico:'refresh',tone:'purple',l:'Besoin en fonds de roulement',v:fmtEUR(r.BFR),s:r1?('vs '+fmtEUR(r1.BFR)):(r.BFR<0?'ressource pour l\'entreprise':'à financer'),cls:(r1&&r.BFR<=r1.BFR)?'up':'neu'});
   cards.push({ico:'wallet',tone:'green',l:'Trésorerie nette',v:fmtEUR(r.tresorerieNette),s:r1?`vs ${fmtEUR(r1.tresorerieNette)}`:'',cls:r1?(r.tresorerieNette>=r1.tresorerieNette?'up':'warn'):''});
   if(AN.bilan.dettesFinancieres>0.5 && caf>0.5){ const ans=AN.bilan.dettesFinancieres/caf; cards.push({ico:'bank',tone:'slate',l:'Capacité de remboursement',v:dec1(ans)+' '+(ans>=2?'ans':'an'),s:'dettes financières / CAF',cls:ans<=3?'up':'warn'}); }
-  if(stocks>0.5){ const achats=AN.compteResultat.detail['60']||1; cards.push({ico:'box',tone:'orange',l:'Rotation des stocks',v:joursTxt(Math.round(stocks/achats*365)),s:'de stock en moyenne',cls:''}); }
+  // Taux d'endettement (dettes financières / capitaux propres)
+  const cp=AN.bilan.capitauxPropres;
+  if(cp>0.5){ const gearing=AN.bilan.dettesFinancieres/cp; cards.push({ico:'scale',tone:'purple',l:'Taux d\'endettement',v:fmtPct(gearing),s:'dettes fin. / capitaux propres',cls:gearing<=1?'up':'warn'}); }
   document.getElementById('bil-ratios').innerHTML=cards.slice(0,6).map(c=>
     `<div class="bilan-card"><div class="bc-head">${chip(c.ico,c.tone)}<span class="bc-l">${c.l}</span></div><div class="bc-v">${c.v}</div><div class="bc-s ${c.cls||'neu'}">${c.s||''}</div></div>`).join('');
   retenirHTML('bil-ratios-retenir', (clientAI&&clientAI.bilan_ratios) || retenirRatios(r,r1));
@@ -3780,7 +3870,7 @@ function retenirTresorerie(debut,fin,bas){
 }
 
 /* ---- routing client ---- */
-const CLIENT_PAGES={synthese:'c-page-synthese',activite:'c-page-activite',charges:'c-page-charges',recurrentes:'c-page-recurrentes',bilan:'c-page-bilan',tresorerie:'c-page-tresorerie'};
+const CLIENT_PAGES={synthese:'c-page-synthese',activite:'c-page-activite',charges:'c-page-charges',recurrentes:'c-page-recurrentes',bilan:'c-page-bilan',ratios:'c-page-ratios',tresorerie:'c-page-tresorerie'};
 function setClientTab(tab){
   document.querySelectorAll('#client-app .tb-tab').forEach(b=>b.classList.toggle('active', b.dataset.ctab===tab));
   Object.entries(CLIENT_PAGES).forEach(([k,id])=>document.getElementById(id).classList.toggle('active', k===tab));
@@ -3788,10 +3878,11 @@ function setClientTab(tab){
   else if(tab==='activite') renderActivite();
   else if(tab==='charges') renderCharges();
   else if(tab==='recurrentes') renderRecurrentes();
-  else if(tab==='bilan'){ renderBilanStructure(); renderBilanRatios(); }
+  else if(tab==='bilan') renderBilanStructure();
+  else if(tab==='ratios') renderBilanRatios();
   else if(tab==='tresorerie') renderTresorerie();
 }
-const CTAB_ICONS={synthese:'home',activite:'activity',charges:'pie',recurrentes:'refresh',bilan:'scale',tresorerie:'bank'};
+const CTAB_ICONS={synthese:'home',activite:'activity',charges:'pie',recurrentes:'refresh',bilan:'scale',ratios:'bars',tresorerie:'bank'};
 function initClientNavIcons(){
   document.querySelectorAll('#client-app .tb-tab').forEach(b=>{
     if(b.querySelector('svg')) return;
@@ -3827,13 +3918,6 @@ document.getElementById('c-quit').addEventListener('click',()=>{
 // délégation : clic sur une ligne de charge
 document.getElementById('chg-table').addEventListener('click', e=>{ const tr=e.target.closest('tr[data-cat]'); if(tr) openChargeDetail(tr.dataset.cat); });
 // sous-navigation bilan
-document.querySelectorAll('#c-page-bilan .subnav button').forEach(b=>b.addEventListener('click',()=>{
-  document.querySelectorAll('#c-page-bilan .subnav button').forEach(x=>x.classList.toggle('active', x===b));
-  const t=b.dataset.btab;
-  document.getElementById('bilan-structure').style.display = t==='structure'?'block':'none';
-  document.getElementById('bilan-ratios').style.display = t==='ratios'?'block':'none';
-}));
-
 /* ---- Drawer : ajustements en direct ---- */
 function openAdjDrawer(){
   document.getElementById('adj-pr-cur').textContent=fmtEUR(currentPR());
