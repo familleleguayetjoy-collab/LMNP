@@ -11,7 +11,7 @@ from .rapprochement import (rapprocher, manquants, sous_seuil, justifiable,
                             doublons_factures, chercher_dans_fec)
 from .quadra import to_quadratus, verifier_equilibre, comptes_absents
 from .biens import Bien, MappingBiens, proposer_sous_compte, inferer_depuis_fec
-from .ia import (ClientIA, SEUIL_CONFIANCE_OCR, residu, questions_pour,
+from .ia import (ClientIA, SEUIL_CONFIANCE_OCR, SEUIL_AUTO_IA, residu, questions_pour,
                  appliquer_reponses, resoudre_residu, resolver_depuis_client,
                  facture_depuis_ocr, lire_factures)
 from .client_anthropic import ClientAnthropic
@@ -33,7 +33,7 @@ __all__ = [
     "marquer_perso", "doublons_factures", "chercher_dans_fec",
     "to_quadratus", "verifier_equilibre",
     "Bien", "MappingBiens", "proposer_sous_compte", "inferer_depuis_fec",
-    "ClientIA", "SEUIL_CONFIANCE_OCR", "residu", "questions_pour",
+    "ClientIA", "SEUIL_CONFIANCE_OCR", "SEUIL_AUTO_IA", "residu", "questions_pour",
     "appliquer_reponses", "resoudre_residu", "resolver_depuis_client",
     "facture_depuis_ocr", "lire_factures", "ClientAnthropic",
     "Manifeste", "PieceRef", "SourcePieces", "DossierLocal", "pieces_neuves",

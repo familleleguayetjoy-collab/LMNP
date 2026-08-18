@@ -94,11 +94,21 @@ class ClientIA(Protocol):
 # B. Résidu ambigu -> lot -> application des propositions (jamais de validation)
 # ---------------------------------------------------------------------------
 
+SEUIL_AUTO_IA = 0.85   # au-dessus, l'IA code AUTOMATIQUEMENT (doute faible) ;
+                       # en dessous, elle propose et l'humain tranche (doute sérieux).
+
+
+def _inconnu(o) -> bool:
+    """Opération que les règles n'ont pas su qualifier (fournisseur inconnu)."""
+    return getattr(o, "origine", "") == "inconnu" or (getattr(o, "compte", "") or "") == "471"
+
+
 def residu(ops) -> list:
-    """Le seul sous-ensemble à envoyer à l'IA : les opérations que les règles
-    ont laissées « à revoir » et pour lesquelles il reste un vrai choix
-    (au moins deux comptes candidats). Le reste est déjà tranché par le code."""
-    return [o for o in ops if getattr(o, "a_revoir", False) and len(getattr(o, "options", []) or []) >= 2]
+    """Le sous-ensemble envoyé à l'IA : les opérations « à revoir » qui gardent
+    un vrai choix (≥2 comptes candidats) OU les fournisseurs inconnus (que l'IA
+    va coder en raisonnant comme un comptable). Le reste est déjà tranché."""
+    return [o for o in ops if getattr(o, "a_revoir", False)
+            and (len(getattr(o, "options", []) or []) >= 2 or _inconnu(o))]
 
 
 def _cle(op) -> str:
@@ -117,17 +127,22 @@ def questions_pour(ops) -> list[dict]:
             "sens": o.sens,
             "options": list(o.options or []),
             "contexte": o.motif or "",
+            "inconnu": _inconnu(o),   # True -> l'IA propose librement un compte PCG
         })
     return q
 
 
-def appliquer_reponses(ops, reponses) -> int:
-    """Applique les propositions de l'IA au résidu, SANS jamais valider.
+def appliquer_reponses(ops, reponses, *, seuil_auto=SEUIL_AUTO_IA) -> int:
+    """Applique les réponses de l'IA au résidu. Automatise au maximum :
 
-    - le compte proposé DOIT figurer dans les options d'origine, sinon rejeté ;
-    - on ne touche JAMAIS au montant ni au sens ;
-    - on garde a_revoir=True : l'IA propose, l'humain tranche.
-    Renvoie le nombre de propositions retenues."""
+    - confiance ≥ seuil_auto  -> CODÉ AUTOMATIQUEMENT (a_revoir=False), tracé
+      origine 'ia' + confiance (auditable NPMQ) ;
+    - confiance < seuil_auto   -> proposition, a_revoir reste True (doute sérieux
+      -> l'humain tranche).
+    Garde-fous : on ne touche JAMAIS au montant ni au sens ; pour une opération
+    à options connues, le compte doit être dans les options ; pour un fournisseur
+    inconnu, l'IA peut proposer librement un compte du plan. Renvoie le nombre
+    de réponses retenues."""
     par_cle = {_cle(o): o for o in ops}
     retenues = 0
     for r in reponses or []:
@@ -135,16 +150,26 @@ def appliquer_reponses(ops, reponses) -> int:
         if o is None:
             continue
         compte = str(r.get("compte") or "")
-        if compte not in (o.options or []):     # garde-fou : hors cadre -> ignoré
+        if not compte:
             continue
-        # proposition, pas décision : on remonte le compte proposé en tête des
-        # options et on enrichit le motif ; a_revoir reste True.
-        o.options = [compte] + [c for c in (o.options or []) if c != compte]
-        o.confiance = max(float(o.confiance or 0.0), min(float(r.get("confiance") or 0.0), 0.94))
+        if not _inconnu(o) and compte not in (o.options or []):
+            continue                              # hors cadre d'un choix connu -> ignoré
+        conf = min(float(r.get("confiance") or 0.0), 0.99)
         raison = (r.get("raison") or "").strip()
-        o.motif = ("Proposition IA (à valider) : %s → %s%s"
-                   % (o.motif or "ambigu", compte, (" — " + raison) if raison else ""))
-        o.a_confirmer = "Compte proposé par l'IA : %s. À valider." % compte
+        o.options = [compte] + [c for c in (o.options or []) if c != compte]
+        if conf >= seuil_auto:
+            o.compte = compte
+            o.origine = "ia"
+            o.confiance = conf
+            o.a_revoir = False
+            o.a_confirmer = ""
+            o.motif = ("Codé automatiquement par l'IA (confiance %.2f) — montant inchangé%s"
+                       % (conf, (" — " + raison) if raison else ""))
+        else:
+            o.confiance = max(float(o.confiance or 0.0), conf)
+            o.motif = ("Proposition IA (à valider) : %s → %s%s"
+                       % (o.motif or "ambigu", compte, (" — " + raison) if raison else ""))
+            o.a_confirmer = "Compte proposé par l'IA : %s. À valider." % compte
         retenues += 1
     return retenues
 

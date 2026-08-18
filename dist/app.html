@@ -498,14 +498,11 @@ main.wrap{padding:30px 20px 90px}
   var DOSSIERS={
     "LMNP_POLO_TEST":{
       banque:"non",
-      note:"Dossier SANS banque : pas de relevé. Chaque règlement est identifié à partir de la facture (le fournisseur) — l'outil lit le fournisseur et demande simplement comment comptabiliser le paiement de la facture jointe.",
+      note:"Dossier SANS banque : l'outil comptabilise seul à partir de chaque facture (le fournisseur). Il ne remonte QUE les cas à vrai doute — ici, un seul sur trois.",
+      auto:[["EDF","606 — Énergie"],["Bouygues Telecom","626 — Télécom"]],
       trancher:[
-        {dt:"05/01/2026",lib:"EDF",m:69.34,cpt:"606",col:"#1f6fb2",ini:"E",
-          opts:[["606","606 — Énergie / électricité"],["6061","6061 — Fournitures non stockables"],["615","615 — Entretien"]]},
         {dt:"09/01/2026",lib:"Brico Dépôt",m:71.07,cpt:"615",col:"#c0392b",ini:"B",
-          opts:[["615","615 — Entretien et réparations"],["606","606 — Petit équipement"],["2184","2184 — Mobilier (immobilisation)"]]},
-        {dt:"16/01/2026",lib:"Bouygues Telecom",m:44.99,cpt:"626",col:"#0e7a63",ini:"B",
-          opts:[["626","626 — Télécom / internet"],["606","606 — Autres achats"]]}
+          opts:[["615","615 — Entretien et réparations"],["606","606 — Petit équipement"],["2184","2184 — Mobilier (immobilisation)"]]}
       ],
       reclam:[
         {lib:"Assurance PNO (récurrent N-1)",dt:"réf. N-1",m:182.00,on:true},
@@ -513,7 +510,7 @@ main.wrap{padding:30px 20px 90px}
       ]
     }
   };
-  var TRANCHER=DEFAULT_TRANCHER, RECLAM=DEFAULT_RECLAM, CURNOTE="";
+  var TRANCHER=DEFAULT_TRANCHER, RECLAM=DEFAULT_RECLAM, CURNOTE="", CURAUTO=[];
   var eur=function(n){return n.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €'};
 
   function thumbSVG(col,ini){
@@ -526,7 +523,7 @@ main.wrap{padding:30px 20px 90px}
       +'<rect x="6" y="50" width="38" height="4" rx="2" fill="#e7eaef"/></svg>';
   }
   function renderTrancher(){
-    var np=$('.js-trancher-note'); if(np){np.textContent=CURNOTE||'';np.classList.toggle('hidden',!CURNOTE);}
+    var np=$('.js-trancher-note'); if(np){var t=CURNOTE||'';if(CURAUTO&&CURAUTO.length){t+=' ✓ Déjà codé automatiquement : '+CURAUTO.map(function(a){return a[0]+' → '+a[1];}).join(', ')+'.';}np.textContent=t;np.classList.toggle('hidden',!t);}
     var tb=$('.js-trancher'); tb.innerHTML='';
     TRANCHER.forEach(function(r){
       var tr=document.createElement('tr');
@@ -585,7 +582,7 @@ main.wrap{padding:30px 20px 90px}
     var ds=DOSSIERS[name];
     TRANCHER=(ds&&ds.trancher)||DEFAULT_TRANCHER;
     RECLAM=(ds&&ds.reclam)||DEFAULT_RECLAM;
-    CURNOTE=(ds&&ds.note)||"";
+    CURNOTE=(ds&&ds.note)||"";CURAUTO=(ds&&ds.auto)||[];
     var bq=(ds&&ds.banque)||'oui';
     root.dataset.banque=bq;
     $$('.js-bq').forEach(function(x){x.setAttribute('aria-pressed',x.dataset.v===bq?'true':'false');});
@@ -621,9 +618,12 @@ main.wrap{padding:30px 20px 90px}
     +'et prépare : les points à trancher, les justificatifs manquants, le mail de relance et le fichier d\'import.</p>');});
   root.addEventListener('click',function(e){
     var t=e.target.closest('.js-thumb'); if(!t)return;
-    openModal('<h3>'+t.dataset.lib+'</h3>'
-      +'<div class="paper">'+thumbSVG('#0e1c2b','FACTURE').replace('viewBox="0 0 50 64"','viewBox="0 0 50 64" style="width:100%;height:220px"')+'</div>'
-      +'<p>Aperçu du justificatif — dans l\'outil réel, ce lien ouvre directement l\'image dans le Drive du client.</p>');
+    openModal('<h3>Justificatif — '+t.dataset.lib+'</h3>'
+      +'<div style="border:1px solid #e2e6ea;border-radius:12px;padding:26px;text-align:center;background:#fff">'
+      +'<div style="font-size:44px;line-height:1">🧾</div>'
+      +'<p style="margin:10px 0 0;font-weight:600">'+t.dataset.lib+'</p>'
+      +'<p style="margin:4px 0 0;color:#6b7785;font-size:13px">Image non affichée dans la démo (pas de fichier réel — RGPD).</p></div>'
+      +'<p style="margin-top:12px">Dans l\'outil réel, ce clic ouvre directement l\'image de la facture depuis le <b>Drive du client</b> (une fois le Drive connecté).</p>');
   });
 
   /* --- export Quadra ASCII (enregistrement M, 251 car., contrepartie en ligne) --- */

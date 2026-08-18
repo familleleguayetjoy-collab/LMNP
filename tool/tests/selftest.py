@@ -272,6 +272,21 @@ class FauxIA:
         return [{"fournisseur": "EDF", "date": "2026-01-05", "ttc": 69.34,
                  "tva": 11.56, "ht": 57.78, "numero": "F1", "confiance": 0.95}]
 
+class _FauxConf(FauxIA):
+    def __init__(self, regle, conf):
+        super().__init__(regle); self.conf = conf
+    def resoudre(self, questions, *, modele=None):
+        self.recu = questions
+        rep = []
+        for q in questions:
+            compte = None
+            for cle, c in self.regle.items():
+                if cle in (q["libelle"] or ""):
+                    compte = c
+            if compte is not None:
+                rep.append({"id": q["id"], "compte": compte, "confiance": self.conf, "raison": "t"})
+        return rep
+
 # fabrique un résidu réaliste : mobilier au-dessus du seuil (2184/606/615)
 op_amb = Operation(date=D(2026, 3, 1), libelle="CONFORAMA CANAPE", montant=900.0, sens="D")
 coder(op_amb, construire([]))
@@ -288,23 +303,38 @@ check(len(q) == 1 and "montant" in q[0] and q[0]["options"] == op_amb.options,
 # garde-fou 1 : sans client injecté, no-op total (moteur déterministe)
 check(resoudre_residu(lot, None) == 0, "sans clé : couche IA = no-op")
 
-# proposition dans le cadre des options -> retenue mais NON validée
+# confiance élevée (0.9 ≥ seuil) -> CODÉ AUTOMATIQUEMENT (automatisation max)
 ia = FauxIA({"CONFORAMA": "2184"})
 avant_montant, avant_sens = op_amb.montant, op_amb.sens
 n = resoudre_residu(lot, ia)
-check(n == 1 and op_amb.options[0] == "2184", "proposition IA remontée en tête des options")
-check(op_amb.a_revoir is True, "proposition ≠ validation : l'humain tranche toujours")
+check(n == 1 and op_amb.compte == "2184" and op_amb.origine == "ia" and not op_amb.a_revoir,
+      "confiance élevée -> l'IA code automatiquement (doute faible)")
 check(op_amb.montant == avant_montant and op_amb.sens == avant_sens,
       "l'IA ne touche NI au montant NI au sens")
-check(ia.recu[0]["montant"] == 900.0 and set(ia.recu[0]) == {"id", "libelle", "montant", "sens", "options", "contexte"},
-      "la question porte le montant à titre informatif, dans un schéma figé (l'IA ne décide pas d'un montant)")
+check(ia.recu[0]["montant"] == 900.0 and set(ia.recu[0]) ==
+      {"id", "libelle", "montant", "sens", "options", "contexte", "inconnu"},
+      "la question porte le montant à titre informatif (l'IA ne décide pas d'un montant)")
 
-# garde-fou 2 : une proposition hors options est rejetée
+# confiance faible -> proposition, l'humain tranche (doute sérieux)
+op_faible = Operation(date=D(2026, 3, 5), libelle="CONFORAMA TABLE", montant=850.0, sens="D")
+coder(op_faible, construire([]))
+resoudre_residu([op_faible], _FauxConf({"CONFORAMA": "2184"}, 0.55))
+check(op_faible.a_revoir and op_faible.a_confirmer, "confiance faible -> proposition à valider (doute sérieux)")
+
+# fournisseur INCONNU -> l'IA propose librement un compte (raisonne comme un comptable)
+op_inc2 = Operation(date=D(2026, 3, 6), libelle="STUDIO CREATIF SASU", montant=60.0, sens="D")
+coder(op_inc2, construire([]))
+check(op_inc2.compte == "471" and len(residu([op_inc2])) == 1, "inconnu -> envoyé à l'IA (pas laissé en 471)")
+resoudre_residu([op_inc2], _FauxConf({"STUDIO": "6226"}, 0.9))
+check(op_inc2.compte == "6226" and op_inc2.origine == "ia" and not op_inc2.a_revoir,
+      "inconnu codé auto par l'IA (compte PCG proposé hors options)")
+
+# garde-fou : compte hors options rejeté quand les options SONT connues
 op_amb2 = Operation(date=D(2026, 3, 3), libelle="CONFORAMA LIT", montant=700.0, sens="D")
 coder(op_amb2, construire([]))
 rej = appliquer_reponses([op_amb2], [{"id": "op-%d" % id(op_amb2), "compte": "701",
                                       "confiance": 0.9, "raison": "hors cadre"}])
-check(rej == 0 and "701" not in op_amb2.options, "compte hors des options -> rejeté")
+check(rej == 0 and "701" not in op_amb2.options, "compte hors options (choix connu) -> rejeté")
 
 print("19) Couche IA — adaptateur resolver (fournisseur inconnu) + OCR->Facture")
 resolver = resolver_depuis_client(FauxIA({"WEBTECH": "606"}))

@@ -6,10 +6,18 @@ il n'est jamais posté. Un écart facture/banque est signalé, jamais corrigé.
 from __future__ import annotations
 from datetime import date
 
-from .normalize import cents
+from .normalize import cents, normalize
 
 # comptes qui n'appellent pas de facture fournisseur
 _SANS_FACTURE = {"627", "661", "164", "108", "512", "455"}
+
+
+def _meme_fournisseur(op, fac) -> bool:
+    """Le libellé bancaire et le fournisseur de la facture partagent-ils un mot
+    significatif ? (EDF↔'EDF ENERGIE', BOUYGUES↔'BOUYGUES TELECOM'...)."""
+    a = {t for t in normalize(op.libelle).split() if len(t) > 2}
+    b = {t for t in normalize(getattr(fac, "fournisseur", "")).split() if len(t) > 2}
+    return len(a & b) >= 1
 
 
 def justifiable(op) -> bool:
@@ -37,16 +45,25 @@ def rapprocher(ops, factures, jours: int = 25, jours_cheque: int = 60):
         if mode in ("especes", "autre"):
             continue                          # pas de ligne bancaire attendue
         fenetre = jours_cheque if mode == "cheque" else jours
-        best, bestdelta, best_exact = None, 10 ** 9, False
+        # score de rapprochement : montant exact (2) + même fournisseur (1),
+        # date proche en départage. Un montant seulement 'proche' n'est retenu
+        # que si le fournisseur concorde (sinon risque de confondre 2 dépenses).
+        best, bestscore, bestdelta, best_exact = None, -1, 10 ** 9, False
         for o in debits:
-            if id(o) in used:
-                continue
-            if not (o.date and fac.date):
+            if id(o) in used or not (o.date and fac.date):
                 continue
             dd = abs((o.date - fac.date).days)
+            if dd > fenetre:
+                continue
             exact, proche = _proche(fac.ttc, o.montant)
-            if (exact or proche) and dd <= fenetre and dd < bestdelta:
-                best, bestdelta, best_exact = o, dd, exact
+            if not (exact or proche):
+                continue
+            supp = _meme_fournisseur(o, fac)
+            if proche and not exact and not supp:
+                continue
+            score = (2 if exact else 0) + (1 if supp else 0)
+            if score > bestscore or (score == bestscore and dd < bestdelta):
+                best, bestscore, bestdelta, best_exact = o, score, dd, exact
         if best is not None:
             used.add(id(best))
             best.facture = fac
