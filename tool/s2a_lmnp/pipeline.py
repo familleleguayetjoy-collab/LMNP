@@ -42,14 +42,21 @@ def traiter_dossier(factures, ops_banque, dico, *, client_ia=None, resolver=None
                     compte_banque="512", journal=None, source_quadra="_IMP"):
     """Traite un dossier de bout en bout. `factures` = pièces lues (OCR) ;
     `ops_banque` = lignes du relevé (ignoré si avec_banque=False)."""
+    from .rapprochement import operations_od_factures
+    od_ops = []
     if avec_banque:
         ops = list(ops_banque or [])
         for o in ops:
             coder(o, dico, resolver, assujetti_tva=assujetti_tva)
         rapprocher(ops, list(factures or []))
         a_reclamer = manquants(ops)
+        # facture PAYÉE mais absente du relevé -> payée en perso -> écriture d'OD,
+        # contrepartie 108 (compte de l'exploitant).
+        orphelines = [f for f in (factures or []) if getattr(f, "op", None) is None]
+        od_ops = operations_od_factures(orphelines, dico, resolver)
+        if od_ops and client_ia is not None:
+            resoudre_residu(od_ops, client_ia)
     else:
-        from .rapprochement import operations_od_factures
         ops = operations_od_factures(list(factures or []), dico, resolver)
         if assujetti_tva:
             for o in ops:
@@ -60,14 +67,20 @@ def traiter_dossier(factures, ops_banque, dico, *, client_ia=None, resolver=None
 
     quadra = to_quadratus(ops, avec_banque=avec_banque, compte_banque=compte_banque,
                           journal=journal, source=source_quadra)
+    # journal d'OD (factures payées hors banque) : ASCII ferme, contrepartie 108
+    od_ascii = to_quadratus(od_ops, avec_banque=False, journal="OD",
+                            source=source_quadra) if od_ops else ""
+    tous = list(ops) + list(od_ops)
     return {
         "operations": ops,
+        "operations_od": od_ops,           # factures payées en perso (ctp 108)
         "nb_factures": len(factures or []),
-        "a_trancher": [o for o in ops if o.a_revoir],
+        "a_trancher": [o for o in tous if o.a_revoir],
         "a_reclamer": a_reclamer,
         "ecarts": [o for o in ops if getattr(o, "ecart", False)],
         "residu_resolu_par_ia": n_ia,
         "quadra": quadra,
+        "od_ascii": od_ascii,              # OD 108 (ASCII) — à importer tel quel
     }
 
 

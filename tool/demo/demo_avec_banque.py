@@ -55,6 +55,41 @@ def main():
     print("   somme débits principaux : %.2f € | crédits : %.2f €" % (deb / 100, cred / 100))
     print("   chaque ligne porte sa contrepartie en ligne :", "OUI ✓" if ok else "NON ✗")
 
+    # --- Workflow complet : rapprochement facture <-> banque, Excel + OD 108 ---
+    import datetime as _dt
+    from s2a_lmnp import (Dictionnaire, Facture, Operation, traiter_dossier,
+                          journal_banque_xlsx)
+    dico = Dictionnaire()
+    for num, lib in comptes.items():
+        dico.ajouter(lib, num)
+    # 3 factures : 2 rapprochées avec la banque, 1 payée EN PERSO (absente du relevé)
+    factures = [
+        Facture("TOTALENERGIES", _dt.date(2026, 1, 5), 197.92, 32.99),
+        Facture("FREE",          _dt.date(2026, 1, 7), 44.98,   7.50),
+        Facture("PLOMBERIE DURAND", _dt.date(2026, 1, 9), 240.00, 40.0),  # payée perso
+    ]
+    ops_bq = [
+        Operation(_dt.date(2026, 1, 5), "TOTALENERGIES", 197.92, "D"),
+        Operation(_dt.date(2026, 1, 7), "FREE TELECOM", 44.98, "D"),
+    ]
+    res = traiter_dossier(factures, ops_bq, dico, compte_banque="51210010", journal="BQ")
+
+    print("\n--- Dossier AVEC banque : sortie en 2 fichiers ---")
+    print("  Opérations de banque :", len(res["operations"]),
+          "  |  Écritures d'OD (payées perso) :", len(res["operations_od"]))
+    # 1) le journal de BANQUE -> Excel modifiable, trié par date
+    xlsx = journal_banque_xlsx(res["operations"], journaux={"51210010": "BQ"},
+                               compte_banque="51210010")
+    chemin = os.path.join(os.path.dirname(__file__), "journal_banque.xlsx")
+    with open(chemin, "wb") as f:
+        f.write(xlsx)
+    print("  1) journal de banque -> Excel :", os.path.basename(chemin),
+          "(%d octets, modifiable dans le logiciel comptable)" % len(xlsx))
+    # 2) les factures payées perso -> OD ASCII, contrepartie 108
+    od = [l for l in res["od_ascii"].split("\r\n") if l]
+    print("  2) factures payées en perso -> OD ASCII : %d écriture(s), contrepartie 108"
+          % len(od), "✓" if "10800000" in res["od_ascii"] else "✗")
+
 
 if __name__ == "__main__":
     main()

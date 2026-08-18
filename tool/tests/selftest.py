@@ -582,4 +582,33 @@ check(tb["MARTIN"]["statut"] in ("à valider", "en attente de pièces"),
       "tableau de bord : MARTIN à traiter (mobilier à trancher, facture manquante)")
 check(isinstance(lot["totaux"]["cout_ia_estime_eur"], float), "tableau de bord : coût IA estimé agrégé")
 
+print("27) Avec banque : facture payée hors relevé -> OD 108 ; banque -> Excel ; multi-banque")
+from s2a_lmnp import journal_banque_xlsx, lignes_journal_banque
+import zipfile as _zip, io as _io
+
+FEC27 = ("JournalCode|CompteNum|CompteLib|EcritureDate|EcritureLib|Debit|Credit\n"
+         "BQ|606100|Energie|20250210|EDF energie|57,79|0,00\n")
+d27 = construire(parse_fec(FEC27))
+# une facture est reprise en banque, l'autre a été payée en perso (absente du relevé)
+facs27 = [Facture("EDF", D(2026, 1, 5), 69.34, 11.55),
+          Facture("PLOMBERIE PERSO", D(2026, 1, 8), 240.00, 40.0)]
+ops27 = [Operation(D(2026, 1, 6), "EDF ENERGIE", 69.34, "D")]   # seule EDF est en banque
+res27 = traiter_dossier(facs27, ops27, d27, compte_banque="512", journal="BQ")
+check(len(res27["operations_od"]) == 1, "facture payée hors banque -> écriture d'OD")
+check(res27["od_ascii"] and "10800000" in res27["od_ascii"], "OD 108 sorti en ASCII séparé")
+check("EDF" in res27["quadra"], "les opérations de banque restent au journal BQ")
+
+# export Excel du journal de banque = un vrai .xlsx (zip lisible), trié, montants nombres
+xlsx = journal_banque_xlsx(res27["operations"])
+zf = _zip.ZipFile(_io.BytesIO(xlsx))
+check("xl/worksheets/sheet1.xml" in zf.namelist() and "[Content_Types].xml" in zf.namelist(),
+      "journal de banque -> .xlsx valide (ouvrable dans Excel)")
+
+# multi-banque : deux comptes bancaires -> deux journaux (BQ1, BQ2), un seul tableau
+a = Operation(D(2026, 2, 1), "OP BANQUE A", 100.0, "D"); a.compte = "606"; a.compte_bancaire = "CPTE_A"
+b = Operation(D(2026, 2, 2), "OP BANQUE B", 200.0, "D"); b.compte = "615"; b.compte_bancaire = "CPTE_B"
+lignes = lignes_journal_banque([b, a], journaux={"CPTE_A": "BQ1", "CPTE_B": "BQ2"})
+journaux_vus = [l[0] for l in lignes[1:]]
+check(journaux_vus == ["BQ1", "BQ2"], "multi-banque : chaque banque dans son journal (BQ1/BQ2), trié")
+
 print("\n%d contrôles OK — moteur cohérent." % ok)
