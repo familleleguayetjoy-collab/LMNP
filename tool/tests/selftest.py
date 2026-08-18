@@ -611,4 +611,14 @@ lignes = lignes_journal_banque([b, a], journaux={"CPTE_A": "BQ1", "CPTE_B": "BQ2
 journaux_vus = [l[0] for l in lignes[1:]]
 check(journaux_vus == ["BQ1", "BQ2"], "multi-banque : chaque banque dans son journal (BQ1/BQ2), trié")
 
+# le code journal de banque se DÉDUIT du FEC (512 variante -> son journal), pas d'invention
+from s2a_lmnp import journaux_banque_depuis_fec
+FECJ = ("JournalCode|CompteNum|EcritureLib|Debit|Credit|EcritureDate\r\n"
+        "BQ1|51210010|VIR|10,00|0,00|20260101\r\n"
+        "BQ2|51200002|VIR|0,00|10,00|20260101\r\n"
+        "OD|60611000|EDF|10,00|0,00|20260101\r\n")
+mj = journaux_banque_depuis_fec(parse_fec(FECJ))
+check(mj == {"51210010": "BQ1", "51200002": "BQ2"},
+      "code journal de banque déduit du FEC (chaque 512 -> son journal réel)")
+
 print("\n%d contrôles OK — moteur cohérent." % ok)

@@ -59,8 +59,25 @@ def _sheet(lignes):
             '<sheetData>%s</sheetData></worksheet>' % "".join(rows))
 
 
+def journaux_banque_depuis_fec(lignes_fec):
+    """Map {compte 512 -> code journal} déduite du FEC du dossier.
+
+    Le journal de banque n'est pas toujours « BQ1/BQ2 » : chaque banque est une
+    variante d'un compte 512 rattachée à SON code journal. On le lit tel quel
+    dans le FEC (le journal qui porte les mouvements de ce 512) — aucune
+    convention inventée. Utile pour l'export Excel et le routage multi-banque."""
+    m = {}
+    for l in lignes_fec:
+        c = (getattr(l, "compte", "") or "").strip()
+        j = (getattr(l, "journal", "") or "").strip()
+        if c.startswith("512") and j and c not in m:
+            m[c] = j
+    return m
+
+
 def _jr(o, journaux):
-    """Journal de l'opération : dérivé du compte bancaire (multi-banque)."""
+    """Journal de l'opération : dérivé de son compte bancaire 512 (multi-banque).
+    À défaut de correspondance, on retombe sur un code générique « BQ »."""
     return journaux.get(getattr(o, "compte_bancaire", "") or "", "BQ")
 
 

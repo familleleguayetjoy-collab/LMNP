@@ -19,7 +19,7 @@ from .manifeste import Manifeste
 from .sources import (PieceRef, SourcePieces, DossierLocal, pieces_neuves,
                       empreinte_fichier, empreinte_bytes)
 from .pipeline import traiter_dossier, ingerer, traiter_lot
-from .excel import journal_banque_xlsx, lignes_journal_banque
+from .excel import journal_banque_xlsx, lignes_journal_banque, journaux_banque_depuis_fec
 from .controles import revue_analytique, reference
 from .relances import preparer_relances
 
@@ -40,6 +40,6 @@ __all__ = [
     "Manifeste", "PieceRef", "SourcePieces", "DossierLocal", "pieces_neuves",
     "empreinte_fichier", "empreinte_bytes",
     "traiter_dossier", "ingerer", "traiter_lot",
-    "journal_banque_xlsx", "lignes_journal_banque",
+    "journal_banque_xlsx", "lignes_journal_banque", "journaux_banque_depuis_fec",
     "revue_analytique", "reference", "preparer_relances",
 ]

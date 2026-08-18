@@ -442,19 +442,37 @@ main.wrap{padding:30px 20px 90px}
     <section class="step hidden" data-s="5">
       <div class="steponly"><span class="steplbl">Étape 5 / 5 · Le fichier</span></div>
       <div class="pagehead"><h1 class="js-dossier">LMNP_DUPONT_2026</h1><div class="meta js-ex">Exercice 2026 · locations meublées</div></div>
-      <div class="done-head"><span class="check" style="width:32px;height:32px"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span><h2>Fichier prêt</h2></div>
+      <div class="done-head"><span class="check" style="width:32px;height:32px"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span><h2>Fichiers prêts</h2></div>
 
+      <!-- AVEC banque : journal de banque en Excel modifiable -->
+      <div class="card filebox js-file-xlsx hidden">
+        <span class="disc"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><circle cx="16.5" cy="16.5" r="4.2" fill="var(--green)" stroke="none"/><path d="M14.7 16.6l1.3 1.3 2-2.2" stroke="#fff"/></svg></span>
+        <div class="txt">
+          <h2>Journal de banque — Excel</h2>
+          <p>Opérations triées par date, montants modifiables avant import. Deux banques = deux journaux (déduits du 512 du dossier).</p>
+        </div>
+      </div>
+      <!-- Toujours : écritures fermes en ASCII (OD 108 si payé perso, sinon banque) -->
       <div class="card filebox">
         <span class="disc"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><circle cx="16.5" cy="16.5" r="4.2" fill="var(--green)" stroke="none"/><path d="M14.7 16.6l1.3 1.3 2-2.2" stroke="#fff"/></svg></span>
         <div class="txt">
-          <h2>Écritures prêtes</h2>
+          <h2 class="js-ascii-title">Écritures — ASCII (Quadra)</h2>
           <p class="js-fmt">Format ASCII (Quadra) · contrepartie 512</p>
         </div>
       </div>
+
+      <div class="apercu-h" style="font-family:var(--display);font-size:15px;margin:22px 0 8px;color:var(--muted)">Aperçu du fichier généré</div>
+      <div class="card js-xlsx-preview hidden" style="padding:0;overflow:hidden;margin-bottom:14px">
+        <div class="tblwrap"><table class="tbl"><thead><tr><th>Journal</th><th>Date</th><th>Compte</th><th>Libellé</th><th>Débit</th><th>Crédit</th></tr></thead><tbody class="js-xlsx-rows"></tbody></table></div>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <pre class="js-ascii-preview" style="margin:0;padding:14px 16px;overflow-x:auto;font-size:11px;line-height:1.5;font-family:ui-monospace,Menlo,Consolas,monospace;color:#3a4552;background:#f7f9fb;white-space:pre"></pre>
+      </div>
+
       <div class="actionbar" style="justify-content:flex-end">
         <div class="right">
           <button class="btn-secondary js-back"><span class="cv">‹</span> Retour</button>
-          <button class="cta js-download">Télécharger le fichier ASCII <span class="arw">→</span></button>
+          <button class="cta js-download">Télécharger <span class="arw">→</span></button>
         </div>
       </div>
       <p class="footnote">Prototype interne S2A — données de démonstration. Les montants sont codés par règles (jamais par l'IA) ; l'IA n'intervient que pour lire une facture ou proposer un compte inconnu, sous validation.</p>
@@ -559,10 +577,48 @@ main.wrap{padding:30px 20px 90px}
     });
   }
 
+  /* --- étape 5 : aperçu réel des fichiers générés (le téléchargement est
+     bloqué dans un Artifact ; on MONTRE donc le contenu produit) --- */
+  function currentCptFor(r,i){
+    var rows=$$('.js-trancher tr'); var s=rows[i]?rows[i].querySelector('select'):null;
+    return (s&&s.value)||r.cpt;
+  }
+  function renderFichier(){
+    var avecBanque=root.dataset.banque==='oui';
+    $('.js-file-xlsx').classList.toggle('hidden',!avecBanque);
+    $('.js-xlsx-preview').classList.toggle('hidden',!avecBanque);
+    $('.js-ascii-title').textContent=avecBanque
+      ? "Journal d'OD — ASCII (payé perso, contrepartie 108)"
+      : "Écritures — ASCII (Quadra)";
+    $('.js-fmt').textContent="Format ASCII (Quadra) · journal OD · contrepartie 108";
+    // Excel = journal de banque (opérations rapprochées, triées par date)
+    if(avecBanque){
+      var tb=$('.js-xlsx-rows'); tb.innerHTML='';
+      TRANCHER.map(function(r,i){return r;})
+        .slice().sort(function(a,b){return ddmmyy(a.dt)>ddmmyy(b.dt)?1:-1;})
+        .forEach(function(r){
+          var i=TRANCHER.indexOf(r), cpt=currentCptFor(r,i);
+          var sens=(cpt==='758'||cpt==='108')?'C':'D';
+          var deb=sens==='D'?eur(r.m):'', cred=sens==='C'?eur(r.m):'';
+          var tr=document.createElement('tr');
+          tr.innerHTML='<td class="num">BQ</td><td class="dt num">'+r.dt+'</td><td class="num">'+cpt
+            +'</td><td class="lib">'+r.lib+'</td><td class="amt num">'+deb+'</td><td class="amt num">'+cred+'</td>';
+          tb.appendChild(tr);
+        });
+    }
+    // ASCII = écritures fermes (OD 108) — extrait lisible
+    var lines=TRANCHER.map(function(r,i){
+      var cpt=currentCptFor(r,i); var sens=(cpt==='758'||cpt==='108')?'C':'D';
+      return ligneM(cpt,r.dt,r.lib,sens,r.m,'108','OD');
+    });
+    $('.js-ascii-preview').textContent=lines.join('\n');
+  }
+
   /* --- navigation --- */
   function go(n){
     root.dataset.step=n;
     $$('.step').forEach(function(s){s.classList.toggle('hidden',s.dataset.s!=String(n));});
+    if(n===5)renderFichier();
     window.scrollTo({top:0,behavior:'smooth'});
   }
   function cap(s){return s?s.charAt(0)+s.slice(1).toLowerCase():s;}
@@ -604,7 +660,7 @@ main.wrap{padding:30px 20px 90px}
   $$('.js-bq').forEach(function(b){b.addEventListener('click',function(){
     var v=b.dataset.v; root.dataset.banque=v;
     $$('.js-bq').forEach(function(x){x.setAttribute('aria-pressed',x.dataset.v===v?'true':'false');});
-    $('.js-fmt').textContent='Format ASCII (Quadra) · contrepartie '+(v==='oui'?'512':'108');
+    if(root.dataset.step==='5')renderFichier();
   });});
 
   /* --- modal --- */
@@ -643,19 +699,20 @@ main.wrap{padding:30px 20px 90px}
     return b.join('');
   }
   $('.js-download').addEventListener('click',function(){
-    var avecBanque=root.dataset.banque==='oui';
-    var ctp=avecBanque?'512':'108';
-    var jr=avecBanque?'BQ':'OD';
     var rows=$$('.js-trancher tr');
     var out=TRANCHER.map(function(r,i){
       var cpt=r.cpt, s=rows[i]?rows[i].querySelector('select'):null; if(s)cpt=s.value;
       var sens=(cpt==='758'||cpt==='108')?'C':'D';
-      return ligneM(cpt,r.dt,r.lib,sens,r.m,ctp,jr);
+      return ligneM(cpt,r.dt,r.lib,sens,r.m,'108','OD');
     });
-    var name=($('.js-dossier')?$('.js-dossier').textContent:'DOSSIER')+'_'+(avecBanque?'BQ':'OD');
+    var name=($('.js-dossier')?$('.js-dossier').textContent:'DOSSIER')+'_OD';
     var blob=new Blob([out.join('\r\n')+'\r\n'],{type:'text/plain;charset=windows-1252'});
     var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name+'.txt';
-    document.body.appendChild(a);a.click();a.remove();
+    try{document.body.appendChild(a);a.click();a.remove();}catch(e){}
+    // filet de sécurité : dans un Artifact le téléchargement est bloqué -> on affiche
+    openModal('<h3>Fichier généré</h3><p>Aperçu ci-dessous (dans l\'outil réel, le fichier est écrit sur le Drive du dossier : l\'ASCII des écritures fermes, et l\'Excel du journal de banque le cas échéant).</p>'
+      +'<pre style="max-height:220px;overflow:auto;font-size:10px;line-height:1.5;font-family:ui-monospace,Menlo,Consolas,monospace;background:#f7f9fb;border:1px solid #e2e6ea;border-radius:8px;padding:10px;white-space:pre">'
+      +out.join('\n').replace(/</g,'&lt;')+'</pre>');
   });
 
   renderTrancher();renderReclam();go(0);
