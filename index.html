@@ -544,11 +544,17 @@
   .ai-flag{font-size:.72rem;color:var(--muted);margin-top:8px;font-style:italic;}
 
   /* Recommandations IA (3 colonnes) */
-  .reco3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
-  .reco-col{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px 22px;display:flex;flex-direction:column;gap:16px;}
-  .reco-col .rc-top{display:flex;align-items:center;gap:14px;}
-  .reco-col .rc-badge{width:42px;height:42px;flex:0 0 42px;border-radius:50%;color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:.98rem;}
-  .reco-col .rc-title{font-size:1.08rem;font-weight:700;line-height:1.25;}
+  .reco3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:start;}
+  .reco-col{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;}
+  .reco-head{display:flex;align-items:center;gap:14px;width:100%;background:none;border:none;text-align:left;cursor:pointer;font-family:var(--font);padding:22px 22px;}
+  .reco-head .rc-badge{width:42px;height:42px;flex:0 0 42px;border-radius:50%;color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:.98rem;}
+  .reco-head .rc-title{flex:1;min-width:0;font-size:1.08rem;font-weight:700;line-height:1.25;}
+  .reco-chevron{flex:0 0 auto;color:var(--muted);display:flex;transition:transform .2s ease;}
+  .reco-chevron svg{width:20px;height:20px;}
+  .reco-col.collapsed .reco-chevron{transform:rotate(-90deg);}
+  .reco-detail{display:flex;flex-direction:column;gap:16px;padding:0 22px 24px;}
+  .reco-col.collapsed .reco-detail{display:none;}
+  .reco-col.collapsed .rc-block:first-child{border-top:none;padding-top:0;}
   .rc-block{border-top:1px solid var(--line);padding-top:14px;}
   .rc-block .rc-h{display:flex;align-items:center;gap:9px;margin-bottom:8px;}
   .rc-block .rc-h .rc-h-t{font-size:.98rem;font-weight:700;}
@@ -908,7 +914,7 @@
     </section>
     <section class="app-page" id="x-page-reco">
       <h1>Recommandations IA</h1>
-      <div class="page-sub" id="x-reco-sub">Cinq pistes prioritaires, chiffrées, identifiées pour préparer le rendez-vous.</div>
+      <div class="page-sub" id="x-reco-sub">Six pistes prioritaires et chiffrées — cliquez une carte pour dérouler le détail.</div>
       <div class="reco3" id="x-reco3"></div>
       <div class="ai-flag" id="x-reco-flag" style="margin-top:16px;"></div>
     </section>
@@ -940,7 +946,7 @@
       </div>
       <div class="two-70-30" style="margin-top:20px;">
         <div class="bcard"><div id="c-sig"></div></div>
-        <div class="retenir-client" style="align-self:center;"><div class="rc-ico" id="c-synth-ico"></div><h3>Ce qu'il faut retenir</h3><div id="c-synth-retenir"></div></div>
+        <div class="retenir-client" style="align-self:stretch;"><div class="rc-ico" id="c-synth-ico"></div><h3>Ce qu'il faut retenir</h3><div id="c-synth-retenir"></div></div>
       </div>
     </section>
 
@@ -3252,19 +3258,23 @@ function recurringDelta(){
 }
 function renderReco(recos){
   const themes=[{tone:'navy',hex:'#1B3A5C'},{tone:'blue',hex:'#2F6DB0'},{tone:'gold',hex:'#9A6E1E'}];
-  document.getElementById('x-reco3').innerHTML = recos.slice(0,5).map((rc,i)=>{
+  const box=document.getElementById('x-reco3');
+  box.innerHTML = recos.slice(0,6).map((rc,i)=>{
     const g=rc.forecast, t=themes[i%3];
     const step=(ico,label,body)=>`<div class="rc-block"><div class="rc-h">${chip(ico,t.tone,'sm')}<span class="rc-h-t" style="color:${t.hex}">${label}</span></div><p>${body}</p></div>`;
-    return `<div class="reco-col">
-      <div class="rc-top"><div class="rc-badge" style="background:${t.hex};">0${i+1}</div><div class="rc-title">${rc.title}</div></div>
-      ${step('search','1. Problème identifié',rc.probleme)}
-      ${step('wrench','2. Correctif précis',rc.correctif)}
-      <div class="rc-block"><div class="rc-h">${chip('bars',t.tone,'sm')}<span class="rc-h-t" style="color:${t.hex}">3. Forecast N+1</span></div>
-        <p>${g.label}.</p>
-        <div class="rc-gauge2"><span class="g-lo" style="color:${t.hex}">${fmtEUR(g.low)}</span><span class="g-track" style="--c:${t.hex}"><b></b></span><span class="g-hi" style="color:${t.hex}">${fmtEUR(g.high)}</span></div>
+    return `<div class="reco-col collapsed">
+      <button class="reco-head" data-reco-toggle><div class="rc-badge" style="background:${t.hex};">0${i+1}</div><div class="rc-title">${rc.title}</div><span class="reco-chevron">${svgIcon('chevron')}</span></button>
+      <div class="reco-detail">
+        ${step('search','1. Problème identifié',rc.probleme)}
+        ${step('wrench','2. Correctif précis',rc.correctif)}
+        <div class="rc-block"><div class="rc-h">${chip('bars',t.tone,'sm')}<span class="rc-h-t" style="color:${t.hex}">3. Forecast N+1</span></div>
+          <p>${g.label}.</p>
+          <div class="rc-gauge2"><span class="g-lo" style="color:${t.hex}">${fmtEUR(g.low)}</span><span class="g-track" style="--c:${t.hex}"><b></b></span><span class="g-hi" style="color:${t.hex}">${fmtEUR(g.high)}</span></div>
+        </div>
       </div>
     </div>`;
   }).join('');
+  box.querySelectorAll('[data-reco-toggle]').forEach(h=>h.addEventListener('click',()=>h.closest('.reco-col').classList.toggle('collapsed')));
 }
 
 /* Recommandations du jeu de démonstration — texte exact des maquettes */
@@ -3289,7 +3299,11 @@ function demoRecos(){
     {title:"Constituer une trésorerie de sécurité",
      probleme:"Le point bas de trésorerie tombe à 5 060 € en janvier, soit moins d'un mois de charges : une baisse d'activité ou un impayé exposerait l'entreprise à une tension immédiate.",
      correctif:"Placer chaque mois 3 000 € sur un compte dédié jusqu'à atteindre 2 mois de charges (~40 000 €), et lisser les grosses échéances (CFE, charges sociales).",
-     forecast:{label:"Objectif : un matelas de 2 mois de charges, soit ~40 000 € en 12 mois", low:36000, high:40000}}
+     forecast:{label:"Objectif : un matelas de 2 mois de charges, soit ~40 000 € en 12 mois", low:36000, high:40000}},
+    {title:"Convertir la valeur ajoutée en excédent brut",
+     probleme:"Sur 135 980 € de valeur ajoutée, l'excédent brut d'exploitation ne ressort qu'à 12 380 € (4,9 % du CA) : la richesse créée est presque entièrement absorbée par les charges de personnel et les impôts, laissant peu de marge de sécurité.",
+     correctif:"Suivre chaque trimestre le ratio charges de personnel / valeur ajoutée, indexer les prochaines embauches sur la croissance réelle du CA et privilégier la polyvalence des équipes avant tout recrutement.",
+     forecast:{label:"Gagner 1 point d'EBE représente environ 2 500 € de résultat en plus par an", low:2000, high:3000}}
   ];
 }
 /* ---- Routing Expert ---- */
