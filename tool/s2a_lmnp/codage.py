@@ -24,7 +24,7 @@ from .model import Operation
 from .dico import Dictionnaire
 
 IMMO = {"2135", "2184", "2313", "2131", "2181"}
-SEUIL_IMMO_HT = 50.0  # € HT — sous ce seuil, un bien durable est passé en charge
+SEUIL_IMMO_HT = 500.0  # € HT — sous ce seuil, un bien durable est passé en charge
 
 
 def _base_ht(op: Operation) -> float:

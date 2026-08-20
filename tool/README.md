@@ -116,7 +116,7 @@ rejette le fichier.
 - **TVA (LMNP non assujetti, ≈90 % des cas)** : on comptabilise le **TTC en
   entier** en charge/immobilisation ; aucune écriture de TVA n'est jamais
   générée. La TVA d'une facture ne sert qu'à apprécier le seuil (en HT).
-- **Seuil d'immobilisation = 50 € HT** : en dessous, un achat de nature durable
+- **Seuil d'immobilisation = 500 € HT** : en dessous, un achat de nature durable
   (mobilier, bricolage, travaux) est passé **directement en charge** (auto) ;
   au-dessus, il reste **« à trancher »**. Le seuil s'apprécie en HT lorsque la
   facture donne la TVA, sinon sur le TTC (prudent).
