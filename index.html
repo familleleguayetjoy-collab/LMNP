@@ -810,9 +810,9 @@
   }
 
   /* ============ RAPPORT PDF ============ */
-  .print-only{display:none;}
+  .print-only{display:none !important;}
   /* Cover */
-  #report-cover{background:var(--brand);color:#fff;border-radius:0;min-height:245mm;display:flex;flex-direction:column;justify-content:space-between;padding:26mm 22mm;}
+  #report-cover{background:var(--brand);color:#fff;border-radius:0;min-height:245mm;flex-direction:column;justify-content:space-between;padding:26mm 22mm;}
   #report-cover .rc-band{display:flex;align-items:center;justify-content:space-between;}
   #report-cover .brand-img{height:42px;}
   #report-cover .rc-cab{font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;}
@@ -854,7 +854,7 @@
     .topbar-app,#adj-drawer,#adj-ov,#rep-ov,#rep-modal,.tb-cta,.no-print{display:none !important;}
     .app-main{padding:0 !important;max-width:none !important;}
     #client-app .app-page{display:block !important;page-break-before:always;}
-    #report-cover{page-break-before:avoid;page-break-after:always;}
+    #report-cover{display:flex !important;page-break-before:avoid;page-break-after:always;}
     .print-only{display:block !important;}
     .rep-points{display:grid !important;}
     .rec-group .rec-body{display:block !important;}
@@ -4025,7 +4025,7 @@ document.getElementById('c-quit').addEventListener('click',()=>{
 });
 
 /* ---- Rapport PDF ---- */
-function fmtDateISO(d){ return d? d.toISOString().slice(0,10):''; }
+function fmtDateISO(d){ return d? d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'):''; }
 function frDate(d){ return d? d.toLocaleDateString('fr-FR'):'—'; }
 function reportTypeLabel(fin, mois){
   const annuel = fin && fin.getMonth()===11 && fin.getDate()>=28 && mois>=11;
