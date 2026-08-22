@@ -355,7 +355,9 @@
   .pres-stage{flex:1;display:flex;align-items:center;justify-content:center;padding:20px 28px;overflow:hidden;min-height:0;}
   .pres-frame{width:min(100%, calc((100vh - 130px) * 16 / 9));aspect-ratio:16/9;background:var(--paper);border-radius:10px;position:relative;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35);}
   .slide{position:absolute;inset:0;display:none;flex-direction:column;padding:44px 56px;}
-  .slide.active{display:flex;}
+  .slide.active{display:flex;animation:s2aSlideIn .45s cubic-bezier(.22,.9,.3,1) both;}
+  @keyframes s2aSlideIn{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:none;}}
+  @media (prefers-reduced-motion:reduce){ .slide.active{animation:none !important;} }
   .slide .eyebrow{font-family:var(--font);font-variant-numeric:tabular-nums;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--brand);margin-bottom:8px;}
   .slide h2{font-family:var(--font);font-size:1.9rem;font-style:italic;font-weight:500;color:var(--ink);max-width:80%;line-height:1.25;}
   .slide .slide-body{flex:1;display:flex;gap:32px;min-height:0;margin-top:18px;}
@@ -1015,7 +1017,9 @@
   .topbar-app{border-bottom:1px solid rgba(154,110,30,.16);}
   #client-app .app-page>h1::after,#expert-app .app-page>h1::after,#c-page-synthese h1::after,#charge-right h1::after{content:"";display:block;width:44px;height:3px;background:var(--gold);border-radius:2px;margin-top:12px;}
   #client-app .app-page.active,#expert-app .app-page.active{animation:s2aUp .5s cubic-bezier(.22,.9,.3,1) both;}
-  @media (prefers-reduced-motion:reduce){ #client-app .app-page.active,#expert-app .app-page.active{animation:none !important;} }
+  #charge-detail.anim{animation:s2aUp .42s cubic-bezier(.22,.9,.3,1) both;}
+  #charge-right.anim{animation:s2aUp .32s cubic-bezier(.22,.9,.3,1) both;}
+  @media (prefers-reduced-motion:reduce){ #client-app .app-page.active,#expert-app .app-page.active,#charge-detail.anim,#charge-right.anim{animation:none !important;} }
 </style>
 </head>
 <body>
@@ -4188,6 +4192,7 @@ function openChargeDetail(cat){
   box.querySelector('#acc-search').addEventListener('input', e=>renderAccItems(cat, e.target.value));
   renderAccItems(cat,'');
   renderChargeRight();
+  box.classList.remove('anim'); void box.offsetWidth; box.classList.add('anim');
 }
 function renderAccItems(cat, q){
   const accs=chargeAccounts(cat).filter(a=>!q || (a.compte+' '+a.lib).toLowerCase().includes(q.toLowerCase()));
@@ -4220,6 +4225,7 @@ function renderChargeRight(){
     <div class="bcard" style="margin-top:18px;"><div class="card-h">Évolution mensuelle</div><div class="chart-wrap sm"><canvas id="detail-chart"></canvas></div></div>
     ${lectHtml}`;
   lineNN1('detail-chart', mN, mN1, Object.assign({zero:true}, yearLabels()));
+  box.classList.remove('anim'); void box.offsetWidth; box.classList.add('anim');
 }
 function chargeLecture(acc,n,n1,mN,idx){
   const out=[]; const ca=AN.ratios.CA;
