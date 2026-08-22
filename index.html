@@ -934,6 +934,20 @@
   .import-col h3{font-family:var(--serif);font-weight:600;color:var(--brand-2);font-size:1.25rem;}
   #upload-screen .upload-card h1{font-family:var(--serif);font-weight:600;color:var(--brand-2);}
   #demo-btn{background:linear-gradient(180deg,#274b73,#152f4a)!important;color:#fff!important;border:1px solid rgba(154,110,30,.5)!important;border-radius:999px!important;box-shadow:0 10px 24px rgba(27,58,92,.28),0 0 0 3px rgba(245,238,221,.4);}
+  /* Animations d'apparition */
+  @keyframes s2aUp{from{opacity:0;transform:translateY(15px);}to{opacity:1;transform:none;}}
+  @keyframes s2aFade{from{opacity:0;}to{opacity:1;}}
+  .entry.active .entry-head,.entry.active .hz>*,.entry.active .form-sec,.entry.active .form-actions,.entry.active .list-card{animation:s2aUp .55s cubic-bezier(.22,.9,.3,1) both;}
+  .entry.active .entry-back{animation:s2aFade .5s ease both;}
+  .entry.active .entry-deco{animation:s2aFade 1.1s ease both;}
+  .entry.active .entry-head{animation-delay:.05s;}
+  .entry.active .hz>*:nth-child(1),.entry.active .form-sec:nth-child(1){animation-delay:.13s;}
+  .entry.active .hz>*:nth-child(2),.entry.active .form-sec:nth-child(2){animation-delay:.21s;}
+  .entry.active .hz>*:nth-child(3),.entry.active .form-sec:nth-child(3){animation-delay:.29s;}
+  .entry.active .form-actions{animation-delay:.35s;}
+  #upload-screen .upload-card{animation:s2aUp .55s cubic-bezier(.22,.9,.3,1) both;}
+  #setup-screen.active .choice-wrap{animation:s2aUp .55s cubic-bezier(.22,.9,.3,1) both;}
+  @media (prefers-reduced-motion:reduce){ .entry.active *,#upload-screen .upload-card,#setup-screen.active .choice-wrap{animation:none !important;} }
 </style>
 </head>
 <body>
@@ -3299,6 +3313,10 @@ function showEntry(id){
   ENTRY_SCREENS.forEach(s=>{ const el=document.getElementById(s); if(!el) return;
     if(s==='upload-screen'){ el.style.display=(s===id)?'flex':'none'; }
     else el.classList.toggle('active', s===id); });
+  // relance des animations d'apparition à chaque affichage
+  const t=document.getElementById(id);
+  if(t){ if(t.classList.contains('entry')){ t.classList.remove('active'); void t.offsetWidth; t.classList.add('active'); }
+    else { void t.offsetWidth; } }
 }
 function refreshPersonsDatalist(){ document.getElementById('persons-list').innerHTML = allPersons().map(n=>`<option value="${n}">`).join(''); }
 
