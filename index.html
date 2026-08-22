@@ -865,26 +865,40 @@
     .print-foot{display:block;position:fixed;bottom:-10mm;left:0;right:0;text-align:right;font-size:8pt;color:#8a8f98;}
   }
 
-  /* ============ ACCUEIL / DOSSIERS ============ */
-  .entry{min-height:100vh;display:none;align-items:center;justify-content:center;padding:24px;background:var(--bg);}
+  /* ============ ACCUEIL / DOSSIERS (premium S2A) ============ */
+  .entry{min-height:100vh;display:none;flex-direction:column;align-items:center;justify-content:flex-start;padding:6vh 24px 46px;background:
+     radial-gradient(1200px 380px at 88% -8%, rgba(245,238,221,.55), transparent 60%),
+     radial-gradient(900px 340px at 6% -6%, rgba(219,229,242,.55), transparent 60%),
+     var(--bg);position:relative;overflow:auto;}
   .entry.active{display:flex;}
-  #home-screen .hz{max-width:820px;width:100%;text-align:center;}
-  .home-title{font-family:var(--serif);font-size:2.2rem;font-weight:600;color:var(--brand-2);margin-bottom:6px;}
-  .home-sub{color:var(--muted);margin-bottom:30px;}
-  .home-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
-  .home-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:34px 30px;cursor:pointer;text-align:left;transition:.18s;box-shadow:var(--shadow);}
+  .entry-head{text-align:center;margin-bottom:26px;}
+  .brand-img.entry-logo{height:46px;}
+  .gold-rule{width:54px;height:3px;background:var(--gold);margin:15px auto 16px;border-radius:2px;}
+  .entry-title{font-family:var(--serif);font-size:2.5rem;font-weight:600;color:var(--brand-2);line-height:1.06;letter-spacing:-.01em;}
+  .entry-title .g{color:var(--gold);}
+  .entry-back{position:absolute;top:26px;left:24px;width:52px;height:52px;border-radius:16px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);font-size:1.5rem;color:var(--brand);cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .cta-gold{background:linear-gradient(180deg,#274b73,#152f4a)!important;color:#fff!important;border:1px solid rgba(154,110,30,.55)!important;border-radius:14px;box-shadow:0 10px 24px rgba(27,58,92,.30),0 0 0 2px rgba(245,238,221,.4);}
+  .cta-gold:hover{filter:brightness(1.06);}
+  .demo-pill{margin-top:6px;background:linear-gradient(180deg,#274b73,#152f4a);color:#fff;border:1px solid rgba(154,110,30,.5);border-radius:999px;padding:15px 24px;font-family:var(--font);font-size:1rem;font-weight:600;cursor:pointer;box-shadow:0 10px 24px rgba(27,58,92,.28),0 0 0 3px rgba(245,238,221,.4);}
+  .demo-pill:hover{filter:brightness(1.06);}
+  #home-screen .hz{max-width:720px;width:100%;display:flex;flex-direction:column;gap:18px;}
+  .home-card{display:flex;align-items:center;gap:22px;padding:22px 26px;border-radius:20px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);cursor:pointer;text-align:left;transition:.18s;}
   .home-card:hover{border-color:var(--brand);transform:translateY(-2px);}
-  .home-card .hc-ico{width:52px;height:52px;border-radius:14px;background:var(--brand-soft);color:var(--brand);display:flex;align-items:center;justify-content:center;margin-bottom:16px;}
-  .home-card .hc-ico svg{width:26px;height:26px;}
-  .home-card h3{font-size:1.18rem;font-weight:700;margin-bottom:6px;color:var(--ink);}
-  .home-card p{color:var(--muted);font-size:.9rem;line-height:1.5;margin:0;}
-  .home-demo{margin-top:26px;}
-  .home-demo button{background:none;border:none;color:var(--brand);text-decoration:underline;cursor:pointer;font-family:var(--font);font-size:.9rem;}
-  .form-card,.list-card{max-width:760px;width:100%;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:32px 34px 26px;max-height:92vh;overflow:auto;}
-  .form-card h2,.list-card h2{font-family:var(--serif);font-size:1.55rem;font-weight:600;margin:0;}
-  .form-card .fc-sub{color:var(--muted);font-size:.9rem;margin:4px 0 22px;}
+  .hc-badge{flex:0 0 62px;width:62px;height:62px;border-radius:50%;background:var(--brand);color:var(--gold);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 18px rgba(27,58,92,.28);}
+  .hc-badge svg{width:30px;height:30px;}
+  .home-card .hc-body{flex:1;min-width:0;}
+  .home-card h3{font-size:1.3rem;font-weight:700;color:var(--brand-2);margin:0;}
+  .hc-rule{display:block;width:34px;height:3px;background:var(--gold);border-radius:2px;margin-top:10px;}
+  .hc-arrow{color:var(--brand);font-size:1.7rem;font-weight:400;line-height:1;}
+  .form-card,.list-card{max-width:820px;width:100%;background:transparent;border:none;box-shadow:none;padding:0;max-height:none;overflow:visible;}
+  .form-sec{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:26px 28px;margin-bottom:20px;}
+  .sec-h{display:flex;align-items:center;gap:16px;margin-bottom:18px;}
+  .sec-h .sec-ico{flex:0 0 52px;width:52px;height:52px;border-radius:50%;background:var(--brand);color:var(--gold);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 18px rgba(27,58,92,.24);}
+  .sec-h .sec-ico svg{width:26px;height:26px;}
+  .sec-h h3{font-family:var(--serif);font-size:1.4rem;font-weight:600;color:var(--brand-2);margin:0;}
+  .list-card{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:20px;padding:28px 30px;}
   .fld{margin-bottom:14px;}
-  .fld label{display:block;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);margin-bottom:5px;}
+  .fld label{display:block;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--brand);margin-bottom:5px;}
   .fld input,.fld select,.fld textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-family:var(--font);font-size:.95rem;color:var(--ink);background:var(--card);}
   .fld textarea{resize:vertical;min-height:66px;}
   .frow{display:flex;gap:14px;}
@@ -908,48 +922,72 @@
   .dossier-row .dr-tag{font-size:.7rem;font-weight:700;background:var(--brand-soft);color:var(--brand);border-radius:999px;padding:3px 10px;white-space:nowrap;}
   .dr-del{color:var(--bad);background:none;border:none;cursor:pointer;font-size:1rem;padding:4px 8px;}
   .list-empty{text-align:center;color:var(--muted);padding:44px 20px;}
+  /* Upload premium */
+  .import-col{text-align:center;}
+  .imp-badge{width:66px;height:66px;border-radius:50%;background:var(--brand);color:#fff;font-weight:700;font-size:.82rem;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:0 8px 18px rgba(27,58,92,.26);border:2px solid var(--gold);}
+  .import-col h3{font-family:var(--serif);font-weight:600;color:var(--brand-2);font-size:1.25rem;}
+  #upload-screen .upload-card h1{font-family:var(--serif);font-weight:600;color:var(--brand-2);}
+  #demo-btn{background:linear-gradient(180deg,#274b73,#152f4a)!important;color:#fff!important;border:1px solid rgba(154,110,30,.5)!important;border-radius:999px!important;box-shadow:0 10px 24px rgba(27,58,92,.28),0 0 0 3px rgba(245,238,221,.4);}
 </style>
 </head>
 <body>
 
 <!-- ============ ACCUEIL EC ============ -->
 <div id="home-screen" class="entry active">
-  <div class="brandbar"><span class="brand-img lg" role="img" aria-label="S2A — Sud Alpes Audit"></span></div>
+  <div class="entry-head">
+    <span class="brand-img entry-logo" role="img" aria-label="S2A — Sud Alpes Audit"></span>
+    <div class="gold-rule"></div>
+    <div class="entry-title">Espace expert-<span class="g">comptable</span></div>
+  </div>
   <div class="hz">
-    <div class="home-title">Espace expert-comptable</div>
-    <div class="home-sub">Sud Alpes Audit — préparez et présentez les comptes de vos clients.</div>
-    <div class="home-grid">
-      <button class="home-card" id="home-new"><div class="hc-ico" id="ico-new"></div><h3>Paramétrer un nouveau dossier</h3><p>Créez une société : forme, capital, associés et le contexte utile à l'analyse.</p></button>
-      <button class="home-card" id="home-open"><div class="hc-ico" id="ico-open"></div><h3>Sélectionner un dossier existant</h3><p>Rouvrez un dossier, retrouvez son historique et la situation du client.</p></button>
-    </div>
-    <div class="home-demo"><button id="home-demo-btn">Essayer avec un jeu de démonstration →</button></div>
+    <button class="home-card" id="home-new"><span class="hc-badge" id="ico-new"></span><div class="hc-body"><h3>Paramétrer un nouveau dossier</h3><span class="hc-rule"></span></div><span class="hc-arrow">›</span></button>
+    <button class="home-card" id="home-open"><span class="hc-badge" id="ico-open"></span><div class="hc-body"><h3>Sélectionner un dossier existant</h3><span class="hc-rule"></span></div><span class="hc-arrow">›</span></button>
+    <button class="demo-pill" id="home-demo-btn">Essayer avec un jeu de démonstration →</button>
   </div>
 </div>
 
 <!-- ============ FORMULAIRE NOUVEAU DOSSIER ============ -->
 <div id="dossier-form" class="entry">
+  <button class="entry-back" id="form-back-top" title="Retour">‹</button>
+  <div class="entry-head">
+    <span class="brand-img entry-logo" role="img" aria-label="S2A"></span>
+    <div class="gold-rule"></div>
+    <div class="entry-title">Nouveau <span class="g">dossier</span></div>
+  </div>
   <div class="form-card">
-    <h2>Nouveau dossier</h2>
-    <div class="fc-sub">Renseignez les informations clés de la société. Elles sont réutilisées d'une année sur l'autre.</div>
-    <div class="frow"><div class="fld"><label>Dénomination</label><input id="f-denom" placeholder="Nom de la société"></div><div class="fld"><label>SIREN</label><input id="f-siren" placeholder="9 chiffres"></div></div>
-    <div class="frow"><div class="fld"><label>Forme juridique</label><select id="f-forme"><option>SAS</option><option>SASU</option><option>SARL</option><option>EURL</option><option>SA</option><option>SCI</option><option>SNC</option><option>EI</option><option>Autre</option></select></div><div class="fld"><label>Activité</label><input id="f-activite" placeholder="Ex. commerce de détail"></div></div>
-    <div class="frow"><div class="fld"><label>Date de clôture</label><input id="f-cloture" type="date"></div><div class="fld"><label>Régime fiscal</label><select id="f-regime"><option>IS</option><option>IR</option></select></div></div>
-    <div class="frow"><div class="fld"><label>Régime de groupe</label><select id="f-groupe"><option value="">Aucun</option><option>Mère-fille</option><option>Intégration fiscale</option></select></div><div class="fld"><label>Type de dossier</label><select id="f-type"><option value="exploitation">Exploitation (avec bilan)</option><option value="sci-lmnp">SCI / LMNP (sans bilan)</option></select></div></div>
-    <span class="cap-label">Structure du capital — associés</span>
-    <div id="assoc-list"></div>
-    <button class="btn-mini" id="assoc-add">+ Ajouter un associé</button>
-    <div id="assoc-hint"></div>
-    <div class="fld" style="margin-top:16px;"><label>Contexte / situation (pour éclairer l'analyse)</label><textarea id="f-context" placeholder="Ex. holding animatrice, projet de cession, dividendes réguliers…"></textarea></div>
-    <div class="fld"><label>Notes ou texte de PV d'AGO / liasse (facultatif)</label><textarea id="f-notes" placeholder="Collez ici le texte d'un PV d'AGO ou de la liasse fiscale ; il servira de contexte à l'analyse."></textarea></div>
-    <div class="form-actions"><button class="tb-cta ghost" id="form-cancel">Annuler</button><button class="tb-cta" id="form-save" style="background:var(--brand);color:#fff;">Enregistrer et charger les comptes →</button></div>
+    <div class="form-sec">
+      <div class="sec-h"><span class="sec-ico" id="sec-ico-1"></span><h3>Informations générales</h3></div>
+      <div class="frow"><div class="fld"><label>Dénomination</label><input id="f-denom" placeholder="Nom de la société"></div><div class="fld"><label>SIREN</label><input id="f-siren" placeholder="9 chiffres"></div></div>
+      <div class="frow"><div class="fld"><label>Forme juridique</label><select id="f-forme"><option>SAS</option><option>SASU</option><option>SARL</option><option>EURL</option><option>SA</option><option>SCI</option><option>SNC</option><option>EI</option><option>Autre</option></select></div><div class="fld"><label>Activité</label><input id="f-activite" placeholder="Ex. commerce de détail"></div></div>
+      <div class="frow"><div class="fld"><label>Date de clôture</label><input id="f-cloture" type="date"></div><div class="fld"><label>Régime fiscal</label><select id="f-regime"><option>IS</option><option>IR</option></select></div></div>
+      <div class="frow"><div class="fld"><label>Régime de groupe</label><select id="f-groupe"><option value="">Aucun</option><option>Mère-fille</option><option>Intégration fiscale</option></select></div><div class="fld"><label>Type de dossier</label><select id="f-type"><option value="exploitation">Exploitation (avec bilan)</option><option value="sci-lmnp">SCI / LMNP (sans bilan)</option></select></div></div>
+    </div>
+    <div class="form-sec">
+      <div class="sec-h"><span class="sec-ico" id="sec-ico-2"></span><h3>Structure du capital — associés</h3></div>
+      <div id="assoc-list"></div>
+      <button class="btn-mini" id="assoc-add">+ Ajouter un associé</button>
+      <div id="assoc-hint"></div>
+    </div>
+    <div class="form-sec">
+      <div class="sec-h"><span class="sec-ico" id="sec-ico-3"></span><h3>Contexte et notes</h3></div>
+      <div class="fld"><label>Contexte / situation (pour éclairer l'analyse)</label><textarea id="f-context" placeholder="Ex. holding animatrice, projet de cession, dividendes réguliers…"></textarea></div>
+      <div class="fld"><label>Notes ou texte de PV d'AGO / liasse (facultatif)</label><textarea id="f-notes" placeholder="Collez ici le texte d'un PV d'AGO ou de la liasse fiscale ; il servira de contexte à l'analyse."></textarea></div>
+    </div>
+    <div class="form-actions"><button class="tb-cta ghost" id="form-cancel">Annuler</button><button class="tb-cta cta-gold" id="form-save">Enregistrer et charger les comptes →</button></div>
   </div>
   <datalist id="persons-list"></datalist>
 </div>
 
 <!-- ============ LISTE DES DOSSIERS ============ -->
 <div id="dossier-list" class="entry">
+  <button class="entry-back" id="list-back-top" title="Retour">‹</button>
+  <div class="entry-head">
+    <span class="brand-img entry-logo" role="img" aria-label="S2A"></span>
+    <div class="gold-rule"></div>
+    <div class="entry-title">Vos <span class="g">dossiers</span></div>
+  </div>
   <div class="list-card">
-    <div class="list-head"><h2>Dossiers</h2><button class="tb-cta ghost" id="list-back">← Accueil</button></div>
+    <div class="list-head"><h2 style="font-family:var(--serif);font-weight:600;font-size:1.3rem;">Tous les dossiers</h2><button class="tb-cta ghost" id="list-back">← Accueil</button></div>
     <div class="list-tools">
       <input id="list-search" placeholder="Rechercher par nom, SIREN, associé…">
       <select id="list-sort"><option value="recent">Récemment modifiés</option><option value="nom">Nom (A→Z)</option><option value="forme">Forme juridique</option></select>
@@ -968,6 +1006,7 @@
 
     <div class="import-grid">
       <div class="import-col">
+        <div class="imp-badge">FEC</div>
         <h3>FEC</h3>
         <div class="import-sub">Fichier des écritures comptables de l'exercice.</div>
         <div class="dropzone2" id="fec-drop">
@@ -978,6 +1017,7 @@
         <input type="file" id="file-input" accept=".txt,.csv">
       </div>
       <div class="import-col">
+        <div class="imp-badge">PDF</div>
         <h3>Comptes annuels</h3>
         <div class="import-sub">PDF contenant les SIG, le compte de résultat et le bilan N / N-1.</div>
         <div class="dropzone2" id="pdf-drop">
@@ -3347,7 +3387,15 @@ function dossierContextText(){
 }
 
 /* --- Wiring accueil / formulaire / liste --- */
-setTimeout(()=>{ try{ document.getElementById('ico-new').innerHTML=svgIcon('plus'); document.getElementById('ico-open').innerHTML=svgIcon('folder'); }catch(e){} },0);
+setTimeout(()=>{ try{
+  document.getElementById('ico-new').innerHTML=svgIcon('plus');
+  document.getElementById('ico-open').innerHTML=svgIcon('folder');
+  document.getElementById('sec-ico-1').innerHTML=svgIcon('users');
+  document.getElementById('sec-ico-2').innerHTML=svgIcon('users');
+  document.getElementById('sec-ico-3').innerHTML=svgIcon('bulb');
+}catch(e){} },0);
+document.getElementById('form-back-top').addEventListener('click', ()=>showEntry('home-screen'));
+document.getElementById('list-back-top').addEventListener('click', ()=>showEntry('home-screen'));
 document.getElementById('home-new').addEventListener('click', ()=>{ currentDossier=null; openNewDossierForm(); });
 document.getElementById('home-open').addEventListener('click', ()=>{ renderDossierList(); showEntry('dossier-list'); });
 document.getElementById('home-demo-btn').addEventListener('click', ()=>{ openUploadForDossier(null); });
