@@ -570,7 +570,8 @@
 
   /* ============ INTERFACE CLIENT ============ */
   .tb-left.stack{flex-direction:column;align-items:flex-start;gap:1px;}
-  .tb-left.stack b{font-size:1.05rem;color:var(--ink);font-weight:700;letter-spacing:-.01em;}
+  .tb-left.stack b{font-size:1.05rem;color:var(--ink);font-weight:700;letter-spacing:-.01em;max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .tb-left.stack{max-width:230px;}
   .tb-left.stack span{font-size:.8rem;color:var(--muted);}
   .app-wide{max-width:1320px;}
   .two-70-30{display:grid;grid-template-columns:1.9fr 1fr;gap:20px;align-items:start;}
@@ -776,7 +777,7 @@
      ligne, chaque onglet lisible ; le nom du dossier se tronque si nécessaire. */
   @media (max-width:1280px){
     .topbar-app{gap:16px;padding:14px 20px;}
-    .tb-nav{gap:12px;}
+    .tb-nav{gap:12px;justify-content:flex-start;}
     .tb-tab{font-size:.9rem;}
     .tb-left.stack{flex:0 1 auto;min-width:0;}
     .tb-left.stack b{max-width:34vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -948,6 +949,15 @@
   #upload-screen .upload-card{animation:s2aUp .55s cubic-bezier(.22,.9,.3,1) both;}
   #setup-screen.active .choice-wrap{animation:s2aUp .55s cubic-bezier(.22,.9,.3,1) both;}
   @media (prefers-reduced-motion:reduce){ .entry.active *,#upload-screen .upload-card,#setup-screen.active .choice-wrap{animation:none !important;} }
+  /* Homogénéisation du template des autres écrans (chrome uniquement) */
+  #client-app,#expert-app{background:
+     radial-gradient(1100px 400px at 93% -12%, rgba(245,238,221,.5), transparent 58%),
+     radial-gradient(900px 380px at 4% -10%, rgba(213,226,244,.42), transparent 58%),
+     var(--bg);}
+  .topbar-app{border-bottom:1px solid rgba(154,110,30,.16);}
+  #client-app .app-page>h1::after,#expert-app .app-page>h1::after,#c-page-synthese h1::after,#charge-right h1::after{content:"";display:block;width:44px;height:3px;background:var(--gold);border-radius:2px;margin-top:12px;}
+  #client-app .app-page.active,#expert-app .app-page.active{animation:s2aUp .5s cubic-bezier(.22,.9,.3,1) both;}
+  @media (prefers-reduced-motion:reduce){ #client-app .app-page.active,#expert-app .app-page.active{animation:none !important;} }
 </style>
 </head>
 <body>
@@ -3257,6 +3267,7 @@ function showChoiceScreen(){
   const {mn, mx} = ecrituresBounds(rawEcritures);
   document.getElementById('setup-title').textContent = (clientLabel||'DOSSIER').toUpperCase();
   document.getElementById('setup-periode').textContent = mx ? 'Exercice '+mx.getFullYear()+' — analyse terminée' : 'Analyse terminée avec succès';
+  ['home-screen','dossier-form','dossier-list'].forEach(s=>document.getElementById(s).classList.remove('active'));
   document.getElementById('upload-screen').style.display='none';
   document.getElementById('setup-screen').classList.add('active');
 }
@@ -3431,7 +3442,7 @@ document.getElementById('form-back-top').addEventListener('click', ()=>showEntry
 document.getElementById('list-back-top').addEventListener('click', ()=>showEntry('home-screen'));
 document.getElementById('home-new').addEventListener('click', ()=>{ currentDossier=null; openNewDossierForm(); });
 document.getElementById('home-open').addEventListener('click', ()=>{ renderDossierList(); showEntry('dossier-list'); });
-document.getElementById('home-demo-btn').addEventListener('click', ()=>{ openUploadForDossier(null); });
+document.getElementById('home-demo-btn').addEventListener('click', ()=>{ currentDossier=null; document.getElementById('demo-btn').click(); });
 document.getElementById('form-cancel').addEventListener('click', ()=>showEntry('home-screen'));
 document.getElementById('assoc-add').addEventListener('click', ()=>addAssocRow());
 document.getElementById('assoc-list').addEventListener('click', e=>{ if(e.target.classList.contains('a-del')){ e.target.closest('.assoc-row').remove(); updateAssocHint(); } });
@@ -3713,6 +3724,7 @@ function setExpertTab(tab){
   document.querySelectorAll('#expert-app .tb-tab').forEach(b=>b.classList.toggle('active', b.dataset.xtab===tab));
   document.getElementById('x-page-essentiel').classList.toggle('active', tab==='essentiel');
   document.getElementById('x-page-reco').classList.toggle('active', tab==='reco');
+  const ap=document.getElementById(tab==='reco'?'x-page-reco':'x-page-essentiel'); if(ap){ ap.classList.remove('active'); void ap.offsetWidth; ap.classList.add('active'); }
 }
 function enterExpert(){
   computeNN1();
@@ -4299,6 +4311,7 @@ function setClientTab(tab){
   else if(tab==='bilan') renderBilanStructure();
   else if(tab==='ratios') renderBilanRatios();
   else if(tab==='tresorerie') renderTresorerie();
+  const ap=document.getElementById(CLIENT_PAGES[tab]); if(ap){ ap.classList.remove('active'); void ap.offsetWidth; ap.classList.add('active'); }
 }
 const CTAB_ICONS={synthese:'home',activite:'activity',charges:'pie',recurrentes:'refresh',bilan:'scale',ratios:'bars',tresorerie:'bank'};
 function initClientNavIcons(){
