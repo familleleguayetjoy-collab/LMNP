@@ -111,7 +111,11 @@
   .brand-img.on-dark{background-image:url('assets/img/logo-s2a-light.webp');}
 
   /* ---------- Écran d'import (2 dépôts) ---------- */
-  #upload-screen{background:var(--bg);}
+  #upload-screen{background:
+     radial-gradient(1150px 520px at 93% -12%, rgba(245,238,221,.85), transparent 55%),
+     radial-gradient(950px 500px at 3% -10%, rgba(213,226,244,.8), transparent 55%),
+     radial-gradient(820px 760px at 82% 118%, rgba(219,229,242,.5), transparent 60%),
+     linear-gradient(180deg,#fbfaf6 0%,#f3f6fa 100%);}
   .upload-card{padding:40px 40px 30px;}
   .upload-card h1{font-size:2rem;margin-bottom:8px;}
   .import-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:22px 0 18px;}
@@ -133,7 +137,7 @@
   .confid{display:flex;align-items:center;justify-content:center;gap:8px;font-size:.8rem;color:var(--muted);margin-top:18px;}
 
   /* ---------- Écran de choix d'interface ---------- */
-  #setup-screen{display:none;min-height:100vh;align-items:center;justify-content:center;padding:24px;background:var(--bg);}
+  #setup-screen{display:none;}
   #setup-screen.active{display:flex;}
   .choice-wrap{width:100%;max-width:1000px;text-align:center;}
   .choice-check{width:64px;height:64px;border-radius:50%;background:var(--good);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin:0 auto 18px;}
@@ -164,6 +168,47 @@
   .choice-changer{margin-top:24px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 20px;font-size:.86rem;color:var(--ink-soft);display:inline-flex;align-items:center;gap:8px;}
   .choice-changer:hover{border-color:var(--ink);}
   @media (max-width:720px){ .import-grid,.choice-grid{grid-template-columns:1fr;} }
+
+  /* ---- Slide de choix (premium, façon maquette) ---- */
+  .setup-logo{position:absolute;top:30px;left:34px;height:40px;z-index:1;}
+  #setup-screen .entry-title{font-size:2.6rem;text-transform:uppercase;letter-spacing:.02em;}
+  #setup-screen .choice-sub{margin-bottom:0;}
+  #setup-screen .choice-grid{max-width:840px;width:100%;margin-top:36px;position:relative;z-index:1;}
+  .choice-card2{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:18px;padding:40px 30px 34px;border-radius:26px;background:linear-gradient(180deg,#ffffff,#fbfaf6);border:1px solid rgba(27,58,92,.08);box-shadow:0 1px 2px rgba(21,24,28,.04),0 20px 46px rgba(27,58,92,.10);cursor:pointer;transition:transform .2s ease,box-shadow .2s ease;}
+  .choice-card2:hover{transform:translateY(-3px);box-shadow:0 2px 4px rgba(21,24,28,.05),0 28px 60px rgba(27,58,92,.16);}
+  .cc-badge{width:92px;height:92px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;color:var(--brand);border:2px solid rgba(154,110,30,.45);box-shadow:0 0 0 7px rgba(245,238,221,.5),0 12px 26px rgba(27,58,92,.14);}
+  .cc-badge svg{width:42px;height:42px;}
+  .cc-rule{width:36px;height:3px;background:var(--gold);border-radius:2px;}
+  .cc-title{font-size:1.5rem;font-weight:700;color:var(--brand-2);line-height:1.2;}
+  .cc-go{width:66px;height:66px;border-radius:50%;background:linear-gradient(180deg,#274b73,#152f4a);color:var(--gold);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px rgba(27,58,92,.32),0 0 0 5px rgba(245,238,221,.4);}
+  .cc-go svg{width:28px;height:28px;}
+  .soft-pill{margin-top:26px;position:relative;z-index:1;background:#fff;border:1px solid rgba(154,110,30,.28);border-radius:999px;padding:13px 24px;font-family:var(--font);font-size:.95rem;font-weight:600;color:var(--brand);display:inline-flex;align-items:center;gap:10px;cursor:pointer;box-shadow:0 8px 22px rgba(27,58,92,.12),0 0 0 4px rgba(245,238,221,.35);}
+  .soft-pill:hover{filter:brightness(1.02);transform:translateY(-1px);}
+  .soft-pill .sp-ico{color:var(--gold);display:flex;}
+  .soft-pill .sp-ico svg{width:20px;height:20px;}
+  .entry.active .choice-grid>*,.entry.active .soft-pill{animation:s2aUp .55s cubic-bezier(.22,.9,.3,1) both;}
+  .entry.active .choice-grid>*:nth-child(1){animation-delay:.16s;}
+  .entry.active .choice-grid>*:nth-child(2){animation-delay:.24s;}
+  .entry.active .soft-pill{animation-delay:.32s;}
+  /* ---- Responsive mobile/tablette pour les écrans d'entrée ---- */
+  @media (max-width:600px){
+    .entry{padding:5vh 16px 40px;}
+    .entry-title,#setup-screen .entry-title{font-size:1.85rem;}
+    .brand-img.entry-logo{height:38px;}
+    .setup-logo{position:static;margin:0 auto 6px;display:block;}
+    .home-card{padding:18px 18px;gap:16px;}
+    .home-card h3{font-size:1.1rem;}
+    .hc-badge{flex:0 0 52px;width:52px;height:52px;}
+    .hc-badge svg{width:26px;height:26px;}
+    .form-sec{padding:20px 18px;}
+    .frow{flex-direction:column;gap:0;}
+    .assoc-row{grid-template-columns:1fr 1fr;gap:10px;}
+    .assoc-row .a-del{grid-column:2;justify-self:end;}
+    .cc-title{font-size:1.3rem;}
+    .cc-badge{width:78px;height:78px;}
+    .form-actions{flex-direction:column-reverse;gap:10px;}
+    .form-actions .tb-cta{width:100%;justify-content:center;}
+  }
 
   /* ---------- App shell ---------- */
   #app-shell{display:none;min-height:100vh;}
@@ -592,6 +637,19 @@
   .sig-line .sl-meta .vs{display:block;}
   .spark{width:104px;height:36px;}
   @media (max-width:1050px){ .sig-line{grid-template-columns:1.4fr 1fr 80px 130px;gap:16px;} .spark{display:none;} }
+  @media (max-width:980px){
+    /* Barre d'onglets sur une 2e ligne pleine largeur, défilable (tablette/téléphone) */
+    .topbar-app{flex-wrap:wrap;row-gap:8px;}
+    .tb-nav{order:3;flex:1 0 100%;justify-content:flex-start;}
+  }
+  @media (max-width:640px){
+    /* Lignes SIG condensées : on garde le montant et la variation, on masque courbe/annexe */
+    .sig-line{grid-template-columns:1fr auto;gap:4px 12px;padding:16px 4px;}
+    .sig-line .sl-label{grid-column:1;grid-row:1/3;align-self:center;}
+    .sig-line .sl-val{grid-column:2;grid-row:1;}
+    .sig-line .sl-delta{grid-column:2;grid-row:2;font-size:.92rem;}
+    .sig-line .sl-meta,.sig-line .spark,.sig-line canvas{display:none;}
+  }
   @media (max-width:680px){ .sig-line{grid-template-columns:1fr auto auto;} .sig-line .sl-meta{display:none;} }
 
   /* ===== Pastilles d'icônes (formes + couleurs) ===== */
@@ -1076,33 +1134,28 @@
 </div>
 
 <!-- ============ CHOIX D'INTERFACE ============ -->
-<div id="setup-screen">
-  <div class="brandbar"><span class="brand-img lg" role="img" aria-label="S2A — Sud Alpes Audit"></span></div>
-  <div class="choice-wrap">
-    <div class="choice-check">✓</div>
-    <div class="choice-client" id="setup-title">DOSSIER</div>
+<div id="setup-screen" class="entry">
+  <span class="brand-img entry-logo setup-logo" role="img" aria-label="S2A — Sud Alpes Audit"></span>
+  <div class="entry-head" style="margin-top:6vh;">
+    <div class="entry-title" id="setup-title">DOSSIER</div>
+    <div class="gold-rule"></div>
     <div class="choice-sub" id="setup-periode">Analyse terminée avec succès</div>
-
-    <div class="choice-grid">
-      <button class="choice-card ec" id="choice-ec">
-        <div class="choice-ico2">👤</div>
-        <div class="choice-t">Préparer le rendez-vous</div>
-        <div class="choice-role">Interface expert-comptable</div>
-        <div class="choice-d">Consultez les chiffres essentiels et les recommandations préparées par S2A.</div>
-        <div class="choice-chips"><span>L'essentiel</span><span>Recommandations IA</span></div>
-        <div class="choice-arrow">→</div>
-      </button>
-      <button class="choice-card client" id="choice-client">
-        <div class="choice-ico2">🖥️</div>
-        <div class="choice-t">Présenter au client</div>
-        <div class="choice-role">Interface client</div>
-        <div class="choice-d">Présentez les comptes de manière simple, visuelle et interactive.</div>
-        <div class="choice-chips"><span>Synthèse</span><span>Produits</span><span>Charges</span><span>Bilan</span><span>Trésorerie</span></div>
-        <div class="choice-arrow">→</div>
-      </button>
-    </div>
-    <button class="choice-changer no-print" id="setup-back">📁 Changer de dossier</button>
   </div>
+  <div class="choice-grid">
+    <button class="choice-card2 ec" id="choice-ec">
+      <span class="cc-badge" id="cc-ico-ec"></span>
+      <span class="cc-rule"></span>
+      <span class="cc-title">Préparer le<br>rendez-vous</span>
+      <span class="cc-go" id="cc-go-ec"></span>
+    </button>
+    <button class="choice-card2 client" id="choice-client">
+      <span class="cc-badge" id="cc-ico-client"></span>
+      <span class="cc-rule"></span>
+      <span class="cc-title">Présenter<br>au client</span>
+      <span class="cc-go" id="cc-go-client"></span>
+    </button>
+  </div>
+  <button class="soft-pill no-print" id="setup-back"><span class="sp-ico" id="sp-ico"></span> Changer de dossier</button>
 </div>
 
 <!-- ============ INTERFACE EXPERT-COMPTABLE ============ -->
@@ -3269,7 +3322,8 @@ function showChoiceScreen(){
   document.getElementById('setup-periode').textContent = mx ? 'Exercice '+mx.getFullYear()+' — analyse terminée' : 'Analyse terminée avec succès';
   ['home-screen','dossier-form','dossier-list'].forEach(s=>document.getElementById(s).classList.remove('active'));
   document.getElementById('upload-screen').style.display='none';
-  document.getElementById('setup-screen').classList.add('active');
+  const su=document.getElementById('setup-screen');
+  su.classList.remove('active'); void su.offsetWidth; su.classList.add('active');
 }
 function getArreteDate(){
   const v = document.getElementById('arrete-date').value;
@@ -3301,7 +3355,7 @@ document.getElementById('choice-ec').addEventListener('click', ()=>enterExpert()
 document.getElementById('choice-client').addEventListener('click', ()=>enterClient());
 document.getElementById('setup-back').addEventListener('click', ()=>{
   document.getElementById('setup-screen').classList.remove('active');
-  document.getElementById('upload-screen').style.display='flex';
+  showEntry('home-screen');
 });
 document.getElementById('analyser-btn').addEventListener('click', ()=>{
   if(!rawEcritures.length){ showError("Sélectionnez d'abord un FEC."); return; }
@@ -3437,6 +3491,11 @@ setTimeout(()=>{ try{
   document.getElementById('sec-ico-1').innerHTML=svgIcon('users');
   document.getElementById('sec-ico-2').innerHTML=svgIcon('users');
   document.getElementById('sec-ico-3').innerHTML=svgIcon('bulb');
+  document.getElementById('cc-ico-ec').innerHTML=svgIcon('user');
+  document.getElementById('cc-ico-client').innerHTML=svgIcon('monitor');
+  document.getElementById('cc-go-ec').innerHTML=svgIcon('arrowR');
+  document.getElementById('cc-go-client').innerHTML=svgIcon('arrowR');
+  document.getElementById('sp-ico').innerHTML=svgIcon('folder');
 }catch(e){} },0);
 document.getElementById('form-back-top').addEventListener('click', ()=>showEntry('home-screen'));
 document.getElementById('list-back-top').addEventListener('click', ()=>showEntry('home-screen'));
@@ -3803,7 +3862,9 @@ const ICONS = {
   truck:'<path d="M3 7h10v8H3z"/><path d="M13 10h4l3.5 3.5V15H13z"/><circle cx="7" cy="17.5" r="1.7"/><circle cx="17" cy="17.5" r="1.7"/>',
   chevron:'<path d="M6 9l6 6 6-6"/>',
   plus:'<path d="M12 5v14"/><path d="M5 12h14"/>',
-  folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>'
+  folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+  monitor:'<rect x="3" y="4" width="18" height="12.5" rx="2"/><path d="M8.5 20h7"/><path d="M12 16.5V20"/>',
+  arrowR:'<path d="M5 12h13"/><path d="M13 6l6 6-6 6"/>'
 };
 function svgIcon(name){ return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${ICONS[name]||''}</svg>`; }
 function chip(name, tone, size){ return `<span class="ic ic-${tone||'green'}${size?' ic-'+size:''}">${svgIcon(name)}</span>`; }
