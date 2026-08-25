@@ -978,6 +978,18 @@
   .btn-mini{padding:9px 13px;border:1px solid var(--line);border-radius:9px;background:var(--card);cursor:pointer;font-family:var(--font);color:var(--brand);font-weight:600;font-size:.86rem;}
   .form-actions{display:flex;justify-content:space-between;margin-top:22px;gap:12px;}
   .link-hint{font-size:.82rem;color:var(--brand);background:var(--brand-soft);border-radius:10px;padding:9px 12px;margin-top:6px;}
+  .autofill-row{display:flex;align-items:center;gap:12px;margin:-4px 0 14px;flex-wrap:wrap;}
+  .autofill-status{font-size:.82rem;color:var(--muted);}
+  .autofill-status.ok{color:var(--good);} .autofill-status.err{color:var(--bad);}
+  .doc-list{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
+  .doc-row{display:flex;align-items:center;gap:12px;background:var(--brand-soft);border:1px solid rgba(27,58,92,.10);border-radius:12px;padding:10px 14px;}
+  .doc-row .doc-ico{color:var(--brand);flex:0 0 auto;display:flex;}
+  .doc-row .doc-ico svg{width:20px;height:20px;}
+  .doc-row .doc-meta{flex:1;min-width:0;}
+  .doc-row .doc-name{font-size:.9rem;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .doc-row .doc-size{font-size:.76rem;color:var(--muted);}
+  .doc-row .doc-del{flex:0 0 auto;background:none;border:none;color:var(--bad);cursor:pointer;font-size:1.05rem;padding:2px 6px;border-radius:8px;}
+  .doc-row .doc-del:hover{background:rgba(196,54,47,.1);}
   .list-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:12px;}
   .list-tools{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
   .list-tools input,.list-tools select{padding:9px 12px;border:1px solid var(--line);border-radius:10px;font-family:var(--font);font-size:.9rem;color:var(--ink);background:var(--card);}
@@ -1058,8 +1070,10 @@
   <div class="form-card">
     <div class="form-sec">
       <div class="sec-h"><span class="sec-ico" id="sec-ico-1"></span><h3>Informations générales</h3></div>
-      <div class="frow"><div class="fld"><label>Dénomination</label><input id="f-denom" placeholder="Nom de la société"></div><div class="fld"><label>SIREN</label><input id="f-siren" placeholder="9 chiffres"></div></div>
-      <div class="frow"><div class="fld"><label>Forme juridique</label><select id="f-forme"><option>SAS</option><option>SASU</option><option>SARL</option><option>EURL</option><option>SA</option><option>SCI</option><option>SNC</option><option>EI</option><option>Autre</option></select></div><div class="fld"><label>Activité</label><input id="f-activite" placeholder="Ex. commerce de détail"></div></div>
+      <div class="frow"><div class="fld"><label>Dénomination</label><input id="f-denom" placeholder="Nom de la société"></div><div class="fld"><label>SIREN</label><input id="f-siren" placeholder="9 chiffres" inputmode="numeric"></div></div>
+      <div class="autofill-row"><button type="button" class="btn-mini" id="f-fetch"><span id="f-fetch-ico">⤓</span> Récupérer les infos (SIREN ou nom)</button><span class="autofill-status" id="f-fetch-status"></span></div>
+      <div class="frow"><div class="fld"><label>Forme juridique</label><select id="f-forme"><option>SAS</option><option>SASU</option><option>SARL</option><option>EURL</option><option>SA</option><option>SCI</option><option>SNC</option><option>EI</option><option>Autre</option></select></div><div class="fld"><label>Code NAF / APE</label><input id="f-naf" placeholder="Ex. 4711D"></div></div>
+      <div class="fld" id="f-activite-wrap" style="display:none;"><label>Activité (libellé)</label><input id="f-activite" readonly></div>
       <div class="frow"><div class="fld"><label>Date de clôture</label><input id="f-cloture" type="date"></div><div class="fld"><label>Régime fiscal</label><select id="f-regime"><option>IS</option><option>IR</option></select></div></div>
       <div class="frow"><div class="fld"><label>Régime de groupe</label><select id="f-groupe"><option value="">Aucun</option><option>Mère-fille</option><option>Intégration fiscale</option></select></div><div class="fld"><label>Type de dossier</label><select id="f-type"><option value="exploitation">Exploitation (avec bilan)</option><option value="sci-lmnp">SCI / LMNP (sans bilan)</option></select></div></div>
     </div>
@@ -1072,7 +1086,12 @@
     <div class="form-sec">
       <div class="sec-h"><span class="sec-ico" id="sec-ico-3"></span><h3>Contexte et notes</h3></div>
       <div class="fld"><label>Contexte / situation (pour éclairer l'analyse)</label><textarea id="f-context" placeholder="Ex. holding animatrice, projet de cession, dividendes réguliers…"></textarea></div>
-      <div class="fld"><label>Notes ou texte de PV d'AGO / liasse (facultatif)</label><textarea id="f-notes" placeholder="Collez ici le texte d'un PV d'AGO ou de la liasse fiscale ; il servira de contexte à l'analyse."></textarea></div>
+      <div class="fld">
+        <label>Documents utiles (PV d'AGO, liasse, statuts, courriers… — Word ou PDF)</label>
+        <div id="doc-list" class="doc-list"></div>
+        <button type="button" class="btn-mini" id="doc-add">+ Ajouter un ou plusieurs documents</button>
+        <input type="file" id="doc-input" multiple accept=".pdf,.doc,.docx,.odt,.rtf,.txt,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none;">
+      </div>
     </div>
     <div class="form-actions"><button class="tb-cta ghost" id="form-cancel">Annuler</button><button class="tb-cta cta-gold" id="form-save">Enregistrer et charger les comptes →</button></div>
   </div>
@@ -2271,12 +2290,16 @@ function computeAnalysis(ecritures, arreteDate){
   const tauxTVAObserve = (CA>0 && tvaCollectee>0.5) ? Math.round((tvaCollectee/CA)*1000)/1000 : 0.20;
   const ttcFactor = 1+tauxTVAObserve;
 
-  const achatsTotal = crDetail['60']||0;
+  // Base des achats pour le délai fournisseurs : achats (60) + services extérieurs (61/62),
+  // car les dettes fournisseurs couvrent l'ensemble des achats externes, pas seulement les marchandises.
+  const achatsTotal = (crDetail['60']||0)+(crDetail['61']||0)+(crDetail['62']||0);
   const clients = soldes.filter(s=>s.compte.startsWith('411')).reduce((a,s)=>a+s.solde,0);
   const fournisseurs = soldes.filter(s=>s.compte.startsWith('401')).reduce((a,s)=>a-s.solde,0);
   const delaiClients = CA ? Math.round((clients/(CA*ttcFactor))*nbJours) : 0;
   const delaiFournisseurs = achatsTotal ? Math.round((fournisseurs/(achatsTotal*ttcFactor))*nbJours) : 0;
-  const ressourcesStables = capitauxPropres+dettesFinancieres;
+  // Ressources stables = capitaux propres + provisions + dettes financières
+  // (les provisions sont des ressources durables) → garantit l'identité FR − BFR = trésorerie nette.
+  const ressourcesStables = capitauxPropres+provisions+dettesFinancieres;
   const BFR = Math.round((actifCirc - dettesHorsTreso)*100)/100;
   const FR = Math.round((ressourcesStables - actifImmo)*100)/100;
   const tresorerieNette = Math.round((treso-concours)*100)/100;
@@ -3414,21 +3437,33 @@ function updateAssocHint(){
   for(const n of names){ const others=dossiersOfPerson(n).filter(d=>d.id!==(currentDossier&&currentDossier.id)); if(others.length){ msg=`« ${n} » est déjà associé de ${others.length} autre(s) dossier(s) — les dossiers seront reliés pour l'analyse d'ensemble.`; break; } }
   document.getElementById('assoc-hint').innerHTML = msg? `<div class="link-hint">🔗 ${msg}</div>`:'';
 }
+let formDocs=[]; // documents joints au dossier en cours d'édition (contenu gardé en mémoire pour la session)
+function renderDocList(){
+  const box=document.getElementById('doc-list');
+  box.innerHTML = formDocs.map((d,i)=>`<div class="doc-row"><span class="doc-ico">${svgIcon('folder')}</span><div class="doc-meta"><div class="doc-name">${d.name}</div><div class="doc-size">${(d.size/1024).toFixed(0)} Ko</div></div><button type="button" class="doc-del" data-i="${i}" title="Supprimer">✕</button></div>`).join('');
+  box.querySelectorAll('.doc-del').forEach(b=>b.addEventListener('click',()=>{ formDocs.splice(+b.dataset.i,1); renderDocList(); }));
+}
 function openNewDossierForm(){
-  ['f-denom','f-siren','f-activite','f-context','f-notes'].forEach(id=>document.getElementById(id).value='');
+  ['f-denom','f-siren','f-naf','f-activite','f-context'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-forme').selectedIndex=0; document.getElementById('f-regime').selectedIndex=0;
   document.getElementById('f-groupe').selectedIndex=0; document.getElementById('f-type').selectedIndex=0;
   document.getElementById('f-cloture').value='';
+  document.getElementById('f-activite-wrap').style.display='none';
+  document.getElementById('f-fetch-status').textContent=''; document.getElementById('f-fetch-status').className='autofill-status';
+  formDocs=[]; renderDocList();
   document.getElementById('assoc-list').innerHTML=''; addAssocRow(); document.getElementById('assoc-hint').innerHTML='';
   refreshPersonsDatalist(); showEntry('dossier-form');
 }
 function buildDossierFromForm(){
   return { id:'d'+Date.now().toString(36), denomination:document.getElementById('f-denom').value.trim(),
     siren:document.getElementById('f-siren').value.trim(), forme:document.getElementById('f-forme').value,
-    activite:document.getElementById('f-activite').value.trim(), cloture:document.getElementById('f-cloture').value,
+    naf:document.getElementById('f-naf').value.trim(), activite:document.getElementById('f-activite').value.trim(),
+    cloture:document.getElementById('f-cloture').value,
     regime:document.getElementById('f-regime').value, groupe:document.getElementById('f-groupe').value,
     type:document.getElementById('f-type').value, capital:readAssoc(),
-    context:document.getElementById('f-context').value.trim(), notes:document.getElementById('f-notes').value.trim(),
+    context:document.getElementById('f-context').value.trim(),
+    documents:formDocs.map(d=>({name:d.name,size:d.size,type:d.type})),
+    _files:formDocs.slice(),
     created:Date.now(), snapshots:[] };
 }
 
@@ -3480,10 +3515,10 @@ function renderDossierList(){
 /* --- Contexte transmis à l'IA --- */
 function dossierContextText(){
   const d=currentDossier; if(!d) return '';
-  let t='\n\nCONTEXTE DOSSIER :\n'+(d.denomination||'')+' — '+(d.forme||'')+(d.activite?(' ('+d.activite+')'):'')+'. Régime '+(d.regime||'')+(d.groupe?(' / '+d.groupe):'')+'.';
+  let t='\n\nCONTEXTE DOSSIER :\n'+(d.denomination||'')+' — '+(d.forme||'')+(d.activite?(' ('+d.activite+')'):'')+(d.naf?(' [NAF '+d.naf+']'):'')+'. Régime '+(d.regime||'')+(d.groupe?(' / '+d.groupe):'')+'.';
   if((d.capital||[]).length) t+='\nAssociés : '+d.capital.map(a=>a.nom+(a.pct?(' '+a.pct+'%'):'')).join(', ')+'.';
   if(d.context) t+='\nSituation : '+d.context;
-  if(d.notes) t+='\nNotes/PV : '+d.notes;
+  if((d.documents||[]).length) t+='\nDocuments joints : '+d.documents.map(x=>x.name).join(', ')+'.';
   if(d.amont) t+='\nCommentaire avant rendez-vous : '+d.amont;
   return t;
 }
@@ -3516,6 +3551,54 @@ document.getElementById('home-new').addEventListener('click', ()=>{ currentDossi
 document.getElementById('home-open').addEventListener('click', ()=>{ renderDossierList(); showEntry('dossier-list'); });
 document.getElementById('home-demo-btn').addEventListener('click', ()=>{ currentDossier=null; document.getElementById('demo-btn').click(); });
 document.getElementById('form-cancel').addEventListener('click', ()=>showEntry('home-screen'));
+/* Documents joints */
+document.getElementById('doc-add').addEventListener('click', ()=>document.getElementById('doc-input').click());
+document.getElementById('doc-input').addEventListener('change', e=>{
+  for(const f of e.target.files){ formDocs.push(f); }
+  e.target.value=''; renderDocList();
+});
+/* Récupération d'infos société (API publique recherche-entreprises) */
+async function fetchCompanyInfo(){
+  const status=document.getElementById('f-fetch-status');
+  const siren=document.getElementById('f-siren').value.replace(/\s/g,'');
+  const nom=document.getElementById('f-denom').value.trim();
+  const q = /^\d{9}$/.test(siren) ? siren : nom;
+  if(!q){ status.className='autofill-status err'; status.textContent='Renseignez un SIREN ou un nom.'; return; }
+  status.className='autofill-status'; status.textContent='Recherche en cours…';
+  try{
+    const url='https://recherche-entreprises.api.gouv.fr/search?q='+encodeURIComponent(q)+'&page=1&per_page=1';
+    const r=await fetch(url); if(!r.ok) throw new Error('HTTP '+r.status);
+    const j=await r.json();
+    const e=j.results&&j.results[0];
+    if(!e){ status.className='autofill-status err'; status.textContent='Aucune société trouvée.'; return; }
+    if(e.nom_complet) document.getElementById('f-denom').value=e.nom_complet;
+    if(e.siren) document.getElementById('f-siren').value=e.siren;
+    const naf=e.activite_principale||(e.siege&&e.siege.activite_principale)||'';
+    if(naf) document.getElementById('f-naf').value=naf;
+    const lib=e.libelle_activite_principale||(e.siege&&e.siege.libelle_activite_principale)||'';
+    if(lib){ document.getElementById('f-activite').value=lib; document.getElementById('f-activite-wrap').style.display='block'; }
+    const forme=natureJuridiqueToForme(e.nature_juridique);
+    if(forme){ const sel=document.getElementById('f-forme'); const opt=[...sel.options].find(o=>o.value===forme); if(opt) sel.value=forme; }
+    // dirigeants → pré-remplir les associés vides
+    const dirs=(e.dirigeants||[]).filter(d=>d.nom||d.denomination).slice(0,4);
+    if(dirs.length){
+      document.getElementById('assoc-list').innerHTML='';
+      dirs.forEach(d=>{ const nom = d.denomination ? d.denomination : ((d.prenoms?d.prenoms+' ':'')+(d.nom||'')).trim();
+        addAssocRow({nom, type:d.denomination?'societe':'personne'}); });
+      refreshPersonsDatalist(); updateAssocHint();
+    }
+    status.className='autofill-status ok'; status.textContent='✓ Infos récupérées'+(e.siege&&e.siege.libelle_commune?(' — '+e.siege.libelle_commune):'')+'. Vérifiez et complétez.';
+  }catch(err){
+    status.className='autofill-status err';
+    status.textContent="Récupération impossible (hors ligne ou accès bloqué). Saisie manuelle.";
+  }
+}
+function natureJuridiqueToForme(code){
+  if(!code) return null;
+  const m={'5710':'SAS','5720':'SAS','5499':'SARL','5498':'SARL','5410':'SARL','5426':'SARL','5431':'SARL','5460':'SARL','5470':'SARL','5485':'SARL','5307':'SA','5308':'SA','5385':'SA','5599':'SA','6540':'SCI','6599':'SCI','5202':'SNC','1000':'EI'};
+  return m[String(code)]|| (String(code).startsWith('65')?'SCI':null);
+}
+document.getElementById('f-fetch').addEventListener('click', fetchCompanyInfo);
 document.getElementById('assoc-add').addEventListener('click', ()=>addAssocRow());
 document.getElementById('assoc-list').addEventListener('click', e=>{ if(e.target.classList.contains('a-del')){ e.target.closest('.assoc-row').remove(); updateAssocHint(); } });
 document.getElementById('assoc-list').addEventListener('input', e=>{ if(e.target.classList.contains('a-nom')) updateAssocHint(); });
