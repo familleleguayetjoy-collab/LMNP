@@ -548,7 +548,7 @@
   .tb-client b{color:var(--ink);font-weight:600;}
   .tb-nav{display:flex;gap:16px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none;justify-content:center;}
   .tb-nav::-webkit-scrollbar{display:none;}
-  .tb-tab{background:none;border:none;font-family:var(--font);font-size:.95rem;font-weight:600;color:var(--muted);padding:10px 2px;position:relative;white-space:nowrap;flex:0 0 auto;}
+  .tb-tab{background:none;border:none;font-family:var(--font);font-size:.95rem;font-weight:600;color:var(--muted);padding:10px 2px;position:relative;white-space:nowrap;flex:0 0 auto;transition:color .22s ease;}
   .tb-tab:hover{color:var(--ink);}
   .tb-tab.active{color:var(--brand);}
   .tb-tab.active::after{content:'';position:absolute;left:0;right:0;bottom:-15px;height:2.5px;background:var(--brand);border-radius:2px;}
@@ -1017,10 +1017,18 @@
      var(--bg);}
   .topbar-app{border-bottom:1px solid rgba(154,110,30,.16);}
   #client-app .app-page>h1::after,#expert-app .app-page>h1::after,#c-page-synthese h1::after,#charge-right h1::after{content:"";display:block;width:44px;height:3px;background:var(--gold);border-radius:2px;margin-top:12px;}
-  #client-app .app-page.active,#expert-app .app-page.active{animation:s2aUp .5s cubic-bezier(.22,.9,.3,1) both;}
-  #charge-detail.anim{animation:s2aUp .42s cubic-bezier(.22,.9,.3,1) both;}
-  #charge-right.anim{animation:s2aUp .32s cubic-bezier(.22,.9,.3,1) both;}
-  @media (prefers-reduced-motion:reduce){ #client-app .app-page.active,#expert-app .app-page.active,#charge-detail.anim,#charge-right.anim{animation:none !important;} }
+  /* Révélation étagée, douce et "pro" des pages client / expert */
+  @keyframes s2aReveal{from{opacity:0;transform:translateY(14px) scale(.994);}to{opacity:1;transform:none;}}
+  #client-app .app-page.active > *,#expert-app .app-page.active > *{animation:s2aReveal .6s cubic-bezier(.16,1,.3,1) both;will-change:transform,opacity;}
+  #client-app .app-page.active > *:nth-child(1),#expert-app .app-page.active > *:nth-child(1){animation-delay:.02s;}
+  #client-app .app-page.active > *:nth-child(2),#expert-app .app-page.active > *:nth-child(2){animation-delay:.09s;}
+  #client-app .app-page.active > *:nth-child(3),#expert-app .app-page.active > *:nth-child(3){animation-delay:.16s;}
+  #client-app .app-page.active > *:nth-child(4),#expert-app .app-page.active > *:nth-child(4){animation-delay:.23s;}
+  #client-app .app-page.active > *:nth-child(5),#expert-app .app-page.active > *:nth-child(5){animation-delay:.30s;}
+  #client-app .app-page.active > *:nth-child(n+6),#expert-app .app-page.active > *:nth-child(n+6){animation-delay:.36s;}
+  #charge-detail.anim{animation:s2aReveal .5s cubic-bezier(.16,1,.3,1) both;}
+  #charge-right.anim{animation:s2aReveal .42s cubic-bezier(.16,1,.3,1) both;}
+  @media (prefers-reduced-motion:reduce){ #client-app .app-page.active > *,#expert-app .app-page.active > *,#charge-detail.anim,#charge-right.anim{animation:none !important;} }
 </style>
 </head>
 <body>
