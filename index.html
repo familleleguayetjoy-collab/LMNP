@@ -571,14 +571,14 @@
   .kpi-head{display:flex;align-items:center;gap:12px;}
   .kpi-label{font-size:.95rem;color:var(--ink-soft);font-weight:600;}
   .kpi-value{font-size:2.35rem;font-weight:700;color:var(--ink);letter-spacing:-.025em;line-height:1;}
-  .kpi-meta{font-size:.88rem;}
-  .kpi-meta .km1{margin-bottom:2px;}
-  .kpi-meta .km2{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;}
-  .kpi-delta{font-weight:700;}
-  .kpi-delta.up{color:var(--good);} .kpi-delta.down{color:var(--bad);} .kpi-delta.warn{color:var(--warn);} .kpi-delta.muted{color:var(--muted);}
-  .kpi-vs{color:var(--muted);}
-  .kpi-pctca{color:var(--ink-soft);}
-  .km-note{font-size:.8rem;margin-top:6px;padding-top:6px;border-top:1px dashed var(--line);}
+  .kpi-meta{margin-top:4px;}
+  .kpi-meta .km-primary{font-size:1.05rem;font-weight:700;line-height:1.2;}
+  .kpi-meta .km-primary .km-d.up{color:var(--good);} .kpi-meta .km-primary .km-d.down{color:var(--bad);} .kpi-meta .km-primary .km-d.warn{color:var(--warn);} .kpi-meta .km-primary .km-d.muted{color:var(--muted);}
+  .kpi-meta .km-primary .km-pct{color:var(--ink-soft);font-weight:600;}
+  .kpi-meta .km-secondary{font-size:.82rem;color:var(--muted);margin-top:4px;display:flex;flex-wrap:wrap;gap:7px;align-items:baseline;}
+  .kpi-meta .km-secondary .km-pct{color:var(--ink-soft);}
+  .kpi-meta .km-sep{color:var(--line);}
+  .km-note{font-size:.8rem;margin-top:8px;padding-top:7px;border-top:1px dashed var(--line);}
   .km-note.warn{color:var(--warn);font-weight:600;} .km-note.down{color:var(--bad);font-weight:600;} .km-note.muted{color:var(--muted);}
 
   /* Carte À retenir */
@@ -712,6 +712,15 @@
   .chart-wrap{height:320px;position:relative;}
   .chart-wrap.sm{height:260px;}
   .chart-wrap.lg{height:400px;min-height:340px;}
+  .chart-wrap.md{height:330px;min-height:300px;}
+  .tre-mini .mini-card{padding:14px 16px;}
+  .tre-mini .mini-card .mc-v{font-size:1.3rem;}
+  .chg-scroll{flex:1;overflow-y:auto;overflow-x:hidden;margin-right:-6px;padding-right:6px;}
+  .chg-scroll::-webkit-scrollbar{width:8px;}
+  .chg-scroll::-webkit-scrollbar-track{background:transparent;}
+  .chg-scroll::-webkit-scrollbar-thumb{background:#D7DBE1;border-radius:4px;}
+  .chg-scroll::-webkit-scrollbar-thumb:hover{background:#C2C7CF;}
+  .chg-scroll .ctab tr:first-child th{position:sticky;top:0;background:var(--card);z-index:1;}
   .big-figure-sub .af-delta{font-weight:700;font-size:1.08rem;}
   .big-figure-sub .af-delta.up{color:var(--good);} .big-figure-sub .af-delta.down{color:var(--bad);}
   .big-figure-sub .af-vs{color:var(--muted);font-size:.9rem;}
@@ -804,8 +813,8 @@
   .subnav{display:inline-flex;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:4px;margin-bottom:22px;}
   .subnav button{background:none;border:none;font-family:var(--font);font-size:.88rem;font-weight:600;color:var(--muted);padding:8px 18px;border-radius:8px;}
   .subnav button.active{background:var(--brand-soft);color:var(--brand);}
-  .bilan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px;}
-  .bilan-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;}
+  .bilan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px;}
+  .bilan-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 20px;}
   .bilan-card .bc-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
   .bilan-card .bc-l{font-size:.95rem;color:var(--ink-soft);font-weight:600;}
   .bilan-card .bc-v{font-size:1.8rem;font-weight:700;color:var(--ink);letter-spacing:-.02em;margin:4px 0;}
@@ -1426,11 +1435,11 @@
         </div>
         <div id="chg-month-panel" style="display:none;margin-top:20px;"></div>
         <div class="two-70-30" style="margin-top:20px;">
-          <div class="bcard">
+          <div class="bcard" style="display:flex;flex-direction:column;max-height:440px;">
             <div class="card-h" style="margin-bottom:14px;">Détail des charges d'exploitation</div>
-            <table class="ctab" id="chg-table"></table>
+            <div class="chg-scroll"><table class="ctab" id="chg-table"></table></div>
           </div>
-          <div class="retenir-client" style="align-self:stretch;"><div class="rc-ico" id="chg-ico"></div><h3>Ce qu'il faut retenir</h3><div id="chg-retenir"></div></div>
+          <div class="retenir-client" style="align-self:stretch;max-height:440px;overflow:auto;"><div class="rc-ico" id="chg-ico"></div><h3>Ce qu'il faut retenir</h3><div id="chg-retenir"></div></div>
         </div>
       </div>
       <div id="charge-detail" style="display:none;"></div>
@@ -1471,12 +1480,12 @@
         </div>
         <div class="bcard" style="display:flex;flex-direction:column;">
           <div class="card-h">Évolution de la trésorerie mensuelle</div>
-          <div class="card-sub2" style="margin-bottom:10px;">Tous comptes bancaires et caisse confondus.</div>
-          <div class="chart-wrap lg" style="flex:1;"><canvas id="tre-chart"></canvas></div>
+          <div class="card-sub2" style="margin-bottom:8px;">Tous comptes bancaires et caisse confondus.</div>
+          <div class="chart-wrap" style="flex:1;height:275px;min-height:250px;"><canvas id="tre-chart"></canvas></div>
         </div>
       </div>
-      <div class="kpi-row4" id="tre-cards"></div>
-      <div class="retenir-band" style="margin-top:20px;"><div class="rb-ico" id="tre-ico"></div><div class="rb-body"><h3>Ce qu'il faut retenir</h3><div id="tre-retenir"></div></div></div>
+      <div class="kpi-row4 tre-mini" id="tre-cards" style="margin-top:16px;"></div>
+      <div class="retenir-band" style="margin-top:16px;"><div class="rb-ico" id="tre-ico"></div><div class="rb-body"><h3>Ce qu'il faut retenir</h3><div id="tre-retenir"></div></div></div>
     </section>
 
     <section class="app-page print-only" id="c-page-points">
@@ -3875,17 +3884,17 @@ function expertKpis(){
 }
 function renderEssentiel(){
   const html = expertKpis().map(k=>{
-    const deltaHtml = k.delta? `<span class="kpi-delta ${k.delta.cls}">${k.delta.txt}</span>` : '';
-    const vsHtml = k.vs? `<span class="kpi-vs">${k.vs}</span>` : '';
-    let meta;
-    if(k.pctca){
-      meta = `<div class="km1"><span class="kpi-pctca">${k.pctca}</span></div><div class="km2">${deltaHtml}${vsHtml}</div>`;
-    } else {
-      meta = `<div class="km1">${deltaHtml||vsHtml}</div>${(deltaHtml&&vsHtml)?`<div class="km2">${vsHtml}</div>`:''}`;
-    }
+    const deltaHtml = k.delta? `<span class="km-d ${k.delta.cls}">${k.delta.txt}</span>` : '';
+    const pctHtml = k.pctca? `<span class="km-pct">${k.pctca}</span>` : '';
+    const vsHtml = k.vs? `<span class="km-vs">${k.vs}</span>` : '';
+    // Ligne 1 (forte) : la variation si elle existe, sinon le % du CA
+    const primary = deltaHtml || pctHtml;
+    // Ligne 2 (discrète) : le contexte restant
+    const sec=[]; if(deltaHtml && pctHtml) sec.push(pctHtml); if(vsHtml) sec.push(vsHtml);
+    const secondary = sec.length? `<div class="km-secondary">${sec.join('<span class="km-sep">·</span>')}</div>` : '';
     const noteHtml = k.note? `<div class="km-note ${k.note.cls}">${k.note.txt}</div>` : '';
     return `<div class="bcard"><div class="kpi-head">${chip(k.ico,k.tone)}<div class="kpi-label">${k.label}</div></div>
-      <div class="kpi-value">${k.value}</div><div class="kpi-meta">${meta}${noteHtml}</div></div>`;
+      <div class="kpi-value">${k.value}</div><div class="kpi-meta"><div class="km-primary">${primary}</div>${secondary}${noteHtml}</div></div>`;
   }).join('');
   document.getElementById('x-kpis').innerHTML = html;
   document.getElementById('x-retenir').textContent = retenirEssentielRuleBased();
