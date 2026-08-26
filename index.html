@@ -912,24 +912,140 @@
   #rep-modal .rm-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:22px;}
 
   @media print{
-    @page{size:A4 portrait;margin:13mm 12mm 15mm;}
+    @page{size:A4 portrait;margin:0;}
     html,body{background:#fff !important;}
-    body *{visibility:hidden;}
-    #client-app,#client-app *{visibility:visible;}
-    #client-app{display:block !important;position:static;}
-    .topbar-app,#adj-drawer,#adj-ov,#rep-ov,#rep-modal,.tb-cta,.no-print{display:none !important;}
-    .app-main{padding:0 !important;max-width:none !important;}
-    #client-app .app-page{display:block !important;page-break-before:always;}
-    #report-cover{display:flex !important;page-break-before:avoid;page-break-after:always;}
-    .print-only{display:block !important;}
-    .rep-points{display:grid !important;}
-    .rec-group .rec-body{display:block !important;}
-    .rec-chevron,.reco-chevron{display:none !important;}
+    body>*{display:none !important;}
+    #report-doc{display:block !important;position:static !important;left:auto !important;top:auto !important;width:auto !important;}
     *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;}
-    .bcard,.reco-col,.retenir-client,.retenir-band,.rep-point,.mini-card,.bilan-card{box-shadow:none !important;break-inside:avoid;}
-    .app-page>h1{page-break-after:avoid;}
-    .print-foot{display:block;position:fixed;bottom:-10mm;left:0;right:0;text-align:right;font-size:8pt;color:#8a8f98;}
   }
+
+  /* ============ RAPPORT PDF (livrable client, façon maquette S2A) ============ */
+  #report-doc{display:none;--rn:#1C3A54;--rn2:#152C42;--rg:#B4894E;--rg2:#C6A05C;--rgs:#F1E9DA;--rred:#B23A2E;--rgreen:#2E7D5B;--rgrey:#8A929E;--rline:#E6E8EC;--rsoft:#F5F7F9;--rink:#2A3340;background:#fff;font-family:'Inter',system-ui,sans-serif;}
+  .rp-page{position:relative;width:210mm;min-height:297mm;box-sizing:border-box;background:#fff;padding:20mm 18mm 20mm;page-break-after:always;color:var(--rink);overflow:hidden;}
+  .rp-page:last-child{page-break-after:auto;}
+  .rp-eyebrow{font-size:9px;letter-spacing:3px;font-weight:700;color:var(--rg);text-transform:uppercase;margin-bottom:2.5mm;}
+  .rp-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6mm;}
+  .rp-title{font-size:29px;font-weight:800;color:var(--rn);letter-spacing:-.5px;line-height:1;}
+  .rp-logo{height:10mm;}
+  .rp-sub{font-size:11.5px;color:var(--rgrey);margin:-3mm 0 6mm;}
+  .rp-foot{position:absolute;left:0;right:0;bottom:0;height:11mm;background:var(--rn);color:#AEBBCB;display:flex;align-items:center;justify-content:space-between;padding:0 18mm;font-size:7.5px;letter-spacing:1.4px;text-transform:uppercase;}
+  .rp-foot .rf-r{color:#7C8AA0;}
+  /* stat cards */
+  .rp-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:4mm;margin-bottom:7mm;}
+  .rp-stat{background:var(--rsoft);border-top:2.5px solid var(--rg);padding:5mm;}
+  .rp-stat.dark{background:var(--rn);border-top-color:var(--rg2);}
+  .rp-stat .rs-l{font-size:8.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--rgrey);font-weight:700;margin-bottom:2.5mm;}
+  .rp-stat.dark .rs-l{color:#9DB0C4;}
+  .rp-stat .rs-v{font-size:23px;font-weight:800;color:var(--rn);letter-spacing:-.5px;line-height:1;}
+  .rp-stat.dark .rs-v{color:#fff;}
+  .rp-stat .rs-s{font-size:9.5px;color:var(--rgrey);margin-top:2mm;line-height:1.4;}
+  .rp-band{display:grid;grid-template-columns:repeat(3,1fr);background:var(--rn);margin-bottom:7mm;}
+  .rp-band>div{padding:5mm 6mm;border-left:2.5px solid var(--rg2);}
+  .rp-band>div:first-child{border-left:none;}
+  .rp-band .rs-l{font-size:8.5px;letter-spacing:1.6px;text-transform:uppercase;color:#9DB0C4;font-weight:700;margin-bottom:2.5mm;}
+  .rp-band .rs-v{font-size:22px;font-weight:800;color:#fff;letter-spacing:-.5px;line-height:1;}
+  .rp-band .rs-s{font-size:9px;color:#8FA0B4;margin-top:2mm;line-height:1.4;}
+  /* section title (thin) */
+  .rp-sec{font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:var(--rn);border-top:1px solid var(--rline);padding-top:3mm;margin:6mm 0 4mm;}
+  /* card with border */
+  .rp-card{border:1px solid var(--rline);border-radius:3px;padding:6mm;}
+  /* donut block */
+  .rp-donut{display:grid;grid-template-columns:44mm 1fr;gap:7mm;align-items:center;}
+  .rp-donut .rd-canvas{position:relative;width:44mm;height:44mm;}
+  .rp-donut .rd-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;}
+  .rp-donut .rd-center b{font-size:16px;font-weight:800;color:var(--rn);}
+  .rp-donut .rd-center span{font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--rgrey);margin-top:1mm;}
+  .rd-legend{display:flex;flex-direction:column;gap:0;}
+  .rd-row{display:grid;grid-template-columns:4mm 1fr auto auto;gap:3mm;align-items:center;padding:2.4mm 0;border-bottom:1px solid var(--rline);font-size:11px;}
+  .rd-row:last-child{border-bottom:none;}
+  .rd-row .rd-dot{width:3mm;height:3mm;border-radius:1px;}
+  .rd-row .rd-name{color:var(--rink);}
+  .rd-row .rd-eur{font-weight:800;color:var(--rn);text-align:right;white-space:nowrap;}
+  .rd-row .rd-pct{color:var(--rgrey);font-size:9.5px;text-align:right;width:12mm;white-space:nowrap;}
+  .rd-row.total{border-top:1.5px solid var(--rn);font-weight:800;}
+  .rd-row.total .rd-name{font-weight:800;color:var(--rn);}
+  /* tables */
+  .rp-tab{width:100%;border-collapse:collapse;font-size:11px;}
+  .rp-tab thead th{background:var(--rn);color:#C6D2E0;font-size:8.5px;letter-spacing:1.4px;text-transform:uppercase;font-weight:700;padding:3mm 4mm;text-align:right;}
+  .rp-tab thead th:first-child{text-align:left;border-radius:0;}
+  .rp-tab tbody td{padding:3.2mm 4mm;text-align:right;border-bottom:1px solid var(--rline);}
+  .rp-tab tbody td:first-child{text-align:left;color:var(--rink);}
+  .rp-tab .t-main{font-weight:800;color:var(--rn);}
+  .rp-tab .t-mut{color:var(--rgrey);}
+  .rp-tab .t-sub{display:block;font-size:9px;color:var(--rgrey);font-weight:400;margin-top:.5mm;}
+  .rp-tab .t-up{color:var(--rgreen);font-weight:700;}
+  .rp-tab .t-down{color:var(--rred);font-weight:700;}
+  .rp-tab tr.rowdark td{background:var(--rn);color:#fff;border-bottom:none;}
+  .rp-tab tr.rowdark td:first-child{color:#fff;}
+  .rp-tab tr.rowdark .t-main{color:#fff;}
+  /* mini part bar */
+  .rp-partbar{display:inline-block;width:22mm;height:2.6mm;background:#E9ECF0;border-radius:2px;vertical-align:middle;overflow:hidden;}
+  .rp-partbar>i{display:block;height:100%;background:var(--rg2);}
+  .rp-partbar.blue>i{background:#7E97B4;}
+  /* retenir box */
+  .rp-retenir{background:var(--rsoft);border:1px solid var(--rline);border-left:3px solid var(--rg);padding:5mm 6mm;margin-top:6mm;}
+  .rp-retenir h4{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--rn);font-weight:700;margin-bottom:3mm;display:flex;align-items:center;gap:2mm;}
+  .rp-retenir h4::before{content:'';width:2.5mm;height:2.5mm;background:var(--rg);}
+  .rp-retenir ul{list-style:none;margin:0;padding:0;}
+  .rp-retenir li{position:relative;padding-left:5mm;margin-bottom:2.5mm;font-size:10.5px;line-height:1.5;color:var(--rink);}
+  .rp-retenir li:last-child{margin-bottom:0;}
+  .rp-retenir li::before{content:'';position:absolute;left:0;top:2mm;width:2mm;height:2mm;background:var(--rg2);}
+  .rp-retenir b{color:var(--rn);}
+  /* bars chart wrap */
+  .rp-chart{position:relative;width:100%;}
+  /* ratios rows */
+  .rp-rgroup{background:var(--rsoft);padding:2.5mm 5mm;font-size:10px;letter-spacing:1.6px;text-transform:uppercase;font-weight:700;color:var(--rn);margin:5mm 0 0;display:flex;align-items:center;gap:2.5mm;}
+  .rp-rgroup::before{content:'';width:2.5mm;height:2.5mm;background:var(--rg);}
+  .rp-rrow{display:grid;grid-template-columns:30mm 1fr 26mm;gap:5mm;align-items:center;padding:4mm 5mm;border-bottom:1px solid var(--rline);}
+  .rp-rrow .rr-val{font-size:19px;font-weight:800;letter-spacing:-.5px;}
+  .rp-rrow .rr-val.red{color:var(--rred);} .rp-rrow .rr-val.navy{color:var(--rn);}
+  .rp-rrow .rr-t{font-size:12.5px;font-weight:700;color:var(--rn);margin-bottom:1.5mm;}
+  .rp-rrow .rr-d{font-size:10px;color:var(--rink);line-height:1.45;}
+  .rp-badge{justify-self:end;font-size:8.5px;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;padding:2mm 3mm;border:1.5px solid;border-radius:2px;white-space:nowrap;text-align:center;}
+  .rp-badge.green{color:var(--rgreen);border-color:var(--rgreen);}
+  .rp-badge.red{color:var(--rred);border-color:var(--rred);}
+  .rp-badge.gold{color:var(--rg);border-color:var(--rg);}
+  /* points clés cards */
+  .rp-action{display:grid;grid-template-columns:1fr 34mm;gap:5mm;border:1px solid var(--rline);padding:5mm;margin-bottom:3.5mm;align-items:start;}
+  .rp-action.p1{border-left:3px solid var(--rg);}
+  .rp-action .ra-check{width:5mm;height:5mm;border:1.5px solid var(--rn);border-radius:1px;float:left;margin-right:4mm;}
+  .rp-action .ra-t{font-size:13px;font-weight:800;color:var(--rn);margin-bottom:2mm;overflow:hidden;}
+  .rp-action .ra-d{font-size:10px;color:var(--rink);line-height:1.5;overflow:hidden;}
+  .rp-action .ra-r{text-align:right;}
+  .rp-action .ra-p{font-size:8.5px;letter-spacing:1.4px;text-transform:uppercase;font-weight:700;color:var(--rg);margin-bottom:1.5mm;}
+  .rp-action .ra-i{font-size:12px;font-weight:800;color:var(--rn);line-height:1.25;}
+  .rp-gain{background:var(--rn);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:5mm 6mm;margin-top:5mm;}
+  .rp-gain .rg-l b{font-size:9px;letter-spacing:1.6px;text-transform:uppercase;color:var(--rg2);display:block;margin-bottom:1.5mm;}
+  .rp-gain .rg-l span{font-size:10px;color:#B9C4D2;}
+  .rp-gain .rg-v{font-size:26px;font-weight:800;letter-spacing:-.5px;}
+  /* dark divider pages (cover + annexes) */
+  .rp-dark{background:var(--rn);color:#fff;padding:20mm 18mm;}
+  .rp-dark .rp-foot{background:transparent;color:#7C8AA0;border-top:1px solid rgba(255,255,255,.12);}
+  /* mini stat trio (bottom) */
+  .rp-mini3{display:grid;grid-template-columns:repeat(3,1fr);gap:5mm;margin-top:6mm;}
+  .rp-mini3>div{border-left:2.5px solid var(--rg);padding-left:4mm;}
+  .rp-mini3 .rm-l{font-size:8.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--rgrey);font-weight:700;margin-bottom:1.5mm;}
+  .rp-mini3 .rm-v{font-size:18px;font-weight:800;color:var(--rn);letter-spacing:-.5px;}
+  .rp-mini3 .rm-s{font-size:9px;color:var(--rgrey);margin-top:1mm;}
+  /* Couverture */
+  .rp-cover{position:relative;width:210mm;min-height:297mm;box-sizing:border-box;background:var(--rn);color:#fff;overflow:hidden;page-break-after:always;}
+  .rp-cover .cov-top{position:relative;height:95mm;background:#EEF1F4;}
+  .rp-cover .cov-diag{position:absolute;left:0;right:0;bottom:-1mm;height:60mm;background:var(--rn);clip-path:polygon(0 55%,100% 12%,100% 100%,0 100%);}
+  .rp-cover .cov-diag2{position:absolute;left:0;right:0;bottom:-1mm;height:62mm;background:var(--rg);clip-path:polygon(0 54%,100% 11%,100% 13%,0 56%);opacity:.9;}
+  .rp-cover .cov-logo{position:absolute;top:20mm;left:18mm;height:14mm;}
+  .rp-cover .cov-conf{position:absolute;top:20mm;right:18mm;text-align:right;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--rn);font-weight:700;}
+  .rp-cover .cov-conf span{display:block;color:#9AA6B4;font-weight:600;margin-top:1mm;}
+  .rp-cover .cov-body{position:absolute;left:18mm;right:18mm;top:120mm;}
+  .rp-cover .cov-kick{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--rg2);font-weight:700;margin-bottom:5mm;display:flex;align-items:center;gap:3mm;}
+  .rp-cover .cov-kick::before{content:'';width:3mm;height:3mm;background:var(--rg);}
+  .rp-cover .cov-h{font-size:52px;font-weight:800;letter-spacing:-1px;line-height:.98;color:#fff;}
+  .rp-cover .cov-for{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#8FA0B4;font-weight:700;margin:14mm 0 3mm;}
+  .rp-cover .cov-client{font-size:22px;font-weight:700;color:#fff;padding-bottom:5mm;border-bottom:1px solid rgba(255,255,255,.25);}
+  .rp-cover .cov-meta{position:absolute;left:18mm;right:18mm;bottom:26mm;display:grid;grid-template-columns:1fr 1fr;gap:8mm;}
+  .rp-cover .cov-meta .cm-l{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#8FA0B4;font-weight:700;margin-bottom:2.5mm;}
+  .rp-cover .cov-meta .cm-v{font-size:15px;font-weight:700;color:#fff;}
+  .rp-cover .cov-meta .cm-v small{color:#9DB0C4;font-weight:500;font-size:12px;}
+  .rp-cover .cov-legal{position:absolute;left:18mm;right:18mm;bottom:12mm;border-left:2px solid var(--rg);padding-left:4mm;font-size:8px;letter-spacing:1px;color:#8494A8;line-height:1.7;text-transform:uppercase;}
 
   /* ============ ACCUEIL / DOSSIERS (premium S2A) ============ */
   .entry{min-height:100vh;display:none;flex-direction:column;align-items:center;justify-content:flex-start;padding:7vh 24px 54px;position:relative;overflow:auto;background:
@@ -1373,6 +1489,9 @@
 
   </main>
 </div>
+
+<!-- Rapport PDF (livrable client) -->
+<div id="report-doc"></div>
 
 <!-- Modale Rapport PDF -->
 <div id="rep-ov"></div>
@@ -4584,26 +4703,195 @@ function reportThemes(){
   const src = rawExercices ? demoRecos() : recoRuleBased();
   return src.map(r=>r.title).filter(Boolean).slice(0,6);
 }
+/* ===================== RAPPORT PDF — livrable client ===================== */
+const RP={navy:'#1C3A54',gold:'#B4894E',gold2:'#C6A05C',red:'#B23A2E',green:'#2E7D5B',grey:'#8A929E',blue:'#2F5D86',tan:'#C9A87C',tan2:'#E2D2B4',slate:'#C7CDD4',light:'#DBE0E6'};
+const MONTHS_UP=MONTHS.map(m=>m.toUpperCase());
+function cap(s){ return s? s.charAt(0).toUpperCase()+s.slice(1):s; }
+let reportCharts={};
+const rpLabels={id:'rpLabels',afterDatasetsDraw(chart){const{ctx}=chart;ctx.save();chart.data.datasets.forEach((ds,di)=>{if(!ds._labels)return;const meta=chart.getDatasetMeta(di);meta.data.forEach((el,i)=>{const v=ds.data[i];if(v==null)return;ctx.fillStyle=ds._labelColor?ds._labelColor(i):RP.navy;ctx.font='700 '+(ds._labelSize||10)+'px Inter, sans-serif';ctx.textAlign='center';ctx.fillText(ds._labelFmt?ds._labelFmt(v):v, el.x, el.y-(ds._labelDy||8));});});ctx.restore();}};
+function e2(v){ return v.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €'; }
+function rpDonut(id,cats){const cv=document.getElementById(id);if(!cv||typeof Chart==='undefined')return;reportCharts[id]=new Chart(cv.getContext('2d'),{type:'doughnut',data:{labels:cats.map(c=>c.l),datasets:[{data:cats.map(c=>c.v),backgroundColor:cats.map(c=>c.c),borderColor:'#fff',borderWidth:2}]},options:{cutout:'66%',responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false},tooltip:{enabled:false}}}});}
+function rpBar(id,data,bestIdx,worstIdx){const cv=document.getElementById(id);if(!cv)return;const col=i=>i===bestIdx?RP.gold2:(i===worstIdx?RP.red:RP.navy);reportCharts[id]=new Chart(cv.getContext('2d'),{type:'bar',data:{labels:MONTHS_UP,datasets:[{data:data,backgroundColor:data.map((v,i)=>col(i)),borderRadius:3,barPercentage:.64,categoryPercentage:.82,_labels:true,_labelFmt:v=>Math.round(v/1000),_labelColor:col,_labelSize:11,_labelDy:7}]},options:{responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9.5,weight:'600'},color:'#5B6472'},border:{display:false}},y:{beginAtZero:true,grid:{color:'#EEF0F3'},border:{display:false},ticks:{stepSize:12000,font:{size:8.5},color:'#9AA1AC',callback:v=>Math.round(v/1000)+' k€'}}},layout:{padding:{top:22}}},plugins:[rpLabels]});}
+function rpLine(id,soldes){const cv=document.getElementById(id);if(!cv)return;const n=soldes.length;const col=i=>i===0?RP.red:(i===n-1?RP.gold2:RP.navy);reportCharts[id]=new Chart(cv.getContext('2d'),{type:'line',data:{labels:MONTHS_UP,datasets:[{data:soldes,borderColor:RP.navy,borderWidth:2.4,tension:.12,fill:true,backgroundColor:'rgba(28,58,84,.05)',pointRadius:soldes.map((v,i)=>(i===0||i===n-1)?6:3.5),pointBackgroundColor:soldes.map((v,i)=>col(i)),pointBorderColor:soldes.map((v,i)=>col(i)),_labels:true,_labelFmt:v=>(v/1000).toFixed(1).replace('.',','),_labelColor:col,_labelSize:10,_labelDy:13}]},options:{responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9.5,weight:'600'},color:'#5B6472'},border:{display:false}},y:{grid:{color:'#EEF0F3'},border:{display:false},ticks:{font:{size:8.5},color:'#9AA1AC',callback:v=>Math.round(v/1000)+'k€'}}},layout:{padding:{top:24,right:12}}},plugins:[rpLabels]});}
+function demoPointsCles(){return [
+ {t:'Relancer les factures clients non réglées',d:'Vous êtes payé en 47 jours au lieu de 39. Revenir à 39 jours libère environ 5 600 € de trésorerie.',p:1,i:'+5 600 € de trésorerie'},
+ {t:'Remonter la marge sur les ventes',d:'La marge perd 1,8 point. Récupérer 1 point sur les prix ou les achats, c\'est 2 540 € de résultat.',p:1,i:'+2 540 € de résultat'},
+ {t:'Renégocier le loyer et les assurances',d:'Ces contrats ont augmenté de 1 980 € en un an, dont 1 440 € pour le seul loyer.',p:2,i:'jusqu\'à 1 980 € par an'},
+ {t:'Reprendre la main sur les achats',d:'Poste en hausse de 18,9 % (+13 308 €), le plus dynamique de toutes les charges.',p:2,i:'levier le plus large'},
+ {t:'Constituer un matelas de trésorerie',d:'Objectif : un mois de charges d\'avance, soit environ 20 000 € disponibles en permanence.',p:3,i:'sécuriser janvier'},
+ {t:'Préparer le creux d\'août',d:'Août : 12 000 € de CA contre 21 200 € en moyenne, et un solde en recul de 2 500 €.',p:3,i:'anticiper dès juin'}
+];}
+function pointsClesData(){
+  if(rawExercices) return demoPointsCles();
+  const src=recoRuleBased().slice(0,6);
+  return src.map((r,i)=>({t:r.title,d:r.probleme||r.correctif||'',p:i<2?1:(i<4?2:3),i:r.forecast?('≈ '+fmtEUR(r.forecast.high||r.forecast.low)):''}));
+}
 function buildReportView(){
   const deb=parseDateInput(document.getElementById('rep-in-debut').value)||AN.periode.debut;
   const fin=parseDateInput(document.getElementById('rep-in-fin').value)||AN.periode.fin;
   const mois=(fin&&deb)? Math.max(1,Math.round((fin-deb)/(1000*3600*24*30.4))) : (AN.periode.dureeMois||12);
   const t=reportTypeLabel(fin, mois);
   const cl=(document.getElementById('rep-in-client').value||clientLabel||'Dossier').trim();
-  // Cover
-  document.getElementById('rep-type').textContent = t.kicker;
-  document.getElementById('rep-client').textContent = cl;
-  document.getElementById('rep-periode').textContent = 'Période analysée : du '+frDate(deb)+' au '+frDate(fin)+' ('+mois+' mois)';
-  document.getElementById('rep-date').textContent = 'Établi le '+frDate(new Date());
-  document.getElementById('rep-foot-txt').textContent = 'Sud Alpes Audit — '+cl+' — '+t.kicker;
-  // Points essentiels (thèmes seulement)
-  document.getElementById('rep-points').innerHTML = reportThemes().map((th,i)=>
-    `<div class="rep-point"><span class="rp-n">${i+1}</span><div><div class="rp-t">${th}</div><div class="rp-s">Sujet à examiner ensemble lors du rendez-vous.</div></div></div>`).join('');
-  document.getElementById('rep-note').innerHTML = (t.type==='interim'
-    ? "Situation intermédiaire arrêtée au "+frDate(fin)+", établie sur la base des documents fournis et des écritures d'inventaire (CCA, PCA, rattachements) intégrées comme au bilan. Situation non auditée."
-    : "Comptes annuels de l'exercice clos le "+frDate(fin)+". Document établi à partir des éléments comptables fournis.")
-    + " Les pistes d'amélioration et leurs estimations chiffrées sont présentées et commentées oralement par votre expert-comptable.";
+  buildReportDoc(deb,fin,mois,t,cl);
   archiveSnapshot(deb, fin, t, cl);
+}
+function buildReportDoc(deb,fin,mois,t,cl){
+  Object.values(reportCharts).forEach(c=>{try{c.destroy();}catch(e){}}); reportCharts={};
+  const g=computeSIG(AN), g1=AN1?computeSIG(AN1):null;
+  const r=AN.ratios, r1=AN1?AN1.ratios:null, cr=AN.compteResultat, ca=r.CA+clientAdj.pr, rn=cr.resultatNet+clientAdj.pr+clientAdj.st;
+  const ca1=AN1?AN1.ratios.CA:null, rn1=AN1?AN1.compteResultat.resultatNet:null;
+  const yr=fin?fin.getFullYear():(AN.periode.fin?AN.periode.fin.getFullYear():''), yr1=yr?yr-1:'';
+  const eyebrow=(t.type==='interim'?'Situation intermédiaire':'Comptes annuels')+' '+yr;
+  const logo='<span class="brand-img rp-logo" style="height:10mm;"></span>';
+  const logoLight='<span class="brand-img on-dark rp-logo"></span>';
+  const foot=`<div class="rp-foot"><span>Sud Alpes Audit — ${cl}</span><span class="rf-r">${eyebrow}</span></div>`;
+  const head=(title,sub)=>`<div class="rp-head"><div><div class="rp-eyebrow">${eyebrow}</div><div class="rp-title">${title}</div></div>${logo}</div>${sub?`<div class="rp-sub">${sub}</div>`:''}`;
+  // ---- charges categories
+  const c64=chgSum(AN,['64']),c60=chgSum(AN,['60']),c61=chgSum(AN,['61','62']),c63=chgSum(AN,['63']),c681=chgSum(AN,['681']);
+  const c64_1=AN1?chgSum(AN1,['64']):0,c60_1=AN1?chgSum(AN1,['60']):0;
+  const chFin=(cr.detail['66']||0),imp=(cr.detail['69']||0),exc=(cr.detail['67']||0);
+  const depense=ca-rn;
+  // ---- activité
+  const mCA=monthlyByPrefix(ecrituresN,['70'],'credit');
+  let bi=0,wi=0; mCA.forEach((v,i)=>{if(v>mCA[bi])bi=i; if(v<mCA[wi])wi=i;});
+  const v707=sumComptes(AN.soldes,['707'],'credit'),v706=sumComptes(AN.soldes,['706'],'credit'),vRep=v707+v706||1;
+  const caDelta=(ca1?(ca-ca1)/Math.abs(ca1):0);
+  // ---- récurrentes flat
+  let recFlat=[]; REC_CATS.forEach(cat=>{ recAccounts(cat.id).filter(a=>a.n1!=null&&a.n1>0.5&&a.n>a.n1).forEach(a=>recFlat.push(a)); });
+  recFlat.sort((x,y)=>(y.n-y.n1)-(x.n-x.n1));
+  const recTotN=recFlat.reduce((s,a)=>s+a.n,0),recTotN1=recFlat.reduce((s,a)=>s+a.n1,0),recInc=recTotN-recTotN1;
+  // ---- trésorerie
+  const treso=tresoMonthly(AN); const {debut,fin:tfin}=tresoFinDebut(AN); const bas=pointBasTreso(AN);
+  const soldeMoy=treso.reduce((s,v)=>s+v,0)/(treso.length||1); const moisPos=treso.filter(v=>v>=0).length;
+  let creux=null, downCount=0, prevS=debut; treso.forEach((v,i)=>{ const d=v-prevS; if(d<-1){ downCount++; if(!creux||d<creux.d) creux={i,d}; } prevS=v; });
+  const cafR=rn+(cr.detail['68']||0)-(cr.detail['78']||0);
+  // ===== PAGES =====
+  const P=[];
+  // COVER
+  P.push(`<div class="rp-cover"><div class="cov-top"><div class="cov-diag2"></div><div class="cov-diag"></div></div>
+    <span class="brand-img cov-logo"></span>
+    <div class="cov-conf">Document confidentiel<span>Remis au dirigeant</span></div>
+    <div class="cov-body"><div class="cov-kick">${eyebrow}</div><div class="cov-h">Analyse<br>des comptes</div>
+      <div class="cov-for">Établi pour</div><div class="cov-client">${cl}</div></div>
+    <div class="cov-meta"><div><div class="cm-l">Période analysée</div><div class="cm-v">${frDate(deb)} → ${frDate(fin)} <small>(${mois} mois)</small></div></div>
+      <div><div class="cm-l">Établi le</div><div class="cm-v">${new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}</div></div></div>
+    <div class="cov-legal">Sud Alpes Audit · 212 av. de la Californie, 06200 Nice · 04 97 03 15 30<br>SIRET 420 536 518 00046 · RCS Nice · Ordre des experts-comptables PACA</div></div>`);
+  // SYNTHÈSE
+  const synCats=[{l:'Charges de personnel',v:c64,c:RP.navy},{l:'Achats',v:c60,c:RP.blue},{l:'Services extérieurs',v:c61,c:RP.tan},{l:'Impôts et amortissements',v:c63+c681,c:RP.tan2},{l:'Charges financières et impôt',v:chFin+imp+exc,c:RP.slate},{l:"Reste à l'entreprise",v:rn,c:RP.green}];
+  const sigRowsR=[['Chiffre d\'affaires','ce que l\'entreprise a facturé',ca,ca1,'ca'],['Marge commerciale','ce qui reste après le coût des achats revendus',g.margeCommerciale,g1&&g1.margeCommerciale,'pt'],['Valeur ajoutée','la richesse créée par l\'entreprise',g.valeurAjoutee,g1&&g1.valeurAjoutee,'pt'],['Excédent brut d\'exploitation','ce que dégage l\'activité, avant amortissements',g.ebe,g1&&g1.ebe,'pt'],['Résultat courant avant impôt','après les charges financières',g.rcai,g1&&g1.rcai,'pt']];
+  const sigTr=[...sigRowsR.map(row=>{const[t1,t2,n,n1,mode]=row;const rate=ca?n/ca:0,rate1=(ca1&&n1!=null)?n1/ca1:null;let ev='';if(mode==='ca'){ev=n1!=null?`<span class="${n>=n1?'t-up':'t-down'}">${signPct((n-n1)/Math.abs(n1))}</span>`:'';}else{const dpt=(rate1!=null)?(rate-rate1)*100:null;ev=dpt!=null?`<span class="${dpt>=-0.05?'t-up':'t-down'}">${ptDelta(dpt)}</span>`:'';}
+    return `<tr><td>${t1}<span class="t-sub">${t2}</span></td><td class="t-main">${fmtEUR(n)}</td><td class="t-mut">${fmtPct1(rate)}</td><td class="t-mut">${rate1!=null?fmtPct1(rate1):'—'}</td><td>${ev}</td></tr>`;}),
+    `<tr class="rowdark"><td>Résultat net</td><td class="t-main">${fmtEUR(rn)}</td><td>${fmtPct1(ca?rn/ca:0)}</td><td>${(ca1&&rn1!=null)?fmtPct1(rn1/ca1):'—'}</td><td>${(rn1!=null&&ca1)?ptDelta((rn/ca-rn1/ca1)*100):''}</td></tr>`].join('');
+  P.push(`<div class="rp-page">${head('Synthèse de l\'exercice')}
+    <div class="rp-stats"><div class="rp-stat"><div class="rs-l">Facturé sur l'année</div><div class="rs-v">${fmtEUR(ca)}</div></div>
+      <div class="rp-stat"><div class="rs-l">Dépensé sur l'année</div><div class="rs-v">${fmtEUR(depense)}</div></div>
+      <div class="rp-stat dark"><div class="rs-l">Résultat net</div><div class="rs-v">${fmtEUR(rn)}</div></div></div>
+    <div class="rp-card"><div class="rp-eyebrow" style="text-align:center;font-style:italic;letter-spacing:1px;margin-bottom:4mm;">Sur 100 € facturés, comment est dépensé votre argent ?</div>
+      <div class="rp-donut"><div class="rd-canvas"><canvas id="rp-donut-syn"></canvas><div class="rd-center"><b>100 €</b><span>facturés</span></div></div>
+        <div class="rd-legend">${synCats.map(c=>`<div class="rd-row"><span class="rd-dot" style="background:${c.c}"></span><span class="rd-name">${c.l}</span><span class="rd-eur">${e2(c.v/ca*100)}</span><span class="rd-pct">${fmtPct1(c.v/ca)}</span></div>`).join('')}</div></div></div>
+    <div class="rp-sec">Les grandes étapes du résultat</div>
+    <table class="rp-tab"><thead><tr><th>Indicateur</th><th>${yr}</th><th>% du CA</th><th>${yr1}</th><th>Évolution</th></tr></thead><tbody>${sigTr}</tbody></table>
+    ${foot}</div>`);
+  // ACTIVITÉ
+  P.push(`<div class="rp-page">${head('Activité')}
+    <div class="rp-band"><div><div class="rs-l">Chiffre d'affaires ${yr}</div><div class="rs-v">${fmtEUR(ca)}</div></div>
+      <div><div class="rs-l">Progression</div><div class="rs-v">${signPct(caDelta)}</div></div>
+      <div><div class="rs-l">Moyenne mensuelle</div><div class="rs-v">${fmtEUR(ca/12)}</div></div></div>
+    <div class="rp-card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3mm;"><div class="rp-eyebrow" style="margin:0;">Chiffre d'affaires mensuel</div>
+      <div style="font-size:8.5px;color:var(--rgrey);display:flex;gap:5mm;"><span><b style="color:${RP.navy}">■</b> mois courant</span><span><b style="color:${RP.gold2}">■</b> meilleur mois</span><span><b style="color:${RP.red}">■</b> mois le plus faible</span></div></div>
+      <div class="rp-chart" style="height:78mm;"><canvas id="rp-bar-act"></canvas></div></div>
+    <div class="rp-sec">Répartition du chiffre d'affaires</div>
+    ${[['Ventes de marchandises',v707,RP.navy],['Prestations de services',v706,RP.gold2]].map(x=>`<div style="margin-bottom:4mm;"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:1.5mm;"><span>${x[0]}</span><span><b style="color:${RP.navy}">${fmtEUR(x[1])}</b> · ${fmtPct(x[1]/vRep)}</span></div><div class="rp-partbar" style="width:100%;height:3mm;"><i style="width:${(x[1]/vRep*100).toFixed(0)}%;background:${x[2]}"></i></div></div>`).join('')}
+    <div class="rp-retenir"><h4>Ce qu'il faut retenir</h4><ul>
+      <li>L'activité a progressé de <b>${signPct(caDelta)}</b>, soit <b>${fmtEUR(ca-(ca1||0))}</b> de chiffre d'affaires en plus qu'en ${yr1}.</li>
+      <li>${cap(moisLabel(bi+1))} pèse <b>${fmtEUR(mCA[bi])}</b> et ${moisLabel(wi+1)} tombe à <b>${fmtEUR(mCA[wi])}</b> : l'activité est très saisonnière.</li>
+      <li>Les <b>ventes de marchandises</b> restent la première source de revenus, avec ${fmtPct(v707/vRep)} du chiffre d'affaires.</li></ul></div>
+    ${foot}</div>`);
+  // CHARGES
+  const totCharges=c64+c60+c61+c681+c63; const reste=ca-totCharges;
+  const chCats=[{l:'Charges de personnel',v:c64,c:RP.navy},{l:'Achats',v:c60,c:RP.blue},{l:'Services extérieurs',v:c61,c:RP.tan},{l:'Dotations aux amortissements',v:c681,c:RP.tan2},{l:'Impôts et taxes',v:c63,c:RP.slate},{l:'Reste (résultat & charges fin.)',v:reste,c:RP.light}];
+  const chgCmp=[['Charges de personnel',c64,c64_1],['Achats',c60,c60_1],['Services extérieurs',c61,AN1?chgSum(AN1,['61','62']):0],['Dotations',c681,AN1?chgSum(AN1,['681']):0],['Impôts et taxes',c63,AN1?chgSum(AN1,['63']):0]];
+  P.push(`<div class="rp-page">${head('Charges d\'exploitation','Répartition des charges de l\'exercice, exprimée en pourcentage du chiffre d\'affaires.')}
+    <div class="rp-card"><div class="rp-donut"><div class="rd-canvas"><canvas id="rp-donut-chg"></canvas><div class="rd-center"><span style="font-size:7px;">Chiffre d'affaires</span><b style="font-size:14px;">${fmtEUR(ca)}</b><span>= 100 %</span></div></div>
+      <div class="rd-legend">${chCats.map(c=>`<div class="rd-row"><span class="rd-dot" style="background:${c.c}"></span><span class="rd-name">${c.l}</span><span class="rd-eur">${fmtEUR(c.v)}</span><span class="rd-pct">${fmtPct1(c.v/ca)}</span></div>`).join('')}
+        <div class="rd-row total"><span></span><span class="rd-name">Total charges d'exploitation</span><span class="rd-eur">${fmtEUR(totCharges)}</span><span class="rd-pct">${fmtPct(totCharges/ca)}</span></div></div></div></div>
+    <div class="rp-sec">Comparaison avec l'exercice précédent</div>
+    <table class="rp-tab"><thead><tr><th>Poste</th><th>${yr}</th><th>${yr1}</th><th>Variation</th></tr></thead><tbody>
+      ${chgCmp.map(x=>{const d=x[1]-x[2];return `<tr><td>${x[0]}</td><td class="t-main">${fmtEUR(x[1])}</td><td class="t-mut">${fmtEUR(x[2])}</td><td class="${d<=0?'t-up':'t-down'}">${signEUR(d)}</td></tr>`;}).join('')}
+    </tbody></table>
+    <div class="rp-retenir"><h4>Ce qu'il faut retenir</h4><ul>
+      <li>Sur 100 € facturés, l'entreprise en dépense <b>${fmtPct1(totCharges/ca)}</b> en charges d'exploitation.</li>
+      <li>Le <b>personnel</b> absorbe à lui seul ${fmtPct1(c64/ca)} du chiffre d'affaires${c64_1?`, en ${c64<=c64_1?'baisse':'hausse'} de ${fmtEUR(Math.abs(c64-c64_1))} par rapport à ${yr1}`:''}.</li>
+      <li>Les <b>achats</b> progressent de ${c60_1?signPct((c60-c60_1)/c60_1):''} (${signEUR(c60-c60_1)}) : c'est le poste qui explique la baisse de marge, et le levier d'action prioritaire.</li></ul></div>
+    ${foot}</div>`);
+  // CHARGES RÉCURRENTES
+  P.push(`<div class="rp-page">${head('Charges récurrentes')}
+    <div class="rp-band"><div><div class="rs-l">Coût annuel des contrats</div><div class="rs-v">${fmtEUR(recTotN)}</div><div class="rs-s">${fmtPct1(recTotN/ca)} du chiffre d'affaires</div></div>
+      <div><div class="rs-l">Hausse subie en ${yr}</div><div class="rs-v">${signEUR(recInc)}</div><div class="rs-s">soit ${recTotN1?signPct(recInc/recTotN1):''} en un an</div></div>
+      <div><div class="rs-l">Contrats concernés</div><div class="rs-v">${recFlat.length}</div><div class="rs-s">renégociables à leur échéance</div></div></div>
+    <div class="rp-sec">Détail des contrats</div>
+    <table class="rp-tab"><thead><tr><th>Contrat</th><th>${yr}</th><th>${yr1}</th><th>Hausse</th><th>Part de la hausse</th></tr></thead><tbody>
+      ${recFlat.map(a=>{const inc=a.n-a.n1,part=recInc?inc/recInc:0;return `<tr><td>${a.lib}</td><td class="t-main">${fmtEUR(a.n)}</td><td class="t-mut">${fmtEUR(a.n1)}</td><td class="t-down">${signEUR(inc)}<span class="t-sub" style="color:var(--rred)">${signPct(inc/a.n1)}</span></td><td><span class="rp-partbar"><i style="width:${(part*100).toFixed(0)}%"></i></span> &nbsp;${fmtPct(part)}</td></tr>`;}).join('')}
+      <tr class="rowdark"><td>Total</td><td class="t-main">${fmtEUR(recTotN)}</td><td>${fmtEUR(recTotN1)}</td><td>${signEUR(recInc)}</td><td>100 %</td></tr>
+    </tbody></table>
+    <div class="rp-retenir"><h4>Ce qu'il faut retenir</h4><ul>
+      <li>Ces ${recFlat.length} contrats coûtent <b>${fmtEUR(recTotN)}</b> par an, soit ${fmtEUR(recTotN/12)} de charges fixes chaque mois, indépendamment du niveau d'activité.</li>
+      <li>La hausse de l'année est de <b>${signEUR(recInc)}</b> : c'est ${rn?fmtPct(recInc/rn):''} du résultat net de l'exercice, perdu sans décision de votre part.</li>
+      ${recFlat.length?`<li>Le <b>${recFlat[0].lib.toLowerCase()}</b> concentre ${recInc?fmtPct((recFlat[0].n-recFlat[0].n1)/recInc):''} de cette hausse : à lui seul, il justifie une renégociation avant les autres.</li>`:''}</ul></div>
+    ${foot}</div>`);
+  // RATIOS
+  const creancesR=sumComptes(AN.soldes,['411'],'debit');
+  const bfrJours=ca?Math.round(r.BFR/ca*365):0;
+  const moisTreso=cr.charges?dec1(r.tresorerieNette/(cr.charges/12)):'—';
+  const gearing=AN.bilan.capitauxPropres>0.5?AN.bilan.dettesFinancieres/AN.bilan.capitauxPropres:0;
+  const capRemb=cafR>0.5?dec1(AN.bilan.dettesFinancieres/cafR):'—';
+  const margePct=ca?g.margeCommerciale/ca:0, margePct1=(ca1&&g1)?g1.margeCommerciale/ca1:null, margeDpt=margePct1!=null?(margePct-margePct1)*100:0;
+  const rentPct=ca?rn/ca:0;
+  const rr=(val,cls,title,desc,badge,btone)=>`<div class="rp-rrow"><div class="rr-val ${cls}">${val}</div><div><div class="rr-t">${title}</div><div class="rr-d">${desc}</div></div><span class="rp-badge ${btone}">${badge}</span></div>`;
+  P.push(`<div class="rp-page">${head('Ratios','Trois familles d\'indicateurs et leur lecture concrète pour l\'entreprise.')}
+    <div class="rp-rgroup">Encaissements et besoin de financement</div>
+    ${rr(joursTxt(r.delaiClients),'red','Délai de règlement clients',`Vos clients vous paient en moyenne ${joursTxt(r.delaiClients)} après la facture : ${fmtEUR(creancesR)} dorment en permanence chez eux.`,'À surveiller','gold')}
+    ${rr(joursTxt(r.delaiFournisseurs),'navy','Délai de paiement fournisseurs',`Vous payez vos fournisseurs en ${joursTxt(r.delaiFournisseurs)}, soit ${Math.abs(r.delaiClients-r.delaiFournisseurs)} jours ${r.delaiClients>r.delaiFournisseurs?'avant d\'être payé : vous financez vos clients':'après avoir encaissé : c\'est favorable'}.`,r.delaiClients>r.delaiFournisseurs?'À corriger':'Maîtrisé','gold')}
+    ${rr(fmtEUR(r.BFR),'navy','Besoin en fonds de roulement',`Il faut immobiliser ${fmtEUR(r.BFR)} en permanence pour faire tourner l'activité, soit ${bfrJours} jours de chiffre d'affaires.`,'Maîtrisé','gold')}
+    <div class="rp-rgroup">Solidité financière</div>
+    ${rr(fmtEUR(r.tresorerieNette),'navy','Trésorerie nette',`L'entreprise dispose de ${moisTreso} mois de charges courantes d'avance sur son compte.`,r.tresorerieNette>=0?'Solide':'Fragile',r.tresorerieNette>=0?'green':'red')}
+    ${rr(fmtPct(gearing),'navy','Taux d\'endettement',`Pour 100 € apportés par l'entreprise, la banque en a prêté ${Math.round(gearing*100)} € : la marge d'emprunt reste ${gearing<=1?'ouverte':'limitée'}.`,gearing<=1?'Solide':'À surveiller',gearing<=1?'green':'gold')}
+    ${rr(capRemb+' an','navy','Capacité de remboursement',`Au rythme actuel, la totalité des emprunts serait remboursée en ${capRemb==='—'?'—':(capRemb+' an'+(parseFloat(capRemb)>=2?'s':''))}.`,parseFloat(capRemb)<=3?'Solide':'À surveiller',parseFloat(capRemb)<=3?'green':'gold')}
+    <div class="rp-rgroup">Rentabilité</div>
+    ${rr(fmtPct1(margePct),'red','Taux de marge commerciale',`Sur 100 € de ventes, ${Math.round(margePct*100)} € restent après le coût d'achat${margeDpt<0?` — ${dec1(Math.abs(margeDpt))} € de moins qu'en ${yr1}, soit ${fmtEUR(Math.abs(g.margeCommerciale-(g1?g1.margeCommerciale:0)))} perdus`:''}.`,margeDpt<0?'En recul':'En progrès',margeDpt<0?'red':'green')}
+    ${rr(fmtPct1(rentPct),'navy','Rentabilité nette',`Il faut facturer ${rentPct>0?Math.round(1/rentPct):'—'} € pour dégager 1 € de résultat net : la rentabilité ${rn>=(rn1||0)?'progresse':'recule'} mais reste mince.`,rn>=(rn1||0)?'En progrès':'En recul',rn>=(rn1||0)?'green':'red')}
+    ${foot}</div>`);
+  // TRÉSORERIE
+  P.push(`<div class="rp-page">${head('Trésorerie')}
+    <div class="rp-band"><div><div class="rs-l">Trésorerie au 31/12</div><div class="rs-v">${fmtEUR(tfin)}</div><div class="rs-s">contre ${fmtEUR(debut)} au 1er janvier</div></div>
+      <div><div class="rs-l">Gain sur l'année</div><div class="rs-v">${signEUR(tfin-debut)}</div><div class="rs-s">soit ${signEUR(Math.round((tfin-debut)/12))} par mois en moyenne</div></div>
+      <div><div class="rs-l">Point le plus bas</div><div class="rs-v">${fmtEUR(bas.solde)}</div><div class="rs-s">en ${moisLong(bas.mois)} · ${Math.round(bas.solde/(cr.charges/365))} jours de charges</div></div></div>
+    <div class="rp-card"><div class="rp-eyebrow" style="margin-bottom:3mm;">Évolution du solde de trésorerie <span style="color:var(--rgrey)">— en milliers d'euros</span></div>
+      <div class="rp-chart" style="height:95mm;"><canvas id="rp-line-tre"></canvas></div></div>
+    <div class="rp-mini3"><div><div class="rm-l">Creux de ${creux?cap(moisLabel(creux.i+1)):'—'}</div><div class="rm-v">${creux?signEUR(creux.d):'—'}</div><div class="rm-s">${downCount<=1?'seul mois en recul':downCount+' mois en recul'}</div></div>
+      <div><div class="rm-l">Solde moyen</div><div class="rm-v">${fmtEUR(soldeMoy)}</div><div class="rm-s">sur les douze mois</div></div>
+      <div><div class="rm-l">Mois positifs</div><div class="rm-v">${moisPos} / ${treso.length}</div><div class="rm-s">${moisPos===treso.length?'trésorerie jamais négative':'à surveiller'}</div></div></div>
+    ${foot}</div>`);
+  // POINTS CLÉS
+  const pc=pointsClesData(); let gain=pc.slice(0,3).reduce((s,x)=>{const m=(''+x.i).match(/([\d\s]+)\s*€/);return s+(m?parseInt(m[1].replace(/\s/g,'')):0);},0); gain=Math.round(gain/500)*500;
+  P.push(`<div class="rp-page">${head('Les points clés à retenir','Six actions à engager en '+((yr||2025)+1)+', chiffrées et classées par ordre de priorité.')}
+    ${pc.map(x=>`<div class="rp-action${x.p===1?' p1':''}"><div><div class="ra-check"></div><div class="ra-t">${x.t}</div><div class="ra-d">${x.d}</div></div>
+      <div class="ra-r"><div class="ra-p">Priorité ${x.p}</div><div class="ra-i">${x.i}</div></div></div>`).join('')}
+    <div class="rp-gain"><div class="rg-l"><b>Gain potentiel cumulé</b><span>Estimation à volume d'activité constant, sur les trois premières priorités.</span></div><div class="rg-v">≈ ${fmtEUR(gain)}</div></div>
+    ${foot}</div>`);
+  // ANNEXES (divider)
+  P.push(`<div class="rp-cover rp-dark" style="padding:0;"><div style="padding:20mm 18mm;">
+    <div class="rp-head" style="margin-bottom:0;"><div class="cov-kick" style="color:var(--rg2)">Annexes · Exercice ${yr}</div>${logoLight}</div>
+    <div class="cov-h" style="font-size:48px;margin:22mm 0 16mm;">Vos états<br>comptables</div>
+    ${[['01','Soldes intermédiaires de gestion','Le détail du chemin qui mène du chiffre d\'affaires au résultat net, ligne par ligne.'],['02','Compte de résultat','L\'ensemble des produits et des charges de l\'exercice, comparés à l\'exercice précédent.'],['03','Bilan','La photographie du patrimoine au 31 décembre '+yr+' : actif, passif et capitaux propres.']].map(x=>`<div style="border-top:1px solid rgba(255,255,255,.14);padding:6mm 0;display:grid;grid-template-columns:16mm 1fr;gap:4mm;"><div style="font-size:26px;font-weight:800;color:var(--rg2);">${x[0]}</div><div><div style="font-size:19px;font-weight:700;color:#fff;margin-bottom:2mm;">${x[1]}</div><div style="font-size:11px;color:#9DB0C4;line-height:1.5;">${x[2]}</div></div></div>`).join('')}
+    <div class="cov-legal" style="position:absolute;left:18mm;right:18mm;bottom:14mm;">Sud Alpes Audit · 212 av. de la Californie, 06200 Nice · 04 97 03 15 30<br>SIRET 420 536 518 00046 · RCS Nice · Ordre des experts-comptables PACA</div>
+    </div></div>`);
+  const doc=document.getElementById('report-doc');
+  doc.innerHTML=P.join('');
+  doc.style.cssText='display:block;position:fixed;left:-10000px;top:0;width:210mm;background:#fff;';
+  // charts
+  rpDonut('rp-donut-syn',synCats); rpDonut('rp-donut-chg',chCats);
+  rpBar('rp-bar-act',mCA,bi,wi); rpLine('rp-line-tre',treso);
 }
 function archiveSnapshot(deb, fin, t, cl){
   if(!currentDossier) return;
@@ -4618,15 +4906,8 @@ function archiveSnapshot(deb, fin, t, cl){
 }
 function exportReportPDF(){
   buildReportView();
-  const active=document.querySelector('#client-app .tb-tab.active');
-  const prev=active?active.dataset.ctab:'synthese';
-  // Forcer le rendu de tous les onglets pour que graphiques et tableaux existent à l'impression
-  Object.keys(CLIENT_PAGES).forEach(k=>{ try{ setClientTab(k); }catch(e){} });
-  Object.values(CLIENT_PAGES).forEach(id=>document.getElementById(id).classList.add('active'));
-  const restore=()=>{ Object.values(CLIENT_PAGES).forEach(id=>document.getElementById(id).classList.remove('active')); setClientTab(prev); window.removeEventListener('afterprint',restore); };
-  window.addEventListener('afterprint',restore);
   closeReportModal();
-  setTimeout(()=>window.print(), 350);
+  setTimeout(()=>window.print(), 450);
 }
 document.getElementById('c-report-btn').addEventListener('click', openReportModal);
 document.getElementById('rep-cancel').addEventListener('click', closeReportModal);
