@@ -628,17 +628,16 @@
   .card-sub2{font-size:.82rem;color:var(--muted);margin-bottom:16px;}
 
   /* Lignes SIG (Synthèse) */
-  .sig-line{display:grid;grid-template-columns:minmax(0,1.7fr) auto 92px 128px 100px;gap:20px;align-items:center;padding:20px 6px;border-bottom:1px solid var(--line);}
+  .sig-line{display:grid;grid-template-columns:minmax(0,1.9fr) 1fr 120px 58px;gap:20px;align-items:center;padding:20px 6px;border-bottom:1px solid var(--line);}
   .sig-line:last-child{border-bottom:none;}
-  .sig-line .sl-label{font-size:1rem;color:var(--ink);font-weight:600;}
-  .sig-line .sl-val{font-size:1.55rem;font-weight:700;color:var(--ink);letter-spacing:-.02em;text-align:right;white-space:nowrap;}
-  .sig-line .sl-delta{font-size:1rem;font-weight:700;text-align:right;white-space:nowrap;}
+  .sig-line .sl-label{display:flex;align-items:center;gap:14px;font-size:1.02rem;color:var(--ink);font-weight:600;}
+  .sig-line .sl-val{font-size:1.6rem;font-weight:700;color:var(--ink);letter-spacing:-.02em;text-align:right;white-space:nowrap;}
+  .sig-line .sl-delta{font-size:1.02rem;font-weight:700;text-align:right;white-space:nowrap;}
   .sig-line .sl-delta.up{color:var(--good);} .sig-line .sl-delta.down{color:var(--bad);} .sig-line .sl-delta.warn{color:var(--warn);} .sig-line .sl-delta.flat{color:var(--muted);}
-  .sig-line .sl-meta{font-size:.86rem;color:var(--muted);text-align:right;line-height:1.5;white-space:nowrap;}
-  .sig-line .sl-meta .pct{display:block;color:var(--ink-soft);}
-  .sig-line .sl-meta .vs{display:block;}
-  .spark{width:104px;height:36px;}
-  @media (max-width:1050px){ .sig-line{grid-template-columns:1.4fr 1fr 80px 130px;gap:16px;} .spark{display:none;} }
+  .sig-line .sl-arrow{display:flex;justify-content:flex-end;}
+  .sig-line .sl-arrow svg{width:30px;height:30px;stroke-width:2.4;}
+  .sig-line .sl-arrow.up{color:var(--good);} .sig-line .sl-arrow.down{color:var(--bad);} .sig-line .sl-arrow.flat{color:var(--muted);}
+  @media (max-width:1050px){ .sig-line{grid-template-columns:1.5fr 1fr 96px 48px;gap:14px;} }
   @media (max-width:980px){
     /* Barre d'onglets sur une 2e ligne pleine largeur, défilable (tablette/téléphone) */
     .topbar-app{flex-wrap:wrap;row-gap:8px;}
@@ -651,7 +650,7 @@
     .sig-line .sl-label{grid-column:1;grid-row:1/3;align-self:center;}
     .sig-line .sl-val{grid-column:2;grid-row:1;}
     .sig-line .sl-delta{grid-column:2;grid-row:2;font-size:.92rem;}
-    .sig-line .sl-meta,.sig-line .spark,.sig-line canvas{display:none;}
+    .sig-line .sl-arrow{display:none;}
   }
   @media (max-width:680px){ .sig-line{grid-template-columns:1fr auto auto;} .sig-line .sl-meta{display:none;} }
 
@@ -712,6 +711,11 @@
   .rep-name{color:var(--ink);} .rep-eur{font-variant-numeric:tabular-nums;color:var(--ink);font-weight:600;} .rep-pct{color:var(--muted);width:44px;text-align:right;}
   .chart-wrap{height:320px;position:relative;}
   .chart-wrap.sm{height:260px;}
+  .chart-wrap.lg{height:400px;min-height:340px;}
+  .big-figure-sub .af-delta{font-weight:700;font-size:1.08rem;}
+  .big-figure-sub .af-delta.up{color:var(--good);} .big-figure-sub .af-delta.down{color:var(--bad);}
+  .big-figure-sub .af-vs{color:var(--muted);font-size:.9rem;}
+  .big-figure-sub .af-eur{color:var(--ink-soft);font-size:.9rem;margin-top:5px;}
   .kpi-row4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:20px;}
   .mini-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 20px;}
   .mini-card .mc-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
@@ -1261,7 +1265,7 @@
         <div><h1>Synthèse de l'exercice</h1></div>
         <button class="tb-cta ghost" id="adj-open">⚙ Ajustements</button>
       </div>
-      <div class="two-70-30" style="margin-top:20px;">
+      <div class="two-70-30" style="margin-top:20px;grid-template-columns:2.7fr 1fr;">
         <div class="bcard"><div id="c-sig"></div></div>
         <div class="retenir-client" style="align-self:stretch;"><div class="rc-ico" id="c-synth-ico"></div><h3>Ce qu'il faut retenir</h3><div id="c-synth-retenir"></div></div>
       </div>
@@ -1271,7 +1275,7 @@
     <section class="app-page" id="c-page-activite">
       <h1>Activité</h1>
       <div class="page-sub">Évolution du chiffre d'affaires et répartition de l'activité.</div>
-      <div class="two-60-40">
+      <div class="two-60-40" style="grid-template-columns:1fr 1.9fr;align-items:stretch;">
         <div class="bcard">
           <div class="ic ic-blue" id="act-ca-ico" style="margin-bottom:14px;"></div>
           <div class="card-h">Chiffre d'affaires</div>
@@ -1279,9 +1283,9 @@
           <div class="big-figure-sub" id="act-ca-delta"></div>
           <div class="repartition" id="act-repartition" style="margin-top:20px;"></div>
         </div>
-        <div class="bcard">
-          <div class="card-h">Évolution mensuelle</div>
-          <div class="chart-wrap sm"><canvas id="act-chart"></canvas></div>
+        <div class="bcard" style="display:flex;flex-direction:column;">
+          <div class="card-h">Évolution mensuelle du chiffre d'affaires</div>
+          <div class="chart-wrap lg" style="flex:1;"><canvas id="act-chart"></canvas></div>
         </div>
       </div>
       <div class="retenir-band" style="margin-top:20px;"><div class="rb-ico" id="act-ico"></div><div class="rb-body"><h3>Ce qu'il faut retenir</h3><div id="act-retenir"></div></div></div>
@@ -1291,17 +1295,17 @@
     <section class="app-page" id="c-page-charges">
       <div id="charges-list">
         <h1>Charges d'exploitation</h1>
-        <div class="two-60-40" style="margin-top:6px;">
+        <div class="two-60-40" style="margin-top:6px;grid-template-columns:1fr 1.9fr;align-items:stretch;">
           <div class="bcard">
             <div class="ic ic-orange" id="chg-total-ico" style="margin-bottom:14px;"></div>
             <div class="card-h">Total charges d'exploitation</div>
             <div class="big-figure" id="chg-total">—</div>
             <div class="big-figure-sub" id="chg-total-sub"></div>
           </div>
-          <div class="bcard">
-            <div class="card-h">Évolution mensuelle</div>
+          <div class="bcard" style="display:flex;flex-direction:column;">
+            <div class="card-h">Évolution mensuelle des charges</div>
             <div class="card-sub2" style="margin-bottom:10px;">Cliquez un mois pour voir les postes qui ont le plus évolué.</div>
-            <div class="chart-wrap sm"><canvas id="chg-chart"></canvas></div>
+            <div class="chart-wrap lg" style="flex:1;"><canvas id="chg-chart"></canvas></div>
           </div>
         </div>
         <div id="chg-month-panel" style="display:none;margin-top:20px;"></div>
@@ -1310,7 +1314,7 @@
             <div class="card-h" style="margin-bottom:14px;">Détail des charges d'exploitation</div>
             <table class="ctab" id="chg-table"></table>
           </div>
-          <div class="retenir-client"><div class="rc-ico" id="chg-ico"></div><h3>Ce qu'il faut retenir</h3><div id="chg-retenir"></div></div>
+          <div class="retenir-client" style="align-self:stretch;"><div class="rc-ico" id="chg-ico"></div><h3>Ce qu'il faut retenir</h3><div id="chg-retenir"></div></div>
         </div>
       </div>
       <div id="charge-detail" style="display:none;"></div>
@@ -1342,16 +1346,17 @@
     <!-- TRÉSORERIE -->
     <section class="app-page" id="c-page-tresorerie">
       <h1>Trésorerie</h1>
-      <div class="two-60-40" style="margin-top:6px;">
+      <div class="two-60-40" style="margin-top:6px;grid-template-columns:1fr 2.1fr;align-items:stretch;">
         <div class="bcard">
           <div class="ic ic-green" id="tre-close-ico" style="margin-bottom:14px;"></div>
           <div class="card-h">Trésorerie de clôture</div>
           <div class="big-figure" id="tre-close">—</div>
           <div class="big-figure-sub" id="tre-close-sub"></div>
         </div>
-        <div class="bcard">
+        <div class="bcard" style="display:flex;flex-direction:column;">
           <div class="card-h">Évolution de la trésorerie mensuelle</div>
-          <div class="chart-wrap sm"><canvas id="tre-chart"></canvas></div>
+          <div class="card-sub2" style="margin-bottom:10px;">Tous comptes bancaires et caisse confondus.</div>
+          <div class="chart-wrap lg" style="flex:1;"><canvas id="tre-chart"></canvas></div>
         </div>
       </div>
       <div class="kpi-row4" id="tre-cards"></div>
@@ -3726,6 +3731,13 @@ function expertKpis(){
   K.push({ico:'target',tone:'red',label:'Résultat',value:fmtEUR(rn),
     pctca:(r.CA?fmtPct1(rn/r.CA):'')+' du CA', delta:null,
     vs: rn1!=null?('vs '+fmtEUR(rn1)):''});
+  const caf = rn + (AN.compteResultat.detail['68']||0) - (AN.compteResultat.detail['78']||0);
+  const caf1 = AN1? (rn1 + (AN1.compteResultat.detail['68']||0) - (AN1.compteResultat.detail['78']||0)) : null;
+  const cafDelta = caf1!=null? caf-caf1 : null;
+  K.push({ico:'refresh',tone:'green',label:"Capacité d'autofinancement",value:fmtEUR(caf),
+    pctca:(r.CA?fmtPct1(caf/r.CA):'')+' du CA',
+    delta: cafDelta!=null?{txt:signEUR(cafDelta),cls:cafDelta>=0?'up':'down'}:null,
+    vs: caf1!=null?('vs '+fmtEUR(caf1)):''});
   const bas=pointBasTreso(AN), moisCharges=AN.compteResultat.charges/12;
   const basCls = bas.solde<0?'down':(bas.solde<moisCharges?'warn':'muted');
   const basTxt = bas.solde<0
@@ -3960,7 +3972,9 @@ const ICONS = {
   plus:'<path d="M12 5v14"/><path d="M5 12h14"/>',
   folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
   monitor:'<rect x="3" y="4" width="18" height="12.5" rx="2"/><path d="M8.5 20h7"/><path d="M12 16.5V20"/>',
-  arrowR:'<path d="M5 12h13"/><path d="M13 6l6 6-6 6"/>'
+  arrowR:'<path d="M5 12h13"/><path d="M13 6l6 6-6 6"/>',
+  trendUp:'<path d="M5 19 19 5"/><path d="M9 5h10v10"/>',
+  trendDown:'<path d="M5 5 19 19"/><path d="M19 9v10H9"/>'
 };
 function svgIcon(name){ return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${ICONS[name]||''}</svg>`; }
 function chip(name, tone, size){ return `<span class="ic ic-${tone||'green'}${size?' ic-'+size:''}">${svgIcon(name)}</span>`; }
@@ -4044,6 +4058,20 @@ function sparklineSVG(series, color){
   }).join(' ');
   return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><polyline points="${pts}" fill="none" stroke="${color||'#08783E'}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
 }
+function lineSeries(canvasId, series, opts){
+  opts=opts||{};
+  const cv=document.getElementById(canvasId); if(!cv||typeof Chart==='undefined') return;
+  if(clientCharts[canvasId]) clientCharts[canvasId].destroy();
+  const ds=series.map(s=>({label:s.label, data:s.data, borderColor:s.color,
+    backgroundColor:s.fill?(s.color+'14'):'transparent', borderWidth:s.width||2.2, tension:.35, fill:!!s.fill,
+    pointRadius:s.point===false?0:2.4, pointBackgroundColor:s.color, pointBorderColor:s.color, pointHoverRadius:4.5, borderDash:s.dash||[]}));
+  const yScale={grid:{color:'#F0EFEA'},border:{display:false},beginAtZero:true,suggestedMin:0,ticks:{maxTicksLimit:6,font:{size:11},color:'#8A909B',callback:v=>Math.abs(v)>=1000?(v/1000).toLocaleString('fr-FR',{maximumFractionDigits:1})+'k':Math.round(v)}};
+  clientCharts[canvasId]=new Chart(cv.getContext('2d'),{type:'line',data:{labels:MONTHS,datasets:ds},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:true,position:'top',align:'end',labels:{usePointStyle:true,pointStyle:'line',boxWidth:22,boxHeight:2,font:{size:11.5},color:'#5B6472',padding:14}},
+        tooltip:{callbacks:{label:c=>c.dataset.label+' : '+fmtEUR(c.parsed.y)}}},
+      scales:{x:{grid:{display:false},ticks:{font:{size:11},color:'#8A909B'}},y:yScale}}});
+}
 function lineNN1(canvasId, serieN, serieN1, opts){
   opts=opts||{};
   const cv=document.getElementById(canvasId);
@@ -4115,24 +4143,24 @@ function renderSynthese(){
   const {caN, caN1, rows}=sigRows();
   const ms=monthlySIG(ecrituresN);
   const html=rows.map(r=>{
-    let deltaCell='', metaCell='', up;
+    let deltaCell='', dir=null; // dir: +1 hausse, -1 baisse, 0 stable
     if(r.key==='ca'){
-      const dv=(r.n1&&Math.abs(r.n1)>0.5)?(r.n-r.n1)/Math.abs(r.n1):null; up=(dv==null||dv>=0);
-      deltaCell = dv!=null? `<div class="sl-delta ${up?'up':'down'}">${signPct(dv)}</div>` : '<div class="sl-delta"></div>';
-      metaCell = `<div class="sl-meta">${r.n1!=null?`<span class="vs">vs ${fmtEUR(r.n1)}</span>`:''}</div>`;
+      const dv=(r.n1&&Math.abs(r.n1)>0.5)?(r.n-r.n1)/Math.abs(r.n1):null;
+      dir = dv==null?null:(dv>0.0005?1:(dv<-0.0005?-1:0));
+      deltaCell = dv!=null? `<div class="sl-delta ${dv>=0?'up':'down'}">${signPct(dv)}</div>` : '<div class="sl-delta"></div>';
     } else {
       const rate=caN?r.n/caN:0, rate1=(caN1&&r.n1!=null)?r.n1/caN1:null;
-      const dPt=(rate1!=null)?(rate-rate1)*100:null; up=(dPt==null||dPt>=-0.05);
-      deltaCell = (dPt!=null&&Math.abs(dPt)>=0.05)? `<div class="sl-delta ${up?'up':'down'}">${ptDelta(dPt)}</div>` : '<div class="sl-delta flat">—</div>';
-      metaCell = `<div class="sl-meta"><span class="pct">${fmtPct1(rate)} du CA</span>${rate1!=null?`<span class="vs">vs ${fmtPct1(rate1)}</span>`:''}</div>`;
+      const dPt=(rate1!=null)?(rate-rate1)*100:null;
+      dir = dPt==null?null:(dPt>0.05?1:(dPt<-0.05?-1:0));
+      deltaCell = (dPt!=null&&Math.abs(dPt)>=0.05)? `<div class="sl-delta ${dPt>=0?'up':'down'}">${ptDelta(dPt)}</div>` : '<div class="sl-delta flat">—</div>';
     }
-    const spark = sparklineSVG(ms[r.key]||[], up?'#08783E':'#C4362F');
+    const arrowCell = dir==null? '<div class="sl-arrow"></div>'
+      : `<div class="sl-arrow ${dir>0?'up':(dir<0?'down':'flat')}">${svgIcon(dir<0?'trendDown':(dir>0?'trendUp':'arrowR'))}</div>`;
     return `<div class="sig-line">
       <div class="sl-label">${chip(r.ico,r.tone)}<span>${r.label}</span></div>
       <div class="sl-val">${fmtEUR(r.n)}</div>
       ${deltaCell}
-      ${metaCell}
-      <div>${spark}</div>
+      ${arrowCell}
     </div>`;
   }).join('');
   document.getElementById('c-sig').innerHTML = html;
@@ -4160,9 +4188,13 @@ function caN0(r){ return r.CA+clientAdj.pr; }
 function renderActivite(){
   const caN=AN.ratios.CA+clientAdj.pr, caN1=AN1?AN1.ratios.CA:null;
   document.getElementById('act-ca').textContent = fmtEUR(caN);
-  const dsub = caN1!=null? `${signEUR(caN-caN1)} · ${signPct((caN-caN1)/Math.abs(caN1))} vs N-1` : '';
-  document.getElementById('act-ca-delta').textContent = dsub;
-  // répartition de l'activité
+  if(caN1!=null){
+    const dpct=(caN-caN1)/Math.abs(caN1), deur=caN-caN1, up=deur>=0;
+    document.getElementById('act-ca-delta').innerHTML =
+      `<span class="af-delta ${up?'up':'down'}">${signPct(dpct)}</span> <span class="af-vs">vs ${yN1()||'N-1'}</span>`+
+      `<div class="af-eur">${signEUR(deur)} de chiffre d'affaires ${up?'en plus':'en moins'}</div>`;
+  } else document.getElementById('act-ca-delta').textContent='';
+  // répartition de l'activité (secondaire)
   const parts=[
     {label:'Ventes de marchandises', v:sumComptes(AN.soldes,['707'],'credit')},
     {label:'Prestations de services', v:sumComptes(AN.soldes,['706'],'credit')},
@@ -4171,7 +4203,11 @@ function renderActivite(){
   const totRep=parts.reduce((s,p)=>s+p.v,0)||1;
   document.getElementById('act-repartition').innerHTML = `<div class="card-h" style="margin-bottom:10px;">Répartition du chiffre d'affaires</div>`+
     parts.map(p=>{const pc=p.v/totRep;return `<div class="rep-row"><span class="rep-name">${p.label}</span><span class="rep-eur">${fmtEUR(p.v)}</span><span class="rep-pct">${fmtPct(pc)}</span><div class="rep-bar"><i style="width:${(pc*100).toFixed(0)}%"></i></div></div>`;}).join('');
-  lineNN1('act-chart', monthlyByPrefix(ecrituresN,['70'],'credit'), AN1?monthlyByPrefix(ecrituresN1,['70'],'credit'):null, yearLabels());
+  // graphique : évolution globale + par compte de classe 7
+  const series=[{label:'Total', data:monthlyByPrefix(ecrituresN,['70'],'credit'), color:'#1B3A5C', width:2.8, fill:true}];
+  const cats=[{l:'Ventes de marchandises',p:['707'],c:'#2F6DB0'},{l:'Prestations de services',p:['706'],c:'#9A6E1E'},{l:'Autres produits',p:['701','702','703','704','705','708'],c:'#8A909B'}];
+  cats.forEach(k=>{ const d=monthlyByPrefix(ecrituresN,k.p,'credit'); if(d.reduce((a,b)=>a+(b||0),0)>0.5) series.push({label:k.l,data:d,color:k.c,width:2,point:false}); });
+  lineSeries('act-chart', series);
   retenirHTML('act-retenir', (clientAI&&clientAI.activite) || retenirActivite(parts,totRep));
 }
 function retenirActivite(parts,tot){
@@ -4208,10 +4244,12 @@ function renderCharges(){
   const ca=AN.ratios.CA;
   document.getElementById('chg-total').textContent=fmtEUR(total);
   if(total1!=null){
-    const d=(total-total1)/total1, cls=d>0?'var-warn':'var-up', arr=d>0?'↑':'↓';
-    document.getElementById('chg-total-sub').innerHTML = `<span class="${cls}" style="font-size:1rem;">${arr} ${signPct(d)}</span><br><span style="color:var(--muted);">${signEUR(total-total1)} vs ${fmtEUR(total1)} · ${fmtPct(ca?total/ca:0)} du CA</span>`;
+    const d=(total-total1)/Math.abs(total1), up=(total-total1)<=0; // baisse des charges = favorable
+    document.getElementById('chg-total-sub').innerHTML =
+      `<span class="af-delta ${up?'up':'down'}">${signPct(d)}</span> <span class="af-vs">vs ${yN1()||'N-1'}</span>`+
+      `<div class="af-eur">${signEUR(total-total1)} de charges · ${fmtPct(ca?total/ca:0)} du CA</div>`;
   } else {
-    document.getElementById('chg-total-sub').innerHTML = `${fmtPct(ca?total/ca:0)} du CA`;
+    document.getElementById('chg-total-sub').innerHTML = `<div class="af-eur">${fmtPct(ca?total/ca:0)} du CA</div>`;
   }
   const pref=['60','61','62','63','64','65','681'];
   lineNN1('chg-chart', monthlyByPrefix(ecrituresN,pref,'debit'), AN1?monthlyByPrefix(ecrituresN1,pref,'debit'):null, Object.assign({onMonthClick:showChargesMonth}, yearLabels()));
@@ -4391,13 +4429,14 @@ function renderBilanStructure(){
   const stocks=sumComptes(AN.soldes,['3'],'debit');
   const fournisseurs=sumComptes(AN.soldes,['401'],'credit');
   const A=b.totalActif||1, P=b.totalPassif||1;
+  // Disposition en regard : chaque poste d'actif (ligne du haut) au-dessus de son pendant au passif (ligne du bas).
   const cards=[
     {ico:'user',tone:'green',l:'Créances clients',v:creances,pct:creances/A,side:"de l'actif"},
     {ico:'box',tone:'orange',l:'Stocks / en-cours',v:stocks,pct:stocks/A,side:"de l'actif",skipIf:stocks<0.5},
     {ico:'wallet',tone:'green',l:'Disponibilités',v:b.treso,pct:b.treso/A,side:"de l'actif"},
-    {ico:'up',tone:'green',l:'Capitaux propres',v:b.capitauxPropres,pct:b.capitauxPropres/P,side:'du passif'},
+    {ico:'users',tone:'red',l:'Dettes fournisseurs',v:fournisseurs,pct:fournisseurs/P,side:'du passif'},
     {ico:'bank',tone:'red',l:'Dettes financières',v:b.dettesFinancieres,pct:b.dettesFinancieres/P,side:'du passif'},
-    {ico:'users',tone:'red',l:'Dettes fournisseurs',v:fournisseurs,pct:fournisseurs/P,side:'du passif'}
+    {ico:'up',tone:'green',l:'Capitaux propres',v:b.capitauxPropres,pct:b.capitauxPropres/P,side:'du passif'}
   ].filter(c=>!c.skipIf);
   document.getElementById('bil-struct').innerHTML=cards.map(c=>
     `<div class="bilan-card"><div class="bc-head">${chip(c.ico,c.tone)}<span class="bc-l">${c.l}</span></div><div class="bc-v">${fmtEUR(c.v)}</div><div class="bc-s">${fmtPct(c.pct)} ${c.side}</div></div>`).join('');
@@ -4427,10 +4466,17 @@ function renderBilanRatios(){
 }
 function retenirRatios(r,r1){
   const out=[];
-  out.push(`La structure financière est saine, avec une trésorerie nette solide et une bonne capacité de remboursement.`);
-  if(r1 && r.delaiClients>r1.delaiClients+2) out.push(`Le besoin en fonds de roulement reste maîtrisé, malgré un allongement du délai clients (${joursTxt(r.delaiClients)}) à surveiller.`);
-  else out.push(`Le besoin en fonds de roulement reste maîtrisé au regard de l'activité.`);
-  return out.slice(0,2);
+  const caf=AN.compteResultat.resultatNet+(AN.compteResultat.detail['68']||0)-(AN.compteResultat.detail['78']||0);
+  const cp=AN.bilan.capitauxPropres, df=AN.bilan.dettesFinancieres;
+  const ecart=r.delaiClients - r.delaiFournisseurs;
+  out.push(`Vos clients vous règlent en moyenne au bout de ${joursTxt(r.delaiClients)}, et vous payez vos fournisseurs en ${joursTxt(r.delaiFournisseurs)}. ${ecart>5?`Vous avancez donc la trésorerie sur environ ${ecart} jours — raccourcir le délai clients libérerait du cash.`:`L'écart est maîtrisé, ce qui ménage votre trésorerie.`}`);
+  out.push(`Le besoin en fonds de roulement — l'argent immobilisé en permanence par le cycle (stocks + créances clients − dettes fournisseurs) — s'élève à ${fmtEUR(r.BFR)}${r1?` (${r.BFR<=r1.BFR?'en baisse':'en hausse'} vs ${fmtEUR(r1.BFR)})`:''}. C'est ce qu'il faut financer avant même de dégager un bénéfice.`);
+  let s3=`La trésorerie nette (ce qui reste une fois ce besoin financé) est ${r.tresorerieNette>=0?`positive, à ${fmtEUR(r.tresorerieNette)}`:`négative, à ${fmtEUR(r.tresorerieNette)}`}`;
+  if(df>0.5 && caf>0.5){ const ans=df/caf; s3+=` ; l'entreprise pourrait rembourser ses dettes financières en ${dec1(ans)} an${ans>=2?'s':''} grâce à sa capacité d'autofinancement, un niveau ${ans<=3?'confortable':'à surveiller'}.`; }
+  else if(cp>0.5){ s3+=` ; elle s'appuie sur ${fmtEUR(cp)} de capitaux propres pour ${fmtEUR(df)} de dettes financières.`; }
+  else s3+='.';
+  out.push(s3);
+  return out.slice(0,3);
 }
 
 /* ---- TRÉSORERIE ---- */
