@@ -4,43 +4,47 @@
    Parcours guidé : Choisir le dossier → Importer → À trancher →
    À réclamer → Le mail → Le fichier. Une seule chose à faire par écran.
    =================================================================== */
-@font-face{font-family:'Poppins';font-weight:500;font-style:normal;font-display:swap;src:url("__POPPINS500__") format('woff2');}
-@font-face{font-family:'Poppins';font-weight:600;font-style:normal;font-display:swap;src:url("__POPPINS600__") format('woff2');}
-@font-face{font-family:'Poppins';font-weight:700;font-style:normal;font-display:swap;src:url("__POPPINS700__") format('woff2');}
-@font-face{font-family:'Montserrat';font-weight:100 900;font-style:normal;font-display:swap;src:url("__MONTVAR__") format('woff2');}
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400..800;1,14..32,400..700&family=Bricolage+Grotesque:opsz,wght@12..96,600..800&display=swap');
 
+/* Palette et matière alignées sur la présentation des comptes S2A :
+   papier chaud, cartes blanches, vert cabinet, ombres feutrées, Inter. */
 :root{
-  --navy:#0e1c2b; --ink:#0f2134; --muted:#7a8795;
-  --page:#fcfdff; --surface:#ffffff; --line:#e7eaef; --line-2:#eef1f4;
-  --green:#2f8451; --green-soft:#e8f3ec; --green-line:#bfe0cc;
-  --gold:#cf9e68; --gold-press:#bd8b4f; --gold-ink:#3a2a12;
-  --red:#c0392b;
-  --todo-bg:#f4ead7; --todo-ink:#8a6c39; --wip-bg:#e6eef7; --wip-ink:#2f5c86;
-  --field:#ffffff; --field-line:#d7dde5;
-  --shadow:0 18px 50px rgba(15,33,52,.10); --shadow-sm:0 5px 16px rgba(15,33,52,.06);
-  --radius:18px; --radius-sm:12px;
-  --sans:'Montserrat','Segoe UI',Roboto,Arial,sans-serif;
-  --display:'Poppins','Montserrat',sans-serif;
+  --ink:#15181C; --ink-soft:#3F454E; --muted:#8A909B;
+  --page:#FAFAF7; --surface:#FFFFFF; --line:#ECEBE5; --line-2:#F3F2EC;
+  --green:#1B5FA8; --green-2:#14497F; --green-soft:#EAF1FA; --green-line:#BFD6EE;
+  --gold:#1B5FA8; --gold-press:#14497F; --gold-ink:#FFFFFF;   /* action = bleu cabinet S2A */
+  --navy:#12241D;
+  --red:#C4362F; --red-soft:#FBE9E7;
+  --warn:#E08A2B; --warn-soft:#FCF1E3; --blue:#2A5FB0;
+  --todo-bg:#FCF1E3; --todo-ink:#B0701C; --wip-bg:#EAF1FB; --wip-ink:#2A5FB0;
+  --field:#FFFFFF; --field-line:#DBDAD1;
+  --shadow:0 8px 30px rgba(21,24,28,.08); --shadow-sm:0 1px 3px rgba(21,24,28,.05),0 1px 2px rgba(21,24,28,.04);
+  --radius:16px; --radius-sm:12px;
+  --sans:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --display:'Inter',system-ui,sans-serif;
+  --wordmark:'Bricolage Grotesque','Inter',sans-serif;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --navy:#0a1622; --ink:#e9f0f6; --muted:#93a3b2;
-  --page:#0b1420; --surface:#122234; --line:#20344a; --line-2:#1a2c40;
-  --green:#5cbf8c; --green-soft:#13302a; --green-line:#245442;
-  --gold:#d6ab77; --gold-press:#c99a60; --gold-ink:#241a0b;
-  --red:#e0857a;
-  --todo-bg:#2c2617; --todo-ink:#d6ab77; --wip-bg:#13293f; --wip-ink:#8fb4d6;
-  --field:#0e1f31; --field-line:#2a4059;
-  --shadow:0 18px 50px rgba(0,0,0,.45); --shadow-sm:0 5px 16px rgba(0,0,0,.35);
+  --ink:#ECF1ED; --ink-soft:#B9C4BC; --muted:#8A968D;
+  --page:#0E1512; --surface:#151E19; --line:#243029; --line-2:#1C271F;
+  --green:#6FB0F0; --green-2:#8FC4F5; --green-soft:#12263C; --green-line:#244463;
+  --gold:#6FB0F0; --gold-press:#5A9FE6; --gold-ink:#08192B;
+  --navy:#0B1410;
+  --red:#EBA39D; --red-soft:#31201E; --warn:#F0B472; --warn-soft:#2C2417; --blue:#8FB4D6;
+  --todo-bg:#2C2417; --todo-ink:#F0B472; --wip-bg:#132033; --wip-ink:#8FB4D6;
+  --field:#0F1814; --field-line:#2A382F;
+  --shadow:0 10px 40px rgba(0,0,0,.5); --shadow-sm:0 1px 3px rgba(0,0,0,.4);
 }}
 :root[data-theme="dark"]{
-  --navy:#0a1622; --ink:#e9f0f6; --muted:#93a3b2;
-  --page:#0b1420; --surface:#122234; --line:#20344a; --line-2:#1a2c40;
-  --green:#5cbf8c; --green-soft:#13302a; --green-line:#245442;
-  --gold:#d6ab77; --gold-press:#c99a60; --gold-ink:#241a0b;
-  --red:#e0857a;
-  --todo-bg:#2c2617; --todo-ink:#d6ab77; --wip-bg:#13293f; --wip-ink:#8fb4d6;
-  --field:#0e1f31; --field-line:#2a4059;
-  --shadow:0 18px 50px rgba(0,0,0,.45); --shadow-sm:0 5px 16px rgba(0,0,0,.35);
+  --ink:#ECF1ED; --ink-soft:#B9C4BC; --muted:#8A968D;
+  --page:#0E1512; --surface:#151E19; --line:#243029; --line-2:#1C271F;
+  --green:#6FB0F0; --green-2:#8FC4F5; --green-soft:#12263C; --green-line:#244463;
+  --gold:#6FB0F0; --gold-press:#5A9FE6; --gold-ink:#08192B;
+  --navy:#0B1410;
+  --red:#EBA39D; --red-soft:#31201E; --warn:#F0B472; --warn-soft:#2C2417; --blue:#8FB4D6;
+  --todo-bg:#2C2417; --todo-ink:#F0B472; --wip-bg:#132033; --wip-ink:#8FB4D6;
+  --field:#0F1814; --field-line:#2A382F;
+  --shadow:0 10px 40px rgba(0,0,0,.5); --shadow-sm:0 1px 3px rgba(0,0,0,.4);
 }
 
 *{box-sizing:border-box}
@@ -56,14 +60,25 @@
 .hidden{display:none!important}
 
 /* ---------- Header ---------- */
-.hdr{position:sticky;top:0;z-index:40;background:var(--navy);color:#eef3f8}
-.hdr .wrap{display:flex;align-items:center;gap:16px;min-height:64px}
-.brand{display:flex;align-items:center}
-.brand .chip{background:#fff;border-radius:10px;padding:6px 13px;display:flex;align-items:center}
-.brand .chip img{height:26px;width:auto;display:block}
+.hdr{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--surface) 88%,transparent);
+  -webkit-backdrop-filter:saturate(1.4) blur(10px);backdrop-filter:saturate(1.4) blur(10px);
+  color:var(--ink);border-bottom:1px solid var(--line)}
+.hdr .wrap{display:flex;align-items:center;gap:14px;min-height:62px}
+.brand{display:flex;align-items:baseline;gap:9px}
+.wordmark{font-family:var(--wordmark);font-style:italic;font-weight:800;letter-spacing:-.03em;
+  font-size:25px;color:var(--green);line-height:1}
+.wordmark .dot{color:var(--ink)}
+.brand .by-logo{height:23px;width:auto;display:block;align-self:center}
+:root[data-theme="dark"] .brand .by-logo{filter:brightness(0) invert(1)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .brand .by-logo{filter:brightness(0) invert(1)}}
 .hdr .spacer{flex:1}
+.hbtn{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 15px;border-radius:99px;
+  color:var(--ink-soft);border:1px solid var(--line);background:var(--surface);font-weight:600;font-size:14px;
+  transition:border-color .15s ease,background .15s ease}
+.hbtn:hover{border-color:var(--muted)}
+.hbtn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8}
 .icon-btn{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;
-  color:#cdd8e2;border:1px solid rgba(255,255,255,.18);font-weight:600}
+  color:var(--muted);border:1px solid var(--line);background:var(--surface);font-weight:600}
 .avatar{width:36px;height:36px;border-radius:50%;background:var(--green);color:#fff;
   display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:15px}
 
@@ -95,7 +110,14 @@ main.wrap{padding:30px 20px 90px}
 @media(max-width:720px){.grid2{grid-template-columns:1fr}}
 
 /* ---------- Étape 0 : choix du dossier ---------- */
-.dossiers{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-top:26px}
+.dossiers{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-top:12px}
+.dgroup{margin-top:26px}
+.dgroup-h{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;font-size:13px;
+  text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.dgroup-h .dg-n{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:99px;
+  background:var(--line-2);color:var(--ink-soft);font-size:12px;letter-spacing:0}
+.dg-dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+.dg-dot.todo{background:var(--warn)} .dg-dot.wip{background:var(--blue)} .dg-dot.done{background:var(--green)}
 .dcard{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px;
   box-shadow:var(--shadow-sm);transition:transform .12s ease,box-shadow .12s ease}
 .dcard:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
@@ -111,7 +133,7 @@ main.wrap{padding:30px 20px 90px}
 .dcard.new .plus{width:38px;height:38px;border-radius:50%;background:var(--line-2);display:grid;place-items:center;font-size:22px}
 
 /* Step 1 fields */
-.field-card{padding:20px}
+.field-card{padding:22px;border:1px solid var(--field-line);box-shadow:none}
 .field-card h3{font-family:var(--display);font-weight:600;font-size:17px;margin-bottom:14px}
 .field-card .sub{color:var(--muted);font-size:13px;font-weight:500;margin-left:8px}
 .daterow{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
@@ -121,7 +143,7 @@ main.wrap{padding:30px 20px 90px}
 .inp svg{width:17px;height:17px;stroke:var(--muted);fill:none;stroke-width:1.8}
 .toggle{display:inline-flex;background:var(--line-2);border-radius:11px;padding:4px}
 .toggle button{padding:9px 22px;border-radius:8px;font-family:var(--display);font-weight:600;color:var(--muted)}
-.toggle button[aria-pressed="true"]{background:var(--navy);color:#fff}
+.toggle button[aria-pressed="true"]{background:var(--green);color:#fff}
 .filerow{display:flex;align-items:center;gap:12px;background:var(--surface);
   border:1.5px solid var(--green-line);border-radius:12px;padding:15px 16px}
 .filerow .fi{width:34px;height:34px;border-radius:8px;background:var(--green-soft);display:grid;place-items:center}
@@ -152,8 +174,8 @@ main.wrap{padding:30px 20px 90px}
 .actionbar{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:22px;flex-wrap:wrap}
 .actionbar .left{display:flex;align-items:center;gap:11px;font-family:var(--display);font-weight:600;color:var(--ink)}
 .cta{display:inline-flex;align-items:center;gap:12px;background:var(--gold);color:var(--gold-ink);
-  font-family:var(--display);font-weight:700;font-size:17px;padding:16px 30px;border-radius:14px;
-  box-shadow:0 10px 24px rgba(207,158,104,.32);transition:transform .12s ease,background .12s ease}
+  font-family:var(--display);font-weight:700;font-size:16px;padding:15px 28px;border-radius:12px;
+  box-shadow:0 8px 22px rgba(8,120,62,.22);transition:transform .15s ease,background .15s ease}
 .cta:hover{background:var(--gold-press);transform:translateY(-1px)}
 .cta.block{width:100%;justify-content:center}
 .cta .arw{font-size:19px;line-height:1}
@@ -249,17 +271,81 @@ main.wrap{padding:30px 20px 90px}
   .ritem{flex-wrap:wrap}
   .ritem .rdt{margin-left:0}
 }
+
+/* ---------- Écran de connexion ---------- */
+.auth{position:fixed;inset:0;z-index:120;background:var(--page);display:grid;place-items:center;padding:24px}
+.auth::before{content:"";position:absolute;inset:0;background:
+  radial-gradient(60% 55% at 50% -8%,var(--green-soft),transparent 70%);pointer-events:none}
+.auth-card{position:relative;width:min(400px,100%);background:var(--surface);border:1px solid var(--line);
+  border-radius:20px;box-shadow:var(--shadow);padding:38px 34px;text-align:center;
+  animation:rise .5s cubic-bezier(.2,.7,.2,1) both}
+.auth-card .wordmark{font-size:46px;display:inline-block;margin-bottom:28px}
+.auth-form{display:flex;flex-direction:column;gap:14px;text-align:left}
+.auth-form label{font-family:var(--display);font-weight:600;font-size:13px;color:var(--ink-soft);
+  display:flex;flex-direction:column;gap:7px}
+.auth-form input{background:var(--field);border:1px solid var(--field-line);border-radius:11px;
+  padding:13px 15px;font-weight:500;font-size:15px;transition:border-color .15s ease,box-shadow .15s ease}
+.auth-form input:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px var(--green-soft)}
+.auth-form .cta{margin-top:6px}
+.auth-note{color:var(--muted);font-size:12px;margin-top:20px}
+.auth-legal{color:var(--muted);font-size:11.5px;margin-top:10px;line-height:1.5}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* ---------- Historique des imports (anti-doublon) ---------- */
+.hist{display:flex;flex-direction:column;gap:10px;margin-top:6px;max-height:56vh;overflow:auto}
+.hitem{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--line);
+  border-radius:13px;padding:13px 15px}
+.hitem .hdot{width:9px;height:9px;border-radius:50%;flex:0 0 auto;background:var(--green)}
+.hitem.dup .hdot{background:var(--warn)}
+.hitem .hmain{min-width:0}
+.hitem .hnom{font-family:var(--display);font-weight:600;font-size:15px}
+.hitem .hmeta{color:var(--muted);font-size:12.5px;margin-top:2px}
+.hitem .hstat{margin-left:auto;font-family:var(--display);font-weight:600;font-size:12px;
+  padding:5px 11px;border-radius:99px;background:var(--green-soft);color:var(--green);white-space:nowrap}
+.hitem.dup .hstat{background:var(--warn-soft);color:var(--warn)}
+.hitem .hhash{font-variant-numeric:tabular-nums;color:var(--muted);font-size:11px;font-family:ui-monospace,Menlo,monospace}
+.dupbanner{margin-top:14px;display:flex;align-items:flex-start;gap:12px;background:var(--warn-soft);
+  border:1px solid color-mix(in srgb,var(--warn) 40%,transparent);border-radius:12px;padding:13px 16px;
+  color:var(--todo-ink);font-size:13.5px;font-weight:600}
+.dupbanner svg{width:18px;height:18px;stroke:var(--warn);fill:none;stroke-width:1.9;flex:0 0 auto;margin-top:1px}
+.modal .box.wide{max-width:560px}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
 </style>
 
 <div class="lmnp" data-step="0" data-banque="oui">
 
+  <!-- ÉCRAN DE CONNEXION -->
+  <div class="auth js-auth">
+    <div class="auth-card">
+      <div class="wordmark"><em>Saisio</em><span class="dot">.</span></div>
+      <form class="auth-form js-login" novalidate>
+        <label>Email professionnel
+          <input type="email" class="js-email" placeholder="prenom@s2a-audit.fr" autocomplete="username" required/>
+        </label>
+        <label>Mot de passe
+          <input type="password" class="js-pwd" placeholder="••••••••" autocomplete="current-password" required/>
+        </label>
+        <button class="cta block" type="submit">Se connecter <span class="arw">→</span></button>
+      </form>
+    </div>
+  </div>
+
   <!-- HEADER -->
   <header class="hdr">
     <div class="wrap">
-      <button class="brand js-home" aria-label="Accueil — mes dossiers"><span class="chip"><img src="__LOGO_DARK__" alt="S2A — Sud Alpes Audit"/></span></button>
+      <button class="brand js-home" aria-label="Accueil — mes dossiers">
+        <span class="wordmark"><em>Saisio</em><span class="dot">.</span></span>
+        <img class="by-logo" src="__LOGO_DARK__" alt="S2A — Sud Alpes Audit"/>
+      </button>
       <div class="spacer"></div>
+      <button class="hbtn js-hist" aria-label="Historique des imports">
+        <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9 9 0 0 0-8 5"/><path d="M3 3v5h5"/><path d="M12 8v4l3 2"/></svg>
+        Historique
+      </button>
       <button class="icon-btn js-help" aria-label="À propos">?</button>
-      <span class="avatar" title="Paul">P</span>
+      <button class="icon-btn js-logout" aria-label="Se déconnecter" title="Se déconnecter">
+        <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg>
+      </button>
     </div>
   </header>
 
@@ -267,29 +353,45 @@ main.wrap{padding:30px 20px 90px}
 
     <!-- ÉTAPE 0 — CHOISIR LE DOSSIER -->
     <section class="step" data-s="0">
-      <div class="pagehead"><h1>Mes dossiers</h1><div class="meta">Drive partagé du cabinet</div></div>
-      <div class="dossiers">
-        <button class="dcard js-open" data-name="LMNP_POLO_TEST" data-type="lmnp" data-ex="Exercice 2026 · LMNP · sans banque">
-          <h3>LMNP Polo test</h3><div class="ex">Exercice 2026 · 3 pièces · sans banque</div>
-          <div class="tags"><span class="dtype">LMNP meublé</span><span class="st todo">● À traiter</span></div>
-        </button>
-        <button class="dcard js-open" data-name="LMNP_DUPONT_2026" data-type="lmnp" data-ex="Exercice 2026 · LMNP meublé">
-          <h3>LMNP_DUPONT_2026</h3><div class="ex">Exercice 2026 · 21 pièces au Drive</div>
-          <div class="tags"><span class="dtype">LMNP meublé</span><span class="st todo">● À traiter</span></div>
-        </button>
-        <button class="dcard js-open" data-name="LMNP_MARTIN_2026" data-type="lmnp" data-ex="Exercice 2026 · LMNP meublé">
-          <h3>LMNP_MARTIN_2026</h3><div class="ex">Exercice 2026 · 8 pièces au Drive</div>
-          <div class="tags"><span class="dtype">LMNP meublé</span><span class="st wip">● En cours</span></div>
-        </button>
-        <button class="dcard js-open" data-name="SCI_AZUR_2025" data-type="sci" data-ex="Exercice 2025 · SCI (IR)">
-          <h3>SCI_AZUR_2025</h3><div class="ex">Exercice 2025 · fichier importé</div>
-          <div class="tags"><span class="dtype">SCI (IR)</span><span class="st done">✓ Terminé</span></div>
-        </button>
-        <button class="dcard js-open" data-name="BNC_DR_ROUX_2026" data-type="bnc" data-ex="Exercice 2026 · BNC médecin">
-          <h3>BNC_DR_ROUX_2026</h3><div class="ex">Exercice 2026 · 63 pièces au Drive</div>
-          <div class="tags"><span class="dtype">BNC · médecin</span><span class="st todo">● À traiter</span></div>
-        </button>
-        <button class="dcard new js-newdossier"><span class="plus">+</span> Nouveau dossier</button>
+      <div class="pagehead"><h1>Mes dossiers</h1></div>
+
+      <div class="dgroup">
+        <div class="dgroup-h"><span class="dg-dot todo"></span>À traiter <span class="dg-n">3</span></div>
+        <div class="dossiers">
+          <button class="dcard js-open" data-name="LMNP_POLO_TEST" data-type="lmnp" data-ex="Exercice 2026 · LMNP · sans banque">
+            <h3>LMNP Polo test</h3><div class="ex">3 pièces · sans banque</div>
+            <div class="tags"><span class="dtype">LMNP meublé</span><span class="st todo">● À traiter</span></div>
+          </button>
+          <button class="dcard js-open" data-name="LMNP_DUPONT_2026" data-type="lmnp" data-ex="Exercice 2026 · LMNP meublé">
+            <h3>LMNP_DUPONT_2026</h3><div class="ex">21 pièces</div>
+            <div class="tags"><span class="dtype">LMNP meublé</span><span class="st todo">● À traiter</span></div>
+          </button>
+          <button class="dcard js-open" data-name="BNC_DR_ROUX_2026" data-type="bnc" data-ex="Exercice 2026 · BNC médecin">
+            <h3>BNC_DR_ROUX_2026</h3><div class="ex">63 pièces</div>
+            <div class="tags"><span class="dtype">BNC · médecin</span><span class="st todo">● À traiter</span></div>
+          </button>
+          <button class="dcard new js-newdossier"><span class="plus">+</span> Nouveau dossier</button>
+        </div>
+      </div>
+
+      <div class="dgroup">
+        <div class="dgroup-h"><span class="dg-dot wip"></span>En cours <span class="dg-n">1</span></div>
+        <div class="dossiers">
+          <button class="dcard js-open" data-name="LMNP_MARTIN_2026" data-type="lmnp" data-ex="Exercice 2026 · LMNP meublé">
+            <h3>LMNP_MARTIN_2026</h3><div class="ex">8 pièces</div>
+            <div class="tags"><span class="dtype">LMNP meublé</span><span class="st wip">● En cours</span></div>
+          </button>
+        </div>
+      </div>
+
+      <div class="dgroup">
+        <div class="dgroup-h"><span class="dg-dot done"></span>Terminé <span class="dg-n">1</span></div>
+        <div class="dossiers">
+          <button class="dcard js-open" data-name="SCI_AZUR_2025" data-type="sci" data-ex="Exercice 2025 · SCI (IR)">
+            <h3>SCI_AZUR_2025</h3><div class="ex">Exercice 2025</div>
+            <div class="tags"><span class="dtype">SCI (IR)</span><span class="st done">✓ Terminé</span></div>
+          </button>
+        </div>
       </div>
     </section>
 
@@ -299,7 +401,6 @@ main.wrap{padding:30px 20px 90px}
       <div class="card" style="padding:26px 28px">
         <div class="pagehead">
           <h1 class="js-dossier">LMNP_DUPONT_2026</h1>
-          <div class="meta js-ex">Exercice 2026 · locations meublées</div>
         </div>
         <div class="ready">
           <span class="pct">88 % <span>prêt</span></span>
@@ -340,6 +441,11 @@ main.wrap{padding:30px 20px 90px}
 
       <div class="note-bnc js-bnc-note hidden">Profil médecin — les encaissements sont mis de côté (pas de justificatif attendu) et le récurrent (assurances, loyer, cotisations…) est pré-affecté automatiquement.</div>
 
+      <div class="dupbanner js-dupbanner hidden">
+        <svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+        <span class="js-duptext"></span>
+      </div>
+
       <div class="grid2" style="margin-top:18px">
         <div class="card field-card">
           <h3>Fichier FEC</h3>
@@ -358,8 +464,7 @@ main.wrap{padding:30px 20px 90px}
         </div>
       </div>
 
-      <div class="actionbar">
-        <span class="left"><span class="check"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span> 21 pièces trouvées</span>
+      <div class="actionbar" style="justify-content:flex-end">
         <div class="right">
           <button class="btn-secondary js-back"><span class="cv">‹</span> Retour</button>
           <button class="cta js-next">Analyser le dossier <span class="arw">→</span></button>
@@ -370,9 +475,7 @@ main.wrap{padding:30px 20px 90px}
     <!-- ÉTAPE 2 — À TRANCHER -->
     <section class="step hidden" data-s="2">
       <div class="steponly"><span class="steplbl">Étape 2 / 5 · À trancher</span></div>
-      <div class="pagehead"><h1 class="js-dossier">LMNP_DUPONT_2026</h1><div class="meta js-ex">Exercice 2026 · locations meublées</div></div>
-      <div class="ready"><span class="pct">88 % <span>prêt</span></span></div>
-      <div class="bar"><i></i></div>
+      <div class="pagehead"><h1 class="js-dossier">LMNP_DUPONT_2026</h1></div>
 
       <p class="js-trancher-note hidden" style="margin:14px 0 0;padding:12px 16px;background:#fbf6ee;border:1px solid #e7d9c2;border-radius:12px;color:#6b5836;font-size:14px"></p>
 
@@ -395,9 +498,7 @@ main.wrap{padding:30px 20px 90px}
     <section class="step hidden" data-s="3">
       <div class="steponly"><span class="steplbl">Étape 3 / 5 · À réclamer</span></div>
       <div class="card" style="padding:26px 28px">
-        <div class="pagehead"><h1 class="js-dossier">LMNP_DUPONT_2026</h1><div class="meta js-ex">Exercice 2026 · locations meublées</div></div>
-        <div class="ready"><span class="pct">88 % <span>prêt</span></span></div>
-        <div class="bar"><i></i></div>
+        <div class="pagehead"><h1 class="js-dossier">LMNP_DUPONT_2026</h1></div>
 
         <div class="badge-h"><span class="n js-reclam-n">4</span><h2>Justificatifs à demander</h2></div>
         <div class="rlist js-reclam"></div>
@@ -414,9 +515,7 @@ main.wrap{padding:30px 20px 90px}
     <!-- ÉTAPE 4 — LE MAIL -->
     <section class="step hidden" data-s="4">
       <div class="steponly"><span class="steplbl">Étape 4 / 5 · Le mail</span></div>
-      <div class="pagehead"><h1 class="js-dossier">LMNP_DUPONT_2026</h1><div class="meta js-ex">Exercice 2026 · locations meublées</div></div>
-      <div class="ready"><span class="pct">88 % <span>prêt</span></span></div>
-      <div class="bar"><i></i></div>
+      <div class="pagehead"><h1 class="js-dossier">LMNP_DUPONT_2026</h1></div>
 
       <h2 style="font-family:var(--display);font-size:22px;margin:24px 0 12px">Email prêt à envoyer</h2>
       <div class="card mail">
@@ -441,7 +540,7 @@ main.wrap{padding:30px 20px 90px}
     <!-- ÉTAPE 5 — LE FICHIER -->
     <section class="step hidden" data-s="5">
       <div class="steponly"><span class="steplbl">Étape 5 / 5 · Le fichier</span></div>
-      <div class="pagehead"><h1 class="js-dossier">LMNP_DUPONT_2026</h1><div class="meta js-ex">Exercice 2026 · locations meublées</div></div>
+      <div class="pagehead"><h1 class="js-dossier">LMNP_DUPONT_2026</h1></div>
       <div class="done-head"><span class="check" style="width:32px;height:32px"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span><h2>Fichiers prêts</h2></div>
 
       <!-- AVEC banque : journal de banque en Excel modifiable -->
@@ -494,6 +593,28 @@ main.wrap{padding:30px 20px 90px}
   var $=function(s,c){return (c||root).querySelector(s)};
   var $$=function(s,c){return Array.prototype.slice.call((c||root).querySelectorAll(s))};
 
+  /* --- persistance locale (session + suivi des imports, anti-doublon) --- */
+  function lsGet(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
+  function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+  // empreinte courte déterministe (démo) — dans l'outil réel : sha256 du contenu du fichier
+  function empreinte(s){var h=5381;s=s||'';for(var i=0;i<s.length;i++){h=((h<<5)+h+s.charCodeAt(i))>>>0;}return ('00000000'+h.toString(16)).slice(-8);}
+  var HKEY='saisio_imports_v1';
+  function histoire(){return lsGet(HKEY,null)||[
+    {nom:'SCI_AZUR_2025',pieces:34,hash:empreinte('SCI_AZUR_2025|34'),date:'2026-07-19 09:14',statut:'Importé'},
+    {nom:'LMNP_MARTIN_2026',pieces:8,hash:empreinte('LMNP_MARTIN_2026|8'),date:'2026-08-24 16:02',statut:'En cours'}
+  ];}
+  function dejaTraite(nom){var h=empreinte(nom);return histoire().filter(function(e){return e.hash===h;})[0]||null;}
+  function enregistrerImport(nom,pieces){
+    var liste=histoire(), h=empreinte(nom), now=new Date();
+    var d=now.toISOString().slice(0,10)+' '+now.toTimeString().slice(0,5);
+    var idx=-1; for(var i=0;i<liste.length;i++){if(liste[i].hash===h){idx=i;break;}}
+    var rec={nom:nom,pieces:pieces,hash:h,date:d,statut:'Importé'};
+    if(idx>=0){rec.statut='Ré-import ignoré (doublon évité)';rec.dup=true;liste[idx]=rec;}
+    else liste.unshift(rec);
+    lsSet(HKEY,liste);
+    return rec;
+  }
+
   var DEFAULT_TRANCHER=[
     {dt:"18/03/2026",lib:"Menuiserie Des Cimes",m:3480.00,cpt:"2135",col:"#8a7355",ini:"M",
       opts:[["2135","2135 — Agencements, installations"],["615","615 — Entretien et réparations"],["2313","2313 — Constructions"]]},
@@ -516,8 +637,8 @@ main.wrap{padding:30px 20px 90px}
   var DOSSIERS={
     "LMNP_POLO_TEST":{
       banque:"non",
-      note:"Dossier SANS banque : l'outil comptabilise seul à partir de chaque facture (le fournisseur). Il ne remonte QUE les cas à vrai doute — ici, un seul sur trois.",
-      auto:[["EDF","606 — Énergie"],["Bouygues Telecom","626 — Télécom"]],
+      note:"",
+      auto:[],
       trancher:[
         {dt:"09/01/2026",lib:"Brico Dépôt",m:71.07,cpt:"615",col:"#c0392b",ini:"B",
           opts:[["615","615 — Entretien et réparations"],["606","606 — Petit équipement"],["2184","2184 — Mobilier (immobilisation)"]]}
@@ -529,6 +650,8 @@ main.wrap{padding:30px 20px 90px}
     }
   };
   var TRANCHER=DEFAULT_TRANCHER, RECLAM=DEFAULT_RECLAM, CURNOTE="", CURAUTO=[];
+  var CURNOM="", CURPIECES=0;
+  var NB_PIECES={LMNP_POLO_TEST:3,LMNP_DUPONT_2026:21,LMNP_MARTIN_2026:8,SCI_AZUR_2025:34,BNC_DR_ROUX_2026:63};
   var eur=function(n){return n.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €'};
 
   function thumbSVG(col,ini){
@@ -643,17 +766,29 @@ main.wrap{padding:30px 20px 90px}
     root.dataset.banque=bq;
     $$('.js-bq').forEach(function(x){x.setAttribute('aria-pressed',x.dataset.v===bq?'true':'false');});
     var fmt=$('.js-fmt'); if(fmt)fmt.textContent='Format ASCII (Quadra) · contrepartie '+(bq==='oui'?'512':'108');
+    CURNOM=name; CURPIECES=NB_PIECES[name]||(TRANCHER.length+RECLAM.length);
+    majBanniereDoublon();
     renderTrancher();renderReclam();
     go(1);
   }
+  function majBanniereDoublon(){
+    var b=$('.js-dupbanner'), t=$('.js-duptext'); if(!b)return;
+    var d=dejaTraite(CURNOM);
+    if(d){t.textContent='Ce dossier a déjà été importé le '+d.date+' (empreinte '+d.hash+'). Les pièces déjà comptabilisées ne seront pas ressaisies — Saisio ne traite que les nouvelles pièces (anti-doublon).';
+      b.classList.remove('hidden');}
+    else b.classList.add('hidden');
+  }
   $$('.js-open').forEach(function(b){b.addEventListener('click',function(){openDossier(b.dataset.name,b.dataset.ex,b.dataset.type);});});
   $('.js-type').addEventListener('change',function(){toggleBnc(this.value==='bnc');});
-  $$('.js-next').forEach(function(b){b.addEventListener('click',function(){go(Math.min(5,+root.dataset.step+1));});});
+  $$('.js-next').forEach(function(b){b.addEventListener('click',function(){
+    if(+root.dataset.step===1&&CURNOM){enregistrerImport(CURNOM,CURPIECES);majBanniereDoublon();}
+    go(Math.min(5,+root.dataset.step+1));
+  });});
   $$('.js-back').forEach(function(b){b.addEventListener('click',function(){go(Math.max(0,+root.dataset.step-1));});});
   $('.js-home').addEventListener('click',function(){go(0);});
   $('.js-newdossier').addEventListener('click',function(){openModal(
     '<h3>Nouveau dossier</h3>'
-    +'<p>Dans l\'outil réel, un nouveau dossier apparaît automatiquement dès qu\'un dossier client existe sur le <b>Drive partagé</b> — pas besoin de le créer à la main.</p>'
+    +'<p>Dans l\'outil réel, un nouveau dossier apparaît automatiquement dès qu\'un dossier client existe sur le <b>Drive du cabinet</b> — pas besoin de le créer à la main.</p>'
     +'<p>On peut aussi le saisir manuellement (nom du client + exercice) si le Drive n\'est pas encore connecté.</p>');});
 
   /* --- toggle banque --- */
@@ -664,7 +799,8 @@ main.wrap{padding:30px 20px 90px}
   });});
 
   /* --- modal --- */
-  function openModal(html){$('.js-modal-content').innerHTML=html;$('.js-modal').classList.add('on');}
+  function openModal(html,wide){$('.js-modal-content').innerHTML=html;
+    $('.js-modal .box').classList.toggle('wide',!!wide);$('.js-modal').classList.add('on');}
   $('.js-modal-close').addEventListener('click',function(){$('.js-modal').classList.remove('on');});
   $('.js-modal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('on');});
   $('.js-help').addEventListener('click',function(){openModal(
@@ -714,6 +850,34 @@ main.wrap{padding:30px 20px 90px}
       +'<pre style="max-height:220px;overflow:auto;font-size:10px;line-height:1.5;font-family:ui-monospace,Menlo,Consolas,monospace;background:#f7f9fb;border:1px solid #e2e6ea;border-radius:8px;padding:10px;white-space:pre">'
       +out.join('\n').replace(/</g,'&lt;')+'</pre>');
   });
+
+  /* --- connexion (démo : n'authentifie pas, garde juste la session locale) --- */
+  var SKEY='saisio_session_v1';
+  function setAuthed(on){$('.js-auth').classList.toggle('hidden',on);}
+  $('.js-login').addEventListener('submit',function(e){
+    e.preventDefault();
+    var mail=($('.js-email').value||'').trim();
+    lsSet(SKEY,{mail:mail||'demo@s2a-audit.fr',t:Date.now()});
+    setAuthed(true);
+  });
+  $('.js-logout').addEventListener('click',function(){try{localStorage.removeItem(SKEY);}catch(e){}setAuthed(false);go(0);});
+  setAuthed(!!lsGet(SKEY,null));
+
+  /* --- historique des imports (anti-doublon) --- */
+  function ouvrirHistorique(){
+    var liste=histoire();
+    var lignes=liste.map(function(e){
+      return '<div class="hitem'+(e.dup?' dup':'')+'"><span class="hdot"></span>'
+        +'<div class="hmain"><div class="hnom">'+e.nom+'</div>'
+        +'<div class="hmeta">'+e.pieces+' pièces · '+e.date+' · <span class="hhash">'+e.hash+'</span></div></div>'
+        +'<span class="hstat">'+e.statut+'</span></div>';
+    }).join('') || '<p>Aucun import pour le moment.</p>';
+    openModal('<h3>Historique des imports</h3>'
+      +'<p>Chaque dossier importé est enregistré avec son <b>empreinte</b> (une signature du contenu). '
+      +'Si le même contenu revient, Saisio le reconnaît et <b>ne le ressaisit pas</b> — vos écritures ne peuvent pas être comptabilisées deux fois.</p>'
+      +'<div class="hist">'+lignes+'</div>', true);
+  }
+  $('.js-hist').addEventListener('click',ouvrirHistorique);
 
   renderTrancher();renderReclam();go(0);
 })();
