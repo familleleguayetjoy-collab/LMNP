@@ -722,10 +722,13 @@
   .chg-scroll::-webkit-scrollbar-thumb:hover{background:#C2C7CF;}
   .chg-scroll .ctab tr:first-child th{position:sticky;top:0;background:var(--card);z-index:1;}
   /* Carte Total charges — centrée et aérée */
-  .chg-total-card{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:16px;padding:30px 24px;}
-  .chg-total-card .ic{margin:0;}
-  .chg-total-card .big-figure{font-size:2.7rem;}
-  .chg-total-card .big-figure-sub{display:flex;flex-direction:column;align-items:center;gap:6px;}
+  .chg-total-card{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:18px;padding:34px 26px;}
+  .chg-total-card .ic{margin:0;transform:scale(1.15);}
+  .chg-total-card .card-h{font-size:1.05rem;color:var(--ink-soft);letter-spacing:.01em;}
+  .chg-total-card .big-figure{font-size:3.2rem;letter-spacing:-.03em;}
+  .chg-total-card .big-figure-sub{display:flex;align-items:center;justify-content:center;gap:8px;font-size:1.1rem;}
+  .chg-total-card .big-figure-sub .af-delta{font-size:1.15rem;}
+  .chg-total-card .big-figure-sub .af-sep{color:var(--line);}
   /* Détail des charges — accordéon */
   .chg-acc-head{display:flex;align-items:center;justify-content:space-between;gap:14px;width:100%;background:none;border:none;cursor:pointer;font-family:var(--font);padding:0;}
   .chg-acc-body{margin-top:14px;max-height:430px;}
@@ -1131,10 +1134,16 @@
   .doc-row .doc-size{font-size:.76rem;color:var(--muted);}
   .doc-row .doc-del{flex:0 0 auto;background:none;border:none;color:var(--bad);cursor:pointer;font-size:1.05rem;padding:2px 6px;border-radius:8px;}
   .doc-row .doc-del:hover{background:rgba(196,54,47,.1);}
+  #dossier-list .list-card{max-width:1040px;padding:0;overflow:hidden;}
+  .list-topbar{background:linear-gradient(135deg,var(--brand-2) 0%,var(--brand) 55%,#2F6DB0 130%);padding:26px 32px 22px;color:#fff;}
   .list-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:12px;}
-  .list-tools{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
-  .list-tools input,.list-tools select{padding:9px 12px;border:1px solid var(--line);border-radius:10px;font-family:var(--font);font-size:.9rem;color:var(--ink);background:var(--card);}
+  .list-head h2{font-family:var(--serif);font-weight:600;font-size:1.5rem;color:#fff;}
+  .list-topbar #list-back{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);color:#fff;}
+  .list-topbar #list-back:hover{background:rgba(255,255,255,.24);}
+  .list-tools{display:flex;gap:10px;margin-bottom:0;flex-wrap:wrap;}
+  .list-tools input,.list-tools select{padding:10px 13px;border:1px solid rgba(255,255,255,.25);border-radius:10px;font-family:var(--font);font-size:.9rem;color:var(--ink);background:rgba(255,255,255,.96);}
   .list-tools input{flex:1;min-width:200px;}
+  #list-rows{padding:10px 32px 26px;}
   .dossier-row{display:flex;align-items:center;gap:14px;padding:14px 8px;border-bottom:1px solid var(--line);cursor:pointer;}
   .dossier-row:hover{background:var(--brand-soft);}
   .dossier-row .dr-main{flex:1;min-width:0;}
@@ -1253,11 +1262,13 @@
     <div class="entry-title">Vos <span class="g">dossiers</span></div>
   </div>
   <div class="list-card">
-    <div class="list-head"><h2 style="font-family:var(--serif);font-weight:600;font-size:1.3rem;">Tous les dossiers</h2><button class="tb-cta ghost" id="list-back">← Accueil</button></div>
-    <div class="list-tools">
-      <input id="list-search" placeholder="Rechercher par nom, SIREN, associé…">
-      <select id="list-sort"><option value="recent">Récemment modifiés</option><option value="nom">Nom (A→Z)</option><option value="forme">Forme juridique</option></select>
-      <select id="list-filter"><option value="">Tous</option><option value="exploitation">Avec bilan</option><option value="sci-lmnp">SCI / LMNP</option></select>
+    <div class="list-topbar">
+      <div class="list-head"><h2>Tous les dossiers</h2><button class="tb-cta ghost" id="list-back">← Accueil</button></div>
+      <div class="list-tools">
+        <input id="list-search" placeholder="Rechercher par nom, SIREN, associé…">
+        <select id="list-sort"><option value="recent">Récemment modifiés</option><option value="nom">Nom (A→Z)</option><option value="forme">Forme juridique</option></select>
+        <select id="list-filter"><option value="">Tous</option><option value="exploitation">Avec bilan</option><option value="sci-lmnp">SCI / LMNP</option></select>
+      </div>
     </div>
     <div id="list-rows"></div>
   </div>
@@ -1297,13 +1308,12 @@
       <input type="date" id="arrete-date">
     </div>
 
-    <div class="fld" id="amont-wrap" style="display:none;text-align:left;margin-top:4px;"><label>Commentaire avant le rendez-vous (facultatif)</label><textarea id="f-amont" placeholder="Ex. le client m'a fait part de sa volonté d'investir / s'interroge sur sa trésorerie…"></textarea></div>
+    <div class="fld" id="amont-wrap" style="display:none;text-align:left;margin-top:4px;"><label>Commentaire avant le rendez-vous (facultatif)</label><textarea id="f-amont" style="min-height:130px;" placeholder="Ex. le client m'a fait part de sa volonté d'investir / s'interroge sur sa trésorerie…"></textarea></div>
 
     <button class="btn-analyser" id="analyser-btn" disabled>Analyser le dossier</button>
     <div class="upload-divider">ou</div>
     <button class="btn btn-secondary" id="demo-btn" style="width:100%;justify-content:center;">Essayer avec un jeu de démonstration</button>
     <button class="choice-changer no-print" id="upload-home" style="margin-top:14px;">← Retour à l'accueil</button>
-    <div class="confid">🔒 Les données restent confidentielles et sécurisées.</div>
     <div class="upload-error" id="upload-error"></div>
   </div>
 </div>
@@ -1361,8 +1371,7 @@
       </div>
     </section>
     <section class="app-page" id="x-page-reco">
-      <h1>Recommandations IA</h1>
-      <div class="page-sub" id="x-reco-sub">Six pistes prioritaires et chiffrées — cliquez une carte pour dérouler le détail.</div>
+      <h1 style="margin-bottom:20px;">Recommandations IA</h1>
       <div class="reco3" id="x-reco3"></div>
       <div class="ai-flag" id="x-reco-flag" style="margin-top:16px;"></div>
     </section>
@@ -1448,12 +1457,12 @@
           </div>
         </div>
         <div id="chg-month-panel" style="display:none;margin-top:20px;"></div>
-        <div class="two-70-30" style="margin-top:20px;align-items:start;">
-          <div class="bcard chg-acc collapsed" style="display:flex;flex-direction:column;">
-            <button class="chg-acc-head" data-chg-toggle><span class="card-h" style="margin:0;">Détail des charges d'exploitation</span><span class="chg-chevron"></span></button>
-            <div class="chg-acc-body"><div class="chg-scroll"><table class="ctab" id="chg-table"></table></div></div>
+        <div class="two-70-30" style="margin-top:20px;">
+          <div class="bcard" style="display:flex;flex-direction:column;max-height:380px;">
+            <div class="card-h" style="margin-bottom:14px;">Détail des charges d'exploitation</div>
+            <div class="chg-scroll"><table class="ctab" id="chg-table"></table></div>
           </div>
-          <div class="retenir-client"><div class="rc-ico" id="chg-ico"></div><h3>Ce qu'il faut retenir</h3><div id="chg-retenir"></div></div>
+          <div class="retenir-client" style="align-self:stretch;max-height:380px;overflow:auto;"><div class="rc-ico" id="chg-ico"></div><h3>Ce qu'il faut retenir</h3><div id="chg-retenir"></div></div>
         </div>
       </div>
       <div id="charge-detail" style="display:none;"></div>
@@ -3866,9 +3875,7 @@ function expertKpis(){
     delta: (margeDpt!=null && Math.abs(margeDpt)>=0.1)?{txt:ptDelta(margeDpt),cls:margeDpt>=0?'up':'down'}:null,
     vs: margePctN1!=null?('vs '+fmtPct1(margePctN1)):''});
   K.push({ico:'up',tone:'orange',label:'EBE',value:fmtEUR(g.ebe),
-    pctca:(r.CA?fmtPct1(g.ebe/r.CA):'')+' du CA',
-    delta: ebeDelta!=null?{txt:signEUR(ebeDelta),cls:ebeDelta>=0?'up':'down'}:null,
-    vs: g1?('vs '+fmtEUR(g1.ebe)):''});
+    delta: ebeDelta!=null?{txt:signEUR(ebeDelta),cls:ebeDelta>=0?'up':'down'}:null});
   K.push({ico:'target',tone:'red',label:'Résultat',value:fmtEUR(rn),
     pctca:(r.CA?fmtPct1(rn/r.CA):'')+' du CA', delta:null,
     vs: rn1!=null?('vs '+fmtEUR(rn1)):''});
@@ -3876,17 +3883,14 @@ function expertKpis(){
   const caf1 = AN1? (rn1 + (AN1.compteResultat.detail['68']||0) - (AN1.compteResultat.detail['78']||0)) : null;
   const cafDelta = caf1!=null? caf-caf1 : null;
   K.push({ico:'refresh',tone:'green',label:"Capacité d'autofinancement",value:fmtEUR(caf),
-    pctca:(r.CA?fmtPct1(caf/r.CA):'')+' du CA',
-    delta: cafDelta!=null?{txt:signEUR(cafDelta),cls:cafDelta>=0?'up':'down'}:null,
-    vs: caf1!=null?('vs '+fmtEUR(caf1)):''});
+    delta: cafDelta!=null?{txt:signEUR(cafDelta),cls:cafDelta>=0?'up':'down'}:null});
   const bas=pointBasTreso(AN), moisCharges=AN.compteResultat.charges/12;
   const basCls = bas.solde<0?'down':(bas.solde<moisCharges?'warn':'muted');
   const basTxt = bas.solde<0
     ? `Passée en négatif en ${moisLong(bas.mois)} (${fmtEUR(bas.solde)})`
     : `Point bas ${fmtEUR(bas.solde)} en ${moisLong(bas.mois)}`;
   K.push({ico:'bank',tone:'green',label:'Trésorerie',value:fmtEUR(fin),
-    delta:{txt:signEUR(fin-debut),cls:(fin-debut)>=0?'up':'down'}, vs: r1?('vs '+fmtEUR(debut)):'',
-    note:{txt:basTxt, cls:basCls}});
+    delta:{txt:signEUR(fin-debut),cls:(fin-debut)>=0?'up':'down'}});
   K.push({ico:'user',tone:'orange',label:'Délai clients',value:joursTxt(r.delaiClients),
     delta: r1?{txt:joursDelta(r.delaiClients-r1.delaiClients),cls:(r.delaiClients-r1.delaiClients)<=0?'up':'down'}:null,
     vs: r1?('vs '+joursTxt(r1.delaiClients)):''});
@@ -4334,7 +4338,7 @@ function renderActivite(){
   if(caN1!=null){
     const dpct=(caN-caN1)/Math.abs(caN1), deur=caN-caN1, up=deur>=0;
     document.getElementById('act-ca-delta').innerHTML =
-      `<span class="af-delta ${up?'up':'down'}">${signPct(dpct)}</span> <span class="af-vs">vs ${yN1()||'N-1'}</span>`;
+      `<span class="af-delta ${up?'up':'down'}">${signPct(dpct)}</span>`;
   } else document.getElementById('act-ca-delta').textContent='';
   // répartition de l'activité (secondaire)
   const parts=[
@@ -4377,7 +4381,6 @@ function chgSum(a, pref){ return a? sumComptes(a.soldes, pref, 'debit') : 0; }
 function showChargesList(){
   document.getElementById('charges-list').style.display='block';
   document.getElementById('charge-detail').style.display='none';
-  const chev=document.querySelector('.chg-chevron'); if(chev && !chev.querySelector('svg')) chev.innerHTML=svgIcon('chevron');
 }
 function renderCharges(){
   showChargesList();
@@ -4389,10 +4392,9 @@ function renderCharges(){
   if(total1!=null){
     const d=(total-total1)/Math.abs(total1), up=(total-total1)<=0; // baisse des charges = favorable
     document.getElementById('chg-total-sub').innerHTML =
-      `<span class="af-delta ${up?'up':'down'}">${signPct(d)}</span> <span class="af-vs">vs ${yN1()||'N-1'}</span>`+
-      `<div class="af-eur">${signEUR(total-total1)} de charges · ${fmtPct(ca?total/ca:0)} du CA</div>`;
+      `<span class="af-delta ${up?'up':'down'}">${signPct(d)}</span><span class="af-sep"> · </span><span class="af-delta ${up?'up':'down'}">${signEUR(total-total1)}</span>`;
   } else {
-    document.getElementById('chg-total-sub').innerHTML = `<div class="af-eur">${fmtPct(ca?total/ca:0)} du CA</div>`;
+    document.getElementById('chg-total-sub').innerHTML = '';
   }
   const pref=['60','61','62','63','64','65','681'];
   lineNN1('chg-chart', monthlyByPrefix(ecrituresN,pref,'debit'), AN1?monthlyByPrefix(ecrituresN1,pref,'debit'):null, Object.assign({onMonthClick:showChargesMonth}, yearLabels()));
@@ -4941,7 +4943,6 @@ document.getElementById('rep-in-debut').addEventListener('change', refreshReport
 document.getElementById('rep-go').addEventListener('click', exportReportPDF);
 // délégation : clic sur une ligne de charge
 document.getElementById('chg-table').addEventListener('click', e=>{ const tr=e.target.closest('tr[data-cat]'); if(tr) openChargeDetail(tr.dataset.cat); });
-document.querySelector('[data-chg-toggle]').addEventListener('click', ()=>document.querySelector('.chg-acc').classList.toggle('collapsed'));
 // sous-navigation bilan
 /* ---- Drawer : ajustements en direct ---- */
 function openAdjDrawer(){
