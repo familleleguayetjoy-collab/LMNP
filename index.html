@@ -689,7 +689,7 @@
   .ret-ul li::before{content:'';position:absolute;left:2px;top:14px;width:7px;height:7px;border-radius:50%;background:var(--brand);}
 
   /* Ce qu'il faut retenir (client) */
-  .retenir-client{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;}
+  .retenir-client{background:linear-gradient(180deg,var(--brand-soft),#fff);border:1px solid #D6E2F0;border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;}
   .retenir-client .rc-ico{width:46px;height:46px;border-radius:13px;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
   .retenir-client .rc-ico svg{width:24px;height:24px;}
   .retenir-client h3{font-size:1rem;font-weight:700;color:var(--brand-2);margin-bottom:10px;}
@@ -721,6 +721,18 @@
   .chg-scroll::-webkit-scrollbar-thumb{background:#D7DBE1;border-radius:4px;}
   .chg-scroll::-webkit-scrollbar-thumb:hover{background:#C2C7CF;}
   .chg-scroll .ctab tr:first-child th{position:sticky;top:0;background:var(--card);z-index:1;}
+  /* Carte Total charges — centrée et aérée */
+  .chg-total-card{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:16px;padding:30px 24px;}
+  .chg-total-card .ic{margin:0;}
+  .chg-total-card .big-figure{font-size:2.7rem;}
+  .chg-total-card .big-figure-sub{display:flex;flex-direction:column;align-items:center;gap:6px;}
+  /* Détail des charges — accordéon */
+  .chg-acc-head{display:flex;align-items:center;justify-content:space-between;gap:14px;width:100%;background:none;border:none;cursor:pointer;font-family:var(--font);padding:0;}
+  .chg-acc-body{margin-top:14px;max-height:430px;}
+  .chg-acc.collapsed .chg-acc-body{display:none;}
+  .chg-chevron{flex:0 0 auto;width:22px;height:22px;color:var(--muted);transition:transform .2s ease;}
+  .chg-chevron svg{width:22px;height:22px;}
+  .chg-acc.collapsed .chg-chevron{transform:rotate(-90deg);}
   .big-figure-sub .af-delta{font-weight:700;font-size:1.08rem;}
   .big-figure-sub .af-delta.up{color:var(--good);} .big-figure-sub .af-delta.down{color:var(--bad);}
   .big-figure-sub .af-vs{color:var(--muted);font-size:.9rem;}
@@ -1131,11 +1143,16 @@
   .dossier-row .dr-tag{font-size:.7rem;font-weight:700;background:var(--brand-soft);color:var(--brand);border-radius:999px;padding:3px 10px;white-space:nowrap;}
   .dr-del{color:var(--bad);background:none;border:none;cursor:pointer;font-size:1rem;padding:4px 8px;}
   .list-empty{text-align:center;color:var(--muted);padding:44px 20px;}
-  /* Upload premium */
-  .import-col{text-align:center;}
-  .imp-badge{width:66px;height:66px;border-radius:50%;background:var(--brand);color:#fff;font-weight:700;font-size:.82rem;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:0 8px 18px rgba(27,58,92,.26);border:2px solid var(--gold);}
-  .import-col h3{font-family:var(--serif);font-weight:600;color:var(--brand-2);font-size:1.25rem;}
-  #upload-screen .upload-card h1{font-family:var(--serif);font-weight:600;color:var(--brand-2);}
+  /* Upload premium — plein écran, aéré */
+  #upload-screen .upload-card{max-width:900px;padding:48px 56px 40px;}
+  #upload-screen .up-head{text-align:center;margin-bottom:34px;}
+  #upload-screen .upload-card h1{font-family:var(--serif);font-weight:600;color:var(--brand-2);font-size:2rem;}
+  .up-linked{font-size:.9rem;color:var(--muted);margin-top:14px;}
+  .import-grid{gap:26px;margin:0 0 22px;}
+  .import-col{text-align:center;background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:30px 26px;}
+  .imp-badge{width:66px;height:66px;border-radius:50%;background:var(--brand);color:#fff;font-weight:700;font-size:.82rem;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 8px 18px rgba(27,58,92,.26);border:2px solid var(--gold);}
+  .import-col h3{font-family:var(--serif);font-weight:600;color:var(--brand-2);font-size:1.3rem;margin-bottom:18px;}
+  #upload-screen .dropzone2{padding:38px 18px;}
   #demo-btn{background:linear-gradient(180deg,#274b73,#152f4a)!important;color:#fff!important;border:1px solid rgba(154,110,30,.5)!important;border-radius:999px!important;box-shadow:0 10px 24px rgba(27,58,92,.28),0 0 0 3px rgba(245,238,221,.4);}
   /* Animations d'apparition */
   @keyframes s2aUp{from{opacity:0;transform:translateY(15px);}to{opacity:1;transform:none;}}
@@ -1250,14 +1267,12 @@
 <div id="upload-screen" style="display:none;">
   <div class="brandbar"><span class="brand-img lg" role="img" aria-label="S2A — Sud Alpes Audit"></span></div>
   <div class="upload-card">
-    <h1>Préparer le dossier</h1>
-    <p>Importez les documents nécessaires pour analyser les comptes et préparer votre rendez-vous.</p>
+    <div class="up-head"><h1>Préparer le dossier</h1><div class="gold-rule" style="margin:14px auto 0;"></div><div class="up-linked" id="up-linked"></div></div>
 
     <div class="import-grid">
       <div class="import-col">
         <div class="imp-badge">FEC</div>
         <h3>FEC</h3>
-        <div class="import-sub">Fichier des écritures comptables de l'exercice.</div>
         <div class="dropzone2" id="fec-drop">
           <div class="dz-ico">↥</div>
           <div class="dz-txt">Déposer ou sélectionner le FEC</div>
@@ -1268,7 +1283,6 @@
       <div class="import-col">
         <div class="imp-badge">PDF</div>
         <h3>Comptes annuels</h3>
-        <div class="import-sub">PDF contenant les SIG, le compte de résultat et le bilan N / N-1.</div>
         <div class="dropzone2" id="pdf-drop">
           <div class="dz-ico">↥</div>
           <div class="dz-txt">Déposer ou sélectionner le PDF</div>
@@ -1421,8 +1435,8 @@
       <div id="charges-list">
         <h1>Charges d'exploitation</h1>
         <div class="two-60-40" style="margin-top:6px;grid-template-columns:1fr 1.9fr;align-items:stretch;">
-          <div class="bcard">
-            <div class="ic ic-orange" id="chg-total-ico" style="margin-bottom:14px;"></div>
+          <div class="bcard chg-total-card">
+            <div class="ic ic-orange" id="chg-total-ico"></div>
             <div class="card-h">Total charges d'exploitation</div>
             <div class="big-figure" id="chg-total">—</div>
             <div class="big-figure-sub" id="chg-total-sub"></div>
@@ -1434,12 +1448,12 @@
           </div>
         </div>
         <div id="chg-month-panel" style="display:none;margin-top:20px;"></div>
-        <div class="two-70-30" style="margin-top:20px;">
-          <div class="bcard" style="display:flex;flex-direction:column;max-height:440px;">
-            <div class="card-h" style="margin-bottom:14px;">Détail des charges d'exploitation</div>
-            <div class="chg-scroll"><table class="ctab" id="chg-table"></table></div>
+        <div class="two-70-30" style="margin-top:20px;align-items:start;">
+          <div class="bcard chg-acc collapsed" style="display:flex;flex-direction:column;">
+            <button class="chg-acc-head" data-chg-toggle><span class="card-h" style="margin:0;">Détail des charges d'exploitation</span><span class="chg-chevron"></span></button>
+            <div class="chg-acc-body"><div class="chg-scroll"><table class="ctab" id="chg-table"></table></div></div>
           </div>
-          <div class="retenir-client" style="align-self:stretch;max-height:440px;overflow:auto;"><div class="rc-ico" id="chg-ico"></div><h3>Ce qu'il faut retenir</h3><div id="chg-retenir"></div></div>
+          <div class="retenir-client"><div class="rc-ico" id="chg-ico"></div><h3>Ce qu'il faut retenir</h3><div id="chg-retenir"></div></div>
         </div>
       </div>
       <div id="charge-detail" style="display:none;"></div>
@@ -1447,9 +1461,8 @@
 
     <!-- CHARGES RÉCURRENTES -->
     <section class="app-page" id="c-page-recurrentes">
-      <h1 style="margin-bottom:6px;">Charges récurrentes</h1>
-      <div class="page-sub">Les contrats en hausse cette année, groupés par nature et triés par impact — à renégocier en priorité.</div>
-      <div id="rec-groups"></div>
+      <h1>Charges récurrentes</h1>
+      <div id="rec-groups" style="margin-top:20px;"></div>
     </section>
 
     <!-- BILAN — STRUCTURE -->
@@ -1472,8 +1485,8 @@
     <section class="app-page" id="c-page-tresorerie">
       <h1>Trésorerie</h1>
       <div class="two-60-40" style="margin-top:6px;grid-template-columns:1fr 2.1fr;align-items:stretch;">
-        <div class="bcard">
-          <div class="ic ic-green" id="tre-close-ico" style="margin-bottom:14px;"></div>
+        <div class="bcard chg-total-card">
+          <div class="ic ic-green" id="tre-close-ico"></div>
           <div class="card-h">Trésorerie de clôture</div>
           <div class="big-figure" id="tre-close">—</div>
           <div class="big-figure-sub" id="tre-close-sub"></div>
@@ -3604,16 +3617,16 @@ function buildDossierFromForm(){
 function openUploadForDossier(d){
   currentDossier=d||null;
   const card=document.querySelector('#upload-screen .upload-card');
-  const h1=card.querySelector('h1'), p=card.querySelector('p');
+  const h1=card.querySelector('h1'), linkedEl=document.getElementById('up-linked');
   if(d){
     h1.textContent='Charger les comptes — '+(d.denomination||'Dossier');
     const linked=new Set(); (d.capital||[]).forEach(a=>dossiersOfPerson(a.nom).forEach(o=>{ if(o.id!==d.id) linked.add(o.denomination); }));
-    p.textContent = 'Importez le FEC et les états financiers.'+(linked.size?(' Vue d\'ensemble : '+[...linked].join(', ')+'.'):'');
+    linkedEl.textContent = linked.size? ('Vue d\'ensemble avec : '+[...linked].join(', ')) : '';
     document.getElementById('amont-wrap').style.display='block';
     document.getElementById('f-amont').value = d.amont||'';
   } else {
     h1.textContent='Préparer le dossier';
-    p.textContent='Importez les documents nécessaires pour analyser les comptes et préparer votre rendez-vous.';
+    linkedEl.textContent='';
     document.getElementById('amont-wrap').style.display='none';
   }
   // reset état d'import
@@ -3886,12 +3899,10 @@ function renderEssentiel(){
   const html = expertKpis().map(k=>{
     const deltaHtml = k.delta? `<span class="km-d ${k.delta.cls}">${k.delta.txt}</span>` : '';
     const pctHtml = k.pctca? `<span class="km-pct">${k.pctca}</span>` : '';
-    const vsHtml = k.vs? `<span class="km-vs">${k.vs}</span>` : '';
     // Ligne 1 (forte) : la variation si elle existe, sinon le % du CA
     const primary = deltaHtml || pctHtml;
-    // Ligne 2 (discrète) : le contexte restant
-    const sec=[]; if(deltaHtml && pctHtml) sec.push(pctHtml); if(vsHtml) sec.push(vsHtml);
-    const secondary = sec.length? `<div class="km-secondary">${sec.join('<span class="km-sep">·</span>')}</div>` : '';
+    // Ligne 2 (discrète) : le % du CA quand une variation occupe déjà la ligne 1 (plus de « vs »)
+    const secondary = (deltaHtml && pctHtml)? `<div class="km-secondary">${pctHtml}</div>` : '';
     const noteHtml = k.note? `<div class="km-note ${k.note.cls}">${k.note.txt}</div>` : '';
     return `<div class="bcard"><div class="kpi-head">${chip(k.ico,k.tone)}<div class="kpi-label">${k.label}</div></div>
       <div class="kpi-value">${k.value}</div><div class="kpi-meta"><div class="km-primary">${primary}</div>${secondary}${noteHtml}</div></div>`;
@@ -4302,13 +4313,17 @@ function retenirSynthese(){
     const caD=pctDelta(r.CA,r1.CA);
     out.push(`Le chiffre d'affaires ${caD>=0?'progresse':'recule'} de ${signPct(caD)} par rapport à l'an dernier, pour atteindre ${fmtEUR(r.CA+clientAdj.pr)}.`);
     const mN=r.CA?g.margeCommerciale/r.CA:0, mN1=r1.CA?g1.margeCommerciale/r1.CA:0, dPt=(mN-mN1)*100;
-    if(Math.abs(dPt)>=0.3) out.push(`La marge ${dPt<0?'se réduit':'se renforce'} de ${dec1(Math.abs(dPt))} point${Math.abs(dPt)>=2?'s':''} : chaque vente laisse ${dPt<0?'un peu moins':'un peu plus'} qu'avant.`);
+    out.push(`La marge ${Math.abs(dPt)<0.3?'reste stable':(dPt<0?'se réduit de '+dec1(Math.abs(dPt))+' point'+(Math.abs(dPt)>=2?'s':''):'se renforce de '+dec1(Math.abs(dPt))+' point'+(Math.abs(dPt)>=2?'s':''))} : chaque vente laisse ${dPt<0?'un peu moins':'un peu plus'} qu'avant.`);
+    const ebeD=g1?g.ebe-g1.ebe:0;
+    out.push(`L'excédent brut d'exploitation s'établit à ${fmtEUR(g.ebe)} (${fmtPct1(r.CA?g.ebe/r.CA:0)} du CA), ${ebeD>=0?'en amélioration':'en repli'} par rapport à l'an dernier.`);
     out.push(`Après toutes les charges, l'entreprise conserve un résultat net de ${fmtEUR(rn)}, soit ${fmtPct(caN0(r)?rn/caN0(r):0)} de ce qu'elle a facturé.`);
   } else {
     out.push(`L'entreprise a facturé ${fmtEUR(r.CA)} sur l'exercice.`);
+    out.push(`La marge commerciale représente ${fmtPct(r.CA?g.margeCommerciale/r.CA:0)} du chiffre d'affaires.`);
+    out.push(`L'excédent brut d'exploitation atteint ${fmtEUR(g.ebe)}.`);
     out.push(`Après toutes ses charges, il lui reste un résultat net de ${fmtEUR(rn)}.`);
   }
-  return out.slice(0,3);
+  return out.slice(0,4);
 }
 function caN0(r){ return r.CA+clientAdj.pr; }
 
@@ -4319,8 +4334,7 @@ function renderActivite(){
   if(caN1!=null){
     const dpct=(caN-caN1)/Math.abs(caN1), deur=caN-caN1, up=deur>=0;
     document.getElementById('act-ca-delta').innerHTML =
-      `<span class="af-delta ${up?'up':'down'}">${signPct(dpct)}</span> <span class="af-vs">vs ${yN1()||'N-1'}</span>`+
-      `<div class="af-eur">${signEUR(deur)} de chiffre d'affaires ${up?'en plus':'en moins'}</div>`;
+      `<span class="af-delta ${up?'up':'down'}">${signPct(dpct)}</span> <span class="af-vs">vs ${yN1()||'N-1'}</span>`;
   } else document.getElementById('act-ca-delta').textContent='';
   // répartition de l'activité (secondaire)
   const parts=[
@@ -4363,6 +4377,7 @@ function chgSum(a, pref){ return a? sumComptes(a.soldes, pref, 'debit') : 0; }
 function showChargesList(){
   document.getElementById('charges-list').style.display='block';
   document.getElementById('charge-detail').style.display='none';
+  const chev=document.querySelector('.chg-chevron'); if(chev && !chev.querySelector('svg')) chev.innerHTML=svgIcon('chevron');
 }
 function renderCharges(){
   showChargesList();
@@ -4926,6 +4941,7 @@ document.getElementById('rep-in-debut').addEventListener('change', refreshReport
 document.getElementById('rep-go').addEventListener('click', exportReportPDF);
 // délégation : clic sur une ligne de charge
 document.getElementById('chg-table').addEventListener('click', e=>{ const tr=e.target.closest('tr[data-cat]'); if(tr) openChargeDetail(tr.dataset.cat); });
+document.querySelector('[data-chg-toggle]').addEventListener('click', ()=>document.querySelector('.chg-acc').classList.toggle('collapsed'));
 // sous-navigation bilan
 /* ---- Drawer : ajustements en direct ---- */
 function openAdjDrawer(){
