@@ -1401,8 +1401,15 @@
   #setup-periode{display:none !important;}
   /* Titres d'écran en display Bricolage (plus « startup ») */
   .entry-title,#setup-screen .entry-title,.cc-title{font-family:var(--wordmark) !important;font-style:normal;font-weight:800;}
-  #setup-screen .entry-title{text-transform:none !important;letter-spacing:-.02em !important;
+  #setup-screen .entry-title{font-size:3.5rem !important;text-transform:none !important;letter-spacing:-.025em !important;line-height:1.05;
     background:linear-gradient(115deg,#0C3A76 0%,#1A62C4 48%,#2F80E0 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
+  /* Double trait « fait main » sous le nom du dossier */
+  .sketch-underline{display:block;width:min(360px,66%);height:auto;margin:16px auto 4px;overflow:visible;}
+  .sketch-underline path{stroke-dasharray:1;stroke-dashoffset:0;filter:drop-shadow(0 2px 5px rgba(26,98,196,.18));}
+  #setup-screen.active .sketch-underline .sk-1{animation:skDraw .7s ease .3s both;}
+  #setup-screen.active .sketch-underline .sk-2{animation:skDraw .7s ease .52s both;}
+  @keyframes skDraw{from{stroke-dasharray:400;stroke-dashoffset:400;}to{stroke-dasharray:400;stroke-dashoffset:0;}}
+  @media (max-width:600px){ #setup-screen .entry-title{font-size:2.3rem !important;} .sketch-underline{width:min(280px,80%);} }
   .cc-title{letter-spacing:-.01em !important;font-size:1.58rem;}
   /* Titres de slide (client/expert) unifiés avec le haut — police display, filet bleu→doré */
   #expert-app .app-page>h1,#client-app .app-page>h1,#charge-right h1{font-family:var(--wordmark) !important;font-style:normal;font-weight:800;letter-spacing:-.02em;color:var(--c-ink);}
@@ -1552,7 +1559,13 @@
   <div class="clario-top setup-logo"><span class="clario-mark sm"><em>Clario</em><span class="dot">.</span></span></div>
   <div class="entry-head" style="margin-top:6vh;">
     <div class="entry-title" id="setup-title">DOSSIER</div>
-    <div class="gold-rule"></div>
+    <svg class="sketch-underline" viewBox="0 0 340 48" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="sk-blue" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#0C3A76"/><stop offset="1" stop-color="#2F80E0"/></linearGradient>
+      </defs>
+      <path class="sk-1" d="M12 18 C 78 9, 150 12, 214 15 C 262 17, 306 20, 330 13" stroke="url(#sk-blue)" stroke-width="4.5" stroke-linecap="round"/>
+      <path class="sk-2" d="M26 33 C 92 28, 156 31, 214 29 C 262 27, 296 31, 316 28" stroke="#C79A4B" stroke-width="3" stroke-linecap="round"/>
+    </svg>
     <div class="choice-sub" id="setup-periode">Analyse terminée avec succès</div>
   </div>
   <div class="choice-grid">
