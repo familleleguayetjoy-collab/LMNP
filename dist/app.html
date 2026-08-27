@@ -24,32 +24,12 @@
   --display:'Inter',system-ui,sans-serif;
   --wordmark:'Bricolage Grotesque','Inter',sans-serif;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --ink:#ECF1ED; --ink-soft:#B9C4BC; --muted:#8A968D;
-  --page:#0E1512; --surface:#151E19; --line:#243029; --line-2:#1C271F;
-  --green:#6FB0F0; --green-2:#8FC4F5; --green-soft:#12263C; --green-line:#244463;
-  --gold:#6FB0F0; --gold-press:#5A9FE6; --gold-ink:#08192B;
-  --navy:#0B1410;
-  --red:#EBA39D; --red-soft:#31201E; --warn:#F0B472; --warn-soft:#2C2417; --blue:#8FB4D6;
-  --todo-bg:#2C2417; --todo-ink:#F0B472; --wip-bg:#132033; --wip-ink:#8FB4D6;
-  --field:#0F1814; --field-line:#2A382F;
-  --shadow:0 10px 40px rgba(0,0,0,.5); --shadow-sm:0 1px 3px rgba(0,0,0,.4);
-}}
-:root[data-theme="dark"]{
-  --ink:#ECF1ED; --ink-soft:#B9C4BC; --muted:#8A968D;
-  --page:#0E1512; --surface:#151E19; --line:#243029; --line-2:#1C271F;
-  --green:#6FB0F0; --green-2:#8FC4F5; --green-soft:#12263C; --green-line:#244463;
-  --gold:#6FB0F0; --gold-press:#5A9FE6; --gold-ink:#08192B;
-  --navy:#0B1410;
-  --red:#EBA39D; --red-soft:#31201E; --warn:#F0B472; --warn-soft:#2C2417; --blue:#8FB4D6;
-  --todo-bg:#2C2417; --todo-ink:#F0B472; --wip-bg:#132033; --wip-ink:#8FB4D6;
-  --field:#0F1814; --field-line:#2A382F;
-  --shadow:0 10px 40px rgba(0,0,0,.5); --shadow-sm:0 1px 3px rgba(0,0,0,.4);
-}
+/* Saisio est volontairement mono-thème (fond papier clair, comme la
+   présentation des comptes), quel que soit le thème du système. */
 
 *{box-sizing:border-box}
 .lmnp{font-family:var(--sans);color:var(--ink);background:var(--page);line-height:1.5;
-  -webkit-font-smoothing:antialiased;min-height:100vh;font-size:16px}
+  -webkit-font-smoothing:antialiased;min-height:100vh;font-size:16px;color-scheme:light}
 .lmnp h1,.lmnp h2,.lmnp h3{font-family:var(--display);font-weight:700;letter-spacing:-.02em;line-height:1.1;margin:0}
 .lmnp p{margin:0}
 .lmnp :where(button){font:inherit;color:inherit;cursor:pointer;border:0;background:none}
