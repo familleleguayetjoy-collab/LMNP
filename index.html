@@ -123,14 +123,14 @@ main.wrap{padding:30px 20px 90px}
 @media(max-width:760px){.dcols{grid-template-columns:1fr}}
 .dossiers{display:flex;flex-direction:column;gap:12px;margin-top:14px}
 .dgroup{border:1px solid var(--line);border-radius:18px;padding:18px 20px 20px;box-shadow:var(--shadow-sm)}
-.dgroup.g-todo{background:linear-gradient(180deg,var(--warn-soft) 0%,var(--surface) 100%)}
-.dgroup.g-done{background:linear-gradient(180deg,var(--green-soft) 0%,var(--surface) 100%)}
+.dgroup.g-todo{background:linear-gradient(180deg,#EBD9A0 0%,#F6EECB 42%,var(--surface) 100%)}
+.dgroup.g-done{background:linear-gradient(180deg,#CBE0F5 0%,#E4EFFA 42%,var(--surface) 100%)}
 .dgroup-h{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;font-size:13px;
   text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft)}
 .dgroup-h .dg-n{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:99px;
   background:var(--surface);border:1px solid var(--line);color:var(--ink-soft);font-size:12px;letter-spacing:0}
 .dg-dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
-.dg-dot.todo{background:var(--warn)} .dg-dot.wip{background:var(--blue)} .dg-dot.done{background:var(--green)}
+.dg-dot.todo{background:#C29A34} .dg-dot.wip{background:var(--blue)} .dg-dot.done{background:var(--green)}
 .dcard{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:15px 17px;
   box-shadow:var(--shadow-sm);transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease}
 .dcard:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:var(--green-line)}
@@ -218,7 +218,7 @@ main.wrap{padding:30px 20px 90px}
   border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:translateY(-70%) rotate(45deg);pointer-events:none}
 
 /* Step 3 list */
-.badge-h{display:flex;align-items:center;gap:14px;margin:34px 0 20px}
+.badge-h{display:flex;align-items:center;gap:14px;margin:34px 0 34px}
 .badge-h .n{width:34px;height:34px;border-radius:50%;background:var(--gold);color:var(--gold-ink);
   display:grid;place-items:center;font-family:var(--display);font-weight:700}
 .badge-h h2{font-size:30px;color:var(--green)}
@@ -395,9 +395,9 @@ main.wrap{padding:30px 20px 90px}
     <section class="step" data-s="0">
       <div class="mesdossiers">
         <h1>Mes dossiers</h1>
-        <svg viewBox="0 0 340 46" fill="none" aria-hidden="true">
-          <path d="M12 30 C 96 12, 224 8, 330 20" stroke="#14497F" stroke-width="8" stroke-linecap="round"/>
-          <path d="M26 40 C 130 26, 232 33, 300 25" stroke="#2C79C9" stroke-width="5.5" stroke-linecap="round"/>
+        <svg viewBox="0 0 340 24" fill="none" aria-hidden="true">
+          <line x1="12" y1="7" x2="328" y2="7" stroke="#14497F" stroke-width="5" stroke-linecap="round"/>
+          <line x1="104" y1="18" x2="268" y2="18" stroke="#2C79C9" stroke-width="4.5" stroke-linecap="round"/>
         </svg>
       </div>
 
