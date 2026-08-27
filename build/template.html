@@ -56,36 +56,33 @@
 .lmnp :where(input,select){font:inherit;color:inherit}
 .lmnp :focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:8px}
 .num{font-variant-numeric:tabular-nums}
-.wrap{width:min(1040px,calc(100% - 40px));margin-inline:auto}
+.wrap{width:min(1220px,calc(100% - 48px));margin-inline:auto}
 .hidden{display:none!important}
 
-/* ---------- Header ---------- */
-.hdr{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--surface) 88%,transparent);
+/* ---------- Header (barre pleine largeur) ---------- */
+.hdr{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:28px;padding:12px 30px;
+  background:color-mix(in srgb,var(--surface) 90%,transparent);
   -webkit-backdrop-filter:saturate(1.4) blur(10px);backdrop-filter:saturate(1.4) blur(10px);
   color:var(--ink);border-bottom:1px solid var(--line)}
-.hdr .wrap{display:flex;align-items:center;gap:14px;min-height:62px}
-.brand{display:flex;align-items:baseline;gap:9px}
+.brand{display:flex;align-items:baseline;gap:9px;flex:0 0 auto}
 .wordmark{font-family:var(--wordmark);font-style:italic;font-weight:800;letter-spacing:-.03em;
-  font-size:25px;color:var(--green);line-height:1}
+  font-size:26px;color:var(--green);line-height:1}
 .wordmark .dot{color:var(--ink)}
-.brand .by-logo{height:23px;width:auto;display:block;align-self:center}
-:root[data-theme="dark"] .brand .by-logo{filter:brightness(0) invert(1)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .brand .by-logo{filter:brightness(0) invert(1)}}
-.hdr .spacer{flex:1}
-.hbtn{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 15px;border-radius:99px;
-  color:var(--ink-soft);border:1px solid var(--line);background:var(--surface);font-weight:600;font-size:14px;
-  transition:border-color .15s ease,background .15s ease}
-.hbtn:hover{border-color:var(--muted)}
-.hbtn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8}
-.icon-btn{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;
-  color:var(--muted);border:1px solid var(--line);background:var(--surface);font-weight:600}
-.avatar{width:36px;height:36px;border-radius:50%;background:var(--green);color:#fff;
-  display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:15px}
+.stepper{display:flex;align-items:center;justify-content:center;flex:1;gap:6px;overflow-x:auto;scrollbar-width:none}
+.stepper::-webkit-scrollbar{display:none}
+.stp{display:inline-flex;align-items:center;gap:9px;padding:9px 14px;border-radius:10px;white-space:nowrap;
+  color:var(--muted);font-family:var(--display);font-weight:600;font-size:14px;
+  transition:background .15s ease,color .15s ease}
+.stp svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.7}
+.stp:hover{background:var(--line-2);color:var(--ink-soft)}
+.stp[aria-current="true"]{background:var(--green-soft);color:var(--green-2)}
+.stp[aria-current="true"] svg{stroke:var(--green)}
+.stp.done{color:var(--ink-soft)}
+.lmnp[data-step="0"] .stepper{display:none}
+@media(max-width:720px){.hdr{gap:14px;padding:10px 16px}.stp span{display:none}.stp{padding:9px}}
 
 /* ---------- Layout ---------- */
 main.wrap{padding:30px 20px 90px}
-.steponly{margin-bottom:18px}
-.steplbl{color:var(--muted);font-family:var(--display);font-weight:600;font-size:13px}
 .btn-secondary{display:inline-flex;align-items:center;gap:8px;color:var(--ink);font-family:var(--display);font-weight:600;
   font-size:16px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:15px 24px;box-shadow:var(--shadow-sm)}
 .btn-secondary:hover{border-color:var(--muted)}
@@ -94,6 +91,18 @@ main.wrap{padding:30px 20px 90px}
 
 .pagehead{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap}
 .pagehead h1{font-size:clamp(30px,4.6vw,50px);color:var(--ink)}
+.js-dossier{font-family:var(--wordmark);font-style:italic;font-weight:800;letter-spacing:-.01em;flex:1 1 100%;
+  display:flex;align-items:center;min-height:92px;color:#fff;
+  background:linear-gradient(120deg,#0C355E 0%,#1B5FA8 62%,#2C79C9 100%);
+  border-radius:16px;padding:22px 30px;font-size:clamp(26px,3.4vw,42px);box-shadow:var(--shadow-sm)}
+/* Étape 1 : titre bleu + panneau de stats côte à côte */
+.titlesplit{display:grid;grid-template-columns:1.55fr 1fr;gap:16px}
+@media(max-width:720px){.titlesplit{grid-template-columns:1fr}}
+.statspanel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px 26px;
+  display:flex;flex-direction:column;justify-content:center;gap:12px;box-shadow:var(--shadow-sm)}
+.statspanel .pct{font-family:var(--wordmark);font-style:italic;font-weight:800;font-size:44px;color:var(--green);line-height:1}
+.statspanel .pct span{font-family:var(--sans);font-style:normal;font-weight:600;font-size:15px;color:var(--muted);margin-left:8px}
+.statspanel .found{display:flex;align-items:center;gap:9px;font-weight:600;color:var(--ink-soft);font-size:15px}
 .pagehead .meta{color:var(--muted);font-size:15px;padding-top:12px;white-space:nowrap}
 .ready{display:flex;align-items:center;gap:16px;margin-top:14px;flex-wrap:wrap}
 .ready .pct{font-family:var(--display);color:var(--green);font-size:26px;font-weight:700}
@@ -109,31 +118,39 @@ main.wrap{padding:30px 20px 90px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 @media(max-width:720px){.grid2{grid-template-columns:1fr}}
 
-/* ---------- Étape 0 : choix du dossier ---------- */
-.dossiers{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-top:12px}
-.dgroup{margin-top:26px}
+/* ---------- Étape 0 : choix du dossier (2 colonnes, sans défilement) ---------- */
+.dcols{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:18px}
+@media(max-width:760px){.dcols{grid-template-columns:1fr}}
+.dossiers{display:flex;flex-direction:column;gap:12px;margin-top:14px}
+.dgroup{border:1px solid var(--line);border-radius:18px;padding:18px 20px 20px;box-shadow:var(--shadow-sm)}
+.dgroup.g-todo{background:linear-gradient(180deg,var(--warn-soft) 0%,var(--surface) 55%)}
+.dgroup.g-done{background:linear-gradient(180deg,var(--green-soft) 0%,var(--surface) 55%)}
 .dgroup-h{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;font-size:13px;
-  text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+  text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft)}
 .dgroup-h .dg-n{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:99px;
-  background:var(--line-2);color:var(--ink-soft);font-size:12px;letter-spacing:0}
-.dg-dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+  background:var(--surface);border:1px solid var(--line);color:var(--ink-soft);font-size:12px;letter-spacing:0}
+.dg-dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
 .dg-dot.todo{background:var(--warn)} .dg-dot.wip{background:var(--blue)} .dg-dot.done{background:var(--green)}
-.dcard{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px;
-  box-shadow:var(--shadow-sm);transition:transform .12s ease,box-shadow .12s ease}
-.dcard:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
-.dcard h3{font-family:var(--display);font-size:20px}
-.dcard .ex{color:var(--muted);font-size:14px;margin-top:5px}
-.dcard .st{display:inline-flex;align-items:center;gap:7px;margin-top:16px;font-family:var(--display);font-weight:600;
-  font-size:12.5px;padding:6px 13px;border-radius:99px}
+.dcard{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:15px 17px;
+  box-shadow:var(--shadow-sm);transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease}
+.dcard:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:var(--green-line)}
+.dtop{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.dcard h3{font-family:var(--display);font-size:17px}
+.dcard .ex{color:var(--muted);font-size:13px;margin-top:4px}
+.dcard.hiddenrow{display:none}
+.st{display:inline-flex;align-items:center;gap:6px;font-family:var(--display);font-weight:600;
+  font-size:11.5px;padding:5px 11px;border-radius:99px;white-space:nowrap;flex:0 0 auto}
 .st.todo{background:var(--todo-bg);color:var(--todo-ink)}
 .st.wip{background:var(--wip-bg);color:var(--wip-ink)}
 .st.done{background:var(--green-soft);color:var(--green)}
-.dcard.new{border-style:dashed;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
-  color:var(--muted);font-family:var(--display);font-weight:600;min-height:150px}
-.dcard.new .plus{width:38px;height:38px;border-radius:50%;background:var(--line-2);display:grid;place-items:center;font-size:22px}
+.dmore{text-align:center;border:1px dashed var(--field-line);border-radius:13px;padding:13px;
+  color:var(--muted);font-family:var(--display);font-weight:600;font-size:14px;transition:border-color .12s ease,color .12s ease}
+.dmore:hover{border-color:var(--green);color:var(--green)}
+.dmore .plus{margin-right:4px;font-size:17px}
 
 /* Step 1 fields */
-.field-card{padding:22px;border:1px solid var(--field-line);box-shadow:none}
+.field-card{padding:22px;border:1px solid var(--field-line);box-shadow:none;
+  display:flex;flex-direction:column;justify-content:center}
 .field-card h3{font-family:var(--display);font-weight:600;font-size:17px;margin-bottom:14px}
 .field-card .sub{color:var(--muted);font-size:13px;font-weight:500;margin-left:8px}
 .daterow{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
@@ -183,9 +200,12 @@ main.wrap{padding:30px 20px 90px}
 /* Step 2 table */
 .tbl{width:100%;border-collapse:collapse}
 .tblwrap{overflow-x:auto;padding:6px}
-.tbl th{text-align:left;color:var(--muted);font-family:var(--display);font-weight:600;font-size:13px;
-  text-transform:uppercase;letter-spacing:.04em;padding:16px 18px}
-.tbl td{padding:16px 18px;border-top:1px solid var(--line-2);vertical-align:middle}
+.tbl thead tr{background:linear-gradient(180deg,var(--green-soft) 0%,color-mix(in srgb,var(--green-soft) 30%,var(--surface)) 100%)}
+.tbl th{text-align:left;color:var(--green-2);font-family:var(--display);font-weight:700;font-size:12.5px;
+  text-transform:uppercase;letter-spacing:.05em;padding:15px 18px}
+.tbl thead th:first-child{border-top-left-radius:12px}
+.tbl thead th:last-child{border-top-right-radius:12px}
+.tbl td{padding:20px 18px;border-top:1px solid var(--line-2);vertical-align:middle}
 .tbl .lib{font-family:var(--display);font-weight:600;font-size:16px}
 .tbl .amt{font-family:var(--display);font-weight:700;font-size:17px;white-space:nowrap}
 .tbl .dt{color:var(--muted);white-space:nowrap}
@@ -198,13 +218,13 @@ main.wrap{padding:30px 20px 90px}
   border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:translateY(-70%) rotate(45deg);pointer-events:none}
 
 /* Step 3 list */
-.badge-h{display:flex;align-items:center;gap:14px;margin:6px 0 4px}
+.badge-h{display:flex;align-items:center;gap:14px;margin:28px 0 4px}
 .badge-h .n{width:34px;height:34px;border-radius:50%;background:var(--gold);color:var(--gold-ink);
   display:grid;place-items:center;font-family:var(--display);font-weight:700}
 .badge-h h2{font-size:24px}
-.rlist{display:flex;flex-direction:column;gap:12px;margin-top:6px}
+.rlist{display:flex;flex-direction:column;gap:14px;margin-top:14px}
 .ritem{display:flex;align-items:center;gap:16px;background:var(--surface);border:1px solid var(--line);
-  border-radius:13px;padding:16px 18px}
+  border-radius:13px;padding:18px 20px}
 .ck{width:22px;height:22px;border-radius:6px;border:2px solid var(--field-line);flex:0 0 auto;display:grid;place-items:center;background:var(--field)}
 .ritem[aria-checked="true"] .ck{background:var(--green);border-color:var(--green)}
 .ck svg{width:13px;height:13px;stroke:#fff;stroke-width:3;fill:none;opacity:0}
@@ -214,11 +234,13 @@ main.wrap{padding:30px 20px 90px}
 .ritem .ramt{font-family:var(--display);font-weight:700;color:var(--red);white-space:nowrap;min-width:110px;text-align:right}
 
 /* Step 4 mail */
-.mail{padding:24px 26px}
-.mail .row{display:flex;gap:16px;padding:4px 0}
-.mail .k{color:var(--muted);font-weight:600;width:64px;flex:0 0 auto}
+.mail{padding:0;overflow:hidden}
+.mail-head{padding:20px 26px;background:linear-gradient(180deg,var(--green-soft) 0%,color-mix(in srgb,var(--green-soft) 22%,var(--surface)) 100%);
+  border-bottom:1px solid var(--green-line);display:flex;flex-direction:column;gap:4px}
+.mail .row{display:flex;gap:16px;padding:3px 0}
+.mail .k{color:var(--green-2);font-weight:700;width:64px;flex:0 0 auto}
 .mail .v{font-weight:600}
-.mail hr{border:0;border-top:1px solid var(--line);margin:16px 0}
+.mail .body{padding:22px 26px}
 .mail .body p{margin:10px 0}
 .mail .body ul{margin:10px 0;padding-left:2px;list-style:none}
 .mail .body li{display:flex;justify-content:space-between;gap:18px;padding:5px 0;max-width:520px}
@@ -228,7 +250,7 @@ main.wrap{padding:30px 20px 90px}
 /* Step 5 done */
 .done-head{display:flex;align-items:center;gap:14px;margin:8px 0 6px}
 .done-head h2{font-size:30px;color:var(--green)}
-.filebox{display:flex;align-items:center;gap:26px;padding:40px;justify-content:center}
+.filebox{display:flex;align-items:center;gap:26px;padding:34px 40px;justify-content:center;margin-top:16px}
 .filebox .disc{width:132px;height:132px;border-radius:50%;background:var(--green-soft);display:grid;place-items:center;flex:0 0 auto}
 .filebox .disc svg{width:64px;height:64px;stroke:var(--green);fill:none;stroke-width:1.6}
 .filebox .txt h2{font-size:34px;color:var(--ink)}
@@ -290,6 +312,24 @@ main.wrap{padding:30px 20px 90px}
 .auth-note{color:var(--muted);font-size:12px;margin-top:20px}
 .auth-legal{color:var(--muted);font-size:11.5px;margin-top:10px;line-height:1.5}
 @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+/* Transition premium entre étapes : le conteneur se fond, ses blocs entrent
+   en cascade (glissé + léger flou qui se dissipe). */
+@keyframes stepfade{from{opacity:0}to{opacity:1}}
+@keyframes blockin{
+  0%{opacity:0;transform:translateY(26px) scale(.985);filter:blur(7px)}
+  55%{filter:blur(0)}
+  100%{opacity:1;transform:none;filter:blur(0)}
+}
+.step:not(.hidden){animation:stepfade .3s ease both}
+.step:not(.hidden) > *{animation:blockin .62s cubic-bezier(.16,.84,.3,1) both}
+.step:not(.hidden) > *:nth-child(1){animation-delay:.03s}
+.step:not(.hidden) > *:nth-child(2){animation-delay:.11s}
+.step:not(.hidden) > *:nth-child(3){animation-delay:.19s}
+.step:not(.hidden) > *:nth-child(4){animation-delay:.27s}
+.step:not(.hidden) > *:nth-child(5){animation-delay:.35s}
+.step:not(.hidden) > *:nth-child(6){animation-delay:.43s}
+/* la barre d'étapes suit aussi, discrètement */
+.stp{transition:background .25s ease,color .25s ease}
 
 /* ---------- Historique des imports (anti-doublon) ---------- */
 .hist{display:flex;flex-direction:column;gap:10px;margin-top:6px;max-height:56vh;overflow:auto}
@@ -304,9 +344,14 @@ main.wrap{padding:30px 20px 90px}
   padding:5px 11px;border-radius:99px;background:var(--green-soft);color:var(--green);white-space:nowrap}
 .hitem.dup .hstat{background:var(--warn-soft);color:var(--warn)}
 .hitem .hhash{font-variant-numeric:tabular-nums;color:var(--muted);font-size:11px;font-family:ui-monospace,Menlo,monospace}
-.dupbanner{margin-top:14px;display:flex;align-items:flex-start;gap:12px;background:var(--warn-soft);
-  border:1px solid color-mix(in srgb,var(--warn) 40%,transparent);border-radius:12px;padding:13px 16px;
-  color:var(--todo-ink);font-size:13.5px;font-weight:600}
+.histbtn{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;flex:0 0 auto;
+  background:var(--warn-soft);border:1px solid color-mix(in srgb,var(--warn) 45%,transparent);
+  transition:transform .12s ease,box-shadow .12s ease}
+.histbtn:hover{transform:translateY(-1px);box-shadow:var(--shadow-sm)}
+.histbtn svg{width:20px;height:20px;stroke:var(--warn);fill:none;stroke-width:1.9}
+.dupbanner{display:flex;align-items:flex-start;gap:12px;background:var(--warn-soft);
+  border:1px solid color-mix(in srgb,var(--warn) 40%,transparent);border-radius:12px;padding:14px 16px;
+  color:var(--todo-ink);font-size:13.5px;font-weight:600;margin-top:6px}
 .dupbanner svg{width:18px;height:18px;stroke:var(--warn);fill:none;stroke-width:1.9;flex:0 0 auto;margin-top:1px}
 .modal .box.wide{max-width:560px}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
@@ -330,23 +375,18 @@ main.wrap{padding:30px 20px 90px}
     </div>
   </div>
 
-  <!-- HEADER -->
+  <!-- HEADER — barre pleine largeur : Saisio + étapes (icône + texte) -->
   <header class="hdr">
-    <div class="wrap">
-      <button class="brand js-home" aria-label="Accueil — mes dossiers">
-        <span class="wordmark"><em>Saisio</em><span class="dot">.</span></span>
-        <img class="by-logo" src="__LOGO_DARK__" alt="S2A — Sud Alpes Audit"/>
-      </button>
-      <div class="spacer"></div>
-      <button class="hbtn js-hist" aria-label="Historique des imports">
-        <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9 9 0 0 0-8 5"/><path d="M3 3v5h5"/><path d="M12 8v4l3 2"/></svg>
-        Historique
-      </button>
-      <button class="icon-btn js-help" aria-label="À propos">?</button>
-      <button class="icon-btn js-logout" aria-label="Se déconnecter" title="Se déconnecter">
-        <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg>
-      </button>
-    </div>
+    <button class="brand js-home" aria-label="Accueil — mes dossiers">
+      <span class="wordmark"><em>Saisio</em><span class="dot">.</span></span>
+    </button>
+    <nav class="stepper js-stepper" aria-label="Étapes">
+      <button class="stp" data-go="1"><svg viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg><span>Importer</span></button>
+      <button class="stp" data-go="2"><svg viewBox="0 0 24 24"><path d="M12 3v18M5 8l7-3 7 3"/><path d="M5 8l-2 6a3 3 0 0 0 6 0zM19 8l-2 6a3 3 0 0 0 6 0z"/></svg><span>À trancher</span></button>
+      <button class="stp" data-go="3"><svg viewBox="0 0 24 24"><path d="M4 4h16v13H7l-3 3z"/><path d="M12 8v3M12 14h.01"/></svg><span>À réclamer</span></button>
+      <button class="stp" data-go="4"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M4 7l8 6 8-6"/></svg><span>Mail</span></button>
+      <button class="stp" data-go="5"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg><span>Fichier</span></button>
+    </nav>
   </header>
 
   <main class="wrap">
@@ -355,59 +395,60 @@ main.wrap{padding:30px 20px 90px}
     <section class="step" data-s="0">
       <div class="pagehead"><h1>Mes dossiers</h1></div>
 
-      <div class="dgroup">
-        <div class="dgroup-h"><span class="dg-dot todo"></span>À traiter <span class="dg-n">3</span></div>
-        <div class="dossiers">
-          <button class="dcard js-open" data-name="LMNP_POLO_TEST" data-type="lmnp" data-ex="Exercice 2026 · LMNP · sans banque">
-            <h3>LMNP Polo test</h3><div class="ex">3 pièces · sans banque</div>
-            <div class="tags"><span class="dtype">LMNP meublé</span><span class="st todo">● À traiter</span></div>
-          </button>
-          <button class="dcard js-open" data-name="LMNP_DUPONT_2026" data-type="lmnp" data-ex="Exercice 2026 · LMNP meublé">
-            <h3>LMNP_DUPONT_2026</h3><div class="ex">21 pièces</div>
-            <div class="tags"><span class="dtype">LMNP meublé</span><span class="st todo">● À traiter</span></div>
-          </button>
-          <button class="dcard js-open" data-name="BNC_DR_ROUX_2026" data-type="bnc" data-ex="Exercice 2026 · BNC médecin">
-            <h3>BNC_DR_ROUX_2026</h3><div class="ex">63 pièces</div>
-            <div class="tags"><span class="dtype">BNC · médecin</span><span class="st todo">● À traiter</span></div>
-          </button>
-          <button class="dcard new js-newdossier"><span class="plus">+</span> Nouveau dossier</button>
+      <div class="dcols">
+        <div class="dgroup g-todo">
+          <div class="dgroup-h"><span class="dg-dot todo"></span>À traiter <span class="dg-n">3</span></div>
+          <div class="dossiers">
+            <button class="dcard js-open" data-name="LMNP_POLO_TEST" data-type="lmnp" data-ex="Exercice 2026 · LMNP · sans banque">
+              <div class="dtop"><h3>LMNP Polo test</h3><span class="st todo">À traiter</span></div>
+              <div class="ex">3 pièces · LMNP meublé · sans banque</div>
+            </button>
+            <button class="dcard js-open" data-name="LMNP_DUPONT_2026" data-type="lmnp" data-ex="Exercice 2026 · LMNP meublé">
+              <div class="dtop"><h3>LMNP_DUPONT_2026</h3><span class="st todo">À traiter</span></div>
+              <div class="ex">21 pièces · LMNP meublé</div>
+            </button>
+            <button class="dcard js-open" data-name="BNC_DR_ROUX_2026" data-type="bnc" data-ex="Exercice 2026 · BNC médecin">
+              <div class="dtop"><h3>BNC_DR_ROUX_2026</h3><span class="st todo">À traiter</span></div>
+              <div class="ex">63 pièces · BNC médecin</div>
+            </button>
+            <button class="dmore js-newdossier"><span class="plus">+</span> Nouveau dossier</button>
+          </div>
         </div>
-      </div>
 
-      <div class="dgroup">
-        <div class="dgroup-h"><span class="dg-dot wip"></span>En cours <span class="dg-n">1</span></div>
-        <div class="dossiers">
-          <button class="dcard js-open" data-name="LMNP_MARTIN_2026" data-type="lmnp" data-ex="Exercice 2026 · LMNP meublé">
-            <h3>LMNP_MARTIN_2026</h3><div class="ex">8 pièces</div>
-            <div class="tags"><span class="dtype">LMNP meublé</span><span class="st wip">● En cours</span></div>
-          </button>
-        </div>
-      </div>
-
-      <div class="dgroup">
-        <div class="dgroup-h"><span class="dg-dot done"></span>Terminé <span class="dg-n">1</span></div>
-        <div class="dossiers">
-          <button class="dcard js-open" data-name="SCI_AZUR_2025" data-type="sci" data-ex="Exercice 2025 · SCI (IR)">
-            <h3>SCI_AZUR_2025</h3><div class="ex">Exercice 2025</div>
-            <div class="tags"><span class="dtype">SCI (IR)</span><span class="st done">✓ Terminé</span></div>
-          </button>
+        <div class="dgroup g-done">
+          <div class="dgroup-h"><span class="dg-dot done"></span>Traité <span class="dg-n">2</span></div>
+          <div class="dossiers">
+            <button class="dcard js-open" data-name="LMNP_MARTIN_2026" data-type="lmnp" data-ex="Exercice 2026 · LMNP meublé">
+              <div class="dtop"><h3>LMNP_MARTIN_2026</h3><span class="st wip">En cours</span></div>
+              <div class="ex">8 pièces · LMNP meublé</div>
+            </button>
+            <button class="dcard js-open" data-name="SCI_AZUR_2025" data-type="sci" data-ex="Exercice 2025 · SCI (IR)">
+              <div class="dtop"><h3>SCI_AZUR_2025</h3><span class="st done">✓ Terminé</span></div>
+              <div class="ex">Exercice 2025 · SCI (IR)</div>
+            </button>
+            <button class="dcard js-open hiddenrow" data-name="LMNP_BERNARD_2025" data-type="lmnp" data-ex="Exercice 2025 · LMNP meublé">
+              <div class="dtop"><h3>LMNP_BERNARD_2025</h3><span class="st done">✓ Terminé</span></div>
+              <div class="ex">17 pièces · LMNP meublé</div>
+            </button>
+            <button class="dcard js-open hiddenrow" data-name="SCI_MIMOSA_2025" data-type="sci" data-ex="Exercice 2025 · SCI (IR)">
+              <div class="dtop"><h3>SCI_MIMOSA_2025</h3><span class="st done">✓ Terminé</span></div>
+              <div class="ex">Exercice 2025 · SCI (IR)</div>
+            </button>
+            <button class="dmore js-showall">Voir tous les dossiers traités</button>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- ÉTAPE 1 — IMPORTER -->
     <section class="step hidden" data-s="1">
-      <div class="steponly"><span class="steplbl">Étape 1 / 5 · Importer</span></div>
-      <div class="card" style="padding:26px 28px">
-        <div class="pagehead">
-          <h1 class="js-dossier">LMNP_DUPONT_2026</h1>
+      <div class="titlesplit">
+        <h1 class="js-dossier">LMNP_DUPONT_2026</h1>
+        <div class="statspanel">
+          <div class="pct">88 %<span>prêt</span></div>
+          <div class="found"><span class="check"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span> 21 pièces trouvées</div>
+          <div class="bar"><i></i></div>
         </div>
-        <div class="ready">
-          <span class="pct">88 % <span>prêt</span></span>
-          <span class="divider"></span>
-          <span class="found"><span class="check"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span> 21 pièces trouvées</span>
-        </div>
-        <div class="bar"><i></i></div>
       </div>
 
       <div class="grid2" style="margin-top:18px">
@@ -441,11 +482,6 @@ main.wrap{padding:30px 20px 90px}
 
       <div class="note-bnc js-bnc-note hidden">Profil médecin — les encaissements sont mis de côté (pas de justificatif attendu) et le récurrent (assurances, loyer, cotisations…) est pré-affecté automatiquement.</div>
 
-      <div class="dupbanner js-dupbanner hidden">
-        <svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
-        <span class="js-duptext"></span>
-      </div>
-
       <div class="grid2" style="margin-top:18px">
         <div class="card field-card">
           <h3>Fichier FEC</h3>
@@ -467,6 +503,9 @@ main.wrap{padding:30px 20px 90px}
       <div class="actionbar" style="justify-content:flex-end">
         <div class="right">
           <button class="btn-secondary js-back"><span class="cv">‹</span> Retour</button>
+          <button class="histbtn js-dupbtn hidden" aria-label="Historique d'import de ce dossier" title="Déjà importé — voir le détail">
+            <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9 9 0 0 0-8 5"/><path d="M3 3v5h5"/><path d="M12 8v4l3 2"/></svg>
+          </button>
           <button class="cta js-next">Analyser le dossier <span class="arw">→</span></button>
         </div>
       </div>
@@ -474,7 +513,6 @@ main.wrap{padding:30px 20px 90px}
 
     <!-- ÉTAPE 2 — À TRANCHER -->
     <section class="step hidden" data-s="2">
-      <div class="steponly"><span class="steplbl">Étape 2 / 5 · À trancher</span></div>
       <div class="pagehead"><h1 class="js-dossier">LMNP_DUPONT_2026</h1></div>
 
       <p class="js-trancher-note hidden" style="margin:14px 0 0;padding:12px 16px;background:#fbf6ee;border:1px solid #e7d9c2;border-radius:12px;color:#6b5836;font-size:14px"></p>
@@ -496,7 +534,6 @@ main.wrap{padding:30px 20px 90px}
 
     <!-- ÉTAPE 3 — À RÉCLAMER -->
     <section class="step hidden" data-s="3">
-      <div class="steponly"><span class="steplbl">Étape 3 / 5 · À réclamer</span></div>
       <div class="card" style="padding:26px 28px">
         <div class="pagehead"><h1 class="js-dossier">LMNP_DUPONT_2026</h1></div>
 
@@ -514,14 +551,13 @@ main.wrap{padding:30px 20px 90px}
 
     <!-- ÉTAPE 4 — LE MAIL -->
     <section class="step hidden" data-s="4">
-      <div class="steponly"><span class="steplbl">Étape 4 / 5 · Le mail</span></div>
       <div class="pagehead"><h1 class="js-dossier">LMNP_DUPONT_2026</h1></div>
 
-      <h2 style="font-family:var(--display);font-size:22px;margin:24px 0 12px">Email prêt à envoyer</h2>
-      <div class="card mail">
-        <div class="row"><span class="k">À :</span><span class="v js-client-mail">client.dupont@email.fr</span></div>
-        <div class="row"><span class="k">Objet :</span><span class="v">Dossier LMNP 2026 — <span class="js-mail-n">4</span> justificatifs</span></div>
-        <hr/>
+      <div class="card mail" style="margin-top:24px">
+        <div class="mail-head">
+          <div class="row"><span class="k">À :</span><span class="v js-client-mail">client.dupont@email.fr</span></div>
+          <div class="row"><span class="k">Objet :</span><span class="v">Dossier LMNP 2026 — <span class="js-mail-n">4</span> justificatifs</span></div>
+        </div>
         <div class="body">
           <p>Bonjour <span class="js-client-name">M. Dupont</span>,</p>
           <p>Vous trouverez ci-joint les <span class="js-mail-n">4</span> justificatifs manquants :</p>
@@ -539,9 +575,8 @@ main.wrap{padding:30px 20px 90px}
 
     <!-- ÉTAPE 5 — LE FICHIER -->
     <section class="step hidden" data-s="5">
-      <div class="steponly"><span class="steplbl">Étape 5 / 5 · Le fichier</span></div>
       <div class="pagehead"><h1 class="js-dossier">LMNP_DUPONT_2026</h1></div>
-      <div class="done-head"><span class="check" style="width:32px;height:32px"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span><h2>Fichiers prêts</h2></div>
+      <div class="done-head" style="margin-top:30px"><span class="check" style="width:32px;height:32px"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span><h2>Fichiers prêts</h2></div>
 
       <!-- AVEC banque : journal de banque en Excel modifiable -->
       <div class="card filebox js-file-xlsx hidden">
@@ -560,21 +595,12 @@ main.wrap{padding:30px 20px 90px}
         </div>
       </div>
 
-      <div class="apercu-h" style="font-family:var(--display);font-size:15px;margin:22px 0 8px;color:var(--muted)">Aperçu du fichier généré</div>
-      <div class="card js-xlsx-preview hidden" style="padding:0;overflow:hidden;margin-bottom:14px">
-        <div class="tblwrap"><table class="tbl"><thead><tr><th>Journal</th><th>Date</th><th>Compte</th><th>Libellé</th><th>Débit</th><th>Crédit</th></tr></thead><tbody class="js-xlsx-rows"></tbody></table></div>
-      </div>
-      <div class="card" style="padding:0;overflow:hidden">
-        <pre class="js-ascii-preview" style="margin:0;padding:14px 16px;overflow-x:auto;font-size:11px;line-height:1.5;font-family:ui-monospace,Menlo,Consolas,monospace;color:#3a4552;background:#f7f9fb;white-space:pre"></pre>
-      </div>
-
       <div class="actionbar" style="justify-content:flex-end">
         <div class="right">
           <button class="btn-secondary js-back"><span class="cv">‹</span> Retour</button>
-          <button class="cta js-download">Télécharger <span class="arw">→</span></button>
+          <button class="cta js-download">Exporter le fichier <span class="arw">→</span></button>
         </div>
       </div>
-      <p class="footnote">Prototype interne S2A — données de démonstration. Les montants sont codés par règles (jamais par l'IA) ; l'IA n'intervient que pour lire une facture ou proposer un compte inconnu, sous validation.</p>
     </section>
 
   </main>
@@ -700,50 +726,29 @@ main.wrap{padding:30px 20px 90px}
     });
   }
 
-  /* --- étape 5 : aperçu réel des fichiers générés (le téléchargement est
-     bloqué dans un Artifact ; on MONTRE donc le contenu produit) --- */
-  function currentCptFor(r,i){
-    var rows=$$('.js-trancher tr'); var s=rows[i]?rows[i].querySelector('select'):null;
-    return (s&&s.value)||r.cpt;
-  }
+  /* --- étape 5 : nature des fichiers produits (pas d'aperçu) --- */
   function renderFichier(){
     var avecBanque=root.dataset.banque==='oui';
     $('.js-file-xlsx').classList.toggle('hidden',!avecBanque);
-    $('.js-xlsx-preview').classList.toggle('hidden',!avecBanque);
     $('.js-ascii-title').textContent=avecBanque
       ? "Journal d'OD — ASCII (payé perso, contrepartie 108)"
       : "Écritures — ASCII (Quadra)";
     $('.js-fmt').textContent="Format ASCII (Quadra) · journal OD · contrepartie 108";
-    // Excel = journal de banque (opérations rapprochées, triées par date)
-    if(avecBanque){
-      var tb=$('.js-xlsx-rows'); tb.innerHTML='';
-      TRANCHER.map(function(r,i){return r;})
-        .slice().sort(function(a,b){return ddmmyy(a.dt)>ddmmyy(b.dt)?1:-1;})
-        .forEach(function(r){
-          var i=TRANCHER.indexOf(r), cpt=currentCptFor(r,i);
-          var sens=(cpt==='758'||cpt==='108')?'C':'D';
-          var deb=sens==='D'?eur(r.m):'', cred=sens==='C'?eur(r.m):'';
-          var tr=document.createElement('tr');
-          tr.innerHTML='<td class="num">BQ</td><td class="dt num">'+r.dt+'</td><td class="num">'+cpt
-            +'</td><td class="lib">'+r.lib+'</td><td class="amt num">'+deb+'</td><td class="amt num">'+cred+'</td>';
-          tb.appendChild(tr);
-        });
-    }
-    // ASCII = écritures fermes (OD 108) — extrait lisible
-    var lines=TRANCHER.map(function(r,i){
-      var cpt=currentCptFor(r,i); var sens=(cpt==='758'||cpt==='108')?'C':'D';
-      return ligneM(cpt,r.dt,r.lib,sens,r.m,'108','OD');
-    });
-    $('.js-ascii-preview').textContent=lines.join('\n');
   }
 
   /* --- navigation --- */
   function go(n){
     root.dataset.step=n;
     $$('.step').forEach(function(s){s.classList.toggle('hidden',s.dataset.s!=String(n));});
+    $$('.stp').forEach(function(b){var i=+b.dataset.go;
+      b.setAttribute('aria-current',i===n?'true':'false');
+      b.classList.toggle('done',n>0&&i<n);});
     if(n===5)renderFichier();
     window.scrollTo({top:0,behavior:'smooth'});
   }
+  $$('.stp').forEach(function(b){b.addEventListener('click',function(){
+    if(+root.dataset.step>=1)go(+b.dataset.go);   // navigation libre une fois dans un dossier
+  });});
   function cap(s){return s?s.charAt(0)+s.slice(1).toLowerCase():s;}
   function toggleBnc(on){$$('.js-bnc-note').forEach(function(e){e.classList.toggle('hidden',!on);});}
   function openDossier(name,ex,type){
@@ -771,14 +776,24 @@ main.wrap{padding:30px 20px 90px}
     renderTrancher();renderReclam();
     go(1);
   }
+  var DUPTXT="";
   function majBanniereDoublon(){
-    var b=$('.js-dupbanner'), t=$('.js-duptext'); if(!b)return;
+    var btn=$('.js-dupbtn'); if(!btn)return;
     var d=dejaTraite(CURNOM);
-    if(d){t.textContent='Ce dossier a déjà été importé le '+d.date+' (empreinte '+d.hash+'). Les pièces déjà comptabilisées ne seront pas ressaisies — Saisio ne traite que les nouvelles pièces (anti-doublon).';
-      b.classList.remove('hidden');}
-    else b.classList.add('hidden');
+    if(d){DUPTXT='Ce dossier a déjà été importé le '+d.date+' (empreinte '+d.hash+'). Les pièces déjà comptabilisées ne seront pas ressaisies — Saisio ne traite que les nouvelles pièces (anti-doublon).';
+      btn.classList.remove('hidden');}
+    else{DUPTXT="";btn.classList.add('hidden');}
   }
+  $('.js-dupbtn').addEventListener('click',function(){
+    openModal('<h3>Historique d\'import</h3><div class="dupbanner"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><span>'+DUPTXT+'</span></div>');
+  });
   $$('.js-open').forEach(function(b){b.addEventListener('click',function(){openDossier(b.dataset.name,b.dataset.ex,b.dataset.type);});});
+  var showall=$('.js-showall');
+  if(showall)showall.addEventListener('click',function(){
+    var col=showall.closest('.dossiers');
+    $$('.hiddenrow',col).forEach(function(r){r.classList.remove('hiddenrow');});
+    showall.classList.add('hidden');
+  });
   $('.js-type').addEventListener('change',function(){toggleBnc(this.value==='bnc');});
   $$('.js-next').forEach(function(b){b.addEventListener('click',function(){
     if(+root.dataset.step===1&&CURNOM){enregistrerImport(CURNOM,CURPIECES);majBanniereDoublon();}
@@ -803,11 +818,6 @@ main.wrap{padding:30px 20px 90px}
     $('.js-modal .box').classList.toggle('wide',!!wide);$('.js-modal').classList.add('on');}
   $('.js-modal-close').addEventListener('click',function(){$('.js-modal').classList.remove('on');});
   $('.js-modal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('on');});
-  $('.js-help').addEventListener('click',function(){openModal(
-    '<h3>Assistant de préparation LMNP</h3>'
-    +'<p>On choisit un dossier (lu depuis le Drive), on importe le FEC N-1 et, s\'il y a une banque, le relevé. '
-    +'L\'outil code le relevé d\'après le dictionnaire de l\'an dernier, lit et rapproche les factures, '
-    +'et prépare : les points à trancher, les justificatifs manquants, le mail de relance et le fichier d\'import.</p>');});
   root.addEventListener('click',function(e){
     var t=e.target.closest('.js-thumb'); if(!t)return;
     openModal('<h3>Justificatif — '+t.dataset.lib+'</h3>'
@@ -834,21 +844,32 @@ main.wrap{padding:30px 20px 90px}
     put(117,clean(lib,87));put(204,'0000000001');put(214,'_IMP');put(218,'12062026120000');
     return b.join('');
   }
+  function horodatage(){var d=new Date();function p(n){return (n<10?'0':'')+n;}
+    return d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+'-'+p(d.getHours())+p(d.getMinutes());}
   $('.js-download').addEventListener('click',function(){
+    var nom=$('.js-dossier')?$('.js-dossier').textContent:'DOSSIER';
+    var avecBanque=root.dataset.banque==='oui';
     var rows=$$('.js-trancher tr');
     var out=TRANCHER.map(function(r,i){
       var cpt=r.cpt, s=rows[i]?rows[i].querySelector('select'):null; if(s)cpt=s.value;
       var sens=(cpt==='758'||cpt==='108')?'C':'D';
       return ligneM(cpt,r.dt,r.lib,sens,r.m,'108','OD');
     });
-    var name=($('.js-dossier')?$('.js-dossier').textContent:'DOSSIER')+'_OD';
-    var blob=new Blob([out.join('\r\n')+'\r\n'],{type:'text/plain;charset=windows-1252'});
-    var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name+'.txt';
-    try{document.body.appendChild(a);a.click();a.remove();}catch(e){}
-    // filet de sécurité : dans un Artifact le téléchargement est bloqué -> on affiche
-    openModal('<h3>Fichier généré</h3><p>Aperçu ci-dessous (dans l\'outil réel, le fichier est écrit sur le Drive du dossier : l\'ASCII des écritures fermes, et l\'Excel du journal de banque le cas échéant).</p>'
-      +'<pre style="max-height:220px;overflow:auto;font-size:10px;line-height:1.5;font-family:ui-monospace,Menlo,Consolas,monospace;background:#f7f9fb;border:1px solid #e2e6ea;border-radius:8px;padding:10px;white-space:pre">'
-      +out.join('\n').replace(/</g,'&lt;')+'</pre>');
+    var stamp=horodatage();
+    var fichier=nom+'_OD_'+stamp+'.txt';
+    // Export réel : on génère le fichier ASCII et on le télécharge.
+    try{
+      var blob=new Blob([out.join('\r\n')+'\r\n'],{type:'text/plain;charset=windows-1252'});
+      var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fichier;
+      document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},0);
+    }catch(e){}
+    openModal('<h3>Fichier exporté</h3>'
+      +'<p>Le fichier est <b>exporté</b> et, au même moment, <b>enregistré automatiquement</b> (horodaté) dans <b>« Documents générés par l\'application »</b> de <b>'+nom+'</b> sur le Drive :</p>'
+      +'<div class="hist" style="margin-top:6px">'
+      +(avecBanque?'<div class="hitem"><span class="hdot"></span><div class="hmain"><div class="hnom">'+nom+'_BANQUE_'+stamp+'.xlsx</div><div class="hmeta">journal de banque · triées par date, modifiables</div></div></div>':'')
+      +'<div class="hitem"><span class="hdot"></span><div class="hmain"><div class="hnom">'+fichier+'</div><div class="hmeta">'+(avecBanque?'journal d\'OD · contrepartie 108':'écritures fermes · prêtes à importer')+'</div></div></div>'
+      +'</div>'
+      +'<p style="margin-top:12px;color:var(--muted);font-size:12.5px">Chaque export est horodaté ('+stamp.replace('-',' à ').replace(/(\d{4})(\d{2})(\d{2})/,'$3/$2/$1')+') pour éviter tout mélange entre deux versions.</p>');
   });
 
   /* --- connexion (démo : n'authentifie pas, garde juste la session locale) --- */
@@ -860,24 +881,7 @@ main.wrap{padding:30px 20px 90px}
     lsSet(SKEY,{mail:mail||'demo@s2a-audit.fr',t:Date.now()});
     setAuthed(true);
   });
-  $('.js-logout').addEventListener('click',function(){try{localStorage.removeItem(SKEY);}catch(e){}setAuthed(false);go(0);});
   setAuthed(!!lsGet(SKEY,null));
-
-  /* --- historique des imports (anti-doublon) --- */
-  function ouvrirHistorique(){
-    var liste=histoire();
-    var lignes=liste.map(function(e){
-      return '<div class="hitem'+(e.dup?' dup':'')+'"><span class="hdot"></span>'
-        +'<div class="hmain"><div class="hnom">'+e.nom+'</div>'
-        +'<div class="hmeta">'+e.pieces+' pièces · '+e.date+' · <span class="hhash">'+e.hash+'</span></div></div>'
-        +'<span class="hstat">'+e.statut+'</span></div>';
-    }).join('') || '<p>Aucun import pour le moment.</p>';
-    openModal('<h3>Historique des imports</h3>'
-      +'<p>Chaque dossier importé est enregistré avec son <b>empreinte</b> (une signature du contenu). '
-      +'Si le même contenu revient, Saisio le reconnaît et <b>ne le ressaisit pas</b> — vos écritures ne peuvent pas être comptabilisées deux fois.</p>'
-      +'<div class="hist">'+lignes+'</div>', true);
-  }
-  $('.js-hist').addEventListener('click',ouvrirHistorique);
 
   renderTrancher();renderReclam();go(0);
 })();
