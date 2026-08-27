@@ -71,6 +71,8 @@ main.wrap{padding:30px 20px 90px}
 
 .pagehead{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap}
 .pagehead h1{font-size:clamp(30px,4.6vw,50px);color:var(--ink)}
+.lmnp h1.js-dossier{color:#fff}
+.step[data-s="0"] .pagehead h1{color:var(--green)}
 .js-dossier{font-family:var(--wordmark);font-style:italic;font-weight:800;letter-spacing:-.01em;flex:1 1 100%;
   display:flex;align-items:center;min-height:92px;color:#fff;
   background:linear-gradient(120deg,#0C355E 0%,#1B5FA8 62%,#2C79C9 100%);
@@ -201,7 +203,7 @@ main.wrap{padding:30px 20px 90px}
 .badge-h{display:flex;align-items:center;gap:14px;margin:28px 0 4px}
 .badge-h .n{width:34px;height:34px;border-radius:50%;background:var(--gold);color:var(--gold-ink);
   display:grid;place-items:center;font-family:var(--display);font-weight:700}
-.badge-h h2{font-size:24px}
+.badge-h h2{font-size:30px;color:var(--green)}
 .rlist{display:flex;flex-direction:column;gap:14px;margin-top:14px}
 .ritem{display:flex;align-items:center;gap:16px;background:var(--surface);border:1px solid var(--line);
   border-radius:13px;padding:18px 20px}
