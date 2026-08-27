@@ -87,7 +87,13 @@ main.wrap{padding:30px 20px 90px}
 .pagehead{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap}
 .pagehead h1{font-size:clamp(30px,4.6vw,50px);color:var(--ink)}
 .lmnp h1.js-dossier{color:#fff}
-.step[data-s="0"] .pagehead h1{color:var(--green)}
+.step[data-s="0"] .pagehead{justify-content:center}
+.step[data-s="0"] .pagehead h1{font-family:var(--wordmark);font-style:italic;font-weight:800;color:var(--green);
+  text-align:center;position:relative;display:inline-block;padding-bottom:20px;margin:6px auto 4px}
+.step[data-s="0"] .pagehead h1::after{content:"";position:absolute;left:50%;bottom:8px;transform:translateX(-50%);
+  width:140px;height:5px;border-radius:99px;background:linear-gradient(90deg,#0C355E,#2C79C9)}
+.step[data-s="0"] .pagehead h1::before{content:"";position:absolute;left:50%;bottom:1px;transform:translateX(-50%) rotate(-1.6deg);
+  width:80px;height:3px;border-radius:99px;background:var(--green-line)}
 .js-dossier{font-family:var(--wordmark);font-style:italic;font-weight:800;letter-spacing:-.01em;flex:1 1 100%;
   display:flex;align-items:center;min-height:92px;color:#fff;
   background:linear-gradient(120deg,#0C355E 0%,#1B5FA8 62%,#2C79C9 100%);
@@ -512,9 +518,11 @@ main.wrap{padding:30px 20px 90px}
     <section class="step hidden" data-s="2">
       <div class="pagehead"><h1 class="js-dossier">LMNP_DUPONT_2026</h1></div>
 
+      <div class="badge-h"><span class="n">1</span><h2>Opérations complexes à affecter</h2></div>
+
       <p class="js-trancher-note hidden" style="margin:14px 0 0;padding:12px 16px;background:#fbf6ee;border:1px solid #e7d9c2;border-radius:12px;color:#6b5836;font-size:14px"></p>
 
-      <div class="card" style="margin-top:20px">
+      <div class="card" style="margin-top:16px">
         <div class="tblwrap"><table class="tbl">
           <thead><tr><th>Date</th><th>Fournisseur (facture)</th><th>Montant</th><th>Facture</th><th>Comptabiliser en</th></tr></thead>
           <tbody class="js-trancher"></tbody>
@@ -533,7 +541,7 @@ main.wrap{padding:30px 20px 90px}
     <section class="step hidden" data-s="3">
       <div class="pagehead"><h1 class="js-dossier">LMNP_DUPONT_2026</h1></div>
 
-      <div class="badge-h"><span class="n js-reclam-n">4</span><h2>Justificatifs à demander</h2></div>
+      <div class="badge-h"><span class="n">2</span><h2>Justificatifs à demander</h2></div>
       <div class="rlist js-reclam"></div>
 
       <div class="actionbar" style="justify-content:flex-end">
@@ -571,7 +579,7 @@ main.wrap{padding:30px 20px 90px}
     <!-- ÉTAPE 5 — LE FICHIER -->
     <section class="step hidden" data-s="5">
       <div class="pagehead"><h1 class="js-dossier">LMNP_DUPONT_2026</h1></div>
-      <div class="done-head" style="margin-top:30px"><span class="check" style="width:32px;height:32px"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span><h2>Fichiers prêts</h2></div>
+      <div class="badge-h"><span class="n">3</span><h2>Fichier prêt</h2></div>
 
       <!-- AVEC banque : journal de banque en Excel modifiable -->
       <div class="card filebox js-file-xlsx hidden">
