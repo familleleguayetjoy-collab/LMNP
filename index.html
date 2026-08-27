@@ -1241,10 +1241,10 @@
      Les interfaces client / expert (S2A) ne sont pas touchées.
      ================================================================= */
   .entry,#upload-screen{
-    --cg:linear-gradient(135deg,#1F6FD6 0%,#3B8EF0 50%,#5AA9FF 100%);
-    --cg-soft:linear-gradient(135deg,#2E7BE6,#5AA9FF);
+    --cg:linear-gradient(135deg,#0E4488 0%,#1A62C4 50%,#2F80E0 100%);
+    --cg-soft:linear-gradient(135deg,#1A62C4,#2F80E0);
     --c-ink:#0C2036; --c-ink-soft:#4C5E78; --c-muted:#7C89A0;
-    --c-line:rgba(20,50,90,.10); --c-blue:#2E7BE6; --c-gold:#C79A4B;
+    --c-line:rgba(20,50,90,.10); --c-blue:#1A62C4; --c-gold:#C79A4B;
     background:
       radial-gradient(1200px 660px at 50% -20%, rgba(59,142,240,.16), transparent 60%),
       radial-gradient(900px 520px at 88% 6%, rgba(199,154,75,.09), transparent 60%),
@@ -1262,7 +1262,7 @@
   @keyframes clarioFloat{from{transform:translate3d(-2%,-1%,0) scale(1);opacity:.9}to{transform:translate3d(3%,2%,0) scale(1.1);opacity:1}}
 
   /* Logotype dégradé + point doré + léger scintillement */
-  .clario-mark{background:linear-gradient(115deg,#1B5FA8 0%,#2E7BE6 45%,#5AA9FF 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
+  .clario-mark{background:linear-gradient(115deg,#0C3A76 0%,#1A62C4 45%,#2F80E0 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
   .clario-mark .dot{-webkit-text-fill-color:#C79A4B;color:#C79A4B;}
   .clario-mark.xl{background-size:220% 100%;animation:clarioSheen 7s ease-in-out infinite;filter:drop-shadow(0 12px 26px rgba(46,123,230,.20));}
   @keyframes clarioSheen{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
@@ -1272,12 +1272,12 @@
 
   /* Puce IA (accueil) */
   .clario-ai{display:inline-flex;align-items:center;gap:9px;margin-top:20px;font-size:.82rem;font-weight:600;letter-spacing:.01em;color:#2A6BB6;background:rgba(59,142,240,.08);border:1px solid rgba(59,142,240,.20);padding:8px 16px;border-radius:999px;box-shadow:0 6px 18px rgba(46,123,230,.12);backdrop-filter:blur(6px);}
-  .clario-ai .ai-dot{width:9px;height:9px;border-radius:50%;background:linear-gradient(135deg,#2E7BE6,#5AA9FF);animation:aiPulse 2.2s ease-out infinite;}
+  .clario-ai .ai-dot{width:9px;height:9px;border-radius:50%;background:linear-gradient(135deg,#1A62C4,#2F80E0);animation:aiPulse 2.2s ease-out infinite;}
   @keyframes aiPulse{0%{box-shadow:0 0 0 0 rgba(46,123,230,.45)}70%{box-shadow:0 0 0 9px rgba(46,123,230,0)}100%{box-shadow:0 0 0 0 rgba(46,123,230,0)}}
 
   /* Titres */
   .entry-title{color:var(--c-ink);}
-  .entry-title .g{background:linear-gradient(115deg,#1F6FD6,#5AA9FF);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
+  .entry-title .g{background:linear-gradient(115deg,#124E9E,#2F80E0);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
 
   /* Cartes premium (blanc + ombre bleutée douce) */
   .home-card,#dossier-form .form-sec,.choice-card2{
@@ -1307,7 +1307,7 @@
     background:#fff;border:1px solid rgba(20,50,90,.14);border-radius:12px;color:var(--c-ink);
     box-shadow:0 1px 2px rgba(16,32,60,.03);transition:border-color .15s,box-shadow .15s;
   }
-  .fld input:focus,.fld select:focus,.fld textarea:focus{outline:none;border-color:#3B8EF0;box-shadow:0 0 0 4px rgba(59,142,240,.16);}
+  .fld input:focus,.fld select:focus,.fld textarea:focus{outline:none;border-color:#2F80E0;box-shadow:0 0 0 4px rgba(59,142,240,.16);}
   .fld label,.cap-label{color:var(--c-ink-soft);}
   .link-hint{background:rgba(46,123,230,.08);color:#2A6BB6;}
   .autofill-status{color:var(--c-muted);}
@@ -1318,7 +1318,7 @@
     background:#fff !important;border:1px solid rgba(20,50,90,.12) !important;color:var(--c-blue) !important;
     box-shadow:0 6px 18px rgba(30,84,168,.10) !important;border-radius:14px !important;
   }
-  .btn-mini:hover,.entry-back:hover,.choice-changer:hover{border-color:#3B8EF0 !important;background:#F5F9FF !important;}
+  .btn-mini:hover,.entry-back:hover,.choice-changer:hover{border-color:#2F80E0 !important;background:#F5F9FF !important;}
   .tb-cta.ghost#form-cancel{background:#fff;border:1px solid rgba(20,50,90,.12);color:var(--c-ink-soft);}
 
   /* CTA principaux → dégradé bleu lumineux */
@@ -1334,7 +1334,7 @@
 
   /* Bandeau « Vos dossiers » */
   #dossier-list .list-card{background:linear-gradient(180deg,#FFFFFF,#FBFDFF) !important;border:1px solid rgba(20,50,90,.07) !important;box-shadow:0 26px 60px rgba(30,84,168,.10) !important;}
-  #dossier-list .list-topbar{background:linear-gradient(120deg,#1B5FA8 0%,#2E7BE6 55%,#4FA2FF 120%) !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.18) !important;}
+  #dossier-list .list-topbar{background:linear-gradient(120deg,#0C3E80 0%,#1A62C4 55%,#2F80E0 120%) !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.18) !important;}
   .dossier-row:hover{background:#F5F9FF;}
   .dossier-row .dr-tag{background:rgba(46,123,230,.10);color:#2A6BB6;}
 
@@ -1353,12 +1353,38 @@
   .up-linked{color:var(--c-muted);}
   #upload-screen .import-col{background:#F6FAFF !important;border:1px solid rgba(46,123,230,.10) !important;border-radius:20px !important;box-shadow:none !important;}
   #upload-screen .dropzone2{background:#fff;border:1.5px dashed rgba(46,123,230,.42);border-radius:16px;}
-  #upload-screen .dropzone2:hover,#upload-screen .dropzone2.drag{background:#EEF5FF;border-color:#3B8EF0;}
+  #upload-screen .dropzone2:hover,#upload-screen .dropzone2.drag{background:#EEF5FF;border-color:#2F80E0;}
   #upload-screen .dropzone2 .dz-ico{color:var(--c-blue);}
   #upload-screen .dz-status .dot{background:rgba(46,123,230,.25);}
   #upload-screen .dz-status.ok{color:var(--c-blue);} #upload-screen .dz-status.ok .dot{background:var(--c-blue);}
 
-  @media (prefers-reduced-motion:reduce){ .entry::before,#upload-screen::before,.clario-mark.xl,.clario-ai .ai-dot{animation:none !important;} }
+  /* Transitions entre écrans — reveal ample */
+  @keyframes clarioScreenIn{from{opacity:0;transform:scale(.985) translateY(6px);}to{opacity:1;transform:none;}}
+  .entry.active,#upload-screen{animation:clarioScreenIn .52s cubic-bezier(.2,.85,.25,1) both;}
+  .entry.active .entry-head,.entry.active .hz>*,.entry.active .form-sec,.entry.active .form-actions,.entry.active .list-card,.entry.active .choice-grid>*{animation-duration:.62s;}
+  #upload-screen .upload-card{animation-duration:.62s;}
+
+  /* Menu du haut des interfaces client / expert → bleu Clario (uniforme) */
+  #expert-app .topbar-app,#client-app .topbar-app{
+    background:linear-gradient(120deg,#0C3E80 0%,#1A62C4 55%,#2F80E0 120%) !important;
+    border-bottom:1px solid rgba(255,255,255,.14) !important;
+    box-shadow:0 8px 26px rgba(14,60,130,.20);
+  }
+  #expert-app .topbar-app .tb-left-txt b,#client-app .topbar-app .tb-left-txt b,
+  #expert-app .topbar-app .tb-left.stack b,#client-app .topbar-app .tb-left.stack b{color:#fff;}
+  #expert-app .topbar-app .tb-left-txt span,#client-app .topbar-app .tb-left-txt span,
+  #expert-app .topbar-app .tb-left.stack span,#client-app .topbar-app .tb-left.stack span{color:rgba(255,255,255,.74);}
+  #expert-app .topbar-app .tb-tab,#client-app .topbar-app .tb-tab{color:rgba(255,255,255,.72);}
+  #expert-app .topbar-app .tb-tab:hover,#client-app .topbar-app .tb-tab:hover{color:#fff;}
+  #expert-app .topbar-app .tb-tab.active,#client-app .topbar-app .tb-tab.active{color:#fff;}
+  #expert-app .topbar-app .tb-tab.active::after,#client-app .topbar-app .tb-tab.active::after{background:#fff;}
+  #expert-app .topbar-app .tb-cta,#client-app .topbar-app .tb-cta{background:#fff !important;color:#124E9E !important;border:none !important;}
+  #expert-app .topbar-app .tb-cta:hover,#client-app .topbar-app .tb-cta:hover{background:#EAF2FF !important;}
+  #expert-app .topbar-app .tb-cta.ghost,#client-app .topbar-app .tb-cta.ghost{background:rgba(255,255,255,.14) !important;color:#fff !important;border:1px solid rgba(255,255,255,.34) !important;}
+  #expert-app .topbar-app .tb-cta.ghost:hover,#client-app .topbar-app .tb-cta.ghost:hover{background:rgba(255,255,255,.22) !important;border-color:#fff !important;}
+  #expert-app .topbar-app .tb-left .brand-img{background-image:url('assets/img/logo-s2a-light.webp');}
+
+  @media (prefers-reduced-motion:reduce){ .entry::before,#upload-screen::before,.clario-mark.xl,.clario-ai .ai-dot,.entry.active,#upload-screen{animation:none !important;} }
 </style>
 </head>
 <body>
@@ -1554,7 +1580,7 @@
       <button class="tb-tab" data-ctab="ratios">Ratios</button>
       <button class="tb-tab" data-ctab="tresorerie">Trésorerie</button>
     </nav>
-    <button class="tb-cta" id="c-report-btn" style="background:var(--brand);color:#fff;">⤓ Rapport PDF</button>
+    <button class="tb-cta" id="c-report-btn">⤓ Rapport PDF</button>
     <button class="tb-cta ghost" id="c-quit">Quitter</button>
   </header>
   <main class="app-main app-wide">
