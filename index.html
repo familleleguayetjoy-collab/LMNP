@@ -1374,7 +1374,7 @@
     --c-line:rgba(20,50,90,.10); --c-blue:#1A62C4;
   }
   #expert-app .topbar-app,#client-app .topbar-app{
-    flex-wrap:wrap; gap:10px 18px; padding:13px 30px 0 !important; align-items:center;
+    flex-wrap:wrap; gap:12px 18px; padding:13px 30px !important; align-items:center;
     background:rgba(255,255,255,.9) !important;
     -webkit-backdrop-filter:saturate(1.4) blur(12px);backdrop-filter:saturate(1.4) blur(12px);
     border-bottom:1px solid var(--c-line) !important;
@@ -1391,7 +1391,9 @@
   #expert-app .topbar-app .tb-cta.ghost,#client-app .topbar-app .tb-cta.ghost{background:#fff !important;color:var(--c-ink-soft) !important;border:1px solid var(--c-line) !important;box-shadow:0 2px 8px rgba(20,50,90,.05) !important;}
   #expert-app .topbar-app .tb-cta.ghost:hover,#client-app .topbar-app .tb-cta.ghost:hover{border-color:var(--c-muted) !important;background:#F7FAFF !important;}
   /* niveau 2 — navigation en pills */
-  #expert-app .topbar-app .tb-nav,#client-app .topbar-app .tb-nav{order:3;flex:1 0 100%;justify-content:flex-start;gap:6px;margin-top:11px;padding:5px 0;border-top:1px solid var(--c-line);overflow-x:auto;}
+  #expert-app .topbar-app .tb-nav,#client-app .topbar-app .tb-nav{order:0;flex:0 1 auto;justify-content:flex-start;gap:6px;margin:0 auto;padding:5px;border-top:none;overflow-x:auto;
+    border-radius:999px;background:rgba(255,255,255,.55);-webkit-backdrop-filter:blur(14px) saturate(1.5);backdrop-filter:blur(14px) saturate(1.5);
+    border:1px solid rgba(255,255,255,.7);box-shadow:0 6px 20px rgba(20,50,90,.10),inset 0 1px 0 rgba(255,255,255,.6);max-width:100%;}
   #expert-app .topbar-app .tb-tab,#client-app .topbar-app .tb-tab{color:var(--c-ink-soft);padding:8px 15px;border-radius:999px;font-weight:600;transition:background .18s,color .18s;}
   #expert-app .topbar-app .tb-tab:hover,#client-app .topbar-app .tb-tab:hover{background:rgba(26,98,196,.08);color:var(--c-ink);}
   #expert-app .topbar-app .tb-tab.active,#client-app .topbar-app .tb-tab.active{color:#fff;background:var(--cg);box-shadow:0 6px 16px rgba(26,98,196,.26);}
@@ -1412,9 +1414,9 @@
   .cc-title{letter-spacing:-.01em !important;font-size:1.58rem;}
   /* Titres de section du formulaire — plus compacts */
   #dossier-form .sec-h h3{font-size:1.08rem !important;}
-  /* Titres de slide (client/expert) unifiés avec le haut — police display, filet bleu→doré */
-  #expert-app .app-page>h1,#client-app .app-page>h1,#charge-right h1{font-family:var(--wordmark) !important;font-style:normal;font-weight:800;letter-spacing:-.02em;color:var(--c-ink);}
-  #client-app .app-page>h1::after,#expert-app .app-page>h1::after,#c-page-synthese h1::after,#charge-right h1::after{background:linear-gradient(90deg,#1A62C4,#1F9E86 55%,#93A2B0) !important;}
+  /* Titres de slide (client/expert) — police display + trait sur toute la largeur du titre */
+  #expert-app .app-page h1,#client-app .app-page h1,#charge-right h1{font-family:var(--wordmark) !important;font-style:normal;font-weight:800;letter-spacing:-.02em;color:var(--c-ink);width:fit-content;max-width:100%;}
+  #expert-app .app-page h1::after,#client-app .app-page h1::after,#charge-right h1::after{content:"" !important;display:block !important;height:3px;width:100% !important;margin-top:12px;border-radius:2px;background:linear-gradient(90deg,#1A62C4,#1F9E86 55%,#93A2B0) !important;}
 
   /* Formulaire : colonnes équilibrées, sans vide en bas */
   #dossier-form .form-grid{align-items:stretch;}
@@ -1423,6 +1425,7 @@
   #dossier-form .form-col{height:100%;}
   #dossier-form .form-col>.form-sec:last-child{flex:1 1 auto;}
   #dossier-form .btn-mini{color:var(--c-ink) !important;}
+  #dossier-form #doc-add{display:block;width:100%;text-align:center;margin-top:2px;}
   /* Colonne de droite prolongée */
   #dossier-form .form-card{max-width:1180px;}
   #dossier-form .form-grid{grid-template-columns:1fr 1.14fr;}
@@ -1443,10 +1446,10 @@
 
   /* Barre d'app — mobile */
   @media (max-width:760px){
-    #expert-app .topbar-app,#client-app .topbar-app{padding:11px 16px 0 !important;gap:8px 12px;}
+    #expert-app .topbar-app,#client-app .topbar-app{padding:11px 14px !important;gap:10px 10px;}
     #expert-app .topbar-app .tb-cta,#client-app .topbar-app .tb-cta{padding:9px 13px;font-size:.82rem;}
     .tb-mark{font-size:1.25rem;}
-    #expert-app .topbar-app .tb-nav,#client-app .topbar-app .tb-nav{gap:6px;margin-top:9px;}
+    #expert-app .topbar-app .tb-nav,#client-app .topbar-app .tb-nav{gap:5px;margin:2px auto 0;}
     #expert-app .topbar-app .tb-tab,#client-app .topbar-app .tb-tab{padding:7px 13px;font-size:.85rem;}
   }
 
