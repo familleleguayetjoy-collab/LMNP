@@ -1404,6 +1404,9 @@
   #setup-screen .entry-title{text-transform:none !important;letter-spacing:-.02em !important;
     background:linear-gradient(115deg,#0C3A76 0%,#1A62C4 48%,#2F80E0 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
   .cc-title{letter-spacing:-.01em !important;font-size:1.58rem;}
+  /* Titres de slide (client/expert) unifiés avec le haut — police display, filet bleu→doré */
+  #expert-app .app-page>h1,#client-app .app-page>h1,#charge-right h1{font-family:var(--wordmark) !important;font-style:normal;font-weight:800;letter-spacing:-.02em;color:var(--c-ink);}
+  #client-app .app-page>h1::after,#expert-app .app-page>h1::after,#c-page-synthese h1::after,#charge-right h1::after{background:linear-gradient(90deg,#1A62C4,#C79A4B) !important;}
 
   /* Formulaire : colonnes équilibrées, sans vide en bas */
   #dossier-form .form-grid{align-items:stretch;}
