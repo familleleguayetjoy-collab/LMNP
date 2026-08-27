@@ -380,9 +380,11 @@ main.wrap{padding:30px 20px 90px}
     <section class="step" data-s="0">
       <div class="mesdossiers">
         <h1>Mes dossiers</h1>
-        <svg viewBox="0 0 340 24" fill="none" aria-hidden="true">
-          <line x1="12" y1="7" x2="328" y2="7" stroke="#14497F" stroke-width="5" stroke-linecap="round"/>
-          <line x1="104" y1="18" x2="268" y2="18" stroke="#2C79C9" stroke-width="4.5" stroke-linecap="round"/>
+        <svg viewBox="0 0 340 20" fill="none" aria-hidden="true">
+          <defs><linearGradient id="ul" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#14497F"/><stop offset="1" stop-color="#2C79C9"/>
+          </linearGradient></defs>
+          <path d="M10 14 C 112 5, 232 4, 330 9 C 232 11, 112 12, 10 14 Z" fill="url(#ul)"/>
         </svg>
       </div>
 
