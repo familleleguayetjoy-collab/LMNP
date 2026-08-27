@@ -1234,6 +1234,131 @@
   #charge-detail.anim{animation:s2aReveal .5s cubic-bezier(.16,1,.3,1) both;}
   #charge-right.anim{animation:s2aReveal .42s cubic-bezier(.16,1,.3,1) both;}
   @media (prefers-reduced-motion:reduce){ #client-app .app-page.active > *,#expert-app .app-page.active > *,#charge-detail.anim,#charge-right.anim{animation:none !important;} }
+
+  /* =================================================================
+     CLARIO — écrans d'entrée · direction premium « Apple » (bleu / blanc / léger doré)
+     N'affecte QUE accueil → nouveau dossier → dossiers → import FEC → choix.
+     Les interfaces client / expert (S2A) ne sont pas touchées.
+     ================================================================= */
+  .entry,#upload-screen{
+    --cg:linear-gradient(135deg,#1F6FD6 0%,#3B8EF0 50%,#5AA9FF 100%);
+    --cg-soft:linear-gradient(135deg,#2E7BE6,#5AA9FF);
+    --c-ink:#0C2036; --c-ink-soft:#4C5E78; --c-muted:#7C89A0;
+    --c-line:rgba(20,50,90,.10); --c-blue:#2E7BE6; --c-gold:#C79A4B;
+    background:
+      radial-gradient(1200px 660px at 50% -20%, rgba(59,142,240,.16), transparent 60%),
+      radial-gradient(900px 520px at 88% 6%, rgba(199,154,75,.09), transparent 60%),
+      radial-gradient(820px 640px at 4% 96%, rgba(59,142,240,.08), transparent 62%),
+      linear-gradient(180deg,#FCFDFF 0%,#F5F9FE 100%) !important;
+  }
+  .entry::before,#upload-screen::before{
+    content:'';position:fixed;left:-10%;right:-10%;top:-22%;height:78vh;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(620px 320px at 28% 24%, rgba(59,142,240,.20), transparent 70%),
+      radial-gradient(560px 320px at 76% 10%, rgba(122,170,255,.18), transparent 70%),
+      radial-gradient(440px 280px at 58% 46%, rgba(199,154,75,.12), transparent 70%);
+    filter:blur(34px);animation:clarioFloat 18s ease-in-out infinite alternate;
+  }
+  @keyframes clarioFloat{from{transform:translate3d(-2%,-1%,0) scale(1);opacity:.9}to{transform:translate3d(3%,2%,0) scale(1.1);opacity:1}}
+
+  /* Logotype dégradé + point doré + léger scintillement */
+  .clario-mark{background:linear-gradient(115deg,#1B5FA8 0%,#2E7BE6 45%,#5AA9FF 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
+  .clario-mark .dot{-webkit-text-fill-color:#C79A4B;color:#C79A4B;}
+  .clario-mark.xl{background-size:220% 100%;animation:clarioSheen 7s ease-in-out infinite;filter:drop-shadow(0 12px 26px rgba(46,123,230,.20));}
+  @keyframes clarioSheen{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .clario-hero{gap:2px;}
+  .clario-top{justify-content:center;}
+  .setup-logo.clario-top{justify-content:flex-start;}
+
+  /* Puce IA (accueil) */
+  .clario-ai{display:inline-flex;align-items:center;gap:9px;margin-top:20px;font-size:.82rem;font-weight:600;letter-spacing:.01em;color:#2A6BB6;background:rgba(59,142,240,.08);border:1px solid rgba(59,142,240,.20);padding:8px 16px;border-radius:999px;box-shadow:0 6px 18px rgba(46,123,230,.12);backdrop-filter:blur(6px);}
+  .clario-ai .ai-dot{width:9px;height:9px;border-radius:50%;background:linear-gradient(135deg,#2E7BE6,#5AA9FF);animation:aiPulse 2.2s ease-out infinite;}
+  @keyframes aiPulse{0%{box-shadow:0 0 0 0 rgba(46,123,230,.45)}70%{box-shadow:0 0 0 9px rgba(46,123,230,0)}100%{box-shadow:0 0 0 0 rgba(46,123,230,0)}}
+
+  /* Titres */
+  .entry-title{color:var(--c-ink);}
+  .entry-title .g{background:linear-gradient(115deg,#1F6FD6,#5AA9FF);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
+
+  /* Cartes premium (blanc + ombre bleutée douce) */
+  .home-card,#dossier-form .form-sec,.choice-card2{
+    background:linear-gradient(180deg,#FFFFFF,#FBFDFF) !important;
+    border:1px solid rgba(20,50,90,.07) !important;
+    border-radius:24px !important;
+    box-shadow:0 1px 2px rgba(16,32,60,.04),0 26px 60px rgba(30,84,168,.10) !important;
+  }
+  .home-card:hover,.choice-card2:hover{
+    border-color:rgba(46,123,230,.32) !important;
+    box-shadow:0 3px 6px rgba(16,32,60,.05),0 36px 84px rgba(30,92,184,.20) !important;
+    transform:translateY(-4px) !important;
+  }
+
+  /* Pastilles d'icônes → dégradé bleu, icône blanche, halo */
+  .hc-badge,#dossier-form .sec-h .sec-ico,.imp-badge{
+    background:var(--cg) !important;color:#fff !important;border:none !important;
+    box-shadow:0 12px 26px rgba(31,111,214,.34),inset 0 1px 0 rgba(255,255,255,.28) !important;
+  }
+  .hc-badge svg,#dossier-form .sec-h .sec-ico svg{color:#fff;}
+  .hc-arrow{color:var(--c-blue);}
+  .hc-rule,.gold-rule,.up-head .gold-rule{background:linear-gradient(90deg,#2E7BE6,#C79A4B) !important;}
+  .sec-h h3,.import-col h3{color:var(--c-ink);}
+
+  /* Champs de saisie façon Apple */
+  .fld input,.fld select,.fld textarea,.list-tools input,.list-tools select{
+    background:#fff;border:1px solid rgba(20,50,90,.14);border-radius:12px;color:var(--c-ink);
+    box-shadow:0 1px 2px rgba(16,32,60,.03);transition:border-color .15s,box-shadow .15s;
+  }
+  .fld input:focus,.fld select:focus,.fld textarea:focus{outline:none;border-color:#3B8EF0;box-shadow:0 0 0 4px rgba(59,142,240,.16);}
+  .fld label,.cap-label{color:var(--c-ink-soft);}
+  .link-hint{background:rgba(46,123,230,.08);color:#2A6BB6;}
+  .autofill-status{color:var(--c-muted);}
+  .doc-row{background:#F5F9FF;border-color:rgba(46,123,230,.14);}
+
+  /* Boutons secondaires (verre blanc, texte bleu) */
+  .btn-mini,.entry-back,.choice-changer,#upload-home{
+    background:#fff !important;border:1px solid rgba(20,50,90,.12) !important;color:var(--c-blue) !important;
+    box-shadow:0 6px 18px rgba(30,84,168,.10) !important;border-radius:14px !important;
+  }
+  .btn-mini:hover,.entry-back:hover,.choice-changer:hover{border-color:#3B8EF0 !important;background:#F5F9FF !important;}
+  .tb-cta.ghost#form-cancel{background:#fff;border:1px solid rgba(20,50,90,.12);color:var(--c-ink-soft);}
+
+  /* CTA principaux → dégradé bleu lumineux */
+  .demo-pill,#demo-btn,.cta-gold,.btn-analyser,#form-save{
+    background:var(--cg) !important;color:#fff !important;border:none !important;
+    box-shadow:0 14px 32px rgba(31,111,214,.34),inset 0 1px 0 rgba(255,255,255,.25) !important;
+    border-radius:999px !important;
+  }
+  #form-save{border-radius:14px !important;}
+  .btn-analyser{border-radius:14px !important;}
+  .demo-pill:hover,#demo-btn:hover,.cta-gold:hover,.btn-analyser:hover:not(:disabled),#form-save:hover{filter:brightness(1.05);box-shadow:0 18px 42px rgba(31,111,214,.44) !important;transform:translateY(-1px);}
+  .btn-analyser:disabled{background:#E3E9F2 !important;color:#9AA7BD !important;box-shadow:none !important;filter:none;}
+
+  /* Bandeau « Vos dossiers » */
+  #dossier-list .list-card{background:linear-gradient(180deg,#FFFFFF,#FBFDFF) !important;border:1px solid rgba(20,50,90,.07) !important;box-shadow:0 26px 60px rgba(30,84,168,.10) !important;}
+  #dossier-list .list-topbar{background:linear-gradient(120deg,#1B5FA8 0%,#2E7BE6 55%,#4FA2FF 120%) !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.18) !important;}
+  .dossier-row:hover{background:#F5F9FF;}
+  .dossier-row .dr-tag{background:rgba(46,123,230,.10);color:#2A6BB6;}
+
+  /* Écran de choix */
+  .cc-badge{background:#fff !important;color:var(--c-blue) !important;border:1px solid rgba(46,123,230,.22) !important;box-shadow:0 0 0 8px rgba(59,142,240,.08),0 14px 30px rgba(30,84,168,.14) !important;}
+  .cc-title{color:var(--c-ink);}
+  .cc-rule{background:linear-gradient(90deg,#2E7BE6,#C79A4B) !important;}
+  .cc-go{background:var(--cg) !important;color:#fff !important;box-shadow:0 12px 26px rgba(31,111,214,.32),0 0 0 6px rgba(59,142,240,.10) !important;}
+  .choice-sub{color:var(--c-muted);}
+  .soft-pill{background:#fff !important;border:1px solid rgba(20,50,90,.12) !important;color:var(--c-blue) !important;box-shadow:0 10px 26px rgba(30,84,168,.12) !important;}
+  .soft-pill .sp-ico{color:var(--c-blue);}
+
+  /* Import FEC */
+  #upload-screen .upload-card{background:linear-gradient(180deg,#FFFFFF,#FBFDFF) !important;border:1px solid rgba(20,50,90,.07) !important;box-shadow:0 34px 80px rgba(30,84,168,.14) !important;border-radius:28px !important;}
+  #upload-screen .upload-card h1{color:var(--c-ink);}
+  .up-linked{color:var(--c-muted);}
+  #upload-screen .import-col{background:#F6FAFF !important;border:1px solid rgba(46,123,230,.10) !important;border-radius:20px !important;box-shadow:none !important;}
+  #upload-screen .dropzone2{background:#fff;border:1.5px dashed rgba(46,123,230,.42);border-radius:16px;}
+  #upload-screen .dropzone2:hover,#upload-screen .dropzone2.drag{background:#EEF5FF;border-color:#3B8EF0;}
+  #upload-screen .dropzone2 .dz-ico{color:var(--c-blue);}
+  #upload-screen .dz-status .dot{background:rgba(46,123,230,.25);}
+  #upload-screen .dz-status.ok{color:var(--c-blue);} #upload-screen .dz-status.ok .dot{background:var(--c-blue);}
+
+  @media (prefers-reduced-motion:reduce){ .entry::before,#upload-screen::before,.clario-mark.xl,.clario-ai .ai-dot{animation:none !important;} }
 </style>
 </head>
 <body>
@@ -1241,10 +1366,8 @@
 <!-- ============ ACCUEIL EC ============ -->
 <div id="home-screen" class="entry active">
   <div class="entry-head clario-hero">
-    <div class="clario-eyebrow">Espace expert-comptable</div>
     <div class="clario-mark xl"><em>Clario</em><span class="dot">.</span></div>
-    <div class="clario-tag">L'analyse des comptes, en clair — du FEC au rendez-vous client.</div>
-    <div class="clario-by">par <span class="brand-img" role="img" aria-label="S2A — Sud Alpes Audit"></span></div>
+    <div class="clario-ai"><span class="ai-dot"></span>Intelligence financière</div>
   </div>
   <div class="hz">
     <button class="home-card" id="home-new"><span class="hc-badge" id="ico-new"></span><div class="hc-body"><h3>Paramétrer un nouveau dossier</h3><span class="hc-rule"></span></div><span class="hc-arrow">›</span></button>
@@ -1257,7 +1380,7 @@
 <div id="dossier-form" class="entry">
   <button class="entry-back" id="form-back-top" title="Retour">‹</button>
   <div class="entry-head">
-    <div class="clario-top"><span class="clario-mark sm"><em>Clario</em><span class="dot">.</span></span><span class="cby"><span class="brand-img"></span></span></div>
+    <div class="clario-top"><span class="clario-mark sm"><em>Clario</em><span class="dot">.</span></span></div>
     <div class="entry-title">Nouveau <span class="g">dossier</span></div>
   </div>
   <div class="form-card">
@@ -1299,7 +1422,7 @@
 <div id="dossier-list" class="entry">
   <button class="entry-back" id="list-back-top" title="Retour">‹</button>
   <div class="entry-head">
-    <div class="clario-top"><span class="clario-mark sm"><em>Clario</em><span class="dot">.</span></span><span class="cby"><span class="brand-img"></span></span></div>
+    <div class="clario-top"><span class="clario-mark sm"><em>Clario</em><span class="dot">.</span></span></div>
     <div class="entry-title">Vos <span class="g">dossiers</span></div>
   </div>
   <div class="list-card">
@@ -1317,7 +1440,7 @@
 
 <!-- ============ UPLOAD SCREEN ============ -->
 <div id="upload-screen" style="display:none;">
-  <div class="brandbar"><div class="clario-top" style="margin:0;"><span class="clario-mark sm"><em>Clario</em><span class="dot">.</span></span><span class="cby"><span class="brand-img"></span></span></div></div>
+  <div class="brandbar"><div class="clario-top" style="margin:0;"><span class="clario-mark sm"><em>Clario</em><span class="dot">.</span></span></div></div>
   <div class="upload-card">
     <div class="up-head"><h1>Préparer le dossier</h1><div class="gold-rule" style="margin:14px auto 0;"></div><div class="up-linked" id="up-linked"></div></div>
 
@@ -1360,7 +1483,7 @@
 
 <!-- ============ CHOIX D'INTERFACE ============ -->
 <div id="setup-screen" class="entry">
-  <div class="clario-top setup-logo"><span class="clario-mark sm"><em>Clario</em><span class="dot">.</span></span><span class="cby"><span class="brand-img"></span></span></div>
+  <div class="clario-top setup-logo"><span class="clario-mark sm"><em>Clario</em><span class="dot">.</span></span></div>
   <div class="entry-head" style="margin-top:6vh;">
     <div class="entry-title" id="setup-title">DOSSIER</div>
     <div class="gold-rule"></div>
