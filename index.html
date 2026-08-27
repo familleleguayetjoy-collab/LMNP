@@ -1364,50 +1364,62 @@
   .entry.active .entry-head,.entry.active .hz>*,.entry.active .form-sec,.entry.active .form-actions,.entry.active .list-card,.entry.active .choice-grid>*{animation-duration:.62s;}
   #upload-screen .upload-card{animation-duration:.62s;}
 
-  /* Menu du haut des interfaces client / expert → bleu Clario (uniforme) */
-  #expert-app .topbar-app,#client-app .topbar-app{
-    background:linear-gradient(120deg,#0C3E80 0%,#1A62C4 55%,#2F80E0 120%) !important;
-    border-bottom:1px solid rgba(255,255,255,.14) !important;
-    box-shadow:0 8px 26px rgba(14,60,130,.20);
+  /* =========================================================
+     Barre d'app (client / expert) — style SAISIO, deux niveaux
+     ========================================================= */
+  #expert-app,#client-app{
+    --cg:linear-gradient(135deg,#0E4488 0%,#1A62C4 50%,#2F80E0 100%);
+    --cg-soft:linear-gradient(135deg,#1A62C4,#2F80E0);
+    --c-ink:#0C2036; --c-ink-soft:#4C5E78; --c-muted:#7C89A0;
+    --c-line:rgba(20,50,90,.10); --c-blue:#1A62C4;
   }
-  #expert-app .topbar-app .tb-left-txt b,#client-app .topbar-app .tb-left-txt b,
-  #expert-app .topbar-app .tb-left.stack b,#client-app .topbar-app .tb-left.stack b{color:#fff;}
-  #expert-app .topbar-app .tb-left-txt span,#client-app .topbar-app .tb-left-txt span,
-  #expert-app .topbar-app .tb-left.stack span,#client-app .topbar-app .tb-left.stack span{color:rgba(255,255,255,.74);}
-  #expert-app .topbar-app .tb-tab,#client-app .topbar-app .tb-tab{color:rgba(255,255,255,.72);}
-  #expert-app .topbar-app .tb-tab:hover,#client-app .topbar-app .tb-tab:hover{color:#fff;}
-  #expert-app .topbar-app .tb-tab.active,#client-app .topbar-app .tb-tab.active{color:#fff;}
-  #expert-app .topbar-app .tb-tab.active::after,#client-app .topbar-app .tb-tab.active::after{background:#fff;}
-  #expert-app .topbar-app .tb-cta,#client-app .topbar-app .tb-cta{background:#fff !important;color:#124E9E !important;border:none !important;}
-  #expert-app .topbar-app .tb-cta:hover,#client-app .topbar-app .tb-cta:hover{background:#EAF2FF !important;}
-  #expert-app .topbar-app .tb-cta.ghost,#client-app .topbar-app .tb-cta.ghost{background:rgba(255,255,255,.14) !important;color:#fff !important;border:1px solid rgba(255,255,255,.34) !important;}
-  #expert-app .topbar-app .tb-cta.ghost:hover,#client-app .topbar-app .tb-cta.ghost:hover{background:rgba(255,255,255,.22) !important;border-color:#fff !important;}
-  #expert-app .topbar-app .tb-left .brand-img{background-image:url('assets/img/logo-s2a-light.webp');}
+  #expert-app .topbar-app,#client-app .topbar-app{
+    flex-wrap:wrap; gap:10px 18px; padding:13px 30px 0 !important; align-items:center;
+    background:rgba(255,255,255,.9) !important;
+    -webkit-backdrop-filter:saturate(1.4) blur(12px);backdrop-filter:saturate(1.4) blur(12px);
+    border-bottom:1px solid var(--c-line) !important;
+    box-shadow:0 8px 24px rgba(20,50,90,.06) !important;
+  }
+  #expert-app .topbar-app .tb-left,#client-app .topbar-app .tb-left{gap:14px;align-items:center;flex-direction:row;}
+  .tb-mark{font-size:1.4rem;}
+  .tb-sep{width:1px;height:24px;background:var(--c-line);flex:0 0 auto;}
+  #expert-app .topbar-app .tb-left-txt b,#client-app .topbar-app .tb-left-txt b{color:var(--c-ink);font-weight:700;letter-spacing:-.01em;}
+  #expert-app .topbar-app .tb-left-txt span,#client-app .topbar-app .tb-left-txt span{color:var(--c-muted);}
+  /* actions — pills */
+  #expert-app .topbar-app .tb-cta,#client-app .topbar-app .tb-cta{border-radius:999px !important;background:var(--cg) !important;color:#fff !important;border:none !important;box-shadow:0 8px 20px rgba(26,98,196,.28) !important;padding:10px 17px;}
+  #expert-app .topbar-app .tb-cta:hover,#client-app .topbar-app .tb-cta:hover{filter:brightness(1.05);}
+  #expert-app .topbar-app .tb-cta.ghost,#client-app .topbar-app .tb-cta.ghost{background:#fff !important;color:var(--c-ink-soft) !important;border:1px solid var(--c-line) !important;box-shadow:0 2px 8px rgba(20,50,90,.05) !important;}
+  #expert-app .topbar-app .tb-cta.ghost:hover,#client-app .topbar-app .tb-cta.ghost:hover{border-color:var(--c-muted) !important;background:#F7FAFF !important;}
+  /* niveau 2 — navigation en pills */
+  #expert-app .topbar-app .tb-nav,#client-app .topbar-app .tb-nav{order:3;flex:1 0 100%;justify-content:flex-start;gap:6px;margin-top:11px;padding:5px 0;border-top:1px solid var(--c-line);overflow-x:auto;}
+  #expert-app .topbar-app .tb-tab,#client-app .topbar-app .tb-tab{color:var(--c-ink-soft);padding:8px 15px;border-radius:999px;font-weight:600;transition:background .18s,color .18s;}
+  #expert-app .topbar-app .tb-tab:hover,#client-app .topbar-app .tb-tab:hover{background:rgba(26,98,196,.08);color:var(--c-ink);}
+  #expert-app .topbar-app .tb-tab.active,#client-app .topbar-app .tb-tab.active{color:#fff;background:var(--cg);box-shadow:0 6px 16px rgba(26,98,196,.26);}
+  #expert-app .topbar-app .tb-tab.active::after,#client-app .topbar-app .tb-tab.active::after{display:none;}
 
   /* Ajustements ciblés */
   #setup-periode{display:none !important;}
-  #setup-screen .entry-title{text-transform:none !important;letter-spacing:-.03em !important;font-weight:800;
+  /* Titres d'écran en display Bricolage (plus « startup ») */
+  .entry-title,#setup-screen .entry-title,.cc-title{font-family:var(--wordmark) !important;font-style:normal;font-weight:800;}
+  #setup-screen .entry-title{text-transform:none !important;letter-spacing:-.02em !important;
     background:linear-gradient(115deg,#0C3A76 0%,#1A62C4 48%,#2F80E0 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
-  .cc-title{font-weight:800 !important;letter-spacing:-.02em !important;}
-  /* Nom de société dans les barres d'app — plus « startup » */
-  #expert-app .topbar-app .tb-left-txt b,#client-app .topbar-app .tb-left.stack b{font-weight:800;letter-spacing:-.02em;}
+  .cc-title{letter-spacing:-.01em !important;font-size:1.58rem;}
 
-  /* Formulaire : colonnes qui se terminent au même niveau */
+  /* Formulaire : colonnes équilibrées, sans vide en bas */
   #dossier-form .form-grid{align-items:stretch;}
-  #dossier-form .form-grid>.form-sec{display:flex;flex-direction:column;height:100%;}
+  #dossier-form .form-grid>.form-sec{display:flex;flex-direction:column;height:100%;justify-content:space-between;}
+  #dossier-form .form-grid>.form-sec .sec-h{margin-bottom:4px;}
   #dossier-form .form-col{height:100%;}
   #dossier-form .form-col>.form-sec:last-child{flex:1 1 auto;}
-  /* Boutons « + Ajouter » du formulaire en noir */
   #dossier-form .btn-mini{color:var(--c-ink) !important;}
 
-  /* Barre du haut (client/expert) — mobile propre */
+  /* Barre d'app — mobile */
   @media (max-width:760px){
-    #expert-app .topbar-app,#client-app .topbar-app{padding:11px 16px;gap:10px 12px;row-gap:0;}
-    #expert-app .topbar-app .tb-cta,#client-app .topbar-app .tb-cta{padding:9px 13px;font-size:.82rem;border-radius:999px;}
-    #expert-app .topbar-app .tb-left .brand-img,#client-app .topbar-app .tb-left .brand-img{height:24px;}
-    #expert-app .topbar-app .tb-nav,#client-app .topbar-app .tb-nav{order:3;flex:1 0 100%;margin-top:10px;padding-top:9px;border-top:1px solid rgba(255,255,255,.20);gap:18px;justify-content:flex-start;}
-    #expert-app .topbar-app .tb-tab,#client-app .topbar-app .tb-tab{padding:2px 0;font-size:.9rem;}
-    #expert-app .topbar-app .tb-tab.active::after,#client-app .topbar-app .tb-tab.active::after{bottom:-9px;}
+    #expert-app .topbar-app,#client-app .topbar-app{padding:11px 16px 0 !important;gap:8px 12px;}
+    #expert-app .topbar-app .tb-cta,#client-app .topbar-app .tb-cta{padding:9px 13px;font-size:.82rem;}
+    .tb-mark{font-size:1.25rem;}
+    #expert-app .topbar-app .tb-nav,#client-app .topbar-app .tb-nav{gap:6px;margin-top:9px;}
+    #expert-app .topbar-app .tb-tab,#client-app .topbar-app .tb-tab{padding:7px 13px;font-size:.85rem;}
   }
 
   @media (prefers-reduced-motion:reduce){ .entry::before,#upload-screen::before,.clario-mark.xl,.clario-ai .ai-dot,.entry.active,#upload-screen{animation:none !important;} }
@@ -1561,7 +1573,8 @@
 <div id="expert-app">
   <header class="topbar-app">
     <div class="tb-left">
-      <span class="brand-img" role="img" aria-label="S2A — Sud Alpes Audit"></span>
+      <span class="clario-mark tb-mark"><em>Clario</em><span class="dot">.</span></span>
+      <span class="tb-sep"></span>
       <span class="tb-left-txt"><b id="x-client">Dossier</b><span id="x-exercice">Exercice</span></span>
     </div>
     <nav class="tb-nav">
@@ -1595,7 +1608,7 @@
 <!-- ============ INTERFACE CLIENT ============ -->
 <div id="client-app">
   <header class="topbar-app">
-    <div class="tb-left stack"><b id="c-client">Dossier</b><span id="c-exercice">Exercice</span></div>
+    <div class="tb-left"><span class="clario-mark tb-mark"><em>Clario</em><span class="dot">.</span></span><span class="tb-sep"></span><span class="tb-left-txt"><b id="c-client">Dossier</b><span id="c-exercice">Exercice</span></span></div>
     <nav class="tb-nav">
       <button class="tb-tab active" data-ctab="synthese">Synthèse de l'exercice</button>
       <button class="tb-tab" data-ctab="activite">Activité</button>
