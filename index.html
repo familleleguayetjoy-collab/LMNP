@@ -1299,7 +1299,7 @@
   }
   .hc-badge svg,#dossier-form .sec-h .sec-ico svg{color:#fff;}
   .hc-arrow{color:var(--c-blue);}
-  .hc-rule,.gold-rule,.up-head .gold-rule{background:linear-gradient(90deg,#2E7BE6,#C79A4B) !important;}
+  .hc-rule,.gold-rule,.up-head .gold-rule{background:linear-gradient(90deg,#1A62C4,#1F9E86 55%,#93A2B0) !important;}
   .sec-h h3,.import-col h3{color:var(--c-ink);}
 
   /* Champs de saisie façon Apple */
@@ -1341,7 +1341,7 @@
   /* Écran de choix */
   .cc-badge{background:#fff !important;color:var(--c-blue) !important;border:1px solid rgba(46,123,230,.22) !important;box-shadow:0 0 0 8px rgba(59,142,240,.08),0 14px 30px rgba(30,84,168,.14) !important;}
   .cc-title{color:var(--c-ink);}
-  .cc-rule{background:linear-gradient(90deg,#2E7BE6,#C79A4B) !important;}
+  .cc-rule{background:linear-gradient(90deg,#1A62C4,#1F9E86 55%,#93A2B0) !important;}
   .cc-go{background:var(--cg) !important;color:#fff !important;box-shadow:0 12px 26px rgba(31,111,214,.32),0 0 0 6px rgba(59,142,240,.10) !important;}
   .choice-sub{color:var(--c-muted);}
   .soft-pill{background:#fff !important;border:1px solid rgba(20,50,90,.12) !important;color:var(--c-blue) !important;box-shadow:0 10px 26px rgba(30,84,168,.12) !important;}
@@ -1401,19 +1401,20 @@
   #setup-periode{display:none !important;}
   /* Titres d'écran en display Bricolage (plus « startup ») */
   .entry-title,#setup-screen .entry-title,.cc-title{font-family:var(--wordmark) !important;font-style:normal;font-weight:800;}
-  #setup-screen .entry-title{font-size:3.5rem !important;text-transform:none !important;letter-spacing:-.025em !important;line-height:1.05;
+  #setup-screen .entry-title,#upload-screen .upload-card h1{font-family:var(--wordmark) !important;font-style:normal;font-weight:800;font-size:3.5rem !important;text-transform:none !important;letter-spacing:-.025em !important;line-height:1.05;
     background:linear-gradient(115deg,#0C3A76 0%,#1A62C4 48%,#2F80E0 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
-  /* Double trait « fait main » sous le nom du dossier */
-  .sketch-underline{display:block;width:min(360px,66%);height:auto;margin:16px auto 4px;overflow:visible;}
-  .sketch-underline path{stroke-dasharray:1;stroke-dashoffset:0;filter:drop-shadow(0 2px 5px rgba(26,98,196,.18));}
-  #setup-screen.active .sketch-underline .sk-1{animation:skDraw .7s ease .3s both;}
-  #setup-screen.active .sketch-underline .sk-2{animation:skDraw .7s ease .52s both;}
-  @keyframes skDraw{from{stroke-dasharray:400;stroke-dashoffset:400;}to{stroke-dasharray:400;stroke-dashoffset:0;}}
-  @media (max-width:600px){ #setup-screen .entry-title{font-size:2.3rem !important;} .sketch-underline{width:min(280px,80%);} }
+  /* Trait « fait main » bleu sous le nom du dossier (pleine largeur du nom) */
+  .title-wrap{display:inline-block;position:relative;max-width:100%;}
+  .title-wrap .sketch-underline{display:block;width:100%;height:auto;margin:6px auto 0;overflow:visible;}
+  .sketch-underline path{filter:drop-shadow(0 3px 6px rgba(26,98,196,.20));transform-box:fill-box;transform-origin:left center;animation:brushIn .6s cubic-bezier(.2,.8,.3,1) .28s both;}
+  @keyframes brushIn{from{transform:scaleX(0);opacity:.3;}to{transform:scaleX(1);opacity:1;}}
+  @media (max-width:600px){ #setup-screen .entry-title,#upload-screen .upload-card h1{font-size:2.3rem !important;} }
   .cc-title{letter-spacing:-.01em !important;font-size:1.58rem;}
+  /* Titres de section du formulaire — plus compacts */
+  #dossier-form .sec-h h3{font-size:1.08rem !important;}
   /* Titres de slide (client/expert) unifiés avec le haut — police display, filet bleu→doré */
   #expert-app .app-page>h1,#client-app .app-page>h1,#charge-right h1{font-family:var(--wordmark) !important;font-style:normal;font-weight:800;letter-spacing:-.02em;color:var(--c-ink);}
-  #client-app .app-page>h1::after,#expert-app .app-page>h1::after,#c-page-synthese h1::after,#charge-right h1::after{background:linear-gradient(90deg,#1A62C4,#C79A4B) !important;}
+  #client-app .app-page>h1::after,#expert-app .app-page>h1::after,#c-page-synthese h1::after,#charge-right h1::after{background:linear-gradient(90deg,#1A62C4,#1F9E86 55%,#93A2B0) !important;}
 
   /* Formulaire : colonnes équilibrées, sans vide en bas */
   #dossier-form .form-grid{align-items:stretch;}
@@ -1422,6 +1423,23 @@
   #dossier-form .form-col{height:100%;}
   #dossier-form .form-col>.form-sec:last-child{flex:1 1 auto;}
   #dossier-form .btn-mini{color:var(--c-ink) !important;}
+  /* Colonne de droite prolongée */
+  #dossier-form .form-card{max-width:1180px;}
+  #dossier-form .form-grid{grid-template-columns:1fr 1.14fr;}
+
+  /* Actions d'app groupées dans un bloc verre dépoli (Apple) */
+  #expert-app .topbar-app .tb-actions,#client-app .topbar-app .tb-actions{
+    display:inline-flex;align-items:center;justify-content:center;gap:7px;margin-left:auto;padding:5px;
+    border-radius:999px;background:rgba(255,255,255,.55);
+    -webkit-backdrop-filter:blur(14px) saturate(1.5);backdrop-filter:blur(14px) saturate(1.5);
+    border:1px solid rgba(255,255,255,.7);box-shadow:0 6px 20px rgba(20,50,90,.10),inset 0 1px 0 rgba(255,255,255,.6);
+  }
+  #expert-app .topbar-app .tb-actions .tb-cta.ghost,#client-app .topbar-app .tb-actions .tb-cta.ghost{
+    background:transparent !important;border:none !important;box-shadow:none !important;color:var(--c-ink-soft) !important;
+  }
+  #expert-app .topbar-app .tb-actions .tb-cta.ghost:hover,#client-app .topbar-app .tb-actions .tb-cta.ghost:hover{
+    background:rgba(20,50,90,.06) !important;color:var(--c-ink) !important;
+  }
 
   /* Barre d'app — mobile */
   @media (max-width:760px){
@@ -1476,7 +1494,7 @@
     </div>
     <div class="form-sec">
       <div class="sec-h"><span class="sec-ico" id="sec-ico-3"></span><h3>Contexte et notes</h3></div>
-      <div class="fld"><label>Contexte / situation (pour éclairer l'analyse)</label><textarea id="f-context" placeholder="Ex. holding animatrice, projet de cession, dividendes réguliers…"></textarea></div>
+      <div class="fld"><label>Contexte / situation (pour éclairer l'analyse)</label><textarea id="f-context" placeholder=""></textarea></div>
       <div class="fld">
         <label>Documents utiles (PV d'AGO, liasse, statuts, courriers… — Word ou PDF)</label>
         <div id="doc-list" class="doc-list"></div>
@@ -1515,7 +1533,11 @@
 <div id="upload-screen" style="display:none;">
   <div class="brandbar"><div class="clario-top" style="margin:0;"><span class="clario-mark sm"><em>Clario</em><span class="dot">.</span></span></div></div>
   <div class="upload-card">
-    <div class="up-head"><h1>Préparer le dossier</h1><div class="gold-rule" style="margin:14px auto 0;"></div><div class="up-linked" id="up-linked"></div></div>
+    <div class="up-head"><div class="title-wrap"><h1 id="up-name">Dossier</h1>
+      <svg class="sketch-underline" viewBox="0 0 340 16" preserveAspectRatio="xMidYMid meet" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="sk-up" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#0C3A76"/><stop offset=".5" stop-color="#1A62C4"/><stop offset="1" stop-color="#2F80E0"/></linearGradient></defs>
+        <path d="M7 9.6 C 110 3.6, 250 3.6, 333 7.4 C 250 10.8, 110 10.8, 7 11.2 Z" fill="url(#sk-up)"/>
+      </svg></div><div class="up-linked" id="up-linked" style="display:none;"></div></div>
 
     <div class="import-grid">
       <div class="import-col">
@@ -1525,7 +1547,7 @@
           <div class="dz-ico">↥</div>
           <div class="dz-txt">Déposer ou sélectionner le FEC</div>
         </div>
-        <div class="dz-status" id="fec-status"><span class="dot">✓</span> Aucun fichier sélectionné</div>
+        <div class="dz-status" id="fec-status"></div>
         <input type="file" id="file-input" accept=".txt,.csv">
       </div>
       <div class="import-col">
@@ -1535,7 +1557,7 @@
           <div class="dz-ico">↥</div>
           <div class="dz-txt">Déposer ou sélectionner le PDF</div>
         </div>
-        <div class="dz-status" id="pdf-status"><span class="dot">✓</span> Aucun fichier sélectionné</div>
+        <div class="dz-status" id="pdf-status"></div>
         <input type="file" id="pdf-input" accept=".pdf">
       </div>
     </div>
@@ -1558,14 +1580,13 @@
 <div id="setup-screen" class="entry">
   <div class="clario-top setup-logo"><span class="clario-mark sm"><em>Clario</em><span class="dot">.</span></span></div>
   <div class="entry-head" style="margin-top:6vh;">
-    <div class="entry-title" id="setup-title">DOSSIER</div>
-    <svg class="sketch-underline" viewBox="0 0 340 48" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="sk-blue" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#0C3A76"/><stop offset="1" stop-color="#2F80E0"/></linearGradient>
-      </defs>
-      <path class="sk-1" d="M12 18 C 78 9, 150 12, 214 15 C 262 17, 306 20, 330 13" stroke="url(#sk-blue)" stroke-width="4.5" stroke-linecap="round"/>
-      <path class="sk-2" d="M139 34 C 152 31, 188 31, 201 33" stroke="#C79A4B" stroke-width="3" stroke-linecap="round"/>
-    </svg>
+    <div class="title-wrap">
+      <div class="entry-title" id="setup-title">DOSSIER</div>
+      <svg class="sketch-underline" viewBox="0 0 340 16" preserveAspectRatio="xMidYMid meet" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="sk-setup" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#0C3A76"/><stop offset=".5" stop-color="#1A62C4"/><stop offset="1" stop-color="#2F80E0"/></linearGradient></defs>
+        <path d="M7 9.6 C 110 3.6, 250 3.6, 333 7.4 C 250 10.8, 110 10.8, 7 11.2 Z" fill="url(#sk-setup)"/>
+      </svg>
+    </div>
     <div class="choice-sub" id="setup-periode">Analyse terminée avec succès</div>
   </div>
   <div class="choice-grid">
@@ -1597,8 +1618,10 @@
       <button class="tb-tab active" data-xtab="essentiel">L'essentiel</button>
       <button class="tb-tab" data-xtab="reco">Recommandations IA</button>
     </nav>
-    <button class="tb-cta ghost" id="x-quit">Changer de dossier</button>
-    <button class="tb-cta" id="x-present-btn">Démarrer la présentation →</button>
+    <div class="tb-actions">
+      <button class="tb-cta ghost" id="x-quit">Changer de dossier</button>
+      <button class="tb-cta" id="x-present-btn">Démarrer la présentation →</button>
+    </div>
   </header>
   <main class="app-main">
     <section class="app-page active" id="x-page-essentiel">
@@ -1634,8 +1657,10 @@
       <button class="tb-tab" data-ctab="ratios">Ratios</button>
       <button class="tb-tab" data-ctab="tresorerie">Trésorerie</button>
     </nav>
-    <button class="tb-cta" id="c-report-btn">⤓ Rapport PDF</button>
-    <button class="tb-cta ghost" id="c-quit">Quitter</button>
+    <div class="tb-actions">
+      <button class="tb-cta" id="c-report-btn">⤓ Rapport PDF</button>
+      <button class="tb-cta ghost" id="c-quit">Quitter</button>
+    </div>
   </header>
   <main class="app-main app-wide">
     <div id="report-cover" class="print-only">
@@ -3871,20 +3896,19 @@ function openUploadForDossier(d){
   const card=document.querySelector('#upload-screen .upload-card');
   const h1=card.querySelector('h1'), linkedEl=document.getElementById('up-linked');
   if(d){
-    h1.textContent='Charger les comptes — '+(d.denomination||'Dossier');
-    const linked=new Set(); (d.capital||[]).forEach(a=>dossiersOfPerson(a.nom).forEach(o=>{ if(o.id!==d.id) linked.add(o.denomination); }));
-    linkedEl.textContent = linked.size? ('Vue d\'ensemble avec : '+[...linked].join(', ')) : '';
+    h1.textContent=(d.denomination||'Dossier');
+    linkedEl.textContent='';
     document.getElementById('amont-wrap').style.display='block';
     document.getElementById('f-amont').value = d.amont||'';
   } else {
-    h1.textContent='Préparer le dossier';
+    h1.textContent='Nouveau dossier';
     linkedEl.textContent='';
     document.getElementById('amont-wrap').style.display='none';
   }
   // reset état d'import
   rawEcritures=[]; rawExercices=null; selectedPdf=null;
   document.getElementById('analyser-btn').disabled=true;
-  document.getElementById('fec-status').className='dz-status'; document.getElementById('fec-status').innerHTML='<span class="dot">✓</span> Aucun fichier sélectionné';
+  document.getElementById('fec-status').className='dz-status'; document.getElementById('fec-status').innerHTML='';
   document.getElementById('arrete-inline').style.display='none';
   showEntry('upload-screen');
 }
@@ -4032,7 +4056,7 @@ document.getElementById('pdf-input').addEventListener('change', e=>{
   selectedPdf = e.target.files[0] || null;
   const st = document.getElementById('pdf-status');
   if(selectedPdf){ st.className='dz-status ok'; st.innerHTML='<span class="dot">✓</span> '+selectedPdf.name; }
-  else { st.className='dz-status'; st.innerHTML='<span class="dot">✓</span> Aucun fichier sélectionné'; }
+  else { st.className='dz-status'; st.innerHTML=''; }
 });
 /* --- Glisser-déposer --- */
 function wireDrop(zoneId, handler){
