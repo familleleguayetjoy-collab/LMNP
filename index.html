@@ -1384,6 +1384,32 @@
   #expert-app .topbar-app .tb-cta.ghost:hover,#client-app .topbar-app .tb-cta.ghost:hover{background:rgba(255,255,255,.22) !important;border-color:#fff !important;}
   #expert-app .topbar-app .tb-left .brand-img{background-image:url('assets/img/logo-s2a-light.webp');}
 
+  /* Ajustements ciblés */
+  #setup-periode{display:none !important;}
+  #setup-screen .entry-title{text-transform:none !important;letter-spacing:-.03em !important;font-weight:800;
+    background:linear-gradient(115deg,#0C3A76 0%,#1A62C4 48%,#2F80E0 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
+  .cc-title{font-weight:800 !important;letter-spacing:-.02em !important;}
+  /* Nom de société dans les barres d'app — plus « startup » */
+  #expert-app .topbar-app .tb-left-txt b,#client-app .topbar-app .tb-left.stack b{font-weight:800;letter-spacing:-.02em;}
+
+  /* Formulaire : colonnes qui se terminent au même niveau */
+  #dossier-form .form-grid{align-items:stretch;}
+  #dossier-form .form-grid>.form-sec{display:flex;flex-direction:column;height:100%;}
+  #dossier-form .form-col{height:100%;}
+  #dossier-form .form-col>.form-sec:last-child{flex:1 1 auto;}
+  /* Boutons « + Ajouter » du formulaire en noir */
+  #dossier-form .btn-mini{color:var(--c-ink) !important;}
+
+  /* Barre du haut (client/expert) — mobile propre */
+  @media (max-width:760px){
+    #expert-app .topbar-app,#client-app .topbar-app{padding:11px 16px;gap:10px 12px;row-gap:0;}
+    #expert-app .topbar-app .tb-cta,#client-app .topbar-app .tb-cta{padding:9px 13px;font-size:.82rem;border-radius:999px;}
+    #expert-app .topbar-app .tb-left .brand-img,#client-app .topbar-app .tb-left .brand-img{height:24px;}
+    #expert-app .topbar-app .tb-nav,#client-app .topbar-app .tb-nav{order:3;flex:1 0 100%;margin-top:10px;padding-top:9px;border-top:1px solid rgba(255,255,255,.20);gap:18px;justify-content:flex-start;}
+    #expert-app .topbar-app .tb-tab,#client-app .topbar-app .tb-tab{padding:2px 0;font-size:.9rem;}
+    #expert-app .topbar-app .tb-tab.active::after,#client-app .topbar-app .tb-tab.active::after{bottom:-9px;}
+  }
+
   @media (prefers-reduced-motion:reduce){ .entry::before,#upload-screen::before,.clario-mark.xl,.clario-ai .ai-dot,.entry.active,#upload-screen{animation:none !important;} }
 </style>
 </head>
@@ -1393,7 +1419,6 @@
 <div id="home-screen" class="entry active">
   <div class="entry-head clario-hero">
     <div class="clario-mark xl"><em>Clario</em><span class="dot">.</span></div>
-    <div class="clario-ai"><span class="ai-dot"></span>Intelligence financière</div>
   </div>
   <div class="hz">
     <button class="home-card" id="home-new"><span class="hc-badge" id="ico-new"></span><div class="hc-body"><h3>Paramétrer un nouveau dossier</h3><span class="hc-rule"></span></div><span class="hc-arrow">›</span></button>
@@ -3698,7 +3723,7 @@ function showChoiceScreen(){
   captureAmont();
   if(currentDossier && currentDossier.denomination) clientLabel = currentDossier.denomination;
   const {mn, mx} = ecrituresBounds(rawEcritures);
-  document.getElementById('setup-title').textContent = (clientLabel||'DOSSIER').toUpperCase();
+  document.getElementById('setup-title').textContent = (clientLabel||'Dossier');
   document.getElementById('setup-periode').textContent = mx ? 'Exercice '+mx.getFullYear()+' — analyse terminée' : 'Analyse terminée avec succès';
   ['home-screen','dossier-form','dossier-list'].forEach(s=>document.getElementById(s).classList.remove('active'));
   document.getElementById('upload-screen').style.display='none';
