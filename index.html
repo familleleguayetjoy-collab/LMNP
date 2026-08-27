@@ -1103,7 +1103,20 @@
   .hc-rule{display:block;width:34px;height:3px;background:var(--gold);border-radius:2px;margin-top:10px;}
   .hc-arrow{color:var(--brand);font-size:1.7rem;font-weight:400;line-height:1;}
   .form-card,.list-card{max-width:820px;width:100%;background:transparent;border:none;box-shadow:none;padding:0;max-height:none;overflow:visible;}
-  .form-sec{background:linear-gradient(180deg,#ffffff,#fcfbf8);border:1px solid rgba(27,58,92,.08);border-radius:22px;box-shadow:0 1px 2px rgba(21,24,28,.04),0 16px 40px rgba(27,58,92,.08);padding:28px 30px;margin-bottom:22px;}
+  .form-sec{background:linear-gradient(180deg,#ffffff,#fcfbf8);border:1px solid rgba(27,58,92,.08);border-radius:22px;box-shadow:0 1px 2px rgba(21,24,28,.04),0 16px 40px rgba(27,58,92,.08);padding:22px 24px;margin-bottom:22px;}
+  #dossier-form .form-card{max-width:1080px;}
+  .form-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:20px;align-items:start;}
+  .form-grid .form-sec{margin-bottom:0;}
+  .form-col{display:flex;flex-direction:column;gap:20px;}
+  #dossier-form .fld{margin-bottom:9px;}
+  #dossier-form .form-sec .frow{gap:12px;}
+  #dossier-form.entry{padding-top:3.2vh;padding-bottom:24px;}
+  #dossier-form .entry-head{margin-bottom:16px;}
+  #dossier-form .entry-title{font-size:1.95rem;}
+  #dossier-form .brand-img.entry-logo{height:38px;}
+  #dossier-form .form-sec{padding:18px 22px;}
+  #dossier-form .form-actions{margin-top:18px;}
+  @media (max-width:900px){ .form-grid{grid-template-columns:1fr;} }
   .sec-h{display:flex;align-items:center;gap:16px;margin-bottom:18px;}
   .sec-h .sec-ico{flex:0 0 52px;width:52px;height:52px;border-radius:50%;background:var(--brand);color:var(--gold);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 18px rgba(27,58,92,.24);}
   .sec-h .sec-ico svg{width:26px;height:26px;}
@@ -1223,6 +1236,7 @@
     <div class="entry-title">Nouveau <span class="g">dossier</span></div>
   </div>
   <div class="form-card">
+    <div class="form-grid">
     <div class="form-sec">
       <div class="sec-h"><span class="sec-ico" id="sec-ico-1"></span><h3>Informations générales</h3></div>
       <div class="frow"><div class="fld"><label>Dénomination</label><input id="f-denom" placeholder="Nom de la société"></div><div class="fld"><label>SIREN</label><input id="f-siren" placeholder="9 chiffres" inputmode="numeric"></div></div>
@@ -1232,6 +1246,7 @@
       <div class="frow"><div class="fld"><label>Date de clôture</label><input id="f-cloture" type="date"></div><div class="fld"><label>Régime fiscal</label><select id="f-regime"><option>IS</option><option>IR</option></select></div></div>
       <div class="frow"><div class="fld"><label>Régime de groupe</label><select id="f-groupe"><option value="">Aucun</option><option>Mère-fille</option><option>Intégration fiscale</option></select></div><div class="fld"><label>Type de dossier</label><select id="f-type"><option value="exploitation">Exploitation (avec bilan)</option><option value="sci-lmnp">SCI / LMNP (sans bilan)</option></select></div></div>
     </div>
+    <div class="form-col">
     <div class="form-sec">
       <div class="sec-h"><span class="sec-ico" id="sec-ico-2"></span><h3>Structure du capital — associés</h3></div>
       <div id="assoc-list"></div>
@@ -1247,6 +1262,8 @@
         <button type="button" class="btn-mini" id="doc-add">+ Ajouter un ou plusieurs documents</button>
         <input type="file" id="doc-input" multiple accept=".pdf,.doc,.docx,.odt,.rtf,.txt,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none;">
       </div>
+    </div>
+    </div>
     </div>
     <div class="form-actions"><button class="tb-cta ghost" id="form-cancel">Annuler</button><button class="tb-cta cta-gold" id="form-save">Enregistrer et charger les comptes →</button></div>
   </div>
@@ -1311,8 +1328,7 @@
     <div class="fld" id="amont-wrap" style="display:none;text-align:left;margin-top:4px;"><label>Commentaire avant le rendez-vous (facultatif)</label><textarea id="f-amont" style="min-height:130px;" placeholder="Ex. le client m'a fait part de sa volonté d'investir / s'interroge sur sa trésorerie…"></textarea></div>
 
     <button class="btn-analyser" id="analyser-btn" disabled>Analyser le dossier</button>
-    <div class="upload-divider">ou</div>
-    <button class="btn btn-secondary" id="demo-btn" style="width:100%;justify-content:center;">Essayer avec un jeu de démonstration</button>
+    <button class="btn btn-secondary" id="demo-btn" style="display:none;">Essayer avec un jeu de démonstration</button>
     <button class="choice-changer no-print" id="upload-home" style="margin-top:14px;">← Retour à l'accueil</button>
     <div class="upload-error" id="upload-error"></div>
   </div>
@@ -1452,17 +1468,17 @@
           </div>
           <div class="bcard" style="display:flex;flex-direction:column;">
             <div class="card-h">Évolution mensuelle des charges</div>
-            <div class="card-sub2" style="margin-bottom:10px;">Cliquez un mois pour voir les postes qui ont le plus évolué.</div>
-            <div class="chart-wrap lg" style="flex:1;"><canvas id="chg-chart"></canvas></div>
+            <div class="card-sub2" style="margin-bottom:8px;">Cliquez un mois pour voir les postes qui ont le plus évolué.</div>
+            <div class="chart-wrap" style="flex:1;height:290px;min-height:270px;"><canvas id="chg-chart"></canvas></div>
           </div>
         </div>
-        <div id="chg-month-panel" style="display:none;margin-top:20px;"></div>
-        <div class="two-70-30" style="margin-top:20px;">
-          <div class="bcard" style="display:flex;flex-direction:column;max-height:380px;">
-            <div class="card-h" style="margin-bottom:14px;">Détail des charges d'exploitation</div>
+        <div id="chg-month-panel" style="display:none;margin-top:16px;"></div>
+        <div class="two-70-30" style="margin-top:16px;">
+          <div class="bcard" style="display:flex;flex-direction:column;height:270px;">
+            <div class="card-h" style="margin-bottom:12px;">Détail des charges d'exploitation</div>
             <div class="chg-scroll"><table class="ctab" id="chg-table"></table></div>
           </div>
-          <div class="retenir-client" style="align-self:stretch;max-height:380px;overflow:auto;"><div class="rc-ico" id="chg-ico"></div><h3>Ce qu'il faut retenir</h3><div id="chg-retenir"></div></div>
+          <div class="retenir-client" style="align-self:stretch;height:270px;overflow:auto;"><div class="rc-ico" id="chg-ico"></div><h3>Ce qu'il faut retenir</h3><div id="chg-retenir"></div></div>
         </div>
       </div>
       <div id="charge-detail" style="display:none;"></div>
