@@ -4,7 +4,7 @@
    Parcours guidé : Choisir le dossier → Importer → À trancher →
    À réclamer → Le mail → Le fichier. Une seule chose à faire par écran.
    =================================================================== */
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400..800;1,14..32,400..700&family=Bricolage+Grotesque:opsz,wght@12..96,600..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400..800;1,14..32,400..700&family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Baloo+2:wght@700;800&display=swap');
 
 /* Palette et matière alignées sur la présentation des comptes S2A :
    papier chaud, cartes blanches, vert cabinet, ombres feutrées, Inter. */
@@ -72,19 +72,16 @@ main.wrap{padding:30px 20px 90px}
 .pagehead{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap}
 .pagehead h1{font-size:clamp(30px,4.6vw,50px);color:var(--ink)}
 .lmnp h1.js-dossier{color:#fff}
-.step[data-s="0"] .pagehead{justify-content:center}
-.step[data-s="0"] .pagehead h1{font-family:var(--wordmark);font-style:italic;font-weight:800;color:var(--green);
-  text-align:center;position:relative;display:inline-block;padding-bottom:20px;margin:6px auto 4px}
-.step[data-s="0"] .pagehead h1::after{content:"";position:absolute;left:50%;bottom:8px;transform:translateX(-50%);
-  width:140px;height:5px;border-radius:99px;background:linear-gradient(90deg,#0C355E,#2C79C9)}
-.step[data-s="0"] .pagehead h1::before{content:"";position:absolute;left:50%;bottom:1px;transform:translateX(-50%) rotate(-1.6deg);
-  width:80px;height:3px;border-radius:99px;background:var(--green-line)}
+.mesdossiers{display:flex;flex-direction:column;align-items:center;gap:2px;margin:6px 0 8px}
+.mesdossiers h1{font-family:'Baloo 2',var(--wordmark);font-style:normal;font-weight:800;color:var(--green);
+  letter-spacing:-.01em;text-align:center;font-size:clamp(32px,4.6vw,48px);line-height:1.15}
+.mesdossiers svg{width:230px;max-width:70%;height:auto;margin-top:-2px}
 .js-dossier{font-family:var(--wordmark);font-style:italic;font-weight:800;letter-spacing:-.01em;flex:1 1 100%;
   display:flex;align-items:center;min-height:92px;color:#fff;
   background:linear-gradient(120deg,#0C355E 0%,#1B5FA8 62%,#2C79C9 100%);
   border-radius:16px;padding:22px 30px;font-size:clamp(26px,3.4vw,42px);box-shadow:var(--shadow-sm)}
 /* Étape 1 : titre bleu + panneau de stats côte à côte */
-.titlesplit{display:grid;grid-template-columns:1.55fr 1fr;gap:16px}
+.titlesplit{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 @media(max-width:720px){.titlesplit{grid-template-columns:1fr}}
 .statspanel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px 26px;
   display:flex;flex-direction:column;justify-content:center;gap:12px;box-shadow:var(--shadow-sm)}
@@ -111,8 +108,8 @@ main.wrap{padding:30px 20px 90px}
 @media(max-width:760px){.dcols{grid-template-columns:1fr}}
 .dossiers{display:flex;flex-direction:column;gap:12px;margin-top:14px}
 .dgroup{border:1px solid var(--line);border-radius:18px;padding:18px 20px 20px;box-shadow:var(--shadow-sm)}
-.dgroup.g-todo{background:linear-gradient(180deg,var(--warn-soft) 0%,var(--surface) 55%)}
-.dgroup.g-done{background:linear-gradient(180deg,var(--green-soft) 0%,var(--surface) 55%)}
+.dgroup.g-todo{background:linear-gradient(180deg,var(--warn-soft) 0%,var(--surface) 100%)}
+.dgroup.g-done{background:linear-gradient(180deg,var(--green-soft) 0%,var(--surface) 100%)}
 .dgroup-h{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;font-size:13px;
   text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft)}
 .dgroup-h .dg-n{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:99px;
@@ -176,7 +173,7 @@ main.wrap{padding:30px 20px 90px}
 .dtype{font-family:var(--display);font-weight:600;font-size:12.5px;padding:6px 12px;border-radius:99px;border:1px solid var(--line);color:var(--muted)}
 
 /* Footer action bar */
-.actionbar{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:22px;flex-wrap:wrap}
+.actionbar{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:30px;flex-wrap:wrap}
 .actionbar .left{display:flex;align-items:center;gap:11px;font-family:var(--display);font-weight:600;color:var(--ink)}
 .cta{display:inline-flex;align-items:center;gap:12px;background:var(--gold);color:var(--gold-ink);
   font-family:var(--display);font-weight:700;font-size:16px;padding:15px 28px;border-radius:12px;
@@ -206,7 +203,7 @@ main.wrap{padding:30px 20px 90px}
   border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:translateY(-70%) rotate(45deg);pointer-events:none}
 
 /* Step 3 list */
-.badge-h{display:flex;align-items:center;gap:14px;margin:28px 0 4px}
+.badge-h{display:flex;align-items:center;gap:14px;margin:34px 0 20px}
 .badge-h .n{width:34px;height:34px;border-radius:50%;background:var(--gold);color:var(--gold-ink);
   display:grid;place-items:center;font-family:var(--display);font-weight:700}
 .badge-h h2{font-size:30px;color:var(--green)}
@@ -381,7 +378,13 @@ main.wrap{padding:30px 20px 90px}
 
     <!-- ÉTAPE 0 — CHOISIR LE DOSSIER -->
     <section class="step" data-s="0">
-      <div class="pagehead"><h1>Mes dossiers</h1></div>
+      <div class="mesdossiers">
+        <h1>Mes dossiers</h1>
+        <svg viewBox="0 0 340 46" fill="none" aria-hidden="true">
+          <path d="M12 30 C 96 12, 224 8, 330 20" stroke="#14497F" stroke-width="8" stroke-linecap="round"/>
+          <path d="M26 40 C 130 26, 232 33, 300 25" stroke="#2C79C9" stroke-width="5.5" stroke-linecap="round"/>
+        </svg>
+      </div>
 
       <div class="dcols">
         <div class="dgroup g-todo">
@@ -856,8 +859,7 @@ main.wrap{padding:30px 20px 90px}
       +'<div class="hist" style="margin-top:6px">'
       +(avecBanque?'<div class="hitem"><span class="hdot"></span><div class="hmain"><div class="hnom">'+nom+'_BANQUE_'+stamp+'.xlsx</div><div class="hmeta">journal de banque · triées par date, modifiables</div></div></div>':'')
       +'<div class="hitem"><span class="hdot"></span><div class="hmain"><div class="hnom">'+fichier+'</div><div class="hmeta">'+(avecBanque?'journal d\'OD · contrepartie 108':'écritures fermes · prêtes à importer')+'</div></div></div>'
-      +'</div>'
-      +'<p style="margin-top:12px;color:var(--muted);font-size:12.5px">Chaque export est horodaté ('+stamp.replace('-',' à ').replace(/(\d{4})(\d{2})(\d{2})/,'$3/$2/$1')+') pour éviter tout mélange entre deux versions.</p>');
+      +'</div>');
   });
 
   /* --- connexion (démo : n'authentifie pas, garde juste la session locale) --- */
