@@ -1281,7 +1281,7 @@
 
   /* Cartes premium (blanc + ombre bleutée douce) */
   .home-card,#dossier-form .form-sec,.choice-card2{
-    background:linear-gradient(180deg,#FFFFFF,#FBFDFF) !important;
+    background:linear-gradient(158deg,#FFFFFF 0%,#EDF3FC 100%) !important;
     border:1px solid rgba(20,50,90,.07) !important;
     border-radius:24px !important;
     box-shadow:0 1px 2px rgba(16,32,60,.04),0 26px 60px rgba(30,84,168,.10) !important;
@@ -1333,7 +1333,7 @@
   .btn-analyser:disabled{background:#E3E9F2 !important;color:#9AA7BD !important;box-shadow:none !important;filter:none;}
 
   /* Bandeau « Vos dossiers » */
-  #dossier-list .list-card{background:linear-gradient(180deg,#FFFFFF,#FBFDFF) !important;border:1px solid rgba(20,50,90,.07) !important;box-shadow:0 26px 60px rgba(30,84,168,.10) !important;}
+  #dossier-list .list-card{background:linear-gradient(158deg,#FFFFFF 0%,#EDF3FC 100%) !important;border:1px solid rgba(20,50,90,.07) !important;box-shadow:0 26px 60px rgba(30,84,168,.10) !important;}
   #dossier-list .list-topbar{background:linear-gradient(120deg,#0C3E80 0%,#1A62C4 55%,#2F80E0 120%) !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.18) !important;}
   .dossier-row:hover{background:#F5F9FF;}
   .dossier-row .dr-tag{background:rgba(46,123,230,.10);color:#2A6BB6;}
@@ -1348,7 +1348,7 @@
   .soft-pill .sp-ico{color:var(--c-blue);}
 
   /* Import FEC */
-  #upload-screen .upload-card{background:linear-gradient(180deg,#FFFFFF,#FBFDFF) !important;border:1px solid rgba(20,50,90,.07) !important;box-shadow:0 34px 80px rgba(30,84,168,.14) !important;border-radius:28px !important;}
+  #upload-screen .upload-card{background:linear-gradient(158deg,#FFFFFF 0%,#EDF3FC 100%) !important;border:1px solid rgba(20,50,90,.07) !important;box-shadow:0 34px 80px rgba(30,84,168,.14) !important;border-radius:28px !important;}
   #upload-screen .upload-card h1{color:var(--c-ink);}
   .up-linked{color:var(--c-muted);}
   #upload-screen .import-col{background:#F6FAFF !important;border:1px solid rgba(46,123,230,.10) !important;border-radius:20px !important;box-shadow:none !important;}
@@ -1415,8 +1415,14 @@
   /* Titres de section du formulaire — plus compacts */
   #dossier-form .sec-h h3{font-size:1.08rem !important;}
   /* Titres de slide (client/expert) — police display + trait sur toute la largeur du titre */
-  #expert-app .app-page h1,#client-app .app-page h1,#charge-right h1{font-family:var(--wordmark) !important;font-style:normal;font-weight:800;letter-spacing:-.02em;color:var(--c-ink);width:fit-content;max-width:100%;}
-  #expert-app .app-page h1::after,#client-app .app-page h1::after,#charge-right h1::after{content:"" !important;display:block !important;height:3px;width:100% !important;margin-top:12px;border-radius:2px;background:linear-gradient(90deg,#1A62C4,#1F9E86 55%,#93A2B0) !important;}
+  /* Trait « pinceau » réutilisable (même tracé que sous le nom du dossier) */
+  :root{--brush:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 340 16' preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='0'%3E%3Cstop offset='0' stop-color='%230C3A76'/%3E%3Cstop offset='.5' stop-color='%231A62C4'/%3E%3Cstop offset='1' stop-color='%232F80E0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M7 9.6 C 110 3.6, 250 3.6, 333 7.4 C 250 10.8, 110 10.8, 7 11.2 Z' fill='url(%23g)'/%3E%3C/svg%3E");}
+  #expert-app .app-page h1,#client-app .app-page h1,#charge-right h1{font-family:var(--wordmark) !important;font-style:normal;font-weight:800;letter-spacing:-.02em;width:fit-content;max-width:100%;margin:0 0 26px !important;
+    background:linear-gradient(115deg,#0C3A76 0%,#1A62C4 52%,#2F80E0 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
+  #expert-app .app-page h1::after,#client-app .app-page h1::after,#charge-right h1::after{content:"" !important;display:block !important;height:11px;width:100% !important;margin:1px 0 0 !important;border-radius:0 !important;
+    background:var(--brush) no-repeat center/100% 100% !important;}
+  /* le sous-titre juste sous un titre se recolle au trait */
+  #expert-app .app-page h1+.page-sub,#client-app .app-page h1+.page-sub{margin-top:-16px;}
 
   /* Formulaire : colonnes équilibrées, sans vide en bas */
   #dossier-form .form-grid{align-items:stretch;}
@@ -1429,7 +1435,29 @@
   /* Colonne de droite prolongée */
   #dossier-form .form-card{max-width:1180px;}
   #dossier-form .form-grid{grid-template-columns:1fr 1.14fr;}
+  /* Titres de section soulignés (même trait pinceau) */
+  #dossier-form .sec-h{align-items:flex-start;}
+  #dossier-form .sec-h h3{width:fit-content;max-width:100%;}
+  #dossier-form .sec-h h3::after{content:"";display:block;height:9px;width:100%;margin-top:1px;background:var(--brush) no-repeat center/100% 100%;}
+  /* Titres des écrans d'entrée */
+  #dossier-form .entry-title,#dossier-list .entry-title{width:fit-content;max-width:100%;margin:0 auto;}
+  #dossier-form .entry-title::after,#dossier-list .entry-title::after{content:"";display:block;height:11px;width:100%;margin-top:2px;background:var(--brush) no-repeat center/100% 100%;}
+  #dossier-form .entry-head,#dossier-list .entry-head{display:flex;flex-direction:column;align-items:center;}
 
+  /* Accueil : contenu centré verticalement */
+  #home-screen.entry{justify-content:center;padding-top:4vh;padding-bottom:8vh;}
+
+  /* Répartition : marque à gauche, nav centrée sur toute la largeur, actions à droite */
+  /* Expert (2 onglets) : marque | nav centrée | actions, sur une seule ligne */
+  @media (min-width:900px){
+    #expert-app .topbar-app{display:grid !important;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;column-gap:16px;}
+    #expert-app .topbar-app .tb-left{justify-self:start;min-width:0;}
+    #expert-app .topbar-app .tb-nav{justify-self:center;margin:0 !important;}
+    #expert-app .topbar-app .tb-actions{justify-self:end;margin:0 !important;}
+  }
+  /* Client (7 onglets) : nav centrée sur sa propre ligne */
+  #client-app .topbar-app .tb-nav{order:3;flex:0 0 auto;margin:2px auto 0 !important;}
+  #client-app .topbar-app .tb-tab{padding:7px 13px;}
   /* Actions d'app groupées dans un bloc verre dépoli (Apple) */
   #expert-app .topbar-app .tb-actions,#client-app .topbar-app .tb-actions{
     display:inline-flex;align-items:center;justify-content:center;gap:7px;margin-left:auto;padding:5px;
@@ -1474,7 +1502,6 @@
 <div id="dossier-form" class="entry">
   <button class="entry-back" id="form-back-top" title="Retour">‹</button>
   <div class="entry-head">
-    <div class="clario-top"><span class="clario-mark sm"><em>Clario</em><span class="dot">.</span></span></div>
     <div class="entry-title">Nouveau <span class="g">dossier</span></div>
   </div>
   <div class="form-card">
@@ -1516,7 +1543,6 @@
 <div id="dossier-list" class="entry">
   <button class="entry-back" id="list-back-top" title="Retour">‹</button>
   <div class="entry-head">
-    <div class="clario-top"><span class="clario-mark sm"><em>Clario</em><span class="dot">.</span></span></div>
     <div class="entry-title">Vos <span class="g">dossiers</span></div>
   </div>
   <div class="list-card">
