@@ -1455,6 +1455,59 @@
   #expert-app .big-figure,#client-app .big-figure{color:var(--c-ink) !important;font-weight:700;}
   #expert-app table th,#client-app table th{color:var(--c-ink-soft) !important;}
 
+  /* --- Encre : gris très foncé plutôt que noir, dans les cartes --- */
+  #expert-app .sig-line .sl-label,#client-app .sig-line .sl-label,
+  #expert-app .kpi-label,#client-app .kpi-label{color:#3A4653 !important;}
+  #expert-app .sig-line .sl-val,#client-app .sig-line .sl-val,
+  #expert-app .kpi-value,#client-app .kpi-value,
+  #expert-app .big-figure,#client-app .big-figure,
+  #expert-app .mini-card .mc-v,#client-app .mini-card .mc-v{color:#2C3845 !important;}
+  #expert-app .bcard td,#client-app .bcard td,
+  #expert-app .ctab td,#client-app .ctab td{color:#333F4C;}
+
+  /* --- Respiration entre l'intitulé et le montant --- */
+  #expert-app .kpi-head,#client-app .kpi-head{margin-bottom:14px;}
+  #expert-app .card-h,#client-app .card-h{margin-bottom:10px;}
+  #expert-app .mini-card .mc-head,#client-app .mini-card .mc-head{margin-bottom:10px;}
+  #expert-app .big-figure,#client-app .big-figure{margin-top:2px;}
+
+  /* --- Transition plus douce entre onglets (EC) --- */
+  @keyframes clarioTabIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+  #expert-app .app-page.active > *,#client-app .app-page.active > *{animation:clarioTabIn .5s cubic-bezier(.22,.61,.36,1) both !important;}
+  #expert-app .app-page.active > *:nth-child(1),#client-app .app-page.active > *:nth-child(1){animation-delay:0s !important;}
+  #expert-app .app-page.active > *:nth-child(2),#client-app .app-page.active > *:nth-child(2){animation-delay:.06s !important;}
+  #expert-app .app-page.active > *:nth-child(3),#client-app .app-page.active > *:nth-child(3){animation-delay:.11s !important;}
+  #expert-app .app-page.active > *:nth-child(n+4),#client-app .app-page.active > *:nth-child(n+4){animation-delay:.15s !important;}
+
+  /* --- Plus d'air sous « Nouveau dossier » --- */
+  #dossier-form .entry-head{margin-bottom:30px !important;}
+
+  /* --- Page Charges : camembert + recommandations à gauche, comptes à droite --- */
+  .chg-layout{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:18px;align-items:stretch;}
+  .chg-col{display:flex;flex-direction:column;gap:18px;min-width:0;}
+  .chg-donut-card{display:flex;flex-direction:column;}
+  .chg-donut-wrap{position:relative;flex:1;min-height:236px;display:flex;align-items:center;justify-content:center;}
+  .chg-donut-wrap canvas{max-height:250px;}
+  .chg-donut-mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;text-align:center;}
+  .chg-donut-mid .cdm-lab{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--c-muted);margin-bottom:4px;}
+  .chg-donut-mid .big-figure{font-size:1.85rem;}
+  .chg-retenir-card{flex:1;min-height:0;overflow:auto;}
+  .chg-table-card{display:flex;flex-direction:column;min-height:520px;}
+  .chg-table-card .chg-scroll{flex:1;}
+  @media (max-width:1000px){ .chg-layout{grid-template-columns:1fr;} .chg-table-card{min-height:360px;} }
+
+  /* --- Détail d'un compte de charge : 3 cartes sur une ligne --- */
+  .three-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px;}
+  .three-cards .mini-card{display:flex;flex-direction:column;justify-content:center;min-width:0;}
+  .three-cards .mc-head{gap:10px;}
+  .three-cards .mc-l{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .three-cards .var-wide-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;}
+  @media (max-width:900px){ .three-cards{grid-template-columns:1fr;} }
+
+  /* Barre d'app : le nom ne déborde jamais sous la nav */
+  #expert-app .topbar-app .tb-left,#client-app .topbar-app .tb-left{overflow:hidden;}
+  #client-app .topbar-app .tb-left-txt b{max-width:190px;}
+
   /* Formulaire : colonnes équilibrées, sans vide en bas */
   #dossier-form .form-grid{align-items:stretch;}
   #dossier-form .form-grid>.form-sec{display:flex;flex-direction:column;height:100%;justify-content:space-between;}
@@ -1486,9 +1539,16 @@
     #expert-app .topbar-app .tb-nav{justify-self:center;margin:0 !important;}
     #expert-app .topbar-app .tb-actions{justify-self:end;margin:0 !important;}
   }
-  /* Client (7 onglets) : nav centrée sur sa propre ligne */
-  #client-app .topbar-app .tb-nav{order:3;flex:0 0 auto;margin:2px auto 0 !important;}
-  #client-app .topbar-app .tb-tab{padding:7px 13px;}
+  /* Client : repli sous 1280px — nav centrée sur sa propre ligne */
+  #client-app .topbar-app .tb-nav{order:3;flex:0 0 auto;margin:2px auto 0;}
+  #client-app .topbar-app .tb-tab{padding:7px 12px;}
+  /* Client : au-delà, même disposition que l'EC — marque | nav centrée | actions */
+  @media (min-width:1280px){
+    #client-app .topbar-app{display:grid !important;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;column-gap:14px;}
+    #client-app .topbar-app .tb-left{justify-self:start;min-width:0;}
+    #client-app .topbar-app .tb-nav{justify-self:center;margin:0 !important;order:0 !important;}
+    #client-app .topbar-app .tb-actions{justify-self:end;margin:0 !important;}
+  }
   /* Actions d'app groupées dans un bloc verre dépoli (Apple) */
   #expert-app .topbar-app .tb-actions,#client-app .topbar-app .tb-actions{
     display:inline-flex;align-items:center;justify-content:center;gap:7px;margin-left:auto;padding:5px;
@@ -1709,10 +1769,10 @@
   <header class="topbar-app">
     <div class="tb-left"><span class="clario-mark tb-mark"><em>Clario</em><span class="dot">.</span></span><span class="tb-sep"></span><span class="tb-left-txt"><b id="c-client">Dossier</b><span id="c-exercice">Exercice</span></span></div>
     <nav class="tb-nav">
-      <button class="tb-tab active" data-ctab="synthese">Synthèse de l'exercice</button>
+      <button class="tb-tab active" data-ctab="synthese">Synthèse</button>
       <button class="tb-tab" data-ctab="activite">Activité</button>
       <button class="tb-tab" data-ctab="charges">Charges</button>
-      <button class="tb-tab" data-ctab="recurrentes">Charges récurrentes</button>
+      <button class="tb-tab" data-ctab="recurrentes">Récurrentes</button>
       <button class="tb-tab" data-ctab="bilan">Bilan</button>
       <button class="tb-tab" data-ctab="ratios">Ratios</button>
       <button class="tb-tab" data-ctab="tresorerie">Trésorerie</button>
@@ -1771,26 +1831,25 @@
     <section class="app-page" id="c-page-charges">
       <div id="charges-list">
         <h1>Charges d'exploitation</h1>
-        <div class="two-60-40" style="margin-top:6px;grid-template-columns:1fr 1.9fr;align-items:stretch;">
-          <div class="bcard chg-total-card">
-            <div class="ic ic-orange" id="chg-total-ico"></div>
-            <div class="card-h">Total charges d'exploitation</div>
-            <div class="big-figure" id="chg-total">—</div>
-            <div class="big-figure-sub" id="chg-total-sub"></div>
+        <div class="chg-layout">
+          <div class="chg-col">
+            <div class="bcard chg-donut-card">
+              <div class="card-h">Répartition des charges</div>
+              <div class="chg-donut-wrap">
+                <canvas id="chg-donut"></canvas>
+                <div class="chg-donut-mid">
+                  <div class="cdm-lab">Total</div>
+                  <div class="big-figure" id="chg-total">—</div>
+                  <div class="big-figure-sub" id="chg-total-sub"></div>
+                </div>
+              </div>
+            </div>
+            <div class="retenir-client chg-retenir-card"><div class="rc-ico" id="chg-ico"></div><h3>Ce qu'il faut retenir</h3><div id="chg-retenir"></div></div>
           </div>
-          <div class="bcard" style="display:flex;flex-direction:column;">
-            <div class="card-h">Évolution mensuelle des charges</div>
-            <div class="card-sub2" style="margin-bottom:8px;">Cliquez un mois pour voir les postes qui ont le plus évolué.</div>
-            <div class="chart-wrap" style="flex:1;height:290px;min-height:270px;"><canvas id="chg-chart"></canvas></div>
-          </div>
-        </div>
-        <div id="chg-month-panel" style="display:none;margin-top:16px;"></div>
-        <div class="two-70-30" style="margin-top:16px;">
-          <div class="bcard" style="display:flex;flex-direction:column;height:270px;">
-            <div class="card-h" style="margin-bottom:12px;">Détail des charges d'exploitation</div>
+          <div class="bcard chg-table-card">
+            <div class="card-h" style="margin-bottom:12px;">Comptes de charges</div>
             <div class="chg-scroll"><table class="ctab" id="chg-table"></table></div>
           </div>
-          <div class="retenir-client" style="align-self:stretch;height:270px;overflow:auto;"><div class="rc-ico" id="chg-ico"></div><h3>Ce qu'il faut retenir</h3><div id="chg-retenir"></div></div>
         </div>
       </div>
       <div id="charge-detail" style="display:none;"></div>
@@ -4542,6 +4601,21 @@ function lineSeries(canvasId, series, opts){
         tooltip:{callbacks:{label:c=>c.dataset.label+' : '+fmtEUR(c.parsed.y)}}},
       scales:{x:{grid:{display:false},ticks:{font:{size:11},color:'#8A909B'}},y:yScale}}});
 }
+const CHG_DONUT_COLORS=['#1A62C4','#2F80E0','#5AA9FF','#1F9E86','#E08A2B','#8F9BB0','#B4894E','#6C7A8C'];
+function chgDonut(canvasId, cats){
+  const cv=document.getElementById(canvasId);
+  if(!cv || typeof Chart==='undefined') return;
+  if(clientCharts[canvasId]) clientCharts[canvasId].destroy();
+  clientCharts[canvasId]=new Chart(cv.getContext('2d'),{
+    type:'doughnut',
+    data:{labels:cats.map(c=>c.label),datasets:[{data:cats.map(c=>c.n),
+      backgroundColor:cats.map((c,i)=>CHG_DONUT_COLORS[i%CHG_DONUT_COLORS.length]),
+      borderColor:'#fff',borderWidth:2,hoverOffset:6}]},
+    options:{cutout:'70%',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},
+        tooltip:{callbacks:{label:c=>` ${c.label} : ${fmtEUR(c.parsed)}`}}}}
+  });
+}
 function lineNN1(canvasId, serieN, serieN1, opts){
   opts=opts||{};
   const cv=document.getElementById(canvasId);
@@ -4723,8 +4797,7 @@ function renderCharges(){
   } else {
     document.getElementById('chg-total-sub').innerHTML = '';
   }
-  const pref=['60','61','62','63','64','65','681'];
-  lineNN1('chg-chart', monthlyByPrefix(ecrituresN,pref,'debit'), AN1?monthlyByPrefix(ecrituresN1,pref,'debit'):null, Object.assign({onMonthClick:showChargesMonth}, yearLabels()));
+  chgDonut('chg-donut', cats.filter(c=>c.n>0.5));
   const mp=document.getElementById('chg-month-panel'); if(mp) mp.style.display='none';
   const head=`<tr><th>Catégorie</th><th class="num">${yN()||'N'}</th><th class="num">${yN1()||'N-1'}</th><th class="num">Variation</th><th class="num">% du CA</th><th></th></tr>`;
   const body=cats.filter(c=>c.n>0.5||(c.n1&&c.n1>0.5)).map(c=>{
@@ -4781,7 +4854,6 @@ function openChargeDetail(cat){
   const catLabel=CHG_CATS.find(c=>c.id===cat).label;
   box.innerHTML=`
     <button class="backlink" id="chg-back">← Retour aux charges d'exploitation</button>
-    <div class="breadcrumb" id="chg-bc"></div>
     <div class="detail-grid">
       <div class="acc-list">
         <h3>Comptes de charges</h3>
@@ -4807,25 +4879,19 @@ function renderChargeRight(){
   const cat=curCharge.cat, compte=curCharge.compte;
   const catLabel=CHG_CATS.find(c=>c.id===cat).label;
   const acc=chargeAccounts(cat).find(a=>a.compte===compte) || {compte:'—',lib:'—',n:0};
-  document.getElementById('chg-bc').innerHTML=`Charges d'exploitation <span>›</span> <b>${catLabel}</b> <span>›</span> <b>${acc.compte} ${acc.lib}</b>`;
   const n=acc.n, n1=accN1(compte);
   const dPct = (n1&&n1>0.5)? (n-n1)/n1 : null;
   const vcls = n1!=null? chgVarCls(n,n1) : 'var-flat';
-  const cards=`<div class="two-cards">
+  const cards=`<div class="three-cards">
     <div class="mini-card"><div class="mc-head"><span class="ic ic-green ic-sm txt">N</span><span class="mc-l">${labN()}</span></div><div class="mc-v">${fmtEUR(n)}</div></div>
     <div class="mini-card"><div class="mc-head"><span class="ic ic-slate ic-sm txt">N-1</span><span class="mc-l">${labN1()}</span></div><div class="mc-v">${n1!=null?fmtEUR(n1):'—'}</div></div>
-  </div>
-  <div class="mini-card var-wide" style="margin-top:14px;">
-    <div class="mc-head">${chip('arrowUR', vcls.replace('var-up','green').replace('var-warn','orange').replace('var-flat','slate'),'sm')}<span class="mc-l">Variation ${labN1()} → ${labN()}</span></div>
-    <div class="var-wide-row"><span class="vw-pct ${vcls}">${dPct!=null?signPct(dPct):'—'}</span><span class="vw-eur">${n1!=null?signEUR(n-n1):''}</span></div>
+    <div class="mini-card"><div class="mc-head">${chip('arrowUR', vcls.replace('var-up','green').replace('var-warn','orange').replace('var-flat','slate'),'sm')}<span class="mc-l">Variation ${labN1()} → ${labN()}</span></div>
+      <div class="var-wide-row"><span class="vw-pct ${vcls}">${dPct!=null?signPct(dPct):'—'}</span><span class="vw-eur">${n1!=null?signEUR(n-n1):''}</span></div>
+    </div>
   </div>`;
   const mN=monthlyAccount(ecrituresN,compte), mN1=AN1?monthlyAccount(ecrituresN1,compte):null;
-  const idx=mN.map((v,i)=>({m:i,v})).filter(x=>x.v>0.5).sort((a,b)=>b.v-a.v);
-  const lecture=chargeLecture(acc,n,n1,mN,idx);
-  const lectHtml=`<div class="bcard" style="margin-top:18px;"><div class="card-h ico-h">${chip('bars','blue','sm')}<span>Lecture</span></div><ul class="retenir-ul">${lecture.map(l=>`<li>${l}</li>`).join('')}</ul></div>`;
   box.innerHTML=`<h1 style="margin-bottom:4px;">${acc.lib}</h1><div class="page-sub">Compte ${acc.compte}</div>${cards}
-    <div class="bcard" style="margin-top:18px;"><div class="card-h">Évolution mensuelle</div><div class="chart-wrap sm"><canvas id="detail-chart"></canvas></div></div>
-    ${lectHtml}`;
+    <div class="bcard" style="margin-top:16px;"><div class="card-h">Évolution mensuelle</div><div class="chart-wrap" style="height:210px;"><canvas id="detail-chart"></canvas></div></div>`;
   lineNN1('detail-chart', mN, mN1, Object.assign({zero:true}, yearLabels()));
   box.classList.remove('anim'); void box.offsetWidth; box.classList.add('anim');
 }
