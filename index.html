@@ -1483,7 +1483,7 @@
   #dossier-form .entry-head{margin-bottom:30px !important;}
 
   /* --- Page Charges : camembert + recommandations à gauche, comptes à droite --- */
-  .chg-layout{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:18px;align-items:stretch;}
+  .chg-layout{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:18px;align-items:start;}
   .chg-col{display:flex;flex-direction:column;gap:18px;min-width:0;}
   .chg-donut-card{display:flex;flex-direction:column;}
   .chg-donut-wrap{position:relative;flex:1;min-height:236px;display:flex;align-items:center;justify-content:center;}
@@ -1491,10 +1491,30 @@
   .chg-donut-mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;text-align:center;}
   .chg-donut-mid .cdm-lab{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--c-muted);margin-bottom:4px;}
   .chg-donut-mid .big-figure{font-size:1.85rem;}
-  .chg-retenir-card{flex:1;min-height:0;overflow:auto;}
-  .chg-table-card{display:flex;flex-direction:column;min-height:520px;}
+  .chg-retenir-card{margin-top:18px;}
+  .chg-table-card{display:flex;flex-direction:column;}
+  .chg-table-card .card-h{margin-bottom:20px;}
   .chg-table-card .chg-scroll{flex:1;}
-  @media (max-width:1000px){ .chg-layout{grid-template-columns:1fr;} .chg-table-card{min-height:360px;} }
+  /* Légende parlante du camembert */
+  .chg-legend{margin-top:16px;border-top:1px solid var(--line);padding-top:6px;}
+  .chg-legend .cl-row{display:grid;grid-template-columns:10px minmax(0,1fr) auto auto;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid var(--line);}
+  .chg-legend .cl-row:last-child{border-bottom:none;}
+  .chg-legend .cl-dot{width:10px;height:10px;border-radius:3px;}
+  .chg-legend .cl-lab{font-size:.92rem;color:#3A4653;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .chg-legend .cl-pct{font-family:var(--wordmark);font-weight:700;font-size:.95rem;color:#2C3845;min-width:46px;text-align:right;}
+  .chg-legend .cl-eur{font-size:.86rem;color:var(--c-muted);min-width:84px;text-align:right;}
+  @media (max-width:1000px){ .chg-layout{grid-template-columns:1fr;} }
+
+  /* --- Cartes : très léger dégradé pour mieux les détacher --- */
+  #expert-app .bcard,#client-app .bcard,
+  #expert-app .mini-card,#client-app .mini-card,
+  #expert-app .kpi-card,#client-app .kpi-card,
+  #expert-app .acc-list,#client-app .acc-list{
+    background:linear-gradient(158deg,#FFFFFF 0%,#F2F6FC 100%) !important;
+  }
+  #expert-app .retenir-client,#client-app .retenir-client{
+    background:linear-gradient(158deg,#EDF3FC 0%,#FFFFFF 100%) !important;
+  }
 
   /* --- Détail d'un compte de charge : 3 cartes sur une ligne --- */
   .three-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px;}
@@ -1832,25 +1852,24 @@
       <div id="charges-list">
         <h1>Charges d'exploitation</h1>
         <div class="chg-layout">
-          <div class="chg-col">
-            <div class="bcard chg-donut-card">
-              <div class="card-h">Répartition des charges</div>
-              <div class="chg-donut-wrap">
-                <canvas id="chg-donut"></canvas>
-                <div class="chg-donut-mid">
-                  <div class="cdm-lab">Total</div>
-                  <div class="big-figure" id="chg-total">—</div>
-                  <div class="big-figure-sub" id="chg-total-sub"></div>
-                </div>
+          <div class="bcard chg-donut-card">
+            <div class="card-h">Répartition des charges</div>
+            <div class="chg-donut-wrap">
+              <canvas id="chg-donut"></canvas>
+              <div class="chg-donut-mid">
+                <div class="cdm-lab">Total</div>
+                <div class="big-figure" id="chg-total">—</div>
+                <div class="big-figure-sub" id="chg-total-sub"></div>
               </div>
             </div>
-            <div class="retenir-client chg-retenir-card"><div class="rc-ico" id="chg-ico"></div><h3>Ce qu'il faut retenir</h3><div id="chg-retenir"></div></div>
+            <div class="chg-legend" id="chg-legend"></div>
           </div>
           <div class="bcard chg-table-card">
-            <div class="card-h" style="margin-bottom:12px;">Comptes de charges</div>
+            <div class="card-h">Comptes de charges</div>
             <div class="chg-scroll"><table class="ctab" id="chg-table"></table></div>
           </div>
         </div>
+        <div class="retenir-client chg-retenir-card"><div class="rc-ico" id="chg-ico"></div><h3>Ce qu'il faut retenir</h3><div id="chg-retenir"></div></div>
       </div>
       <div id="charge-detail" style="display:none;"></div>
     </section>
@@ -4601,7 +4620,7 @@ function lineSeries(canvasId, series, opts){
         tooltip:{callbacks:{label:c=>c.dataset.label+' : '+fmtEUR(c.parsed.y)}}},
       scales:{x:{grid:{display:false},ticks:{font:{size:11},color:'#8A909B'}},y:yScale}}});
 }
-const CHG_DONUT_COLORS=['#1A62C4','#2F80E0','#5AA9FF','#1F9E86','#E08A2B','#8F9BB0','#B4894E','#6C7A8C'];
+const CHG_DONUT_COLORS=['#0C3A76','#2F80E0','#5AA9FF','#1F9E86','#E08A2B','#8F9BB0','#B4894E','#6C7A8C'];
 function chgDonut(canvasId, cats){
   const cv=document.getElementById(canvasId);
   if(!cv || typeof Chart==='undefined') return;
@@ -4797,7 +4816,16 @@ function renderCharges(){
   } else {
     document.getElementById('chg-total-sub').innerHTML = '';
   }
-  chgDonut('chg-donut', cats.filter(c=>c.n>0.5));
+  const donutCats=cats.filter(c=>c.n>0.5).sort((a,b)=>b.n-a.n);
+  chgDonut('chg-donut', donutCats);
+  const leg=document.getElementById('chg-legend');
+  if(leg) leg.innerHTML = donutCats.map((c,i)=>{
+    const share = total? c.n/total : 0;
+    return `<div class="cl-row"><span class="cl-dot" style="background:${CHG_DONUT_COLORS[i%CHG_DONUT_COLORS.length]}"></span>`+
+           `<span class="cl-lab">${c.label}</span>`+
+           `<span class="cl-pct">${fmtPct(share)}</span>`+
+           `<span class="cl-eur">${fmtEUR(c.n)}</span></div>`;
+  }).join('');
   const mp=document.getElementById('chg-month-panel'); if(mp) mp.style.display='none';
   const head=`<tr><th>Catégorie</th><th class="num">${yN()||'N'}</th><th class="num">${yN1()||'N-1'}</th><th class="num">Variation</th><th class="num">% du CA</th><th></th></tr>`;
   const body=cats.filter(c=>c.n>0.5||(c.n1&&c.n1>0.5)).map(c=>{
