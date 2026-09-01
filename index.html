@@ -1511,7 +1511,8 @@
   #expert-app .bcard,#client-app .bcard,
   #expert-app .mini-card,#client-app .mini-card,
   #expert-app .kpi-card,#client-app .kpi-card,
-  #expert-app .acc-list,#client-app .acc-list{
+  #expert-app .acc-list,#client-app .acc-list,
+  #expert-app .bilan-card,#client-app .bilan-card{
     background:linear-gradient(158deg,#FFFFFF 0%,#F2F6FC 100%) !important;
   }
   #expert-app .retenir-client,#client-app .retenir-client{
@@ -1522,6 +1523,7 @@
   #expert-app .mini-card,#client-app .mini-card,
   #expert-app .kpi-card,#client-app .kpi-card,
   #expert-app .acc-list,#client-app .acc-list,
+  #expert-app .bilan-card,#client-app .bilan-card,
   #expert-app .retenir-client,#client-app .retenir-client{
     border:1px solid rgba(20,50,90,.10) !important;
     box-shadow:0 1px 2px rgba(20,50,90,.07),0 8px 18px rgba(20,50,90,.09),0 26px 52px rgba(20,50,90,.11) !important;
@@ -1542,10 +1544,25 @@
   #expert-app .chart-wrap.md,#client-app .chart-wrap.md{height:min(330px,36vh);min-height:0;}
   #expert-app .sig-line,#client-app .sig-line{padding:14px 6px;}
   #expert-app .kpi-card,#client-app .kpi-card{padding:15px 18px;}
-  #client-app .chg-donut-wrap{min-height:0;height:min(230px,25vh);}
+  #client-app .chg-donut-wrap{min-height:0;height:min(196px,21vh);}
+  /* Sur grands écrans : on garde de l'air en bas de page */
+  @media (min-height:831px){
+    #client-app #c-page-ratios .kpi-card{padding:13px 16px;}
+    #client-app #c-page-ratios .retenir-band,
+    #client-app #c-page-tresorerie .retenir-band{padding:15px 18px;}
+    #client-app #c-page-ratios .retenir-ul li{margin-bottom:5px;}
+    #client-app #c-page-charges .ctab td{padding-top:11px;padding-bottom:11px;}
+    #client-app .chg-retenir-card{padding:16px 18px;}
+    #client-app .chg-retenir-card li{margin-bottom:5px;}
+    #client-app .bilan-card{padding:13px 16px;}
+    #client-app .bilan-card .bc-head{margin-bottom:9px;}
+    #client-app #c-page-ratios .retenir-ul li,#client-app #c-page-tresorerie .retenir-ul li{font-size:.92rem;line-height:1.5;}
+    #client-app #c-page-tresorerie .chart-wrap{height:min(300px,27vh) !important;min-height:0 !important;}
+    #client-app #c-page-tresorerie .treso-kpi{padding:10px 13px;}
+  }
   #client-app .chg-donut-wrap canvas{max-height:100%;}
   #client-app .chg-legend{margin-top:12px;}
-  #client-app .chg-legend .cl-row{padding:7px 2px;}
+  #client-app .chg-legend .cl-row{padding:6px 2px;}
   #client-app .chg-table-card .card-h{margin-bottom:14px;}
   #client-app .rec-group{padding:16px 20px;margin-bottom:14px;}
   #client-app .treso-kpis{margin-bottom:14px;}
@@ -1599,6 +1616,8 @@
     #expert-app .retenir-band,#client-app .retenir-band{padding:11px 15px;}
     #expert-app .retenir-ul li,#client-app .retenir-ul li{margin-bottom:4px;}
     #client-app .bilan-grid{row-gap:8px;}
+    #client-app .bilan-card{padding:10px 14px;}
+    #client-app .bilan-card .bc-head{margin-bottom:7px;}
     #client-app #c-page-ratios .page-sub{margin-bottom:6px;}
     #client-app #c-page-ratios .kpi-card{padding:9px 14px;}
   }
@@ -1636,6 +1655,10 @@
   #dossier-form .form-col>.form-sec:last-child{flex:1 1 auto;}
   #dossier-form .btn-mini{color:var(--c-ink) !important;}
   #dossier-form #doc-add{display:block;width:100%;text-align:center;margin-top:2px;}
+  /* Champs à remplir : texte un cran plus petit */
+  #dossier-form .fld input,#dossier-form .fld select,#dossier-form .fld textarea{font-size:.87rem;padding:9px 11px;}
+  #dossier-form .fld input::placeholder,#dossier-form .fld textarea::placeholder{font-size:.87rem;}
+  #dossier-form .assoc-row{grid-template-columns:1.3fr 1.22fr .6fr auto;gap:9px;}
   /* Colonne de droite prolongée */
   #dossier-form .form-card{max-width:1180px;}
   #dossier-form .form-grid{grid-template-columns:1fr 1.14fr;}
