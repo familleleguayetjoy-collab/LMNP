@@ -621,4 +621,78 @@ mj = journaux_banque_depuis_fec(parse_fec(FECJ))
 check(mj == {"51210010": "BQ1", "51200002": "BQ2"},
       "code journal de banque déduit du FEC (chaque 512 -> son journal réel)")
 
+print("28) Classement d'entrée : un devis ne devient jamais une facture")
+from s2a_lmnp import (valider, trier, est_comptable, coherence_ttc,
+                      sens_ecriture, factures_depuis_ocr, CATEGORIES)
+
+def _piece(**kw):
+    """Objet brut conforme au contrat A (tous les champs présents)."""
+    b = {"categorie": "facture_achat", "confiance_classement": 0.95,
+         "fournisseur": "EDF", "date": "2026-01-05", "ttc": 69.34, "tva": 11.55,
+         "ht": 57.79, "numero": "F1", "adresse_bien": "", "date_flux": "",
+         "confiance": 0.95}
+    b.update(kw)
+    return b
+
+# -- le cas qui motive tout le chantier --------------------------------------
+devis = _piece(categorie="devis", fournisseur="", date="", ttc=0, tva=0, ht=0, numero="")
+okd, motif = valider(devis)
+check(not okd and "non comptable" in motif, "devis propre -> rejeté, aucune écriture")
+
+devis_chiffre = _piece(categorie="devis")     # devis AVEC montants remplis
+okdc, motifdc = valider(devis_chiffre)
+check(not okdc and "champs comptables remplis" in motifdc,
+      "devis chiffré -> rejeté (le modèle a extrait avant de classer)")
+
+check(valider(_piece())[0], "facture d'achat complète et cohérente -> retenue")
+
+# -- contrôle HT + TVA = TTC -------------------------------------------------
+check(coherence_ttc(57.79, 11.55, 69.34), "HT + TVA = TTC -> cohérent")
+check(not coherence_ttc(50.00, 11.55, 69.34), "HT + TVA ≠ TTC -> incohérent")
+check(coherence_ttc(0, 0, 71.07), "ticket sans détail de TVA -> contrôle non applicable")
+inc = valider(_piece(ht=50.0))
+check(not inc[0] and "incohérence des montants" in inc[1],
+      "montants incohérents -> rejeté avec motif")
+
+# -- seuils (la confiance OCR était du code mort avant ce chantier) ----------
+check(not valider(_piece(confiance=0.40))[0], "extraction peu sûre -> rejetée")
+check(not valider(_piece(confiance_classement=0.50))[0], "classement peu sûr -> rejeté")
+
+# -- catégories --------------------------------------------------------------
+check(est_comptable("facture_achat") and est_comptable("avoir")
+      and not est_comptable("releve_bancaire"), "catégories comptables vs autres")
+check(not valider(_piece(categorie="bidon"))[0], "catégorie inconnue -> rejetée")
+check(not valider(_piece(categorie=""))[0], "catégorie absente -> rejetée")
+check(sens_ecriture("avoir") == "C" and sens_ecriture("facture_achat") == "D",
+      "un avoir produit une écriture de sens inverse")
+
+# -- tri : rien n'est écarté en silence -------------------------------------
+lot = [_piece(), devis, _piece(categorie="releve_bancaire", fournisseur="", date="",
+                               ttc=0, tva=0, ht=0, numero=""), _piece(numero="F2")]
+gardes, rejets = trier(lot)
+check(len(gardes) == 2 and len(rejets) == 2, "tri : 2 retenues, 2 rejetées")
+check(all(r["motif"] for r in rejets), "chaque rejet porte un motif explicite")
+facs28, rej28 = factures_depuis_ocr(lot)
+check(len(facs28) == 2 and facs28[0].categorie == "facture_achat"
+      and facs28[0].confiance_classement == 0.95,
+      "factures_depuis_ocr : catégorie et confiance tracées sur la Facture")
+
+# -- le schéma déclare bien la catégorie en PREMIER --------------------------
+import s2a_lmnp.client_anthropic as _ca
+_props = list(_ca._SCHEMA_FACTURE["properties"]["factures"]["items"]["properties"])
+check(_props[0] == "categorie" and _props[1] == "confiance_classement",
+      "schéma : categorie en premier champ (le modèle s'engage avant d'extraire)")
+check(set(_ca._SCHEMA_FACTURE["properties"]["factures"]["items"]
+          ["properties"]["categorie"]["enum"]) == set(CATEGORIES),
+      "schéma : enum des catégories aligné sur classement.py")
+
+# -- escalade OCR (absente avant ce chantier) --------------------------------
+check(_ca.ClientAnthropic._doute([_piece(confiance_classement=0.50)]),
+      "escalade : classement peu sûr -> modèle fort")
+check(_ca.ClientAnthropic._doute([]), "escalade : rien lu -> modèle fort")
+check(_ca.ClientAnthropic._doute([_piece(categorie="devis")]),
+      "escalade : non comptable avec un TTC -> modèle fort")
+check(not _ca.ClientAnthropic._doute([_piece()]),
+      "facture nette -> pas d'escalade (on ne paye pas Sonnet pour rien)")
+
 print("\n%d contrôles OK — moteur cohérent." % ok)

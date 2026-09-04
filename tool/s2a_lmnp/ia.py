@@ -225,7 +225,8 @@ def _d(v):
 
 def facture_depuis_ocr(brut: dict) -> Facture:
     """Construit une `Facture` à partir d'un dict conforme au contrat A.
-    confiance_ocr < seuil -> la pièce est marquée « à revoir » en aval."""
+    La catégorie et sa confiance sont conservées : elles tracent POURQUOI la
+    pièce a été retenue (auditable), et `sens` en découle (avoir -> inverse)."""
     return Facture(
         fournisseur=str(brut.get("fournisseur") or "").strip(),
         date=_d(brut.get("date")),
@@ -234,7 +235,20 @@ def facture_depuis_ocr(brut: dict) -> Facture:
         ht=float(brut.get("ht") or 0.0),
         numero=str(brut.get("numero") or ""),
         confiance_ocr=float(brut.get("confiance") or 0.0),
+        categorie=str(brut.get("categorie") or "").strip().lower(),
+        confiance_classement=float(brut.get("confiance_classement") or 0.0),
     )
+
+
+def factures_depuis_ocr(bruts) -> tuple[list, list]:
+    """Tri d'entrée : `(factures, rejets)`.
+
+    Seules les pièces classées comptables, complètes et cohérentes (HT+TVA=TTC)
+    deviennent des `Facture`. Tout le reste sort dans `rejets` AVEC SON MOTIF —
+    aucune pièce n'est écartée en silence. C'est ici qu'un devis est arrêté."""
+    from .classement import trier
+    retenus, rejets = trier(bruts)
+    return [facture_depuis_ocr(b) for b in retenus], rejets
 
 
 def lire_factures(chemins, client: Optional[ClientIA], *, modele: str | None = None) -> list:

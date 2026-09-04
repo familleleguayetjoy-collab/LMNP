@@ -55,3 +55,7 @@ class Facture:
     mode: str = "banque"           # banque | cheque | especes | autre
     ops: list = field(default_factory=list)   # plusieurs règlements -> 1 facture
     reste: float = 0.0             # solde non réglé (règlement partiel)
+    # classement d'entrée (cf. classement.py) : trace pourquoi la pièce a été
+    # retenue. Un 'avoir' produit une écriture de sens inverse.
+    categorie: str = ""            # facture_achat | facture_vente | avoir
+    confiance_classement: float = 0.0

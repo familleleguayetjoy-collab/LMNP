@@ -13,7 +13,9 @@ from .quadra import to_quadratus, verifier_equilibre, comptes_absents
 from .biens import Bien, MappingBiens, proposer_sous_compte, inferer_depuis_fec
 from .ia import (ClientIA, SEUIL_CONFIANCE_OCR, SEUIL_AUTO_IA, residu, questions_pour,
                  appliquer_reponses, resoudre_residu, resolver_depuis_client,
-                 facture_depuis_ocr, lire_factures)
+                 facture_depuis_ocr, factures_depuis_ocr, lire_factures)
+from .classement import (CATEGORIES, CATEGORIES_COMPTABLES, SEUIL_CLASSEMENT,
+                         est_comptable, coherence_ttc, valider, trier, sens_ecriture)
 from .client_anthropic import ClientAnthropic
 from .manifeste import Manifeste
 from .sources import (PieceRef, SourcePieces, DossierLocal, pieces_neuves,
@@ -36,7 +38,9 @@ __all__ = [
     "Bien", "MappingBiens", "proposer_sous_compte", "inferer_depuis_fec",
     "ClientIA", "SEUIL_CONFIANCE_OCR", "SEUIL_AUTO_IA", "residu", "questions_pour",
     "appliquer_reponses", "resoudre_residu", "resolver_depuis_client",
-    "facture_depuis_ocr", "lire_factures", "ClientAnthropic",
+    "facture_depuis_ocr", "factures_depuis_ocr", "lire_factures", "ClientAnthropic",
+    "CATEGORIES", "CATEGORIES_COMPTABLES", "SEUIL_CLASSEMENT", "est_comptable",
+    "coherence_ttc", "valider", "trier", "sens_ecriture",
     "Manifeste", "PieceRef", "SourcePieces", "DossierLocal", "pieces_neuves",
     "empreinte_fichier", "empreinte_bytes",
     "traiter_dossier", "ingerer", "traiter_lot",
