@@ -163,6 +163,11 @@ class ClientAnthropic:
         self._client = anthropic.Anthropic(api_key=cle)
         self.modele = modele
         self.modele_escalade = modele_escalade
+        # Journal du prétraitement : compte les replis (dépendance absente,
+        # échec de rasterisation) et l'économie de tokens. Exposé au tableau
+        # de bord ; alerte au-delà de 5 % de replis sur un lot.
+        from .pretraitement import Journal
+        self.journal_pretraitement = Journal()
 
     # -- appel bas niveau : messages + sortie JSON structurée ---------------
     def _json(self, modele, systeme, contenu, schema, max_tokens=2000):
@@ -204,16 +209,18 @@ class ClientAnthropic:
     # -- A. OCR d'une facture (contrat A) -----------------------------------
     def lire_facture(self, chemin: str, *, modele: str | None = None):
         mod = modele or self.modele
-        ext = os.path.splitext(chemin)[1].lower()
-        genre, media = _MEDIA.get(ext, ("document", "application/pdf"))
-        with open(chemin, "rb") as f:
-            data = base64.standard_b64encode(f.read()).decode("ascii")
-        bloc = {
-            "type": genre,
-            "source": {"type": "base64", "media_type": media, "data": data},
-        }
+        # Prétraitement : réduction à 1 500 px / JPEG 80 (÷3 à ÷4 sur le coût).
+        # Un PDF est rasterisé page par page. Si les dépendances manquent, on
+        # envoie brut ET le repli est journalisé (jamais silencieux).
+        from .pretraitement import preparer
+        blocs = [
+            {"type": genre,
+             "source": {"type": "base64", "media_type": media,
+                        "data": base64.standard_b64encode(data).decode("ascii")}}
+            for genre, media, data in preparer(chemin, journal=self.journal_pretraitement)
+        ]
         contenu = [
-            bloc,
+            *blocs,
             {"type": "text",
              "text": "Classe cette pièce, puis extrais les factures qu'elle contient "
                      "(une entrée par facture ; un PDF peut en contenir plusieurs)."},

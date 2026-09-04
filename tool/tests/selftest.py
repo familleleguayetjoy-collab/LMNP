@@ -695,4 +695,37 @@ check(_ca.ClientAnthropic._doute([_piece(categorie="devis")]),
 check(not _ca.ClientAnthropic._doute([_piece()]),
       "facture nette -> pas d'escalade (on ne paye pas Sonnet pour rien)")
 
+print("29) Prétraitement des images : gain de coût, et repli JAMAIS silencieux")
+import warnings as _w
+from s2a_lmnp.pretraitement import (Journal, reduire_image, tokens_image,
+                                    COTE_MAX, SEUIL_ALERTE_REPLI)
+
+# le gain visé : une A4 scannée en 300 DPI vs réduite à 1 500 px
+check(tokens_image(2480, 3508) > 3 * tokens_image(1060, COTE_MAX),
+      "A4 300 DPI coûte >3× la même page réduite à 1 500 px")
+check(tokens_image(0, 0) == 0, "image de taille nulle -> 0 token")
+
+# repli : il doit AVERTIR, être COMPTÉ, et ne rien casser
+j29 = Journal()
+with _w.catch_warnings(record=True) as capt:
+    _w.simplefilter("always")
+    data29, media29 = reduire_image(b"ceci n'est pas une image", journal=j29)
+check(data29 == b"ceci n'est pas une image" and media29 is None,
+      "repli : la pièce brute est renvoyée telle quelle")
+check(len(capt) == 1 and issubclass(capt[0].category, RuntimeWarning),
+      "repli : un avertissement est émis (pas de silence)")
+check(j29.replis == 1 and j29.pieces == 1 and j29.motifs_replis,
+      "repli : compté dans le journal, avec son motif")
+
+# seuil d'alerte à 5 % d'un lot
+j_ok = Journal(); j_ok.pieces, j_ok.replis = 100, 3
+j_ko = Journal(); j_ko.pieces, j_ko.replis = 100, 6
+j_ko.motifs_replis = {"pillow_absent": 6}
+check(not j_ok.alerte(), "3 %% de replis -> pas d'alerte (seuil %.0f %%)" % (100 * SEUIL_ALERTE_REPLI))
+check("ALERTE" in j_ko.alerte() and "6/100" in j_ko.alerte(),
+      "6 % de replis -> alerte chiffrée avec les motifs")
+r29 = j_ko.resume()
+check(r29["taux_repli"] == 0.06 and r29["alerte"],
+      "le journal expose taux_repli et alerte au tableau de bord")
+
 print("\n%d contrôles OK — moteur cohérent." % ok)
