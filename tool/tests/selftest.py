@@ -580,7 +580,10 @@ tb = {r["dossier"]: r for r in lot["tableau_de_bord"]}
 check(tb["DUPONT"]["statut"] == "prêt", "tableau de bord : DUPONT prêt (tout codé, rapproché)")
 check(tb["MARTIN"]["statut"] in ("à valider", "en attente de pièces"),
       "tableau de bord : MARTIN à traiter (mobilier à trancher, facture manquante)")
-check(isinstance(lot["totaux"]["cout_ia_estime_eur"], float), "tableau de bord : coût IA estimé agrégé")
+check(isinstance(lot["totaux"]["cout_ia_eur"], float), "tableau de bord : coût IA agrégé")
+check(all(l["cout_mesure"] is False and l["cout_ia_eur"] == 0.0
+          for l in lot["tableau_de_bord"]),
+      "sans client IA : coût à 0 et marqué non mesuré (plus d'estimation inventée)")
 
 print("27) Avec banque : facture payée hors relevé -> OD 108 ; banque -> Excel ; multi-banque")
 from s2a_lmnp import journal_banque_xlsx, lignes_journal_banque
@@ -727,5 +730,60 @@ check("ALERTE" in j_ko.alerte() and "6/100" in j_ko.alerte(),
 r29 = j_ko.resume()
 check(r29["taux_repli"] == 0.06 and r29["alerte"],
       "le journal expose taux_repli et alerte au tableau de bord")
+
+print("30) Coût mesuré (response.usage) et cache du préfixe")
+from s2a_lmnp import Compteur, TARIFS, CIBLE_LECTURE_CACHE
+
+class _U:                       # imite un objet usage de l'API
+    def __init__(self, e=0, s=0, ce=0, cl=0):
+        self.input_tokens, self.output_tokens = e, s
+        self.cache_creation_input_tokens, self.cache_read_input_tokens = ce, cl
+
+c30 = Compteur()
+c30.enregistrer("claude-haiku-4-5", _U(e=1000, s=200, ce=2500, cl=0))   # 1er appel
+for _ in range(199):
+    c30.enregistrer("claude-haiku-4-5", _U(e=1000, s=200, ce=0, cl=2500))
+check(c30.appels == 200, "200 appels enregistrés")
+# tarif Haiku : 1 $/M entrée, 5 $/M sortie ; écriture 1,25× ; lecture 0,10×
+attendu = (200_000/1e6*1.0 + 40_000/1e6*5.0 + 2_500/1e6*1.0*1.25
+           + 497_500/1e6*1.0*0.10)
+check(abs(c30.cout_usd - attendu) < 1e-6, "coût calculé au tarif public exact")
+# réutilisation du préfixe : écrit 1 fois, relu 199 fois -> 99,5 %
+check(c30.taux_lecture_cache > 0.99, "préfixe réutilisé sur ~199 appels sur 200")
+# la part des tokens d'ENTRÉE cachés plafonne bien plus bas : les images dominent
+check(0.60 < c30.part_entree_cachee < 0.80,
+      "part des tokens d'entrée cachés ~70 % (les images ne sont pas cachables)")
+check(not c30.alerte(nb_factures=200), "dossier normal -> pas d'alerte")
+
+# sans cache : le taux s'effondre et l'alerte tombe (c'est le bug à détecter)
+c31 = Compteur()
+for _ in range(200):
+    c31.enregistrer("claude-haiku-4-5", _U(e=3500, s=200))
+check(c31.taux_lecture_cache == 0.0, "préfixe non caché -> réutilisation nulle")
+check("réutilisation du préfixe" in c31.alerte(nb_factures=200),
+      "cache invalidé sur 200 factures -> alerte explicite")
+check(c31.cout_usd > c30.cout_usd, "sans cache, le dossier coûte plus cher")
+
+# plafond de dérive
+c32 = Compteur(); c32.enregistrer("claude-sonnet-5", _U(e=3_000_000, s=100_000))
+check("plafond" in c32.alerte(nb_factures=200), "dossier au-delà de 3 € -> alerte plafond")
+
+# le résumé exposé au tableau de bord
+r30 = c30.resume(nb_factures=200)
+check(r30["cout_eur_par_facture"] > 0 and r30["appels"] == 200
+      and "claude-haiku-4-5" in r30["par_modele"],
+      "résumé : coût par facture et ventilation par modèle")
+check(set(TARIFS) >= {"claude-haiku-4-5", "claude-sonnet-5"},
+      "tarifs Haiku et Sonnet présents")
+check(c30.enregistrer("claude-haiku-4-5", None) is None,
+      "usage absent (hors API) -> toléré, pas de plantage")
+
+# le préfixe système est bien marqué en cache dans l'appel
+import inspect as _i
+_src = _i.getsource(_ca.ClientAnthropic._json)
+check('"cache_control"' in _src and '"ephemeral"' in _src,
+      "le prompt système est marqué cache_control ephemeral")
+check("self.compteur.enregistrer" in _src,
+      "chaque appel enregistre son usage réel")
 
 print("\n%d contrôles OK — moteur cohérent." % ok)

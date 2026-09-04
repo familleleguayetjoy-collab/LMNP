@@ -109,11 +109,11 @@ def traiter_lot(dossiers):
 
     Renvoie {resultats, tableau_de_bord, totaux}. Le tableau de bord donne, par
     dossier : statut (prêt / à valider / en attente de pièces), taux d'auto-codage,
-    nb à trancher / à réclamer, et une **estimation** du coût IA — la vue dont
+    nb à trancher / à réclamer, et le coût IA **mesuré** — la vue dont
     Paul a besoin pour piloter et chiffrer la marge."""
     resultats, tableau = {}, []
     tot = {"dossiers": 0, "operations": 0, "factures": 0, "a_trancher": 0,
-           "a_reclamer": 0, "cout_ia_estime_eur": 0.0, "prets": 0}
+           "a_reclamer": 0, "cout_ia_eur": 0.0, "prets": 0}
     for d in dossiers:
         d = dict(d)
         nom = d.pop("nom", "sans-nom")
@@ -132,20 +132,29 @@ def traiter_lot(dossiers):
             statut = "à valider"
         else:
             statut = "prêt"
-        # estimation grossière : ~0,8 c / facture OCR + ~0,2 c / item résolu par l'IA
-        cout = round(0.008 * res["nb_factures"] + 0.002 * res["residu_resolu_par_ia"], 3)
+        # Coût MESURÉ quand un client IA a servi (response.usage), sinon 0.
+        # On n'affiche plus d'estimation : un chiffre inventé masquerait la dérive.
+        cpt = getattr(d.get("client_ia"), "compteur", None)
+        cout_detail = cpt.resume(nb_factures=res["nb_factures"]) if cpt else None
+        cout = round(cout_detail["cout_eur"], 3) if cout_detail else 0.0
 
-        tableau.append({
+        ligne = {
             "dossier": nom, "operations": nb_ops, "factures": res["nb_factures"],
             "a_trancher": nb_tr, "a_reclamer": nb_rc, "taux_auto_pct": taux,
-            "statut": statut, "cout_ia_estime_eur": cout,
-        })
+            "statut": statut, "cout_ia_eur": cout, "cout_mesure": bool(cout_detail),
+        }
+        if cout_detail:
+            ligne["taux_lecture_cache"] = cout_detail["taux_lecture_cache"]
+            ligne["cout_eur_par_facture"] = cout_detail["cout_eur_par_facture"]
+            if cout_detail["alerte"]:
+                ligne["alerte"] = cout_detail["alerte"]
+        tableau.append(ligne)
         tot["dossiers"] += 1
         tot["operations"] += nb_ops
         tot["factures"] += res["nb_factures"]
         tot["a_trancher"] += nb_tr
         tot["a_reclamer"] += nb_rc
-        tot["cout_ia_estime_eur"] += cout
+        tot["cout_ia_eur"] += cout
         tot["prets"] += (statut == "prêt")
-    tot["cout_ia_estime_eur"] = round(tot["cout_ia_estime_eur"], 2)
+    tot["cout_ia_eur"] = round(tot["cout_ia_eur"], 2)
     return {"resultats": resultats, "tableau_de_bord": tableau, "totaux": tot}

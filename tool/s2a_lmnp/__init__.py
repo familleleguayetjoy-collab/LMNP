@@ -16,6 +16,9 @@ from .ia import (ClientIA, SEUIL_CONFIANCE_OCR, SEUIL_AUTO_IA, residu, questions
                  facture_depuis_ocr, factures_depuis_ocr, lire_factures)
 from .classement import (CATEGORIES, CATEGORIES_COMPTABLES, SEUIL_CLASSEMENT,
                          est_comptable, coherence_ttc, valider, trier, sens_ecriture)
+from .cout import Compteur, TARIFS, ALERTE_DOSSIER_EUR, CIBLE_LECTURE_CACHE
+from .pretraitement import (Journal, preparer, reduire_image, tokens_image,
+                            COTE_MAX, SEUIL_ALERTE_REPLI)
 from .client_anthropic import ClientAnthropic
 from .manifeste import Manifeste
 from .sources import (PieceRef, SourcePieces, DossierLocal, pieces_neuves,
@@ -41,6 +44,9 @@ __all__ = [
     "facture_depuis_ocr", "factures_depuis_ocr", "lire_factures", "ClientAnthropic",
     "CATEGORIES", "CATEGORIES_COMPTABLES", "SEUIL_CLASSEMENT", "est_comptable",
     "coherence_ttc", "valider", "trier", "sens_ecriture",
+    "Compteur", "TARIFS", "ALERTE_DOSSIER_EUR", "CIBLE_LECTURE_CACHE",
+    "Journal", "preparer", "reduire_image", "tokens_image",
+    "COTE_MAX", "SEUIL_ALERTE_REPLI",
     "Manifeste", "PieceRef", "SourcePieces", "DossierLocal", "pieces_neuves",
     "empreinte_fichier", "empreinte_bytes",
     "traiter_dossier", "ingerer", "traiter_lot",

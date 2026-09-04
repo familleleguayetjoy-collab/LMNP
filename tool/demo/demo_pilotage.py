@@ -63,8 +63,8 @@ print("  %-8s %4s %4s %9s %9s %6s  %-20s %s"
 for r in lot["tableau_de_bord"]:
     print("  %-8s %4d %4d %9d %9d %5d%%  %-20s ~%.3f €"
           % (r["dossier"], r["operations"], r["factures"], r["a_trancher"],
-             r["a_reclamer"], r["taux_auto_pct"], r["statut"], r["cout_ia_estime_eur"]))
+             r["a_reclamer"], r["taux_auto_pct"], r["statut"], r["cout_ia_eur"]))
 t = lot["totaux"]
 print("  " + "-" * 74)
 print("  %d dossiers, %d prêts, %d opérations — coût IA total estimé ~%.2f €"
-      % (t["dossiers"], t["prets"], t["operations"], t["cout_ia_estime_eur"]))
+      % (t["dossiers"], t["prets"], t["operations"], t["cout_ia_eur"]))

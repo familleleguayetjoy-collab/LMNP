@@ -168,16 +168,31 @@ class ClientAnthropic:
         # de bord ; alerte au-delà de 5 % de replis sur un lot.
         from .pretraitement import Journal
         self.journal_pretraitement = Journal()
+        # Coût RÉEL : lu dans response.usage à chaque appel (cf. cout.py).
+        # Remplace la constante écrite à la main qui servait de « mesure ».
+        from .cout import Compteur
+        self.compteur = Compteur()
 
     # -- appel bas niveau : messages + sortie JSON structurée ---------------
     def _json(self, modele, systeme, contenu, schema, max_tokens=2000):
+        """Un appel. Le PRÉFIXE (le prompt système) est marqué en cache : il est
+        strictement identique d'un appel à l'autre sur un dossier, donc facturé
+        plein tarif une seule fois puis en lecture de cache (~10 %).
+
+        Rien de volatile ne doit entrer dans ce préfixe — pas d'horodatage, pas
+        d'identifiant de pièce, pas de compteur : un seul caractère qui change
+        invalide le cache pour tous les appels suivants. Le variable (l'image,
+        les questions) vit dans `messages`, après le point de césure.
+        """
         rep = self._client.messages.create(
             model=modele,
             max_tokens=max_tokens,
-            system=systeme,
+            system=[{"type": "text", "text": systeme,
+                     "cache_control": {"type": "ephemeral"}}],
             output_config={"format": {"type": "json_schema", "schema": schema}},
             messages=[{"role": "user", "content": contenu}],
         )
+        self.compteur.enregistrer(modele, getattr(rep, "usage", None))
         txt = next((b.text for b in rep.content if b.type == "text"), "{}")
         return json.loads(txt)
 
