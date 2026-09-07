@@ -213,6 +213,31 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
 .lmnp[data-banque="non"] .js-bankcard .drop u{color:var(--muted)}
 .frow{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:6px 0}
 .flabel{font-family:var(--display);font-weight:600;font-size:17px}
+/* lien discret (règles, décomposer) */
+.lienregles{display:inline-flex;align-items:center;gap:7px;font-family:var(--display);font-weight:600;
+  font-size:13px;color:var(--green);padding:7px 12px;border-radius:9px;border:1px solid var(--green-line);
+  background:var(--green-soft);transition:background .15s ease}
+.lienregles:hover{background:#DCE9F8}
+.lienregles svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8}
+.notetva{margin-top:14px;background:var(--green-soft);border:1px solid var(--green-line);border-radius:12px;
+  padding:12px 16px;font-size:13.5px;color:var(--green-2);font-weight:600}
+/* colonne Règlement de l'étape « opérations complexes » */
+.regl{display:inline-flex;align-items:center;gap:9px;font-size:13px;font-weight:600;white-space:nowrap}
+.regl svg{width:18px;height:18px;fill:none;stroke-width:2;flex:0 0 auto}
+.regl span{display:flex;flex-direction:column;line-height:1.25;font-weight:500;color:var(--muted);font-size:11.5px}
+.regl b{font-size:13px}
+.regl.ok{color:var(--green)} .regl.ok svg{stroke:var(--green)} .regl.ok b{color:var(--green-2)}
+.regl.ko{color:var(--warn)} .regl.ko svg{stroke:var(--warn)} .regl.ko b{color:var(--todo-ink)}
+/* décomposition d'une facture sur plusieurs comptes */
+.split-l{display:flex;align-items:center;gap:10px;margin-top:10px}
+.split-l .acct{flex:1}
+.split-l input{width:110px;background:var(--field);border:1px solid var(--field-line);border-radius:10px;
+  padding:10px 12px;font-weight:600;font-variant-numeric:tabular-nums;text-align:right}
+.split-l .del{color:var(--muted);font-size:20px;line-height:1;padding:0 4px}
+.split-l .del:hover{color:var(--red)}
+.split-tot{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:12px;
+  border-top:1px solid var(--line);font-weight:700;font-variant-numeric:tabular-nums}
+.split-tot.ko{color:var(--red)} .split-tot.ok{color:var(--green)}
 .tsel{position:relative}
 .tsel select{appearance:none;-webkit-appearance:none;background:var(--field);border:1px solid var(--field-line);
   border-radius:11px;padding:11px 40px 11px 15px;font-family:var(--display);font-weight:600;font-size:14px}
@@ -491,9 +516,11 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
       <div class="titlesplit">
         <h1 class="js-dossier">LMNP_DUPONT_2026</h1>
         <div class="statspanel">
-          <div class="pct">88 %<span>prêt</span></div>
-          <div class="found"><span class="check"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span> 21 pièces trouvées</div>
-          <div class="bar"><i></i></div>
+          <div class="found"><span class="check"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span> <b class="js-nb-pieces">21</b> pièces trouvées</div>
+          <button class="lienregles js-regles">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-2.87 1.2V21a2 2 0 1 1-4 0v-.1A1.7 1.7 0 0 0 7 19.4a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 3 15a1.7 1.7 0 0 0-1.7-1.1H1a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 3 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 7 4.6h.09A1.7 1.7 0 0 0 8.2 3V3a2 2 0 1 1 4 0v.09A1.7 1.7 0 0 0 15 4.6a1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9v.09a1.7 1.7 0 0 0 1.6 1.11H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1.8z"/></svg>
+            Règles de contrôle
+          </button>
         </div>
       </div>
 
@@ -517,6 +544,13 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
             </select></div>
           </div>
           <div class="frow" style="border-top:1px solid var(--line-2);margin-top:4px;padding-top:12px">
+            <span class="flabel">Soumis à TVA</span>
+            <div class="toggle js-tvagrp" role="group" aria-label="Assujetti à la TVA">
+              <button class="js-tva" data-v="oui" aria-pressed="false">Oui</button>
+              <button class="js-tva" data-v="non" aria-pressed="true">Non</button>
+            </div>
+          </div>
+          <div class="frow" style="border-top:1px solid var(--line-2);margin-top:4px;padding-top:12px">
             <span class="flabel">Banque</span>
             <div class="toggle" role="group" aria-label="Tenue de banque">
               <button class="js-bq" data-v="oui" aria-pressed="true">Oui</button>
@@ -525,6 +559,8 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
           </div>
         </div>
       </div>
+
+      <p class="notetva js-notetva">Non assujetti : les factures sont comptabilisées <b>TTC en charge</b>, aucune écriture de TVA n'est générée.</p>
 
 
       <div class="grid2" style="margin-top:18px">
@@ -538,9 +574,16 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
         </div>
         <div class="card field-card js-bankcard">
           <h3>Fichier banque <span class="sub">si applicable</span></h3>
-          <div class="drop">
+          <input type="file" class="js-bqfile" accept=".txt,.csv,.tsv,.xls,.xlsx,.ofx,.qif" hidden/>
+          <button class="drop js-bqdrop" type="button">
             <svg viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
-            Glisser-déposer ou <u>parcourir</u>
+            <span class="js-bqlabel">Glisser-déposer ou <u>parcourir</u></span>
+          </button>
+          <div class="filerow js-bqok hidden" style="margin-top:12px">
+            <span class="fi"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg></span>
+            <b class="js-bqnom">relevé.txt</b>
+            <span class="js-bqmeta" style="color:var(--muted);font-size:12.5px"></span>
+            <span class="ok check"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span>
           </div>
         </div>
       </div>
@@ -566,7 +609,7 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
 
       <div class="card" style="margin-top:16px">
         <div class="tblwrap"><table class="tbl">
-          <thead><tr><th>Date</th><th>Fournisseur (facture)</th><th>Montant</th><th>Facture</th><th>Comptabiliser en</th></tr></thead>
+          <thead><tr><th>Date</th><th>Fournisseur (facture)</th><th>Montant</th><th>Règlement</th><th>Facture</th><th>Comptabiliser en</th></tr></thead>
           <tbody class="js-trancher"></tbody>
         </table></div>
       </div>
@@ -687,15 +730,15 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
   }
 
   var DEFAULT_TRANCHER=[
-    {dt:"18/03/2026",lib:"Menuiserie Des Cimes",m:3480.00,cpt:"2135",col:"#8a7355",ini:"M",
+    {dt:"18/03/2026",lib:"Menuiserie Des Cimes",m:3480.00,paye:"20/03/2026",cpt:"2135",col:"#8a7355",ini:"M",
       opts:[["2135","2135 — Agencements, installations"],["615","615 — Entretien et réparations"],["2313","2313 — Constructions"]]},
-    {dt:"20/04/2026",lib:"M Dupont Apport Cc",m:2500.00,cpt:"108",col:"#3f7d9c",ini:"V",
+    {dt:"20/04/2026",lib:"M Dupont Apport Cc",m:2500.00,paye:"20/04/2026",cpt:"108",col:"#3f7d9c",ini:"V",
       opts:[["108","108 — Compte de l'exploitant"],["455","455 — Associé - compte courant"]]},
-    {dt:"22/02/2026",lib:"Boulanger Electromenager",m:890.00,cpt:"2184",col:"#c0392b",ini:"B",
+    {dt:"22/02/2026",lib:"Boulanger Electromenager",m:890.00,paye:"",cpt:"2184",col:"#c0392b",ini:"B",
       opts:[["2184","2184 — Mobilier (immobilisations)"],["606","606 — Petit équipement"],["615","615 — Entretien"]]},
-    {dt:"12/09/2026",lib:"Copro Azur Appel Fonds Travaux",m:720.00,cpt:"614",col:"#5b6b7a",ini:"C",
+    {dt:"12/09/2026",lib:"Copro Azur Appel Fonds Travaux",m:720.00,paye:"15/09/2026",cpt:"614",col:"#5b6b7a",ini:"C",
       opts:[["614","614 — Charges de copropriété"],["615","615 — Entretien"],["2135","2135 — Agencements"]]},
-    {dt:"08/11/2026",lib:"Axa Indemnisation Sinistre",m:640.00,cpt:"758",col:"#1f4fa3",ini:"A",
+    {dt:"08/11/2026",lib:"Axa Indemnisation Sinistre",m:640.00,paye:"12/11/2026",cpt:"758",col:"#1f4fa3",ini:"A",
       opts:[["758","758 — Produits divers (indemnités)"],["791","791 — Transfert de charges"]]}
   ];
   var DEFAULT_RECLAM=[
@@ -711,7 +754,7 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
       note:"",
       auto:[],
       trancher:[
-        {dt:"09/01/2026",lib:"Brico Dépôt",m:71.07,cpt:"615",col:"#c0392b",ini:"B",
+        {dt:"09/01/2026",lib:"Brico Dépôt",m:71.07,paye:"",cpt:"615",col:"#c0392b",ini:"B",
           opts:[["615","615 — Entretien et réparations"],["606","606 — Petit équipement"],["2184","2184 — Mobilier (immobilisation)"]]}
       ],
       reclam:[
@@ -737,14 +780,25 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
   function renderTrancher(){
     var np=$('.js-trancher-note'); if(np){var t=CURNOTE||'';if(CURAUTO&&CURAUTO.length){t+=' ✓ Déjà codé automatiquement : '+CURAUTO.map(function(a){return a[0]+' → '+a[1];}).join(', ')+'.';}np.textContent=t;np.classList.toggle('hidden',!t);}
     var tb=$('.js-trancher'); tb.innerHTML='';
-    TRANCHER.forEach(function(r){
+    TRANCHER.forEach(function(r,i){
       var tr=document.createElement('tr');
       var sel='<div class="acct"><select>'+r.opts.map(function(o){
         return '<option value="'+o[0]+'"'+(o[0]===r.cpt?' selected':'')+'>'+o[1]+'</option>';}).join('')+'</select></div>';
+      // Règlement : rapproché sur le relevé, ou introuvable (-> payé perso, OD 108)
+      var reg = r.paye
+        ? '<span class="regl ok"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg>'
+          +'<span>Payé le<b>'+r.paye+'</b></span></span>'
+        : '<span class="regl ko"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/>'
+          +'<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>'
+          +'<span>Paiement<b>introuvable</b></span></span>';
       tr.innerHTML='<td class="dt num">'+r.dt+'</td><td class="lib">'+r.lib+'</td>'
         +'<td class="amt num">'+eur(r.m)+'</td>'
+        +'<td class="cell-regl">'+reg+'</td>'
         +'<td class="cell-photo"><button class="thumb js-thumb" data-lib="'+r.lib+'" aria-label="Ouvrir le justificatif">'+thumbSVG(r.col,r.ini)+'</button></td>'
-        +'<td class="cell-acct">'+sel+'</td>';
+        +'<td class="cell-acct">'+sel
+        +'<button class="js-split lienregles" data-i="'+i+'" style="margin-top:8px">'
+        +'<svg viewBox="0 0 24 24"><path d="M6 3v6a3 3 0 0 0 3 3h9"/><path d="M15 9l3 3-3 3"/><path d="M6 21v-6"/></svg>'
+        +'Décomposer</button></td>';
       tb.appendChild(tr);
     });
   }
@@ -926,6 +980,102 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
     setAuthed(true);
   });
   setAuthed(!!lsGet(SKEY,null));
+
+  /* --- assujettissement TVA (étape 1) --- */
+  function majTva(v){
+    $$('.js-tva').forEach(function(x){x.setAttribute('aria-pressed',x.dataset.v===v?'true':'false');});
+    root.dataset.tva=v;
+    $('.js-notetva').innerHTML = (v==='oui')
+      ? "Assujetti : les factures sont comptabilisées <b>HT en charge</b> et la TVA déductible en <b>44566</b>. Le contrôle HT + TVA = TTC devient bloquant."
+      : "Non assujetti : les factures sont comptabilisées <b>TTC en charge</b>, aucune écriture de TVA n'est générée.";
+  }
+  $$('.js-tva').forEach(function(b){b.addEventListener('click',function(){majTva(b.dataset.v);});});
+  majTva('non');
+
+  /* --- import du fichier banque (le bouton ne faisait rien) --- */
+  var bqfile=$('.js-bqfile'), bqdrop=$('.js-bqdrop');
+  function accepterFichier(f){
+    if(!f)return;
+    $('.js-bqnom').textContent=f.name;
+    $('.js-bqmeta').textContent='· '+(f.size>1024?Math.round(f.size/1024)+' Ko':f.size+' o');
+    $('.js-bqok').classList.remove('hidden');
+    $('.js-bqlabel').innerHTML='Remplacer le fichier — <u>parcourir</u>';
+  }
+  bqdrop.addEventListener('click',function(){bqfile.click();});
+  bqfile.addEventListener('change',function(){accepterFichier(this.files&&this.files[0]);});
+  ['dragenter','dragover'].forEach(function(ev){
+    bqdrop.addEventListener(ev,function(e){e.preventDefault();bqdrop.style.borderColor='var(--green)';});});
+  ['dragleave','drop'].forEach(function(ev){
+    bqdrop.addEventListener(ev,function(e){e.preventDefault();bqdrop.style.borderColor='';});});
+  bqdrop.addEventListener('drop',function(e){
+    var dt=e.dataTransfer; accepterFichier(dt&&dt.files&&dt.files[0]);});
+
+  /* --- décomposer une facture sur plusieurs comptes (rare mais nécessaire) --- */
+  root.addEventListener('click',function(e){
+    var b=e.target.closest('.js-split'); if(!b)return;
+    var r=TRANCHER[+b.dataset.i]; if(!r)return;
+    var opts=r.opts.map(function(o){return '<option value="'+o[0]+'">'+o[1]+'</option>';}).join('');
+    openModal('<h3>Décomposer — '+r.lib+'</h3>'
+      +'<p>Une même facture peut relever de plusieurs comptes (ex. des travaux dont une partie est immobilisée et une partie passe en entretien). Répartis le montant : le total doit retomber sur '+eur(r.m)+'.</p>'
+      +'<div class="js-splitlist"></div>'
+      +'<button class="lienregles js-addline" style="margin-top:12px">+ Ajouter une ligne</button>'
+      +'<div class="split-tot js-splittot"></div>', true);
+    var liste=$('.js-splitlist');
+    function ligne(montant){
+      var d=document.createElement('div'); d.className='split-l';
+      d.innerHTML='<div class="acct"><select>'+opts+'</select></div>'
+        +'<input type="number" step="0.01" value="'+(montant||0).toFixed(2)+'"/>'
+        +'<button class="del" aria-label="Supprimer la ligne">×</button>';
+      d.querySelector('.del').addEventListener('click',function(){d.remove();total();});
+      d.querySelector('input').addEventListener('input',total);
+      liste.appendChild(d); total();
+    }
+    function total(){
+      var s=0; $$('.js-splitlist input').forEach(function(i){s+=parseFloat(i.value||0)||0;});
+      var t=$('.js-splittot'), reste=Math.round((r.m-s)*100)/100;
+      t.className='split-tot '+(Math.abs(reste)<0.005?'ok':'ko');
+      t.innerHTML='<span>Total réparti</span><span>'+eur(s)+(Math.abs(reste)<0.005
+        ? ' ✓</span>' : ' — reste '+eur(reste)+'</span>');
+    }
+    $('.js-addline').addEventListener('click',function(){ligne(0);});
+    ligne(r.m);
+  });
+
+  /* --- règles de contrôle : quelles opérations passent par un humain --- */
+  var REGLES=[
+    ["immo","Toute immobilisation (comptes 2x)",true,
+     "Une immobilisation engage l'amortissement sur plusieurs exercices : une erreur se propage. Contrôle systématique."],
+    ["montant","Montant supérieur à 1 500 € TTC",true,
+     "Seuil réglable. Au-dessus, l'impact d'une erreur dépasse le coût de la vérification."],
+    ["sanshisto","Fournisseur absent du FEC N-1",true,
+     "Aucun précédent dans le dossier : le compte est une hypothèse, pas une reprise."],
+    ["multi","Fournisseur imputé sur plusieurs comptes en N-1",true,
+     "Le dictionnaire ne tranche pas : c'est précisément le cas ambigu."],
+    ["nonrappr","Facture sans règlement retrouvé au relevé",true,
+     "Soit payée en perso (OD 108), soit la pièce ne concerne pas le dossier."],
+    ["avoir","Avoir et écriture de sens inverse",true,
+     "Sens inversé : une erreur double l'écart au lieu de l'annuler."],
+    ["acompte","Facture d'acompte ou de situation",true,
+     "Risque de double comptabilisation avec la facture de solde."],
+    ["ecart","Écart de montant facture / banque",true,
+     "Escompte, avoir partiel, ou mauvais rapprochement."],
+    ["recurrent","Charge récurrente identique à N-1 (loyer, assurance)",false,
+     "Fort historique, montant stable : l'automatisation est fiable et le volume élevé."],
+    ["petit","Dépense courante sous 100 € avec fournisseur connu",false,
+     "Le coût du contrôle dépasse l'enjeu."]
+  ];
+  function ouvrirRegles(){
+    openModal('<h3>Règles de contrôle humain</h3>'
+      +'<p>Ces règles décident ce qui remonte dans « Opérations complexes à affecter ». Tout le reste est comptabilisé automatiquement. Le principe : contrôler ce dont l\'erreur coûte cher ou se propage, pas ce qui est fréquent.</p>'
+      +'<div class="hist" style="max-height:46vh">'
+      +REGLES.map(function(r,i){
+        return '<label class="hitem" style="cursor:pointer">'
+          +'<input type="checkbox" class="js-regle" data-i="'+i+'"'+(r[2]?' checked':'')+' style="width:18px;height:18px;accent-color:var(--green);flex:0 0 auto"/>'
+          +'<div class="hmain"><div class="hnom">'+r[1]+'</div>'
+          +'<div class="hmeta">'+r[3]+'</div></div></label>';}).join('')
+      +'</div>', true);
+  }
+  $('.js-regles').addEventListener('click',ouvrirRegles);
 
   renderTrancher();renderReclam();go(0);
 })();
