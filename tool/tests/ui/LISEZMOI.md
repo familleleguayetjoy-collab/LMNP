@@ -7,21 +7,22 @@ vérifient ce que le collaborateur voit et obtient, pas ce que le code prétend.
 | script       | ce qu'il vérifie |
 |--------------|------------------|
 | `audit.mjs`  | le parcours complet : connexion, accueil, les 5 étapes, l'anti-doublon au 2ᵉ passage, et que chaque écran tient dans un seul écran |
+| `poste.mjs`  | **le poste de travail** (étape 2) : tri, onglets, imputation en série, « Valider et suivant », mise en attente en 471, factures réglées hors relevé, clavier, persistance |
+| `regles.mjs` | chacune des 8 règles de contrôle pilote réellement un statut ou l'onglet des factures hors relevé — décocher une règle fait disparaître ce qu'elle produit |
 | `audit2.mjs` | les cas limites : dossier sans banque, changement de dossier (aucune fuite d'état), décomposition annulée / rouverte, mail sans justificatif |
-| `audit3.mjs` | les points relevés en audit : relevé bancaire remis à zéro, nombre de lignes annoncé à l'export, motifs cohérents sur un dossier sans banque |
-| `verif.mjs`  | les règles de contrôle pilotent bien les onglets, le travail survit au rechargement, les deux onglets de réclamation, le mail en deux sections |
-| `export.mjs` | **le fichier réellement produit** : 251 caractères par ligne, journal OD, contrepartie 108, une ligne de plus par ventilation, et l'écriture datée du jour du règlement |
+| `export.mjs` | **le fichier réellement produit** : 251 caractères par ligne, journal BQ contrepartie 512 pour le relevé, journal OD contrepartie 108 pour l'exception, une ligne de plus par ventilation, écriture datée du jour du règlement |
 
 ## Lancer
 
 ```sh
 cd tool/tests/ui
 npm install playwright-core        # une seule fois
-node audit.mjs && node audit2.mjs && node audit3.mjs && node verif.mjs && node export.mjs
+node audit.mjs && node poste.mjs && node regles.mjs && node audit2.mjs && node export.mjs
 ```
 
 Chaque script affiche une ligne par contrôle (`OK` / `KO`) puis les erreurs
-JavaScript rencontrées — il ne doit y en avoir aucune.
+JavaScript rencontrées — il ne doit y en avoir aucune. Au total : **109
+contrôles**.
 
 Deux variables d'environnement permettent de changer de cible :
 

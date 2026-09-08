@@ -59,37 +59,40 @@ await p.click('.js-regles'); await p.waitForTimeout(200);
 const nCartes=await p.locator('.rulecard').count();
 await p.locator('.rulecard .js-regle').first().uncheck(); await p.waitForTimeout(80);
 const pied=await p.locator('.js-rulecount').innerText();
-await p.fill('.js-seuil','2500'); await p.waitForTimeout(80);
-t('règles : cartes + décompte + seuil', nCartes===7 && pied.includes('6'), `${nCartes} cartes, "${pied}"`);
+await p.locator('.rulecard').filter({hasText:'Montant supérieur'}).locator('.js-seuil').fill('2500'); await p.waitForTimeout(80);
+t('règles : cartes + décompte + seuil', nCartes===8 && pied.includes('7'), `${nCartes} cartes, "${pied}"`);
 await p.click('.js-modal-close');
 await p.click('.js-regles'); await p.waitForTimeout(150);
-t('règles : réglages conservés', (await p.locator('.js-seuil').inputValue())==='2500'
+t('règles : réglages conservés', (await p.locator('.rulecard').filter({hasText:'Montant supérieur'}).locator('.js-seuil').inputValue())==='2500'
    && !(await p.locator('.rulecard .js-regle').first().isChecked()));
 await p.locator('.rulecard .js-regle').first().check();
 await p.click('.js-modal-close');
 t('bouton historique masqué au 1er import', !(await p.locator('.js-dupbtn').isVisible()));
 
-// ---- 4. ÉTAPE 2 ----
-await p.click('.step[data-s="1"] .js-next'); await p.waitForTimeout(250);
-const onglets=await p.locator('.js-optabs .optab').count();
-t('onglets par motif', onglets>=3, (await p.locator('.js-optabs .optab').allInnerTexts()).map(x=>x.replace(/\n/g,'')).join(' / '));
-t('table remplie', (await p.locator('.js-trancher tr').count())>0);
-t('colonne Règlement présente', (await p.locator('.cell-regl').count())>0,
-  (await p.locator('.regl').first().innerText()).replace(/\n/g,' '));
-// justificatif
-await p.locator('.js-thumb').first().click(); await p.waitForTimeout(150);
-t('vignette ouvre le justificatif', (await p.locator('.js-modal-content').innerText()).includes('Justificatif'));
-await p.click('.js-modal-close');
-// navigation par onglets directs
-await p.locator('.js-optabs .optab').nth(2).click(); await p.waitForTimeout(120);
-t('clic direct sur un onglet', (await p.locator('.js-optabs .optab.on').innerText()).includes("l'IA"));
-await p.locator('.js-optabs .optab').nth(0).click(); await p.waitForTimeout(120);
-// parcours complet
-let etapes=[];
-while(await p.getAttribute('.lmnp','data-step')==='2' && etapes.length<8){
-  etapes.push((await p.locator('.js-optabs .optab.on').innerText()).replace(/\n/g,''));
-  await p.click('.js-valider'); await p.waitForTimeout(140); }
-t('parcours de tous les onglets -> étape 3', (await p.getAttribute('.lmnp','data-step'))==='3', etapes.join(' > '));
+// ---- 4. ÉTAPE 2 : LE POSTE DE TRAVAIL ----
+await p.click('.step[data-s="1"] .js-next'); await p.waitForTimeout(300);
+const wtabs=(await p.locator('.js-wstabs .optab').allInnerTexts()).map(x=>x.replace(/\n/g,''));
+t('quatre onglets de tri', wtabs.length===4, wtabs.join(' / '));
+t('le relevé est listé', (await p.locator('.oprow').count())>10,
+  (await p.locator('.oprow').count())+' lignes');
+t('débits en rouge, crédits en vert',
+  (await p.locator('.oprow .amt.db').count())>0 && (await p.locator('.oprow .amt.cr').count())>0);
+t('une ligne est sélectionnée d\'office', (await p.locator('.oprow.on').count())===1,
+  await p.locator('.oprow.on .lib').innerText());
+t('la pièce est affichée à droite', (await p.locator('.facsvg, .nopiece').count())>0);
+t('la décision est à droite', (await p.locator('.js-wform .js-imput').count())===1);
+t('deux boutons de sortie', (await p.locator('.js-wpied button').count())===2,
+  (await p.locator('.js-wpied').innerText()).replace(/\n/g,' '));
+// on traite tout le dossier au clavier
+let tours=0;
+while(parseInt((await p.locator('.js-wstabs .optab').nth(1).innerText()).replace(/\D/g,''),10)>0 && tours<25){
+  await p.keyboard.press('Enter'); await p.waitForTimeout(120); tours++;
+}
+t('le dossier se traite entièrement', tours<25 && tours>0, tours+' validations');
+t('compteur à zéro', (await p.locator('.js-wcount').innerText()).includes('Tout est traité'),
+  (await p.locator('.js-wcount').innerText()).replace(/\n/g,' '));
+await p.click('.js-valider'); await p.waitForTimeout(250);
+t('passage aux justificatifs', (await p.getAttribute('.lmnp','data-step'))==='3');
 
 // ---- 5. ÉTAPE 3 / 4 ----
 const nJust=await p.locator('.ritem').count();

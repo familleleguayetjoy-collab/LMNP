@@ -49,23 +49,39 @@ Le parcours d'un dossier tient en cinq écrans, un par décision :
 
 1. **Importer** — période, type (LMNP / LMP / SCI / BNC), assujettissement à la
    TVA, tenue de banque, FEC N‑1, relevé bancaire. Un bouton **Règles de
-   contrôle** ouvre la grille 3 × 3 des règles qui décident de ce qui remonte à
-   l'humain (immobilisations, montant élevé, acompte, paiements multiples,
-   opération non comprise, fournisseur sans historique, non rapprochée…), chacune
-   activable et, pour le montant, paramétrable.
-2. **Opérations complexes à affecter** — uniquement les lignes qu'une règle a
-   retenues, **découpées en onglets par motif** : on valide une catégorie pour
-   passer à la suivante, sans quitter l'écran. Chaque ligne affiche son
-   règlement (« Payé le … » ou « Paiement introuvable », avec saisie de la date),
-   son justificatif, et son compte — modifiable, complétable par un compte saisi
-   à la main, ou **décomposable sur plusieurs comptes**.
+   contrôle** ouvre les **8 règles** qui décident de ce qui remonte à l'humain
+   (immobilisation, acompte, paiements multiples, montant élevé, dépense sans
+   justificatif, opération non comprise, fournisseur absent du FEC N‑1, facture
+   sans règlement retrouvé en banque). Chacune est activable, deux sont
+   paramétrables par un seuil, et **chacune pilote réellement l'écran suivant** :
+   la décocher fait disparaître ce qu'elle produit.
+2. **Traitement** — l'écran de travail, coupé en deux. À gauche **le relevé
+   bancaire** entier, triable par date, libellé ou montant (débits en rouge,
+   crédits en vert), avec pour chaque ligne le ou les **statuts** produits par
+   les règles : *Justificatif manquant*, *Immobilisation à confirmer*, *Acompte
+   ou situation*, *Plusieurs règlements*, *Montant élevé*, *Fournisseur
+   nouveau*, *À qualifier*. Quatre onglets : **Tout**, **À traiter**,
+   **Traité**, **Réglées hors relevé**.
+   À droite, la pièce en grand et la décision en dessous, dans l'ordre où elle
+   se prend : ce que dit la banque (en lecture seule — le relevé fait foi), ce
+   que dit la pièce, puis le compte, décomposable sur plusieurs comptes ou
+   complétable par un compte saisi à la main. Deux sorties : **Valider et
+   suivant** ou **Laisser en attente (471)**, qui trace au lieu d'oublier.
+   Trois choses font la vitesse : le clavier (↑ ↓ pour parcourir, Entrée pour
+   valider), l'**imputation en série** — « appliquer aux 11 autres lignes EDF »,
+   qui traite d'un coup toutes les lignes du même fournisseur — et le fait que
+   les lignes sans statut soient déjà imputées et n'apparaissent que dans
+   « Traité ».
+   Le quatrième onglet est **l'exception de trésorerie** : les factures
+   acquittées qu'on ne retrouve pas au relevé. On y saisit la date portée par
+   la pièce, qui datera l'écriture d'OD ; sans date, un bouton l'ajoute à la
+   liste des demandes au client.
 3. **Justificatifs à demander** — deux onglets : *Pièce manquante* et
-   *Règlement à justifier* (facture réputée payée dont on n'a ni trace bancaire
-   ni date).
-4. **Le mail** — brouillon prêt, en deux sections correspondant aux deux onglets,
-   synchronisé avec les cases cochées.
-5. **Le fichier** — journal de banque Excel (si banque tenue) et écritures ASCII
-   Quadratus, horodatés, avec le nombre de lignes produites.
+   *Règlement à justifier*, alimentés depuis l'écran précédent.
+4. **Le mail** — brouillon prêt, en deux sections correspondant aux deux
+   onglets, synchronisé avec les cases cochées.
+5. **Le fichier** — journal de banque Excel (si banque tenue) et écritures
+   ASCII Quadratus, horodatés, avec le nombre de lignes produites.
 
 **Reprise et anti‑doublon.** Chaque import est enregistré (empreinte + date).
 À la réouverture d'un dossier déjà traité, l'outil affiche ce qui restait ouvert,
@@ -86,9 +102,12 @@ python3 build/build.py     # -> index.html + dist/app.html
 - `build/assets/` — polices `.woff2`, logos, favicon ;
 - `build/build.py` — injecte les assets.
 
-Les données fictives (`DOSSIERS`, `DEFAULT_TRANCHER`, `DEFAULT_RECLAM`,
-`REGLES`, `NB_PIECES`) sont regroupées en tête du bloc `<script>` : pour jouer un
-autre scénario, il suffit de les modifier et de reconstruire.
+Les données fictives sont regroupées en tête du bloc `<script>` : `DEFAULT_OPS`
+(le relevé), `DEFAULT_HORS` (les factures acquittées hors relevé),
+`DEFAULT_RECLAM`, `DOSSIERS`, `REGLES`, `PLAN` (le plan comptable affiché) et
+`NB_PIECES`. Une ligne de relevé s'écrit
+`O(date, libellé, montant, sens, compte, pièce, options, drapeaux)` — pour jouer
+un autre scénario, il suffit d'en ajouter et de reconstruire.
 
 ---
 
@@ -143,7 +162,7 @@ repli et le rangement est marqué comme estimé.
 | suite | ce qu'elle couvre |
 |---|---|
 | `tool/tests/selftest.py` | 206 contrôles sur le moteur — normalisation, FEC, codage, rapprochement, IA simulée, idempotence, classement, coût, trésorerie, rangement |
-| `tool/tests/ui/` | 78 contrôles d'interface pilotés dans un vrai navigateur, dont la vérification **du fichier ASCII réellement produit** (voir `tool/tests/ui/LISEZMOI.md`) |
+| `tool/tests/ui/` | 109 contrôles d'interface pilotés dans un vrai navigateur, dont la vérification **du fichier ASCII réellement produit** et le fait que chacune des 8 règles pilote vraiment quelque chose (voir `tool/tests/ui/LISEZMOI.md`) |
 
 ---
 
