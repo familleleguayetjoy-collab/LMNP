@@ -142,6 +142,19 @@ t('onglets de la gauche de Date à la droite de Statut', await p.evaluate(()=>{
   const l=document.querySelector('.wleft').getBoundingClientRect();
   return Math.abs(t.left-l.left)<2 && Math.abs(t.right-l.right)<3;}));
 
+// ---- remise à zéro de la démonstration ----
+const aTraiter=async()=>parseInt(
+  (await p.locator('.js-wstabs .optab').nth(1).innerText()).replace(/\D/g,''),10);
+const reste=await aTraiter();
+t('des lignes ont bien été traitées pendant le test', reste < 12, reste+' restantes sur 12');
+await p.click('.js-raz'); await p.waitForTimeout(250);
+await p.click('.js-modal-ok'); await p.waitForTimeout(900);
+t('la remise à zéro garde la session', !(await p.locator('.js-auth').isVisible()));
+await p.locator('[data-name="LMNP_DUPONT_2026"]').click(); await p.waitForTimeout(400);
+await p.click('.step[data-s="1"] .js-next'); await p.waitForTimeout(400);
+t('toutes les opérations repartent à traiter', (await aTraiter())===12, await aTraiter()+' à traiter');
+t('l\'historique d\'import est effacé', !(await p.locator('.js-dupbtn').isVisible()));
+
 // ---- tient dans l'écran ----
 t('étape 2 tient dans l\'écran',
   !(await p.evaluate(()=>document.documentElement.scrollHeight>window.innerHeight+2)));

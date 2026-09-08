@@ -24,17 +24,20 @@ t('session survit au rechargement', !(await p.locator('.js-auth').isVisible()));
 t('barre d\'étapes masquée sur l\'accueil', !(await p.locator('.stepper').isVisible()));
 const ong=(await p.locator('.accong').allInnerTexts()).map(x=>x.replace(/\n/g,''));
 t('trois onglets : nouveaux, à jour, tous', ong.length===3, ong.join(' | '));
+const nNeuf=await p.locator('.dosrow').count();
 t('« Nouveaux éléments » ne liste que les dossiers à traiter',
-  (await p.locator('.dosrow').count())===3 && (await p.locator('.pneuf').count())===3);
+  nNeuf>0 && (await p.locator('.pneuf').count())===nNeuf
+  && (await p.locator('.pill.maj').count())===0, nNeuf+' dossiers');
 t('le nombre de nouvelles pièces est en rouge', await p.evaluate(()=>{
   const m=/(\d+), (\d+), (\d+)/.exec(getComputedStyle(document.querySelector('.pneuf')).color);
   return +m[1] > +m[2]+40 && +m[1] > +m[3]+40;}),
   await p.evaluate(()=>getComputedStyle(document.querySelector('.pneuf')).color));
 await p.locator('.accong').nth(1).click(); await p.waitForTimeout(200);
+const nJour=await p.locator('.dosrow').count();
 t('« À jour » : nom + date de mise à jour, rien d\'autre',
-  (await p.locator('.dosrow').count())===4 && (await p.locator('.pill.maj').count())===4
+  nJour>0 && (await p.locator('.pill.maj').count())===nJour
   && (await p.locator('.pneuf').count())===0,
-  await p.locator('.pill.maj').first().innerText());
+  nJour+' dossiers · '+await p.locator('.pill.maj').first().innerText());
 await p.fill('.js-rech','azur'); await p.waitForTimeout(250);
 t('la recherche filtre', (await p.locator('.dosrow').count())===1,
   await p.locator('.dosrow .dnom').innerText());
@@ -92,8 +95,14 @@ t('import banque : fichier accepté', await p.locator('.js-bqok').isVisible(),
 await p.click('.js-regles'); await p.waitForTimeout(200);
 const nCartes=await p.locator('.rulecard').count();
 const carteM=p.locator('.rulecard').filter({hasText:'Dépense non immobilisable'});
-t('règles : trois niveaux par carte',
-  nCartes===8 && (await p.locator('.rulecard').first().locator('.niv').count())===3);
+t('règles : le paramétrage complet, trois niveaux par règle',
+  nCartes>=30 && (await p.locator('.rulecard').first().locator('.niv').count())===3
+  && (await p.locator('.rulefam').count())===6,
+  nCartes+' règles en '+(await p.locator('.rulefam').count())+' familles');
+t('règles : celles qui attendent la donnée sont signalées',
+  (await p.locator('.rulecard.dormante').count())>0
+  && /branchées aujourd/.test(await p.locator('.js-rulecount').innerText()),
+  (await p.locator('.js-rulecount').innerText()).split('—')[1]);
 await p.locator('.rulecard').first().locator('.niv[data-n="0"]').click(); await p.waitForTimeout(120);
 const pied=await p.locator('.js-rulecount').innerText();
 t('règles : le décompte suit les niveaux', /automatique/.test(pied), pied.replace(/\n/g,' '));

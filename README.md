@@ -54,14 +54,21 @@ Le parcours d'un dossier tient en cinq écrans, un par décision :
 
 1. **Importer** — période, type (LMNP / LMP / SCI / BNC), assujettissement à la
    TVA, tenue de banque, FEC N‑1, relevé bancaire. Un bouton **Règles de
-   contrôle** ouvre les **8 règles**, réparties en trois familles (nature de
-   l'opération, montant et enjeu, fiabilité de l'affectation), qui décident de
-   ce qui remonte à l'humain
-   (immobilisation, acompte, paiements multiples, montant élevé, dépense sans
-   justificatif, opération non comprise, fournisseur absent du FEC N‑1, facture
-   sans règlement retrouvé en banque). Chacune est activable, deux sont
-   paramétrables par un seuil, et **chacune pilote réellement l'écran suivant** :
-   la décocher fait disparaître ce qu'elle produit.
+   contrôle** ouvre le paramétrage complet du cabinet : **32 règles** en six
+   familles — montant et significativité, fiabilité de l'affectation, anomalies
+   documentaires et règlements, opérations sensibles, cohérence avec l'activité,
+   doublons.
+   Chaque règle se règle sur **trois niveaux** : *Automatique* (l'outil impute
+   seul), *À contrôler* (la ligne remonte), *Validation obligatoire* (la ligne
+   remonte **et** ne peut pas être traitée en série avec les autres lignes du
+   même fournisseur). Quatre règles portent un seuil.
+   **Huit règles sont branchées aujourd'hui** et pilotent réellement l'écran
+   suivant : les passer en automatique fait disparaître ce qu'elles produisent.
+   Les autres portent la mention *à brancher* : elles se paramètrent dès
+   maintenant mais attendent la donnée qui les fait vivre — historique
+   pluriannuel par fournisseur, balance du dossier, schémas d'écriture (prêt,
+   crédit-bail, dépôt de garantie). L'écran le dit en toutes lettres : mieux
+   vaut une case honnête qu'une case qui ment.
 2. **Traitement** — l'écran de travail, en trois colonnes sur toute la hauteur :
    **le relevé**, **la pièce**, **la décision**. Rien en haut de l'écran : la
    navigation est un rail vertical d'icônes, tout le reste va au travail.
@@ -77,8 +84,11 @@ Le parcours d'un dossier tient en cinq écrans, un par décision :
    La pièce occupe toute la hauteur au centre. Tant qu'aucun fichier n'est
    rattaché, un **aperçu schématique** en tient lieu — rendu différemment selon
    qu'il s'agit d'une facture ou d'un ticket de caisse ; dès qu'une image est
-   là (le Drive en production, un dépôt à la main en démonstration), c'est
-   **le vrai document** qui s'affiche — image ou PDF, chacun avec son rendu. À droite la décision, dans
+   là, c'est **le vrai document** qui s'affiche. Le dossier de démonstration
+   `LMNP_POLO_TEST` porte cinq vraies factures : leurs PDF sont rendus en image
+   à la construction (`build/rendu_pieces.py`), parce que le lecteur PDF du
+   navigateur n'est pas garanti dans un cadre isolé — dans l'artifact,
+   `<embed type="application/pdf">` n'affichait qu'un rectangle noir. À droite la décision, dans
    l'ordre où elle se prend : ce que dit la banque (en lecture seule — le relevé fait foi), ce
    que dit la pièce, puis le compte, décomposable sur plusieurs comptes ou
    complétable par un compte saisi à la main. Une facture ventilée n'a plus de
@@ -100,6 +110,10 @@ Le parcours d'un dossier tient en cinq écrans, un par décision :
 5. **Le fichier** — journal de banque Excel (si banque tenue) et écritures
    ASCII Quadratus, horodatés, avec le nombre de lignes produites.
 
+**Remise à zéro.** Le bouton ⟲ en bas du rail efface le travail en cours et
+l'historique d'import : tous les dossiers repartent avec l'intégralité de leurs
+opérations à traiter. Utile entre deux démonstrations ; la session reste ouverte.
+
 **Reprise et anti‑doublon.** Chaque import est enregistré (empreinte + date).
 À la réouverture d'un dossier déjà traité, l'outil affiche ce qui restait ouvert,
 confronté aux pièces déposées depuis, et laisse cocher « Régularisé hors Saisio ».
@@ -117,6 +131,10 @@ python3 build/build.py     # -> index.html + dist/app.html
 
 - `build/template.html` — la source (HTML / CSS / JS) et le jeu de démonstration ;
 - `build/assets/` — polices `.woff2`, logos, favicon ;
+- `build/assets/pieces/` — les cinq factures de démonstration : le PDF d'origine
+  et son rendu `.jpg`, produit par `build/rendu_pieces.py` (à relancer seulement
+  quand on ajoute une pièce ; les JPEG sont versionnés pour que `build.py`
+  n'ait aucune dépendance) ;
 - `build/build.py` — injecte les assets.
 
 Les données fictives sont regroupées en tête du bloc `<script>` : `DEFAULT_OPS`
@@ -191,7 +209,7 @@ sert de repli et le rangement est marqué comme estimé.
 | suite | ce qu'elle couvre |
 |---|---|
 | `tool/tests/selftest.py` | 212 contrôles sur le moteur — normalisation, FEC, codage, rapprochement, IA simulée, idempotence, classement, coût, trésorerie, rangement |
-| `tool/tests/ui/` | 131 contrôles d'interface pilotés dans un vrai navigateur, dont la vérification **du fichier ASCII réellement produit** et le fait que chacune des 8 règles pilote vraiment quelque chose (voir `tool/tests/ui/LISEZMOI.md`) |
+| `tool/tests/ui/` | 136 contrôles d'interface pilotés dans un vrai navigateur, dont la vérification **du fichier ASCII réellement produit** et le fait que chacune des 8 règles pilote vraiment quelque chose (voir `tool/tests/ui/LISEZMOI.md`) |
 
 ---
 

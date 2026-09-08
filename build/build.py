@@ -22,6 +22,15 @@ tokens = {
                         (ASSETS / "favicon.svg").read_bytes()).decode(),
 }
 
+# Pièces de démonstration : les VRAIES factures. On intègre le rendu image de
+# la page plutôt que le PDF lui-même — le lecteur PDF du navigateur n'est pas
+# garanti dans un cadre isolé (l'artifact affichait un rectangle noir), alors
+# qu'une image s'affiche partout. Les JPEG sont produits une fois par
+# `build/rendu_pieces.py` et versionnés à côté des PDF d'origine.
+for jpg in sorted((ASSETS / "pieces").glob("*.jpg")):
+    jeton = "__PIECE_%s__" % jpg.stem.split("-", 1)[1].upper().replace("-", "_")
+    tokens[jeton] = data_uri("pieces/" + jpg.name, "image/jpeg")
+
 inner = (ROOT / "template.html").read_text(encoding="utf-8")
 for k, v in tokens.items():
     inner = inner.replace(k, v)

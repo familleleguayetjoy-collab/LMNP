@@ -10,10 +10,10 @@ await p.goto(PAGE);
 await p.click('.js-login button[type=submit]');
 
 // --- A. dossier SANS banque (Polo) ---
-await p.click('[data-name="LMNP_POLO_TEST"]'); await p.waitForTimeout(250);
-t('Polo : bascule Banque sur Non', (await p.getAttribute('.lmnp','data-banque'))==='non');
+await p.click('[data-name="LMNP_BERNARD_2025"]'); await p.waitForTimeout(250);
+t('Bernard : bascule Banque sur Non', (await p.getAttribute('.lmnp','data-banque'))==='non');
 await p.click('.step[data-s="1"] .js-next'); await p.waitForTimeout(200);
-t('Polo : onglets sans « hors relevé »',
+t('Bernard : onglets sans « hors relevé »',
   !(await p.locator('.js-wstabs .optab').allInnerTexts()).some(x=>/hors relev/.test(x)),
   (await p.locator('.js-wstabs .optab').allInnerTexts()).map(x=>x.replace(/\n/g,'')).join(' / '));
 await p.locator('.stp[data-go="5"]').click(); await p.waitForTimeout(200);

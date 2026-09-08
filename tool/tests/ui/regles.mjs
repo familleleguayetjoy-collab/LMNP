@@ -95,8 +95,8 @@ await ouvrir(); await niveau('sans facture au-delà',1); await fermer();
 await p.locator('.stp[data-go="1"]').click(); await p.waitForTimeout(150);
 await p.click('.js-regles'); await p.waitForTimeout(200);
 const n=await p.locator('.rulecard').count();
-t('huit règles, décompte cohérent',
-  n===8 && /à contrôler/.test(await p.locator('.js-rulecount').innerText()),
+t('le décompte suit le paramétrage',
+  n>=30 && /à contrôler/.test(await p.locator('.js-rulecount').innerText()),
   (await p.locator('.js-rulecount').innerText()).replace(/\n/g,' '));
 console.log(R.join('\n'));
 console.log('\nERREURS JS: '+(errs.length?errs.join('\n'):'aucune'));

@@ -63,7 +63,7 @@ t('le total ne bouge pas', Math.abs(somme-somme1)<0.005, somme.toFixed(2)+' €'
 
 // dossier sans banque : tout en OD 108
 await p.click('.js-home'); await p.waitForTimeout(150);
-await p.click('[data-name="LMNP_POLO_TEST"]'); await p.waitForTimeout(450);
+await p.click('[data-name="LMNP_BERNARD_2025"]'); await p.waitForTimeout(450);
 await p.locator('.js-modal-ok').click().catch(()=>{}); await p.waitForTimeout(200);
 await p.click('.step[data-s="1"] .js-next'); await p.waitForTimeout(250);
 const L3=await exporter();
