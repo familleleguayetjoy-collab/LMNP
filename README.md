@@ -55,15 +55,18 @@ Le parcours d'un dossier tient en cinq écrans, un par décision :
    sans règlement retrouvé en banque). Chacune est activable, deux sont
    paramétrables par un seuil, et **chacune pilote réellement l'écran suivant** :
    la décocher fait disparaître ce qu'elle produit.
-2. **Traitement** — l'écran de travail, coupé en deux. À gauche **le relevé
-   bancaire** entier, triable par date, libellé ou montant (débits en rouge,
-   crédits en vert), avec pour chaque ligne le ou les **statuts** produits par
-   les règles : *Justificatif manquant*, *Immobilisation à confirmer*, *Acompte
-   ou situation*, *Plusieurs règlements*, *Montant élevé*, *Fournisseur
-   nouveau*, *À qualifier*. Quatre onglets : **Tout**, **À traiter**,
-   **Traité**, **Réglées hors relevé**.
-   À droite, la pièce en grand et la décision en dessous, dans l'ordre où elle
-   se prend : ce que dit la banque (en lecture seule — le relevé fait foi), ce
+2. **Traitement** — l'écran de travail, en trois colonnes sur toute la largeur :
+   **le relevé**, **la pièce**, **la décision**. Rien en haut de l'écran : la
+   navigation est un rail vertical d'icônes, tout le reste va au travail.
+   Le relevé est triable par date, libellé, montant ou statut, en-tête figée au
+   défilement, montants en noir (le signe suffit), libellés tronqués sans jamais
+   passer à la ligne. **Un seul statut par ligne** — le plus grave — avec une
+   pastille de couleur : *À qualifier*, *Immobilisation*, *Acompte*,
+   *Multi-règl.*, *Montant élevé*, *Sans pièce*, *Nouveau*, ou *Automatique*
+   quand aucune règle ne retient la ligne. Quatre onglets : **Tout**,
+   **À traiter**, **Traité**, **Réglées hors relevé**.
+   La pièce occupe toute la hauteur au centre. À droite la décision, dans
+   l'ordre où elle se prend : ce que dit la banque (en lecture seule — le relevé fait foi), ce
    que dit la pièce, puis le compte, décomposable sur plusieurs comptes ou
    complétable par un compte saisi à la main. Deux sorties : **Valider et
    suivant** ou **Laisser en attente (471)**, qui trace au lieu d'oublier.
@@ -162,7 +165,7 @@ repli et le rangement est marqué comme estimé.
 | suite | ce qu'elle couvre |
 |---|---|
 | `tool/tests/selftest.py` | 206 contrôles sur le moteur — normalisation, FEC, codage, rapprochement, IA simulée, idempotence, classement, coût, trésorerie, rangement |
-| `tool/tests/ui/` | 109 contrôles d'interface pilotés dans un vrai navigateur, dont la vérification **du fichier ASCII réellement produit** et le fait que chacune des 8 règles pilote vraiment quelque chose (voir `tool/tests/ui/LISEZMOI.md`) |
+| `tool/tests/ui/` | 112 contrôles d'interface pilotés dans un vrai navigateur, dont la vérification **du fichier ASCII réellement produit** et le fait que chacune des 8 règles pilote vraiment quelque chose (voir `tool/tests/ui/LISEZMOI.md`) |
 
 ---
 

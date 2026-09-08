@@ -45,14 +45,13 @@
 *{box-sizing:border-box}
 .lmnp{font-family:var(--sans);color:var(--ink);line-height:1.5;
   -webkit-font-smoothing:antialiased;font-size:16px;color-scheme:light;
-  height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden;
+  height:100vh;height:100dvh;display:flex;flex-direction:row;overflow:hidden;
   background:
     radial-gradient(70% 55% at 100% 0%, rgba(224,196,132,.16) 0%, transparent 55%),
     radial-gradient(80% 60% at 0% 0%, rgba(43,121,201,.14) 0%, transparent 55%),
     linear-gradient(180deg,#EEF3FA 0%,var(--page) 30%)}
-/* Accueil : bandeau blanc plein, sans filet ni barre d'étapes */
-.lmnp[data-step="0"] .hdr{background:#fff;border-bottom-color:transparent;
-  -webkit-backdrop-filter:none;backdrop-filter:none}
+/* Accueil : le rail se réduit à la marque */
+.lmnp[data-step="0"] .rail{background:#fff}
 .lmnp h1,.lmnp h2,.lmnp h3{font-family:var(--display);font-weight:700;letter-spacing:-.02em;line-height:1.1;margin:0}
 .lmnp p{margin:0}
 .lmnp :where(button){font:inherit;color:inherit;cursor:pointer;border:0;background:none}
@@ -60,38 +59,39 @@
 .lmnp :focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:8px}
 .num{font-variant-numeric:tabular-nums}
 .wrap{width:min(1220px,calc(100% - 48px));margin-inline:auto}
+/* l'accueil et les écrans « document » restent centrés ; le poste de travail
+   prend toute la largeur disponible. */
+.step[data-s="2"]{max-width:none}
+.step:not([data-s="2"]){width:min(1220px,100%);margin-inline:auto}
 .hidden{display:none!important}
 
-/* ---------- Header (barre pleine largeur) ---------- */
-.hdr{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:28px;padding:12px 30px;
-  background:color-mix(in srgb,var(--surface) 90%,transparent);
+/* ---------- Rail vertical : icônes seules, tout l'espace va au travail --- */
+.rail{flex:0 0 auto;width:66px;display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:14px 6px;background:color-mix(in srgb,var(--surface) 88%,transparent);
   -webkit-backdrop-filter:saturate(1.4) blur(10px);backdrop-filter:saturate(1.4) blur(10px);
-  color:var(--ink);border-bottom:1px solid var(--line)}
-.brand{display:flex;align-items:baseline;gap:9px;flex:0 0 auto}
+  border-right:1px solid var(--line)}
+.brand{display:flex;align-items:baseline;justify-content:center;gap:1px;flex:0 0 auto;padding:2px 0 14px}
 .wordmark{font-family:var(--wordmark);font-style:italic;font-weight:800;letter-spacing:-.03em;
-  font-size:26px;color:var(--green);line-height:1}
+  font-size:28px;color:var(--green);line-height:1}
 .wordmark .dot{color:var(--ink)}
-.stepper{display:flex;align-items:center;justify-content:space-between;flex:1;gap:6px;overflow-x:auto;
-  scrollbar-width:none;max-width:780px;margin-inline:auto;padding:6px;border-radius:99px;
-  background:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.75);
-  -webkit-backdrop-filter:saturate(1.7) blur(16px);backdrop-filter:saturate(1.7) blur(16px);
-  box-shadow:0 1px 2px rgba(21,24,28,.05),0 8px 24px rgba(21,24,28,.06),inset 0 1px 0 rgba(255,255,255,.85)}
-.stepper::-webkit-scrollbar{display:none}
-.stp{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:10px 16px;border-radius:99px;
-  white-space:nowrap;flex:1;color:var(--muted);font-family:var(--display);font-weight:600;font-size:14px;
+.brand .wordfull{display:none}
+.stepper{display:flex;flex-direction:column;align-items:stretch;gap:2px;flex:0 0 auto;width:100%}
+.stp{display:flex;flex-direction:column;align-items:center;gap:4px;padding:9px 2px;border-radius:10px;
+  color:var(--muted);font-family:var(--display);font-weight:600;font-size:9.5px;
+  letter-spacing:-.01em;text-align:center;line-height:1.1;
   transition:background .15s ease,color .15s ease}
-.stp svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.7}
+.stp svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.7;flex:0 0 auto}
+.stp span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .stp:hover{background:var(--line-2);color:var(--ink-soft)}
-.stp[aria-current="true"]{background:#fff;color:var(--green-2);
-  box-shadow:0 1px 2px rgba(21,24,28,.08),0 4px 12px rgba(21,24,28,.06)}
+.stp[aria-current="true"]{background:var(--green-soft);color:var(--green-2)}
 .stp[aria-current="true"] svg{stroke:var(--green)}
 .stp.done{color:var(--ink-soft)}
 .lmnp[data-step="0"] .stepper{display:none}
-@media(max-width:720px){.hdr{gap:14px;padding:10px 16px}.stp span{display:none}.stp{padding:9px}}
+.rail .icon-btn{margin-top:auto}
 
 /* ---------- Layout ---------- */
-main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction:column}
-.hdr{flex:0 0 auto}
+main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
+  display:flex;flex-direction:column;width:auto;margin:0}
 /* Chaque étape occupe l'écran ; seules les listes défilent (barre latérale). */
 .step:not(.hidden){flex:1;min-height:0;display:flex;flex-direction:column}
 .step > .actionbar{flex:0 0 auto}
@@ -462,68 +462,75 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
   color:var(--muted);border:1px solid var(--line);background:var(--surface)}
 .icon-btn:hover{border-color:var(--muted);color:var(--ink-soft)}
 /* en-têtes de groupe dans « opérations complexes » */
-/* ===== POSTE DE TRAVAIL (étape 2) : relevé à gauche, décision à droite ===== */
-.wstop{display:flex;align-items:center;gap:18px;flex-wrap:wrap;flex:0 0 auto}
+/* ===== POSTE DE TRAVAIL (étape 2) : liste | pièce | décision ===== */
 .lmnp h1.wsname{font-family:var(--wordmark);font-style:italic;font-weight:800;letter-spacing:-.01em;
   color:#fff;background:linear-gradient(120deg,#0C355E 0%,#1B5FA8 62%,#2C79C9 100%);
-  border-radius:12px;padding:9px 18px;font-size:20px;box-shadow:var(--shadow-sm);
-  flex:0 0 auto;min-height:0;display:inline-flex;align-items:center}
-.wstop .optabs{margin-top:0}
-.wsplit{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 440px;
-  gap:16px;margin-top:12px}
-.step[data-s="2"] > .actionbar{margin-top:14px}
-@media(max-width:1180px){.wsplit{grid-template-columns:minmax(0,1fr) 380px}}
+  border-radius:12px;padding:8px 18px;font-size:19px;box-shadow:var(--shadow-sm);
+  flex:0 0 auto;min-height:0;display:block}
+.step[data-s="2"] > .optabs{flex:0 0 auto;margin-top:9px}
+/* trois colonnes : la pièce prend exactement la hauteur disponible, en A4 */
+.wsplit{flex:1;min-height:0;display:grid;gap:12px;margin-top:10px;
+  grid-template-columns:minmax(400px,1fr) minmax(320px,calc((100vh - 202px) / 1.414 + 20px)) 258px}
+@media(max-width:1300px){.wsplit{grid-template-columns:minmax(300px,1fr) minmax(240px,calc((100vh - 202px) / 1.55)) 244px}}
 .wleft{min-height:0;overflow:hidden;display:flex;flex-direction:column}
-.wright{min-height:0;overflow:hidden;display:grid;grid-template-rows:minmax(180px,1fr) auto auto}
 .wleft .tblwrap{flex:1;min-height:0;overflow-y:auto;padding:0}
+.wright{min-height:0;overflow:hidden;display:grid;grid-template-rows:1fr auto}
 
-/* la liste du relevé */
-.tbl.ops thead th{position:sticky;top:0;z-index:2;padding:13px 16px}
-.tbl.ops td{padding:11px 16px;border-top:1px solid var(--line-2);vertical-align:middle}
+/* --- la liste du relevé --- */
+.tbl.ops{table-layout:fixed;width:100%}
+.tbl.ops th{position:sticky;top:0;z-index:2;padding:11px 10px;
+  background:linear-gradient(180deg,#F2F4F7 0%,#EBEEF2 100%);
+  box-shadow:inset 0 -1px 0 var(--line);color:var(--ink-soft)}
+.tbl.ops thead th:first-child{border-top-left-radius:16px}
+.tbl.ops thead th:last-child{border-top-right-radius:16px}
+.tbl.ops td{padding:9px 10px;border-top:1px solid var(--line-2);vertical-align:middle;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tbl.ops .js-sort{cursor:pointer;user-select:none;white-space:nowrap}
 .tbl.ops .js-sort:hover{color:var(--green)}
-.tbl.ops .js-sort.tri::after{content:"▲";font-size:9px;margin-left:6px;opacity:.8}
+.tbl.ops .js-sort.tri::after{content:"▲";font-size:8px;margin-left:5px;opacity:.75}
 .tbl.ops .js-sort.tri.desc::after{content:"▼"}
+.tbl.ops th:nth-child(1),.tbl.ops td:nth-child(1){width:78px}
+.tbl.ops th:nth-child(3),.tbl.ops td:nth-child(3){width:104px;text-align:right}
+.tbl.ops th:nth-child(4),.tbl.ops td:nth-child(4){width:126px}
 .oprow{cursor:pointer;transition:background .12s ease}
 .oprow:hover{background:var(--line-2)}
 .oprow.on{background:var(--green-soft);box-shadow:inset 3px 0 0 var(--green)}
 .oprow.fini .lib{color:var(--ink-soft);font-weight:500}
-.tbl.ops .dt{color:var(--muted);font-size:13px;width:1%}
-.tbl.ops .lib{font-family:var(--display);font-weight:600;font-size:14.5px}
-.tbl.ops .amt{font-weight:700;font-size:14.5px;white-space:nowrap;width:1%}
-.tbl.ops .amt.db{color:var(--red)} .tbl.ops .amt.cr{color:#1B7F4B}
-.tbl.ops .stt{width:1%}
-.chip{display:inline-block;font-family:var(--display);font-weight:600;font-size:11px;
-  padding:4px 9px;border-radius:99px;white-space:nowrap;margin:2px 0 2px 4px;
-  background:var(--line-2);color:var(--ink-soft)}
-.chip.justif{background:var(--warn-soft);color:var(--todo-ink)}
-.chip.immo{background:#EAF1FA;color:var(--green-2)}
-.chip.montant{background:#FBE9E7;color:var(--red)}
-.chip.qualifier{background:#F0ECFA;color:#5B47A0}
-.chip.acompte{background:#FCF1E3;color:#B0701C}
-.chip.multipaie{background:#EAF4F1;color:#1F6B57}
-.chip.sanshisto{background:#F2F0EA;color:#7A6A45}
-.chip.auto{background:transparent;color:var(--muted);font-weight:500}
-.chip.ok{background:var(--green-soft);color:var(--green)}
-.chip.pret{background:var(--green-soft);color:var(--green-2)}
-.chip.att{background:var(--warn-soft);color:var(--todo-ink)}
+.tbl.ops .dt{color:var(--muted);font-size:12.5px}
+.tbl.ops .lib{font-family:var(--display);font-weight:600;font-size:14px}
+.tbl.ops .amt{font-weight:700;font-size:14px;color:var(--ink)}   /* jamais de couleur */
+/* un seul statut par ligne : une pastille de couleur et deux mots */
+.chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--display);font-weight:600;
+  font-size:11.5px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  max-width:100%}
+.chip::before{content:"";width:8px;height:8px;border-radius:50%;flex:0 0 auto;background:var(--muted)}
+.chip.justif::before{background:#E08A2B}
+.chip.immo::before{background:#1B5FA8}
+.chip.acompte::before{background:#B0701C}
+.chip.multipaie::before{background:#1F6B57}
+.chip.montant::before{background:#C4362F}
+.chip.sanshisto::before{background:#7A6A45}
+.chip.qualifier::before{background:#5B47A0}
+.chip.ok::before,.chip.pret::before{background:#1B7F4B}
+.chip.att::before{background:#E08A2B}
+.chip.auto{color:var(--muted);font-weight:500}
+.chip.auto::before{background:#D3D7DC}
 
-/* le volet de décision */
-.wright{padding:0}
+/* --- la pièce, pleine hauteur --- */
 .wpiece{min-height:0;overflow:hidden;display:flex;align-items:center;justify-content:center;
-  padding:12px;background:linear-gradient(180deg,#F2F4F7 0%,#EDF0F4 100%);
-  border-bottom:1px solid var(--line)}
+  padding:8px;background:linear-gradient(180deg,#F4F6F8 0%,#EDF0F4 100%)}
 .facwrap{height:100%;width:100%;display:flex;align-items:center;justify-content:center}
-.facsvg{height:100%;width:auto;max-width:100%;border-radius:8px;background:#fff;
-  box-shadow:0 2px 6px rgba(21,24,28,.12),0 12px 28px rgba(21,24,28,.14)}
+.facsvg{aspect-ratio:300/400;height:auto;width:auto;max-height:100%;max-width:100%;
+  border-radius:8px;box-shadow:0 2px 6px rgba(21,24,28,.12),0 14px 32px rgba(21,24,28,.16)}
 .nopiece{text-align:center;color:var(--muted);padding:22px}
 .nopiece svg{width:34px;height:34px;stroke:var(--muted);fill:none;stroke-width:1.5}
 .nopiece p{margin:8px 0 12px;font-size:13.5px}
 .nopiece .actif{background:var(--green);border-color:var(--green);color:#fff}
-.wform{min-height:0;padding:11px 15px 9px;overflow-y:auto}
-.wgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px 10px}
-.wgrid .w3{grid-column:span 2}
-.wgrid .w2{grid-column:span 2}
+
+/* --- la décision --- */
+.wform{min-height:0;padding:13px 14px 10px;overflow-y:auto}
+.wgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px 10px}
+.wgrid .w2{grid-column:1/-1}
 .wform label{display:flex;flex-direction:column;gap:5px;font-family:var(--display);
   font-weight:600;font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
 .wform label small{text-transform:none;letter-spacing:0;font-weight:500;font-size:11px;color:var(--muted)}
@@ -536,22 +543,23 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
 .odnote .actif{background:var(--green);border-color:var(--green);color:#fff}
 .odnote{margin:8px 0 0;padding:8px 11px;background:var(--warn-soft);
   border:1px solid color-mix(in srgb,var(--warn) 35%,transparent);border-radius:10px;
-  color:var(--todo-ink);font-size:12px;font-weight:600}
+  color:var(--todo-ink);font-size:11.5px;font-weight:600;line-height:1.45}
 .wcpt{margin-top:10px}
 .wcptact{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .serie{display:inline-flex;align-items:center;gap:7px;font-family:var(--display);font-weight:700;
-  font-size:12.5px;color:#fff;background:var(--green);padding:8px 13px;border-radius:9px;
-  box-shadow:0 4px 12px rgba(27,95,168,.22);transition:background .15s ease}
+  font-size:12px;color:#fff;background:var(--green);padding:8px 12px;border-radius:9px;
+  box-shadow:0 4px 12px rgba(27,95,168,.22);transition:background .15s ease;text-align:left}
 .serie:hover{background:var(--green-2)}
 .serie::before{content:"⇊";font-size:14px;line-height:1}
 .wcpt .ventil{margin-top:10px}
-.wpied{display:flex;gap:10px;justify-content:flex-end;align-items:center;
-  padding:10px 15px;border-top:1px solid var(--line);background:var(--surface)}
-.wpied .cta{padding:12px 20px;font-size:14.5px}
-.wpied .mbtn{font-size:13px;padding:11px 16px}
+.wpied{display:flex;flex-direction:column;gap:7px;
+  padding:10px 12px;border-top:1px solid var(--line);background:var(--surface)}
+.wpied .cta{padding:11px 14px;font-size:14px;justify-content:center;white-space:nowrap}
+.wpied .mbtn{font-size:12px;padding:9px 12px;justify-content:center;white-space:nowrap}
 .vide{color:var(--muted);font-size:13.5px;text-align:center;padding:30px}
 .actionbar .left .check{width:22px;height:22px}
-@media(max-width:900px){.wsplit{grid-template-columns:1fr;grid-template-rows:1fr 1fr}}
+.step[data-s="2"] > .actionbar{margin-top:12px}
+@media(max-width:1040px){.wsplit{grid-template-columns:1fr;grid-template-rows:1fr 1fr auto}}
 
 /* onglets des catégories d'opérations complexes */
 .optabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
@@ -561,11 +569,11 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
 .optab:hover{border-color:var(--muted);color:var(--ink-soft)}
 .optab b{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:99px;
   background:var(--line-2);color:var(--ink-soft);font-size:12px}
-.optab.on{background:var(--green);border-color:var(--green);color:#fff;
-  box-shadow:0 6px 16px rgba(27,95,168,.22)}
+.optab.on{background:linear-gradient(180deg,#4A525C 0%,#2E353D 100%);
+  border-color:#2E353D;color:#fff;box-shadow:0 6px 16px rgba(21,24,28,.22)}
 .optab.on b{background:rgba(255,255,255,.25);color:#fff}
-.optab.fait{border-color:var(--green-line);background:var(--green-soft);color:var(--green-2)}
-.optab.fait b{background:var(--green-line);color:var(--green-2)}
+.optab.fait{border-color:#D3D7DC;background:#F1F3F5;color:#4A525C}
+.optab.fait b{background:#DDE1E5;color:#4A525C}
 .optab svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.6}
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px}
 .chips i{font-style:normal;font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:99px;
@@ -609,21 +617,23 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
   </div>
 
   <!-- HEADER — barre pleine largeur : Saisio + étapes (icône + texte) -->
-  <header class="hdr">
+  <!-- RAIL VERTICAL — plus rien en haut : tout l'espace va au travail -->
+  <aside class="rail">
     <button class="brand js-home" aria-label="Accueil — mes dossiers">
-      <span class="wordmark"><em>Saisio</em><span class="dot">.</span></span>
+      <span class="wordmark"><em>S</em><span class="dot">.</span></span>
+      
     </button>
     <nav class="stepper js-stepper" aria-label="Étapes">
       <button class="stp" data-go="1"><svg viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg><span>Importer</span></button>
-      <button class="stp" data-go="2"><svg viewBox="0 0 24 24"><path d="M12 3v18M5 8l7-3 7 3"/><path d="M5 8l-2 6a3 3 0 0 0 6 0zM19 8l-2 6a3 3 0 0 0 6 0z"/></svg><span>Traitement</span></button>
-      <button class="stp" data-go="3"><svg viewBox="0 0 24 24"><path d="M4 4h16v13H7l-3 3z"/><path d="M12 8v3M12 14h.01"/></svg><span>Justificatifs</span></button>
+      <button class="stp" data-go="2"><svg viewBox="0 0 24 24"><path d="M12 3v18M5 8l7-3 7 3"/><path d="M5 8l-2 6a3 3 0 0 0 6 0zM19 8l-2 6a3 3 0 0 0 6 0z"/></svg><span>Traiter</span></button>
+      <button class="stp" data-go="3"><svg viewBox="0 0 24 24"><path d="M4 4h16v13H7l-3 3z"/><path d="M12 8v3M12 14h.01"/></svg><span>Relances</span></button>
       <button class="stp" data-go="4"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M4 7l8 6 8-6"/></svg><span>Mail</span></button>
       <button class="stp" data-go="5"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg><span>Fichier</span></button>
     </nav>
     <button class="icon-btn js-logout" aria-label="Se déconnecter" title="Se déconnecter">
       <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg>
     </button>
-  </header>
+  </aside>
 
   <main class="wrap">
 
@@ -770,15 +780,13 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
       </div>
     </section>
 
-    <!-- ÉTAPE 2 — POSTE DE TRAVAIL : le relevé à gauche, la décision à droite -->
+    <!-- ÉTAPE 2 — POSTE DE TRAVAIL : liste | pièce | décision -->
     <section class="step hidden" data-s="2">
-      <div class="wstop">
-        <h1 class="js-dossier wsname">LMNP_DUPONT_2026</h1>
-        <div class="optabs js-wstabs"></div>
-      </div>
+      <h1 class="js-dossier wsname">LMNP_DUPONT_2026</h1>
+      <div class="optabs js-wstabs"></div>
 
       <div class="wsplit">
-        <!-- GAUCHE — le relevé bancaire, dans l'ordre qu'on choisit -->
+        <!-- le relevé, en-tête figée au défilement -->
         <div class="card wleft">
           <div class="tblwrap">
             <table class="tbl ops">
@@ -786,16 +794,18 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
                 <th class="js-sort" data-k="dt">Date</th>
                 <th class="js-sort" data-k="lib">Libellé</th>
                 <th class="js-sort num" data-k="m">Montant</th>
-                <th>Statut</th>
+                <th class="js-sort" data-k="st">Statut</th>
               </tr></thead>
               <tbody class="js-ops"></tbody>
             </table>
           </div>
         </div>
 
-        <!-- DROITE — la pièce en haut, la décision en bas -->
+        <!-- la pièce, pleine hauteur -->
+        <div class="card wpiece js-wpiece"></div>
+
+        <!-- la décision -->
         <div class="card wright">
-          <div class="wpiece js-wpiece"></div>
           <div class="wform js-wform"></div>
           <div class="wpied js-wpied"></div>
         </div>
@@ -804,7 +814,6 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
       <div class="actionbar" style="justify-content:space-between">
         <div class="left js-wcount"></div>
         <div class="right">
-          <button class="btn-secondary js-back"><span class="cv">‹</span> Retour</button>
           <button class="cta js-valider">Justificatifs à demander <span class="arw">→</span></button>
         </div>
       </div>
@@ -974,10 +983,17 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
     O("16/05/2026","CHUBB GLI ASSURANCE",168.00,"D","616",
       P("12/05/2026",168.00,0,"#2b6f4e","C"),opts("616","622")),
     O("28/06/2026","SYNDIC AZUR APPEL T2",438.00,"D","614",null,opts("614","615")),
-    O("30/06/2026","TAXE FONCIERE 2026",1240.00,"D","63512",null,opts("63512","63511")),
+    O("30/06/2026","TAXE FONCIERE 2026",1840.00,"D","63512",
+      P("28/06/2026",1840.00,0,"#4a5a6a","T"),opts("63512","63511")),
+    O("10/07/2026","PEINTURE AZUR RAVALEMENT",640.00,"D","615",
+      P("06/07/2026",640.00,106.67,"#7a5c9c","P"),opts("615","2135"),
+      {multi:true}),                  // réglée en deux fois
+    O("04/08/2026","PRESSING DU PORT",96.00,"D","606",
+      P("02/08/2026",96.00,16.00,"#2f7f7a","P"),opts("606","615"),
+      {neuf:true}),                   // fournisseur absent du FEC N-1
     O("15/09/2026","COPRO AZUR APPEL FONDS TRAVAUX",720.00,"D","614",
       P("12/09/2026",720.00,0,"#5b6b7a","C"),opts("614","615","2135"),
-      {inconnu:true,acompte:true}),   // appel de fonds : solde à venir
+      {acompte:true}),                // appel de fonds : solde à venir
     O("28/09/2026","SYNDIC AZUR APPEL T4",438.00,"D","614",null,opts("614","615")),
     O("12/11/2026","AXA INDEMNISATION SINISTRE",640.00,"C","758",null,
       opts("758","791"),{inconnu:true}),
@@ -1032,14 +1048,17 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
      =================================================================== */
   // Un statut par règle de contrôle : décocher la règle fait disparaître le
   // statut, et donc la ligne de « À traiter ». Rien de décoratif.
+  // Un statut par règle de contrôle, et UN SEUL affiché par ligne : le premier
+  // de cette liste qui s'applique. L'ordre est celui du risque décroissant.
+  // Le détail complet reste visible dans le volet de droite.
   var STATUTS=[
-    ["justif",   "Justificatif manquant"],
-    ["immo",     "Immobilisation à confirmer"],
-    ["acompte",  "Acompte ou situation"],
-    ["multipaie","Plusieurs règlements"],
+    ["qualifier","À qualifier"],
+    ["immo",     "Immobilisation"],
+    ["acompte",  "Acompte"],
+    ["multipaie","Multi-règl."],
     ["montant",  "Montant élevé"],
-    ["sanshisto","Fournisseur nouveau"],
-    ["qualifier","À qualifier"]
+    ["justif",   "Sans pièce"],
+    ["sanshisto","Nouveau"]
   ];
   var WTABS=[["tout","Tout"],["todo","À traiter"],["fait","Traité"],
              ["hors","Réglées hors relevé"]];
@@ -1051,17 +1070,18 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
   // appliquées au compte PROPOSÉ (jamais à celui que le collaborateur vient de
   // choisir — sinon la ligne changerait de place sous ses doigts).
   function statutsDe(o){
-    var reg=etatRegles(), m=[], cpt=o.prop||o.cpt;
-    if(reg.justif && reg.justif.on && !o.piece && o.sens==="D"
-       && o.m>=(reg.justif.seuil||0)) m.push("justif");
-    if(reg.immo && reg.immo.on && /^2/.test(cpt)) m.push("immo");
-    if(reg.acompte && reg.acompte.on && o.acompte) m.push("acompte");
-    if(reg.multipaie && reg.multipaie.on && o.multi) m.push("multipaie");
-    if(reg.montant && reg.montant.on && o.m>=(reg.montant.seuil||0)
-       && !/^2/.test(cpt)) m.push("montant");
-    if(reg.sanshisto && reg.sanshisto.on && o.neuf) m.push("sanshisto");
-    if(reg.inconnu && reg.inconnu.on && o.inconnu) m.push("qualifier");
-    return m;
+    var reg=etatRegles(), a={}, cpt=o.prop||o.cpt;
+    a.justif    = reg.justif && reg.justif.on && !o.piece && o.sens==="D"
+                  && o.m>=(reg.justif.seuil||0);
+    a.immo      = reg.immo && reg.immo.on && /^2/.test(cpt);
+    a.acompte   = reg.acompte && reg.acompte.on && o.acompte;
+    a.multipaie = reg.multipaie && reg.multipaie.on && o.multi;
+    a.montant   = reg.montant && reg.montant.on && o.m>=(reg.montant.seuil||0)
+                  && !/^2/.test(cpt);
+    a.sanshisto = reg.sanshisto && reg.sanshisto.on && o.neuf;
+    a.qualifier = reg.inconnu && reg.inconnu.on && o.inconnu;
+    // dans l'ordre du risque : le premier fait le statut affiché
+    return STATUTS.filter(function(x){return a[x[0]];}).map(function(x){return x[0];});
   }
   function aTraiter(o){ return !o.ok && statutsDe(o).length>0; }
 
@@ -1093,6 +1113,10 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
     return l.slice().sort(function(a,b){
       if(k==="m") return (a.m-b.m)*s;
       if(k==="lib") return a.lib.localeCompare(b.lib,'fr')*s;
+      if(k==="st"){
+        var ra=statutsDe(a)[0]||'zz', rb=statutsDe(b)[0]||'zz';
+        return ra.localeCompare(rb)*s;
+      }
       var da=(a.dt||'').split('/').reverse().join(''), db=(b.dt||'').split('/').reverse().join('');
       return (da<db?-1:da>db?1:0)*s;
     });
@@ -1132,19 +1156,19 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
       var st=statutsDe(o);
       // Une facture hors relevé ne se juge pas sur les mêmes critères : ce qui
       // manque, c'est la date qui datera son écriture d'OD.
-      var chips = o.attente
-        ? '<span class="chip att">Laissée en 471</span>'
-        : o.ok ? '<span class="chip ok">Validée</span>'
-        : o.hors ? (o.paye ? '<span class="chip pret">Prête — OD 108</span>'
-                           : '<span class="chip justif">Date de règlement à obtenir</span>')
-        : st.length ? st.map(function(k){return '<span class="chip '+k+'">'+libStatut(k)+'</span>';}).join('')
-        : '<span class="chip auto">Imputée seule</span>';
-      var signe = o.sens==="C" ? 'cr' : 'db';
-      var mt = (o.sens==="C"?'+':'−')+eur(o.m);
-      tr.innerHTML='<td class="dt num">'+o.dt+'</td>'
-        +'<td class="lib">'+o.lib+'</td>'
-        +'<td class="amt num '+signe+'">'+mt+'</td>'
-        +'<td class="stt">'+chips+'</td>';
+      // UN seul statut : le plus grave. Les autres motifs restent lisibles dans
+      // le volet de droite, ils n'ont pas à encombrer la liste.
+      var chip = o.attente ? ['att','En attente 471']
+        : o.ok            ? ['ok','Validée']
+        : o.hors          ? (o.paye ? ['pret','Prête'] : ['justif','Sans date'])
+        : st.length       ? [st[0],libStatut(st[0])]
+                          : ['auto','Automatique'];
+      var mt = (o.sens==="C"?'+':'−')+o.m.toLocaleString('fr-FR',
+        {minimumFractionDigits:2,maximumFractionDigits:2});
+      tr.innerHTML='<td class="dt num">'+o.dt.replace(/\/20/,'/')+'</td>'
+        +'<td class="lib" title="'+o.lib+'">'+o.lib+'</td>'
+        +'<td class="amt num">'+mt+'</td>'
+        +'<td class="stt"><span class="chip '+chip[0]+'">'+chip[1]+'</span></td>';
       tr.addEventListener('click',function(){WSEL=o;renderWs();});
       tb.appendChild(tr);
     });
@@ -1206,7 +1230,8 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
     var tva=root.dataset.tva==='oui';
     var regl = hors
       ? '<label>Date de règlement <small>portée par la pièce</small>'
-        +'<input type="date" class="js-paie" value="'+(o.payeIso||'')+'"/></label>'
+        +'<input type="text" class="js-paie num" inputmode="numeric" maxlength="10"'
+        +' placeholder="JJ/MM/AAAA" value="'+(o.paye||'')+'"/></label>'
       : '<label>Date de règlement <small>le relevé fait foi</small>'
         +'<input value="'+o.dt+'" readonly/></label>';
     var sel='<select class="js-imput">'
@@ -1241,8 +1266,8 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
       +(freres.length?'<button class="serie js-serie">Appliquer aux '+freres.length
         +' autre'+(freres.length>1?'s':'')+' ligne'+(freres.length>1?'s':'')+' « '+cleLib(o.lib)+' »</button>':'')
       +'</div>'+vent+'</div>';
-    zb.innerHTML='<button class="mbtn js-attente">Laisser en attente (471)</button>'
-      +'<button class="cta js-okimput">Valider et suivant <span class="arw">→</span></button>';
+    zb.innerHTML='<button class="cta js-okimput">Valider et suivant <span class="arw">→</span></button>'
+      +'<button class="mbtn js-attente">Laisser en attente (471)</button>';
 
     // --- crochets --------------------------------------------------------
     var s=zf.querySelector('.js-imput');
@@ -1267,11 +1292,25 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
         +'<p>Elles restent modifiables une par une dans l\'onglet « Traité ».</p>');
     });
     var pa=zf.querySelector('.js-paie');
-    if(pa)pa.addEventListener('change',function(){
-      o.payeIso=this.value;
-      o.paye=this.value?this.value.split('-').reverse().join('/'):'';
-      sauverTravail(); renderDetail();
-    });
+    if(pa){
+      // saisie guidée : les barres obliques s'ajoutent toutes seules
+      pa.addEventListener('input',function(){
+        var c=this.value.replace(/\D/g,'').slice(0,8), v=c;
+        if(c.length>4) v=c.slice(0,2)+'/'+c.slice(2,4)+'/'+c.slice(4);
+        else if(c.length>2) v=c.slice(0,2)+'/'+c.slice(2);
+        this.value=v;
+      });
+      pa.addEventListener('change',function(){
+        var m=/^(\d{2})\/(\d{2})\/(\d{4})$/.exec(this.value.trim());
+        // une date, pas quatre chiffres : le 26e mois n'existe pas.
+        var ok=m && +m[1]>=1 && +m[1]<=31 && +m[2]>=1 && +m[2]<=12
+               && +m[3]>=2000 && +m[3]<=2099
+               && new Date(+m[3],+m[2]-1,+m[1]).getDate()===+m[1];
+        if(!ok){ this.value=o.paye||''; return; }          // on n'invente pas une date
+        o.paye=m[0]; o.payeIso=m[3]+'-'+m[2]+'-'+m[1];
+        sauverTravail(); renderWs();
+      });
+    }
     var dd=zf.querySelector('.js-demdate');
     if(dd)dd.addEventListener('click',function(){
       var d=RECLAM.filter(function(r){return r.lib===o.lib&&r.nature==='reglement';})[0];

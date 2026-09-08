@@ -75,8 +75,26 @@ const wtabs=(await p.locator('.js-wstabs .optab').allInnerTexts()).map(x=>x.repl
 t('quatre onglets de tri', wtabs.length===4, wtabs.join(' / '));
 t('le relevé est listé', (await p.locator('.oprow').count())>10,
   (await p.locator('.oprow').count())+' lignes');
-t('débits en rouge, crédits en vert',
-  (await p.locator('.oprow .amt.db').count())>0 && (await p.locator('.oprow .amt.cr').count())>0);
+t('montants en noir, jamais colorés',
+  await p.evaluate(()=>[...document.querySelectorAll('.oprow .amt')]
+    .every(e=>getComputedStyle(e).color==='rgb(21, 24, 28)')));
+t('un seul statut par ligne',
+  await p.evaluate(()=>[...document.querySelectorAll('.oprow')]
+    .every(r=>r.querySelectorAll('.chip').length===1)));
+t('aucune cellule ne passe à la ligne',
+  await p.evaluate(()=>[...document.querySelectorAll('.oprow td')]
+    .every(e=>e.clientHeight<46)),
+  await p.evaluate(()=>[...new Set([...document.querySelectorAll('.oprow td')]
+    .map(e=>e.clientHeight))].join('/')+' px'));
+// en-tête figée : elle doit rester au même endroit quand la liste défile
+await p.evaluate(()=>{document.querySelector('.wleft .tblwrap').scrollTop=250;});
+await p.waitForTimeout(200);
+t('en-tête de colonnes figée au défilement', await p.evaluate(()=>{
+  const w=document.querySelector('.wleft .tblwrap').getBoundingClientRect();
+  const h=document.querySelector('.tbl.ops th').getBoundingClientRect();
+  return Math.abs(h.top - w.top) < 2 && getComputedStyle(document.querySelector('.tbl.ops th')).backgroundImage!=='none';
+}), 'défilement de 250 px');
+await p.evaluate(()=>{document.querySelector('.wleft .tblwrap').scrollTop=0;});
 t('une ligne est sélectionnée d\'office', (await p.locator('.oprow.on').count())===1,
   await p.locator('.oprow.on .lib').innerText());
 t('la pièce est affichée à droite', (await p.locator('.facsvg, .nopiece').count())>0);

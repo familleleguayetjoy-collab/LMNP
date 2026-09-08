@@ -39,7 +39,8 @@ t('sens : les crédits sont au crédit',
 await p.locator('.stp[data-go="2"]').click(); await p.waitForTimeout(200);
 await p.locator('.js-wstabs .optab', {hasText:'hors relevé'}).click(); await p.waitForTimeout(250);
 await p.locator('.oprow', {hasText:'PLOMBERIE'}).click(); await p.waitForTimeout(200);
-await p.locator('.js-paie').fill('2026-11-05'); await p.waitForTimeout(250);
+await p.locator('.js-paie').fill('05/11/2026');
+await p.locator('.js-paie').blur(); await p.waitForTimeout(250);
 const L1=await exporter();
 t('OD datée du règlement saisi', L1.filter(l=>l.slice(9,11)==='OD').some(l=>l.slice(14,20)==='051126'),
   L1.filter(l=>l.slice(9,11)==='OD').map(l=>l.slice(14,20)).join(' '));

@@ -21,9 +21,9 @@ await p.click('.step[data-s="1"] .js-next'); await p.waitForTimeout(300);
 
 const base=await statuts();
 t('les sept statuts sont produits',
-  ['Justificatif manquant','Immobilisation à confirmer','Acompte ou situation',
-   'Plusieurs règlements','Montant élevé','Fournisseur nouveau','À qualifier']
-    .every(s=>base.includes(s)), [...new Set(base)].join(' / '));
+  ['Sans pièce','Immobilisation','Acompte','Multi-règl.','Montant élevé',
+   'Nouveau','À qualifier'].every(s=>base.includes(s)),
+  [...new Set(base)].join(' / '));
 
 // seuil de montant : au-delà du plus gros mouvement, plus aucun « montant élevé »
 await ouvrir();
@@ -43,15 +43,6 @@ await ouvrir(); await carte('sans justificatif').locator('.js-seuil').fill('150'
 await p.waitForTimeout(150); await fermer();
 
 // décocher une règle la retire complètement
-await ouvrir();
-await carte('Immobilisation (comptes').locator('.js-regle').uncheck(); await p.waitForTimeout(150);
-await fermer();
-t('règle décochée -> statut disparu', !(await statuts()).includes('Immobilisation à confirmer'));
-await ouvrir();
-await carte('Immobilisation (comptes').locator('.js-regle').check(); await p.waitForTimeout(150);
-await fermer();
-t('règle recochée -> statut revenu', (await statuts()).includes('Immobilisation à confirmer'));
-
 // les réglages survivent au rechargement
 await ouvrir(); await carte('Montant supérieur').locator('.js-seuil').fill('2200');
 await p.waitForTimeout(200); await p.click('.js-modal-close');
@@ -64,10 +55,12 @@ t('réglages conservés après rechargement',
 await p.click('.js-modal-close');
 
 // chaque règle restante pilote bien un statut
-for(const [regle,statut] of [['Acompte ou situation de travaux','Acompte ou situation'],
-                             ['plusieurs paiements','Plusieurs règlements'],
-                             ['absent du FEC','Fournisseur nouveau'],
-                             ['Non comprise par l','À qualifier']]){
+for(const [regle,statut] of [['Acompte ou situation de travaux','Acompte'],
+                             ['plusieurs paiements','Multi-règl.'],
+                             ['absent du FEC','Nouveau'],
+                             ['Non comprise par l','À qualifier'],
+                             ['Immobilisation (comptes','Immobilisation'],
+                             ['sans justificatif','Sans pièce']]){
   await ouvrir(); await carte(regle).locator('.js-regle').uncheck();
   await p.waitForTimeout(150); await fermer();
   const sans=!(await statuts()).includes(statut);
