@@ -177,6 +177,8 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
 .st{display:inline-flex;align-items:center;gap:6px;font-family:var(--display);font-weight:600;
   font-size:11.5px;padding:5px 11px;border-radius:99px;white-space:nowrap;flex:0 0 auto}
 .st.todo{background:#ECEEEC;color:#5C625D}
+.st.neuf{background:var(--green-soft);color:var(--green-2);border:1px solid var(--green-line)}
+.st.neuf b{font-size:13px;font-weight:800;margin-right:1px}
 .st.wip{background:var(--wip-bg);color:var(--wip-ink)}
 .st.done{background:var(--green-soft);color:var(--green)}
 .dmore{text-align:center;border:1px dashed var(--field-line);border-radius:13px;padding:13px;
@@ -326,7 +328,12 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
 .modal .box{background:var(--surface);border-radius:16px;max-width:420px;width:100%;padding:22px;box-shadow:var(--shadow)}
 .modal .box h3{font-family:var(--display);margin-bottom:10px}
 .modal .box p{color:var(--muted);font-size:14px;margin:8px 0}
-.modal .box .close{margin-top:14px;display:inline-flex;color:var(--green);font-weight:700}
+.modalpied{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
+.mbtn{display:inline-flex;align-items:center;gap:8px;font-family:var(--display);font-weight:700;font-size:14px;padding:12px 22px;border-radius:12px;border:1px solid var(--field-line);background:var(--surface);color:var(--ink);transition:border-color .15s ease,background .15s ease}
+.mbtn:hover{border-color:var(--muted)}
+.mbtn.primaire{background:var(--green);border-color:var(--green);color:#fff;box-shadow:0 6px 16px rgba(27,95,168,.25)}
+.mbtn.primaire:hover{background:var(--green-2);border-color:var(--green-2)}
+.mbtn.primaire[disabled]{opacity:.45;box-shadow:none;cursor:not-allowed}
 .modal .box .paper{width:100%;border:1px solid var(--line);border-radius:10px;margin:6px 0 4px}
 
 .footnote{color:var(--muted);font-size:12.5px;margin-top:26px;line-height:1.6}
@@ -419,13 +426,12 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
 .modal .box.wide{max-width:560px}
 .modal .box.xl{max-width:1000px;padding:26px 28px}
 /* grille des règles : 3 colonnes = 3 catégories, 3 règles chacune */
-.rulegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
-@media(max-width:820px){.rulegrid{grid-template-columns:1fr}}
-.rulecol{display:flex;flex-direction:column;gap:10px}
+.rulegrid{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:auto repeat(3,1fr);gap:14px 16px;margin-top:16px;align-items:stretch}
+@media(max-width:820px){.rulegrid{grid-template-columns:1fr;grid-template-rows:none}.rulegrid>*{grid-column:1!important;grid-row:auto!important}}
 .rulecat{display:flex;align-items:center;gap:8px;font-family:var(--display);font-weight:700;
   font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);padding-bottom:2px}
 .rulecat svg{width:15px;height:15px;stroke:var(--muted);fill:none;stroke-width:1.8}
-.rulecard{display:flex;flex-direction:column;gap:7px;cursor:pointer;padding:14px;border-radius:13px;
+.rulecard{display:flex;flex-direction:column;gap:7px;cursor:pointer;padding:14px;border-radius:13px;height:100%;
   border:1px solid var(--line);background:var(--surface);transition:border-color .15s ease,background .15s ease}
 .rulecard.on{border-color:var(--green-line);background:var(--green-soft)}
 .rulehead{display:flex;align-items:flex-start;gap:10px}
@@ -446,6 +452,21 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
 .gtag b{display:inline-grid;place-items:center;min-width:19px;height:19px;padding:0 6px;border-radius:99px;
   background:var(--green);color:#fff;font-size:11px;letter-spacing:0}
 .gwhy{margin-left:14px;color:var(--muted);font-size:12px;font-weight:500;text-transform:none;letter-spacing:0}
+/* onglets des catégories d'opérations complexes */
+.optabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.optab{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:99px;
+  border:1px solid var(--line);background:var(--surface);font-family:var(--display);font-weight:600;
+  font-size:13.5px;color:var(--muted);transition:border-color .15s ease,background .15s ease,color .15s ease}
+.optab:hover{border-color:var(--muted);color:var(--ink-soft)}
+.optab b{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:99px;
+  background:var(--line-2);color:var(--ink-soft);font-size:12px}
+.optab.on{background:var(--green);border-color:var(--green);color:#fff;
+  box-shadow:0 6px 16px rgba(27,95,168,.22)}
+.optab.on b{background:rgba(255,255,255,.25);color:#fff}
+.optab.fait{border-color:var(--green-line);background:var(--green-soft);color:var(--green-2)}
+.optab.fait b{background:var(--green-line);color:var(--green-2)}
+.optab svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.6}
+.opwhy{margin:12px 0 0;color:var(--muted);font-size:13px}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
 </style>
 
@@ -500,16 +521,16 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
           <div class="dgroup-h"><span class="dg-dot todo"></span>Nouveaux éléments à traiter <span class="dg-n">3</span></div>
           <div class="dossiers">
             <button class="dcard js-open" data-name="LMNP_POLO_TEST" data-type="lmnp" data-ex="Exercice 2026 · LMNP · sans banque">
-              <div class="dtop"><h3>LMNP Polo test</h3><span class="st todo">À traiter</span></div>
-              <div class="ex">3 pièces · LMNP meublé · sans banque</div>
+              <div class="dtop"><h3>LMNP Polo test</h3><span class="st neuf"><b>3</b> nouvelles</span></div>
+              <div class="ex">3 pièces déposées au Drive · LMNP meublé · sans banque</div>
             </button>
             <button class="dcard js-open" data-name="LMNP_DUPONT_2026" data-type="lmnp" data-ex="Exercice 2026 · LMNP meublé">
-              <div class="dtop"><h3>LMNP_DUPONT_2026</h3><span class="st todo">À traiter</span></div>
-              <div class="ex">21 pièces · LMNP meublé</div>
+              <div class="dtop"><h3>LMNP_DUPONT_2026</h3><span class="st neuf"><b>21</b> nouvelles</span></div>
+              <div class="ex">21 pièces déposées au Drive · LMNP meublé</div>
             </button>
             <button class="dcard js-open" data-name="BNC_DR_ROUX_2026" data-type="bnc" data-ex="Exercice 2026 · BNC médecin">
-              <div class="dtop"><h3>BNC_DR_ROUX_2026</h3><span class="st todo">À traiter</span></div>
-              <div class="ex">63 pièces · BNC médecin</div>
+              <div class="dtop"><h3>BNC_DR_ROUX_2026</h3><span class="st neuf"><b>63</b> nouvelles</span></div>
+              <div class="ex">63 pièces déposées au Drive · BNC médecin</div>
             </button>
             <button class="dmore js-newdossier"><span class="plus">+</span> Nouveau dossier</button>
           </div>
@@ -519,19 +540,19 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
           <div class="dgroup-h"><span class="dg-dot done"></span>Aucune nouvelle pièce disponible <span class="dg-n">3</span></div>
           <div class="dossiers">
             <button class="dcard js-open" data-name="LMNP_MARTIN_2026" data-type="lmnp" data-ex="Exercice 2026 · LMNP meublé">
-              <div class="dtop"><h3>LMNP_MARTIN_2026</h3><span class="st done">À jour</span></div>
-              <div class="ex">8 pièces traitées · LMNP meublé</div>
+              <div class="dtop"><h3>LMNP_MARTIN_2026</h3><span class="st done">Aucune nouvelle</span></div>
+              <div class="ex">8 pièces déjà traitées · LMNP meublé</div>
             </button>
             <button class="dcard js-open" data-name="SCI_AZUR_2025" data-type="sci" data-ex="Exercice 2025 · SCI (IR)">
-              <div class="dtop"><h3>SCI_AZUR_2025</h3><span class="st done">À jour</span></div>
+              <div class="dtop"><h3>SCI_AZUR_2025</h3><span class="st done">Aucune nouvelle</span></div>
               <div class="ex">Exercice 2025 · SCI (IR)</div>
             </button>
             <button class="dcard js-open" data-name="LMNP_BERNARD_2025" data-type="lmnp" data-ex="Exercice 2025 · LMNP meublé">
-              <div class="dtop"><h3>LMNP_BERNARD_2025</h3><span class="st done">À jour</span></div>
-              <div class="ex">17 pièces traitées · LMNP meublé</div>
+              <div class="dtop"><h3>LMNP_BERNARD_2025</h3><span class="st done">Aucune nouvelle</span></div>
+              <div class="ex">17 pièces déjà traitées · LMNP meublé</div>
             </button>
             <button class="dcard js-open hiddenrow" data-name="SCI_MIMOSA_2025" data-type="sci" data-ex="Exercice 2025 · SCI (IR)">
-              <div class="dtop"><h3>SCI_MIMOSA_2025</h3><span class="st done">À jour</span></div>
+              <div class="dtop"><h3>SCI_MIMOSA_2025</h3><span class="st done">Aucune nouvelle</span></div>
               <div class="ex">Exercice 2025 · SCI (IR)</div>
             </button>
             <button class="dmore js-showall">Voir tous les dossiers à jour</button>
@@ -635,7 +656,10 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
 
       <p class="js-trancher-note hidden" style="margin:14px 0 0;padding:12px 16px;background:#fbf6ee;border:1px solid #e7d9c2;border-radius:12px;color:#6b5836;font-size:14px"></p>
 
-      <div class="card" style="margin-top:16px">
+      <div class="optabs js-optabs"></div>
+      <p class="opwhy js-opwhy"></p>
+
+      <div class="card" style="margin-top:14px">
         <div class="tblwrap"><table class="tbl">
           <thead><tr><th>Date</th><th>Fournisseur (facture)</th><th>Montant</th><th>Règlement</th><th>Facture</th><th>Comptabiliser en</th></tr></thead>
           <tbody class="js-trancher"></tbody>
@@ -645,7 +669,7 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
       <div class="actionbar" style="justify-content:flex-end">
         <div class="right">
           <button class="btn-secondary js-back"><span class="cv">‹</span> Retour</button>
-          <button class="cta js-next">Valider le choix <span class="arw">→</span></button>
+          <button class="cta js-valider">Valider <span class="arw">→</span></button>
         </div>
       </div>
     </section>
@@ -724,7 +748,10 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
   <div class="modal js-modal">
     <div class="box">
       <div class="js-modal-content"></div>
-      <button class="close js-modal-close">Fermer</button>
+      <div class="modalpied">
+        <button class="mbtn js-modal-close">Fermer</button>
+        <button class="mbtn primaire js-modal-ok hidden"></button>
+      </div>
     </div>
   </div>
 </div>
@@ -793,6 +820,7 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
   };
   var TRANCHER=DEFAULT_TRANCHER, RECLAM=DEFAULT_RECLAM, CURNOTE="", CURAUTO=[];
   var CURNOM="", CURPIECES=0;
+  var ONGLET=0, ONGLETS=[];   // onglet courant des opérations complexes
   var NB_PIECES={LMNP_POLO_TEST:3,LMNP_DUPONT_2026:21,LMNP_MARTIN_2026:8,SCI_AZUR_2025:34,BNC_DR_ROUX_2026:63};
   var eur=function(n){return n.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €'};
 
@@ -825,14 +853,31 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
     }
     var groupes={}; TRANCHER.forEach(function(r,i){
       var k=motifDe(r); (groupes[k]=groupes[k]||[]).push([r,i]);});
-    MOTIFS.forEach(function(mo){
-      var lot=groupes[mo[0]]; if(!lot||!lot.length)return;
-      var trg=document.createElement('tr'); trg.className='grouprow';
-      trg.innerHTML='<td colspan="6"><span class="gtag">'+mo[1]
-        +'<b>'+lot.length+'</b></span><span class="gwhy">'+mo[2]+'</span></td>';
-      tb.appendChild(trg);
-      lot.forEach(function(pair){ligneTrancher(pair[0],pair[1],tb);});
+    // Un onglet par catégorie non vide : on valide la première pour passer à la
+    // suivante, sans quitter « Opérations complexes à affecter ».
+    ONGLETS=MOTIFS.filter(function(mo){return (groupes[mo[0]]||[]).length;});
+    if(ONGLET>=ONGLETS.length)ONGLET=Math.max(0,ONGLETS.length-1);
+    var barre=$('.js-optabs'); barre.innerHTML='';
+    ONGLETS.forEach(function(mo,k){
+      var b=document.createElement('button');
+      b.className='optab'+(k===ONGLET?' on':'')+(k<ONGLET?' fait':'');
+      b.innerHTML=(k<ONGLET?'<svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg>':'')
+        +mo[1]+'<b>'+groupes[mo[0]].length+'</b>';
+      b.addEventListener('click',function(){ONGLET=k;renderTrancher();});
+      barre.appendChild(b);
     });
+    var courant=ONGLETS[ONGLET];
+    $('.js-opwhy').textContent=courant?courant[2]:'';
+    if(courant)groupes[courant[0]].forEach(function(pair){
+      ligneTrancher(pair[0],pair[1],tb);});
+    // libellé du bouton : passer à la catégorie suivante, ou terminer
+    var cta=$('.js-valider');
+    if(cta){
+      var suiv=ONGLETS[ONGLET+1];
+      cta.innerHTML=suiv
+        ? 'Valider — suite : '+suiv[1]+' <span class="arw">→</span>'
+        : 'Valider le choix <span class="arw">→</span>';
+    }
     function ligneTrancher(r,i,tb){
       var tr=document.createElement('tr');
       var sel='<div class="acct"><select>'+r.opts.map(function(o){
@@ -924,6 +969,7 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
     $$('.js-bq').forEach(function(x){x.setAttribute('aria-pressed',x.dataset.v===bq?'true':'false');});
     var fmt=$('.js-fmt'); if(fmt)fmt.textContent='Format ASCII (Quadra) · contrepartie '+(bq==='oui'?'512':'108');
     CURNOM=name; CURPIECES=NB_PIECES[name]||(TRANCHER.length+RECLAM.length);
+    ONGLET=0;
     majBanniereDoublon();
     renderTrancher();renderReclam();
     go(1);
@@ -947,6 +993,12 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
     showall.classList.add('hidden');
   });
   $('.js-type').addEventListener('change',function(){toggleBnc(this.value==='bnc');});
+  var vld=$('.js-valider');
+  if(vld)vld.addEventListener('click',function(){
+    if(ONGLET < ONGLETS.length-1){ONGLET++;renderTrancher();
+      window.scrollTo({top:0,behavior:'smooth'});return;}
+    go(3);
+  });
   $$('.js-next').forEach(function(b){b.addEventListener('click',function(){
     if(+root.dataset.step===1&&CURNOM){enregistrerImport(CURNOM,CURPIECES);majBanniereDoublon();}
     go(Math.min(5,+root.dataset.step+1));
@@ -966,14 +1018,28 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
   });});
 
   /* --- modal --- */
-  function openModal(html,taille){
+  function fermerModal(){$('.js-modal').classList.remove('on');}
+  function openModal(html,taille,action){
     $('.js-modal-content').innerHTML=html;
     var box=$('.js-modal .box');
     box.classList.toggle('wide',taille===true||taille==='wide');
     box.classList.toggle('xl',taille==='xl');
-    $('.js-modal').classList.add('on');}
-  $('.js-modal-close').addEventListener('click',function(){$('.js-modal').classList.remove('on');});
-  $('.js-modal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('on');});
+    // bouton d'action optionnel : {libelle, onclick} — remplacé à chaque ouverture
+    var ok=$('.js-modal-ok'), neuf=ok.cloneNode(false);
+    ok.parentNode.replaceChild(neuf,ok);
+    if(action){
+      neuf.textContent=action.libelle;
+      neuf.classList.remove('hidden');
+      neuf.addEventListener('click',function(){
+        if(action.onclick&&action.onclick()===false)return;
+        fermerModal();
+      });
+    } else neuf.classList.add('hidden');
+    $('.js-modal').classList.add('on');
+    return neuf;
+  }
+  $('.js-modal-close').addEventListener('click',fermerModal);
+  $('.js-modal').addEventListener('click',function(e){if(e.target===this)fermerModal();});
   root.addEventListener('click',function(e){
     var t=e.target.closest('.js-thumb'); if(!t)return;
     openModal('<h3>Justificatif — '+t.dataset.lib+'</h3>'
@@ -1069,11 +1135,21 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
     var b=e.target.closest('.js-split'); if(!b)return;
     var r=TRANCHER[+b.dataset.i]; if(!r)return;
     var opts=r.opts.map(function(o){return '<option value="'+o[0]+'">'+o[1]+'</option>';}).join('');
-    openModal('<h3>Décomposer — '+r.lib+'</h3>'
+    var btnOk=openModal('<h3>Décomposer — '+r.lib+'</h3>'
       +'<p>Une même facture peut relever de plusieurs comptes (ex. des travaux dont une partie est immobilisée et une partie passe en entretien). Répartis le montant : le total doit retomber sur '+eur(r.m)+'.</p>'
       +'<div class="js-splitlist"></div>'
       +'<button class="lienregles js-addline" style="margin-top:12px">+ Ajouter une ligne</button>'
-      +'<div class="split-tot js-splittot"></div>', true);
+      +'<div class="split-tot js-splittot"></div>', true,
+      {libelle:"Enregistrer la répartition", onclick:function(){
+        var lignes=[];
+        Array.prototype.forEach.call(liste.querySelectorAll('.split-l'),function(d){
+          var m=parseFloat(d.querySelector('input').value)||0;
+          if(m>0)lignes.push({compte:d.querySelector('select').value,montant:m});
+        });
+        r.split=lignes;                       // conservé sur l'opération
+        renderTrancher();                     // la ligne affiche sa ventilation
+        return true;
+      }});
     // Références directes : ne JAMAIS re-sélectionner par classe ensuite, sinon
     // une réécriture de className fait perdre le crochet (bug corrigé ici).
     var liste=$('.js-splitlist'), tot=$('.js-splittot');
@@ -1087,6 +1163,9 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
       tot.classList.toggle('ko',!juste);
       tot.innerHTML='<span>Total réparti</span><span>'+eur(s)
         +(juste?' ✓':' — reste '+eur(reste))+'</span>';
+      // on n'enregistre pas une répartition qui ne tombe pas juste
+      btnOk.disabled=!juste;
+      btnOk.title=juste?'':'Le total doit retomber sur '+eur(r.m);
     }
     function ligne(montant){
       var d=document.createElement('div'); d.className='split-l';
@@ -1116,18 +1195,14 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
      items:[
       {id:"immo", t:"Immobilisation (comptes 2x)", on:true,
        d:"L'erreur vit plusieurs exercices dans le tableau d'amortissement."},
-      {id:"avoir", t:"Avoir (écriture de sens inverse)", on:true,
-       d:"Sens inversé : l'erreur double l'écart au lieu de l'annuler."},
       {id:"acompte", t:"Acompte ou situation de travaux", on:true,
-       d:"Risque de double comptabilisation avec la facture de solde."}]},
+       d:"Risque de double comptabilisation avec la facture de solde."},
+      {id:"multipaie", t:"Réglée en plusieurs paiements", on:true,
+       d:"La charge ne doit être comptabilisée qu'une fois."}]},
     {cat:"Montant et enjeu", icone:"M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6",
      items:[
       {id:"montant", t:"Montant supérieur à", on:true, seuil:1500,
-       d:"Hors immobilisation. Au-dessus, l'enjeu dépasse le coût du contrôle."},
-      {id:"ecart", t:"Écart facture / banque", on:true,
-       d:"Escompte, avoir partiel, ou rapprochement erroné."},
-      {id:"multipaie", t:"Réglée en plusieurs paiements", on:true,
-       d:"La charge ne doit être comptabilisée qu'une fois."}]},
+       d:"Hors immobilisation. Au-dessus, l'enjeu dépasse le coût du contrôle."}]},
     {cat:"Historique du dossier", icone:"M3 12a9 9 0 1 0 9-9 9 9 0 0 0-8 5M3 3v5h5M12 8v4l3 2",
      items:[
       {id:"inconnu", t:"Non comprise par l'IA", on:true,
@@ -1144,10 +1219,13 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
   function ouvrirRegles(){
     var html='<h3>Règles de contrôle humain</h3><div class="rulegrid">';
     REGLES.forEach(function(g,gi){
-      html+='<div class="rulecol"><div class="rulecat">'
+      html+='<div class="rulecat" style="grid-column:'+(gi+1)+';grid-row:1">'
         +'<svg viewBox="0 0 24 24"><path d="'+g.icone+'"/></svg>'+g.cat+'</div>';
+    });
+    REGLES.forEach(function(g,gi){
       g.items.forEach(function(r,ri){
-        html+='<label class="rulecard'+(r.on?' on':'')+'" data-g="'+gi+'" data-r="'+ri+'">'
+        html+='<label class="rulecard'+(r.on?' on':'')+'" data-g="'+gi+'" data-r="'+ri+'"'
+          +' style="grid-column:'+(gi+1)+';grid-row:'+(ri+2)+'">'
           +'<span class="rulehead">'
           +'<input type="checkbox" class="js-regle"'+(r.on?' checked':'')+'/>'
           +'<b>'+r.t+'</b></span>'
@@ -1156,14 +1234,14 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
               +'" min="0" step="50"/> € TTC</span>' : '')
           +'<span class="ruled">'+r.d+'</span></label>';
       });
-      html+='</div>';
     });
     html+='</div><div class="rulepied"><span class="js-rulecount"></span>'
        +'<span class="rulehint">Coché = vérifié par un humain · décoché = traité par l\'IA</span></div>';
     openModal(html,'xl');
     function compter(){
       var n=$$('.js-regle').filter(function(c){return c.checked;}).length;
-      $('.js-rulecount').innerHTML='<b>'+n+'</b> règle'+(n>1?'s':'')+' sur 9 en contrôle humain';
+      $('.js-rulecount').innerHTML='<b>'+n+'</b> règle'+(n>1?'s':'')+' sur '
+        +$$('.js-regle').length+' en contrôle humain';
     }
     $$('.rulecard').forEach(function(card){
       var box=card.querySelector('.js-regle');
