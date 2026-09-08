@@ -231,17 +231,31 @@ def doublons(ops):
 def operations_od_factures(factures, dico, resolver=None):
     """Cas : une facture existe mais AUCUNE ligne bancaire ne lui correspond
     (paiement hors banque, dossier sans banque, ou banque incomplète).
-    On passe alors une écriture au journal d'OD : le compte de charge codé
-    depuis le fournisseur, en contrepartie du compte 108 (décidé par le
-    cabinet). Le montant vient de la facture (seul cas où on n'a pas la banque)."""
+
+    RÈGLE DU CABINET (comptabilité de trésorerie) — c'est le RELEVÉ BANCAIRE qui
+    fait foi et qui déclenche l'écriture. Une facture seule ne produit rien. La
+    SEULE exception est celle traitée ici : une facture qui se déclare **payée**
+    et qu'on ne retrouve pas en banque. On passe alors une écriture au journal
+    d'OD, contrepartie 108 (payée en perso), et surtout :
+
+        elle est datée du JOUR DU RÈGLEMENT, pas de la date de facture.
+
+    C'est la date qui fait entrer la charge dans l'exercice en trésorerie ; une
+    facture de décembre réglée en janvier ne touche pas le même exercice. On
+    prend donc `date_reglement` (« payé le », « prélevé le ») et on ne retombe
+    sur la date de facture que si la pièce ne dit rien."""
     from .model import Operation
     from .codage import coder
     ops = []
     for f in factures:
         if getattr(f, "op", None) is not None:
             continue                      # déjà rapprochée à une ligne banque
-        o = Operation(date=f.date, libelle=f.fournisseur, montant=f.ttc, sens="D")
+        quand = getattr(f, "date_reglement", None) or f.date
+        o = Operation(date=quand, libelle=f.fournisseur, montant=f.ttc, sens="D")
         o.facture = f
         coder(o, dico, resolver)
+        if getattr(f, "date_reglement", None) is None:
+            o.a_confirmer = ("Date de règlement absente de la pièce : écriture datée "
+                             "de la facture (%s). À confirmer." % f.date)
         ops.append(o)
     return ops

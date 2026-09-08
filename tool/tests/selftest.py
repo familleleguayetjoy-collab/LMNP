@@ -786,4 +786,36 @@ check('"cache_control"' in _src and '"ephemeral"' in _src,
 check("self.compteur.enregistrer" in _src,
       "chaque appel enregistre son usage réel")
 
+print("31) Trésorerie : le relevé fait foi ; l'OD est datée du JOUR DU RÈGLEMENT")
+from s2a_lmnp import operations_od_factures, factures_depuis_ocr
+
+# facture de décembre, réglée en janvier : en trésorerie l'écriture tombe en JANVIER
+f31 = Facture("PLOMBERIE DURAND", D(2025, 12, 28), 240.0, 40.0)
+f31.date_reglement = D(2026, 1, 12)
+ops31 = operations_od_factures([f31], d23)
+check(len(ops31) == 1 and ops31[0].date == D(2026, 1, 12),
+      "OD datée du règlement (12/01/2026), pas de la facture (28/12/2025)")
+check(not ops31[0].a_confirmer, "date de règlement connue -> aucune confirmation demandée")
+
+# sans date de règlement : repli sur la date de facture, mais signalé
+f32 = Facture("PLOMBERIE DURAND", D(2025, 12, 28), 240.0, 40.0)
+ops32 = operations_od_factures([f32], d23)
+check(ops32[0].date == D(2025, 12, 28), "sans date de règlement -> repli sur la facture")
+check("Date de règlement absente" in ops32[0].a_confirmer,
+      "le repli est signalé à l'humain, jamais silencieux")
+
+# une facture DÉJÀ rapprochée au relevé ne produit pas d'OD (le relevé fait foi)
+f33 = Facture("EDF", D(2026, 1, 5), 69.34, 11.55)
+f33.op = Operation(D(2026, 1, 6), "EDF ENERGIE", 69.34, "D")
+check(operations_od_factures([f33], d23) == [], "facture rapprochée en banque -> pas d'OD")
+
+# la date de règlement remonte de l'OCR (« prélevé le ») jusqu'à la Facture
+brut31 = {"categorie": "facture_achat", "confiance_classement": 0.95,
+          "fournisseur": "EDF", "date": "2025-12-28", "ttc": 69.34, "tva": 11.55,
+          "ht": 57.79, "numero": "F9", "adresse_bien": "", "date_flux": "2026-01-12",
+          "payee": True, "confiance": 0.95}
+fac31, rej31 = factures_depuis_ocr([brut31])
+check(fac31[0].date_reglement == D(2026, 1, 12) and fac31[0].payee,
+      "OCR : « prélevé le » -> date_reglement et pièce acquittée")
+
 print("\n%d contrôles OK — moteur cohérent." % ok)

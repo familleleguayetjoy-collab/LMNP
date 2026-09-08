@@ -59,3 +59,8 @@ class Facture:
     # retenue. Un 'avoir' produit une écriture de sens inverse.
     categorie: str = ""            # facture_achat | facture_vente | avoir
     confiance_classement: float = 0.0
+    # Date de RÈGLEMENT portée par la pièce (« payé le », « prélevé le »).
+    # En comptabilité de trésorerie, c'est elle qui date l'écriture d'OD quand
+    # la facture est indiquée payée mais absente du relevé (cf. rapprochement).
+    date_reglement: Optional[date] = None
+    payee: bool = False            # la pièce se déclare acquittée

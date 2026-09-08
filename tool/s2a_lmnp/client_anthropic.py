@@ -82,11 +82,12 @@ _SCHEMA_FACTURE = {
                     "numero": {"type": "string"},
                     "adresse_bien": {"type": "string"},
                     "date_flux": {"type": "string"},
+                    "payee": {"type": "boolean"},
                     "confiance": {"type": "number"},
                 },
                 "required": ["categorie", "confiance_classement",
                              "fournisseur", "date", "ttc", "tva", "ht",
-                             "numero", "adresse_bien", "date_flux", "confiance"],
+                             "numero", "adresse_bien", "date_flux", "payee", "confiance"],
                 "additionalProperties": False,
             },
         }
@@ -143,6 +144,7 @@ _SYS_OCR = (
     "5. Remonte l'adresse du bien si présente (elle sert à router vers le bon "
     "sous-compte), la date de facture, la TVA et le HT si donnés, le 'prélevé le' si "
     "présent. Mets des champs vides ('' ou 0) si une info est absente — n'invente rien.\n"
+    "6. 'payee' = vrai si la pièce se déclare ACQUITTÉE (« payé le », « réglé le », « acquitté », « prélevé le », mention de règlement). Reporte alors la date de règlement dans 'date_flux' : en comptabilité de trésorerie, c'est elle qui date l'écriture, pas la date de facture.\n"
     "Le montant que tu lis sert UNIQUEMENT au rapprochement, jamais à décider seul "
     "d'une écriture. Donne une confiance d'extraction entre 0 et 1."
 )

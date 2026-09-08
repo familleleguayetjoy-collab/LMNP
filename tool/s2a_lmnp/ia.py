@@ -237,6 +237,10 @@ def facture_depuis_ocr(brut: dict) -> Facture:
         confiance_ocr=float(brut.get("confiance") or 0.0),
         categorie=str(brut.get("categorie") or "").strip().lower(),
         confiance_classement=float(brut.get("confiance_classement") or 0.0),
+        # « payé le » / « prélevé le » : date qui datera l'écriture d'OD si la
+        # pièce est acquittée mais absente du relevé (comptabilité de trésorerie).
+        date_reglement=_d(brut.get("date_flux")),
+        payee=bool(brut.get("payee")) or _d(brut.get("date_flux")) is not None,
     )
 
 

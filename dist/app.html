@@ -117,7 +117,7 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
   background:linear-gradient(120deg,#0C355E 0%,#1B5FA8 62%,#2C79C9 100%);
   border-radius:16px;padding:22px 30px;font-size:clamp(26px,3.4vw,42px);box-shadow:var(--shadow-sm)}
 /* Étape 1 : titre bleu + panneau de stats côte à côte */
-.titlesplit{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.titlesplit{display:grid;grid-template-columns:1.35fr 1fr;gap:18px}
 @media(max-width:720px){.titlesplit{grid-template-columns:1fr}}
 .statspanel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px 26px;
   display:flex;flex-direction:column;justify-content:center;gap:12px;box-shadow:var(--shadow-sm)}
@@ -140,7 +140,8 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
   box-shadow:0 1px 1px rgba(21,24,28,.05),0 3px 7px rgba(21,24,28,.06),
     0 12px 24px rgba(21,24,28,.08),0 26px 48px rgba(21,24,28,.10),
     inset 0 1px 0 rgba(255,255,255,1)}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid2{display:grid;grid-template-columns:1.35fr 1fr;gap:18px}
+.field-card .frow.centre{justify-content:center;gap:18px}
 @media(max-width:720px){.grid2{grid-template-columns:1fr}}
 
 /* ---------- Étape 0 : choix du dossier (2 colonnes, sans défilement) ---------- */
@@ -173,7 +174,6 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
 .dtop{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .dcard h3{font-family:var(--display);font-size:17px}
 .dcard .ex{color:var(--muted);font-size:13px;margin-top:4px}
-.dcard.hiddenrow{display:none}
 .st{display:inline-flex;align-items:center;gap:6px;font-family:var(--display);font-weight:600;
   font-size:11.5px;padding:5px 11px;border-radius:99px;white-space:nowrap;flex:0 0 auto}
 .st.todo{background:#ECEEEC;color:#5C625D}
@@ -191,7 +191,7 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
   display:flex;flex-direction:column;justify-content:center}
 .field-card h3{font-family:var(--display);font-weight:600;font-size:17px;margin-bottom:14px}
 .field-card .sub{color:var(--muted);font-size:13px;font-weight:500;margin-left:8px}
-.daterow{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.daterow{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
 .daterow label{color:var(--muted);font-weight:600}
 .inp{display:flex;align-items:center;gap:10px;background:var(--field);border:1px solid var(--field-line);
   border-radius:11px;padding:11px 14px;font-weight:600}
@@ -467,6 +467,18 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
 .optab.fait b{background:var(--green-line);color:var(--green-2)}
 .optab svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.6}
 .opwhy{margin:12px 0 0;color:var(--muted);font-size:13px}
+/* ventilation enregistrée d'une facture sur plusieurs comptes */
+.ventil{display:flex;flex-direction:column;gap:6px}
+.ventil span{display:flex;align-items:center;justify-content:space-between;gap:14px;
+  background:var(--green-soft);border:1px solid var(--green-line);border-radius:10px;padding:8px 12px}
+.ventil i{font-style:normal;font-size:12.5px;font-weight:600;color:var(--green-2)}
+.ventil b{font-size:13px;font-variant-numeric:tabular-nums;color:var(--green-2);white-space:nowrap}
+/* champs d'une fenêtre modale */
+.champ{display:flex;flex-direction:column;gap:6px;margin-top:14px}
+.champ label{font-family:var(--display);font-weight:600;font-size:13px;color:var(--ink-soft)}
+.champ input{background:var(--field);border:1px solid var(--field-line);border-radius:11px;
+  padding:12px 14px;font-weight:600;font-size:15px}
+.champ input:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px var(--green-soft)}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
 </style>
 
@@ -537,7 +549,7 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
         </div>
 
         <div class="dgroup g-done">
-          <div class="dgroup-h"><span class="dg-dot done"></span>Aucune nouvelle pièce disponible <span class="dg-n">3</span></div>
+          <div class="dgroup-h"><span class="dg-dot done"></span>Aucune nouvelle pièce disponible <span class="dg-n">4</span></div>
           <div class="dossiers">
             <button class="dcard js-open" data-name="LMNP_MARTIN_2026" data-type="lmnp" data-ex="Exercice 2026 · LMNP meublé">
               <div class="dtop"><h3>LMNP_MARTIN_2026</h3><span class="st done">Aucune nouvelle</span></div>
@@ -551,11 +563,10 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
               <div class="dtop"><h3>LMNP_BERNARD_2025</h3><span class="st done">Aucune nouvelle</span></div>
               <div class="ex">17 pièces déjà traitées · LMNP meublé</div>
             </button>
-            <button class="dcard js-open hiddenrow" data-name="SCI_MIMOSA_2025" data-type="sci" data-ex="Exercice 2025 · SCI (IR)">
+            <button class="dcard js-open" data-name="SCI_MIMOSA_2025" data-type="sci" data-ex="Exercice 2025 · SCI (IR)">
               <div class="dtop"><h3>SCI_MIMOSA_2025</h3><span class="st done">Aucune nouvelle</span></div>
               <div class="ex">Exercice 2025 · SCI (IR)</div>
             </button>
-            <button class="dmore js-showall">Voir tous les dossiers à jour</button>
           </div>
         </div>
       </div>
@@ -582,7 +593,7 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
             <label>Au</label>
             <span class="inp"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>31/12/2026</span>
           </div>
-          <div class="frow" style="border-top:1px solid var(--line-2);margin-top:14px;padding-top:14px">
+          <div class="frow centre" style="border-top:1px solid var(--line-2);margin-top:14px;padding-top:14px">
             <span class="flabel">Type</span>
             <div class="tsel"><select class="js-type" aria-label="Type de dossier">
               <option value="lmnp">LMNP meublé</option>
@@ -657,7 +668,6 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
       <p class="js-trancher-note hidden" style="margin:14px 0 0;padding:12px 16px;background:#fbf6ee;border:1px solid #e7d9c2;border-radius:12px;color:#6b5836;font-size:14px"></p>
 
       <div class="optabs js-optabs"></div>
-      <p class="opwhy js-opwhy"></p>
 
       <div class="card" style="margin-top:14px">
         <div class="tblwrap"><table class="tbl">
@@ -839,10 +849,10 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
     // Regroupement par MOTIF de remontée : chaque bloc correspond à une règle de
     // contrôle activée, pour qu'on sache pourquoi la ligne est là.
     var MOTIFS=[
-      ["immo","Immobilisations","Erreur reportée sur plusieurs exercices"],
-      ["montant","Montant élevé (hors immobilisation)","Au-delà du seuil paramétré"],
-      ["inconnu","Non comprise par l'IA","Aucun compte proposé avec certitude"],
-      ["nonrappr","Sans règlement retrouvé en banque","Payée en perso (OD 108) ou hors dossier"]
+      ["immo","Immobilisations"],
+      ["montant","Montant élevé (hors immobilisation)"],
+      ["inconnu","Non comprise par l'IA"],
+      ["nonrappr","Sans règlement retrouvé en banque"]
     ];
     function motifDe(r){
       if(!r.paye)return "nonrappr";
@@ -867,7 +877,6 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
       barre.appendChild(b);
     });
     var courant=ONGLETS[ONGLET];
-    $('.js-opwhy').textContent=courant?courant[2]:'';
     if(courant)groupes[courant[0]].forEach(function(pair){
       ligneTrancher(pair[0],pair[1],tb);});
     // libellé du bouton : passer à la catégorie suivante, ou terminer
@@ -880,8 +889,19 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
     }
     function ligneTrancher(r,i,tb){
       var tr=document.createElement('tr');
-      var sel='<div class="acct"><select>'+r.opts.map(function(o){
-        return '<option value="'+o[0]+'"'+(o[0]===r.cpt?' selected':'')+'>'+o[1]+'</option>';}).join('')+'</select></div>';
+      // Imputation : soit un compte unique, soit une ventilation enregistrée.
+      var sel;
+      if(r.split&&r.split.length){
+        sel='<div class="ventil">'+r.split.map(function(l){
+              var lib=(r.opts.filter(function(o){return o[0]===l.compte;})[0]||[l.compte,l.compte])[1];
+              return '<span><i>'+lib+'</i><b>'+eur(l.montant)+'</b></span>';}).join('')
+            +'</div>';
+      } else {
+        sel='<div class="acct"><select class="js-imput" data-i="'+i+'">'
+          +r.opts.map(function(o){
+            return '<option value="'+o[0]+'"'+(o[0]===r.cpt?' selected':'')+'>'+o[1]+'</option>';}).join('')
+          +'<option value="__autre__">＋ Autre compte…</option></select></div>';
+      }
       // Règlement : rapproché sur le relevé, ou introuvable (-> payé perso, OD 108)
       var reg = r.paye
         ? '<span class="regl ok"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg>'
@@ -896,10 +916,39 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
         +'<td class="cell-acct">'+sel
         +'<button class="js-split lienregles" data-i="'+i+'" style="margin-top:8px">'
         +'<svg viewBox="0 0 24 24"><path d="M6 3v6a3 3 0 0 0 3 3h9"/><path d="M15 9l3 3-3 3"/><path d="M6 21v-6"/></svg>'
-        +'Décomposer</button></td>';
+        +(r.split&&r.split.length?'Modifier la répartition':'Décomposer')+'</button></td>';
       tb.appendChild(tr);
+      // Persistance de l'imputation : sans cela, changer d'onglet efface le choix.
+      var s=tr.querySelector('.js-imput');
+      if(s)s.addEventListener('change',function(){
+        if(this.value==='__autre__'){ajouterCompte(r,this);return;}
+        r.cpt=this.value;
+      });
     }
   }
+  /* --- saisie d'un compte hors des propositions --- */
+  function ajouterCompte(r,select,apres){
+    var avant=r.cpt;
+    if(select)select.value=avant;            // on ne laisse pas « __autre__ » affiché
+    openModal('<h3>Ajouter un compte</h3>'
+      +'<p>Les trois propositions ne conviennent pas ? Saisis le compte du plan comptable du dossier.</p>'
+      +'<div class="champ"><label>Numéro de compte</label>'
+      +'<input class="js-ncpt" placeholder="Ex. 6132" inputmode="numeric"/></div>'
+      +'<div class="champ"><label>Libellé</label>'
+      +'<input class="js-nlib" placeholder="Ex. Locations immobilières"/></div>',
+      'wide',
+      {libelle:"Ajouter ce compte", onclick:function(){
+        var num=($('.js-ncpt').value||'').trim(), lib=($('.js-nlib').value||'').trim();
+        if(!num)return false;                // rien à ajouter -> on garde la fenêtre
+        var etiquette=num+' — '+(lib||'compte saisi manuellement');
+        if(!r.opts.some(function(o){return o[0]===num;}))r.opts.push([num,etiquette]);
+        r.cpt=num;
+        renderTrancher();
+        if(apres)apres(num,etiquette);
+        return true;
+      }});
+  }
+
   function renderReclam(){
     var box=$('.js-reclam'); box.innerHTML='';
     RECLAM.forEach(function(r,i){
@@ -986,12 +1035,6 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
     openModal('<h3>Historique d\'import</h3><div class="dupbanner"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><span>'+DUPTXT+'</span></div>');
   });
   $$('.js-open').forEach(function(b){b.addEventListener('click',function(){openDossier(b.dataset.name,b.dataset.ex,b.dataset.type);});});
-  var showall=$('.js-showall');
-  if(showall)showall.addEventListener('click',function(){
-    var col=showall.closest('.dossiers');
-    $$('.hiddenrow',col).forEach(function(r){r.classList.remove('hiddenrow');});
-    showall.classList.add('hidden');
-  });
   $('.js-type').addEventListener('change',function(){toggleBnc(this.value==='bnc');});
   var vld=$('.js-valider');
   if(vld)vld.addEventListener('click',function(){
@@ -1134,20 +1177,23 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
   root.addEventListener('click',function(e){
     var b=e.target.closest('.js-split'); if(!b)return;
     var r=TRANCHER[+b.dataset.i]; if(!r)return;
-    var opts=r.opts.map(function(o){return '<option value="'+o[0]+'">'+o[1]+'</option>';}).join('');
+    rouvrirSplit(r,+b.dataset.i,r.split&&r.split.length?r.split:null);
+  });
+  // `etat` = lignes à pré-remplir ; `nouveau`/`mtNouveau` = compte fraîchement
+  // saisi à placer sur la dernière ligne. Sortie en fonction nommée pour pouvoir
+  // rouvrir la fenêtre après un ajout de compte sans perdre la répartition.
+  function rouvrirSplit(r,i,etat,nouveau,mtNouveau){
     var btnOk=openModal('<h3>Décomposer — '+r.lib+'</h3>'
       +'<p>Une même facture peut relever de plusieurs comptes (ex. des travaux dont une partie est immobilisée et une partie passe en entretien). Répartis le montant : le total doit retomber sur '+eur(r.m)+'.</p>'
       +'<div class="js-splitlist"></div>'
       +'<button class="lienregles js-addline" style="margin-top:12px">+ Ajouter une ligne</button>'
       +'<div class="split-tot js-splittot"></div>', true,
       {libelle:"Enregistrer la répartition", onclick:function(){
-        var lignes=[];
-        Array.prototype.forEach.call(liste.querySelectorAll('.split-l'),function(d){
-          var m=parseFloat(d.querySelector('input').value)||0;
-          if(m>0)lignes.push({compte:d.querySelector('select').value,montant:m});
-        });
-        r.split=lignes;                       // conservé sur l'opération
-        renderTrancher();                     // la ligne affiche sa ventilation
+        var lignes=lireLignes().filter(function(l){return l.montant>0;});
+        if(lignes.length<2)return false;
+        r.split=lignes;          // ventilation conservée sur l'opération
+        r.cpt=lignes[0].compte;  // compte principal = première ligne
+        renderTrancher();        // la ligne affiche désormais sa ventilation
         return true;
       }});
     // Références directes : ne JAMAIS re-sélectionner par classe ensuite, sinon
@@ -1159,22 +1205,51 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
         s+=parseFloat(i.value)||0;});
       s=Math.round(s*100)/100;
       var reste=Math.round((r.m-s)*100)/100, juste=Math.abs(reste)<0.005;
+      var nb=0;   // lignes RÉELLEMENT servies (un montant à 0 ne compte pas)
+      Array.prototype.forEach.call(liste.querySelectorAll('.split-l'),function(d){
+        if((parseFloat(d.querySelector('input').value)||0)>0)nb++;});
       tot.classList.toggle('ok',juste);
       tot.classList.toggle('ko',!juste);
       tot.innerHTML='<span>Total réparti</span><span>'+eur(s)
         +(juste?' ✓':' — reste '+eur(reste))+'</span>';
-      // on n'enregistre pas une répartition qui ne tombe pas juste
-      btnOk.disabled=!juste;
-      btnOk.title=juste?'':'Le total doit retomber sur '+eur(r.m);
+      // une décomposition n'a de sens qu'à partir de DEUX lignes, et le total
+      // doit retomber au centime sur le montant de la facture.
+      btnOk.disabled=!(juste&&nb>=2);
+      btnOk.title = nb<2 ? 'Renseigne au moins deux lignes avec un montant'
+                  : (juste ? '' : 'Le total doit retomber sur '+eur(r.m));
     }
-    function ligne(montant){
+    function optionsHtml(){
+      return r.opts.map(function(o){
+        return '<option value="'+o[0]+'">'+o[1]+'</option>';}).join('')
+        +'<option value="__autre__">＋ Autre compte…</option>';
+    }
+    function ligne(montant,compte){
       var d=document.createElement('div'); d.className='split-l';
-      d.innerHTML='<div class="acct"><select>'+opts+'</select></div>'
+      d.innerHTML='<div class="acct"><select>'+optionsHtml()+'</select></div>'
         +'<input type="number" step="0.01" min="0" value="'+(montant||0).toFixed(2)+'"/>'
         +'<button class="del" type="button" aria-label="Supprimer la ligne">×</button>';
+      var sl=d.querySelector('select');
+      if(compte)sl.value=compte;
+      sl.dataset.prec=sl.value;
+      sl.addEventListener('change',function(){
+        if(this.value!=='__autre__'){this.dataset.prec=this.value;return;}
+        var self=this, mt=d.querySelector('input').value;
+        // on garde la répartition en cours et on rouvre la fenêtre ensuite
+        var etat=lireLignes();
+        ajouterCompte(r,null,function(num){
+          rouvrirSplit(r,i,etat,num,mt);
+        });
+      });
       d.querySelector('.del').addEventListener('click',function(){d.remove();total();});
       d.querySelector('input').addEventListener('input',total);
       liste.appendChild(d); total();
+    }
+    function lireLignes(){
+      var out=[];
+      Array.prototype.forEach.call(liste.querySelectorAll('.split-l'),function(d){
+        out.push({compte:d.querySelector('select').dataset.prec||d.querySelector('select').value,
+                  montant:parseFloat(d.querySelector('input').value)||0});});
+      return out;
     }
     $('.js-addline').addEventListener('click',function(){
       // la nouvelle ligne reprend le reste à répartir
@@ -1183,8 +1258,21 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
         s+=parseFloat(i.value)||0;});
       ligne(Math.max(0,Math.round((r.m-s)*100)/100));
     });
-    ligne(r.m);
-  });
+    if(etat&&etat.length){
+      etat.forEach(function(l){ligne(l.montant,l.compte);});
+      if(nouveau){                 // la dernière ligne prend le compte créé
+        var der=liste.querySelectorAll('.split-l');
+        der=der[der.length-1];
+        if(der){var sl=der.querySelector('select');
+          sl.value=nouveau; sl.dataset.prec=nouveau;
+          if(mtNouveau!==undefined)der.querySelector('input').value=mtNouveau;}
+        total();
+      }
+    } else {
+      // deux lignes d'emblée : une décomposition en demande au moins deux
+      ligne(r.m); ligne(0);
+    }
+  }
 
   /* --- règles de contrôle : quelles opérations passent par un humain --- */
   // Trois catégories × trois règles. Chaque règle cochée = contrôle humain ;
