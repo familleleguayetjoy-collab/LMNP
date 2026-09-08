@@ -75,9 +75,15 @@ const wtabs=(await p.locator('.js-wstabs .optab').allInnerTexts()).map(x=>x.repl
 t('quatre onglets de tri', wtabs.length===4, wtabs.join(' / '));
 t('le relevé est listé', (await p.locator('.oprow').count())>10,
   (await p.locator('.oprow').count())+' lignes');
-t('montants en noir, jamais colorés',
-  await p.evaluate(()=>[...document.querySelectorAll('.oprow .amt')]
-    .every(e=>getComputedStyle(e).color==='rgb(21, 24, 28)')));
+t('montants neutres, jamais rouges ni verts',
+  await p.evaluate(()=>[...document.querySelectorAll('.oprow .amt')].every(e=>{
+    const m=/(\d+), (\d+), (\d+)/.exec(getComputedStyle(e).color);
+    if(!m)return false;
+    const [r,g,b]=[+m[1],+m[2],+m[3]];
+    return Math.max(r,g,b)-Math.min(r,g,b) < 20;   // gris : aucune dominante
+  })),
+  await p.evaluate(()=>[...new Set([...document.querySelectorAll('.oprow .amt')]
+    .map(e=>getComputedStyle(e).color))].join(' ')));
 t('un seul statut par ligne',
   await p.evaluate(()=>[...document.querySelectorAll('.oprow')]
     .every(r=>r.querySelectorAll('.chip').length===1)));

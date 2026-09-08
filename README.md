@@ -67,11 +67,16 @@ Le parcours d'un dossier tient en cinq écrans, un par décision :
    *Montant élevé*, *Sans pièce*, *Nouveau*. Une ligne qu'aucune règle ne
    retient est **Traité** : la décision a été prise seule, il n'y a rien à
    regarder.
-   La pièce occupe toute la hauteur au centre — facture ou ticket de caisse,
-   rendus différemment. À droite la décision, dans
+   La pièce occupe toute la hauteur au centre. Tant qu'aucun fichier n'est
+   rattaché, un **aperçu schématique** en tient lieu — rendu différemment selon
+   qu'il s'agit d'une facture ou d'un ticket de caisse ; dès qu'une image est
+   là (le Drive en production, un dépôt à la main en démonstration), c'est
+   **le vrai document** qui s'affiche. À droite la décision, dans
    l'ordre où elle se prend : ce que dit la banque (en lecture seule — le relevé fait foi), ce
    que dit la pièce, puis le compte, décomposable sur plusieurs comptes ou
-   complétable par un compte saisi à la main. Puis **trois sorties**, dans un
+   complétable par un compte saisi à la main. Une facture ventilée n'a plus de
+   compte unique : la répartition remplace le sélecteur, et « Modifier la
+   répartition » passe sous les comptes. Puis **trois sorties**, dans un
    seul bloc, codées par la couleur : **Valider et suivant** (vert),
    **Laisser en attente (471)** (ambre — ça trace au lieu d'oublier), et
    **Appliquer aux N autres lignes** du même fournisseur (gris).
@@ -167,7 +172,7 @@ repli et le rangement est marqué comme estimé.
 | suite | ce qu'elle couvre |
 |---|---|
 | `tool/tests/selftest.py` | 206 contrôles sur le moteur — normalisation, FEC, codage, rapprochement, IA simulée, idempotence, classement, coût, trésorerie, rangement |
-| `tool/tests/ui/` | 114 contrôles d'interface pilotés dans un vrai navigateur, dont la vérification **du fichier ASCII réellement produit** et le fait que chacune des 8 règles pilote vraiment quelque chose (voir `tool/tests/ui/LISEZMOI.md`) |
+| `tool/tests/ui/` | 120 contrôles d'interface pilotés dans un vrai navigateur, dont la vérification **du fichier ASCII réellement produit** et le fait que chacune des 8 règles pilote vraiment quelque chose (voir `tool/tests/ui/LISEZMOI.md`) |
 
 ---
 

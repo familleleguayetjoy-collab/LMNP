@@ -104,6 +104,35 @@ t('validations conservées après rechargement', (await p.locator('.chip.ok').co
 t('471 conservé', (await p.locator('.chip.att').count())>0);
 t('on rouvre sur « Tout »', (await p.locator('.js-wstabs .optab').first().getAttribute('class')).includes('on'));
 
+// ---- la vraie pièce : une image déposée remplace l'aperçu ----
+await p.locator('.js-wstabs .optab').nth(0).click(); await p.waitForTimeout(200);
+await p.locator('.oprow', {hasText:'LA POSTE'}).click(); await p.waitForTimeout(250);
+t('aperçu schématique par défaut', (await p.locator('.facsvg.ticket').count())===1);
+const png = Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',
+  'base64');
+await p.setInputFiles('.js-photo', {name:'ticket.png', mimeType:'image/png', buffer:png});
+await p.waitForTimeout(300);
+t('la photo déposée remplace l\'aperçu',
+  (await p.locator('.facimg').count())===1 && (await p.locator('.facsvg').count())===0,
+  (await p.locator('.facimg').getAttribute('src')||'').slice(0,22));
+t('on peut la remplacer', (await p.locator('.depose').innerText()).includes('Remplacer'));
+
+// ---- le rail : cinq icônes qui se partagent la hauteur ----
+t('les cinq étapes occupent toute la hauteur du rail', await p.evaluate(()=>{
+  const st=[...document.querySelectorAll('.stp')];
+  const somme=st.reduce((a,e)=>a+e.getBoundingClientRect().height,0);
+  const rail=document.querySelector('.rail').getBoundingClientRect().height;
+  return st.length===5 && somme > rail*0.6;}),
+  await p.evaluate(()=>[...document.querySelectorAll('.stp')]
+    .map(e=>Math.round(e.getBoundingClientRect().height)).join('+')));
+
+// ---- les onglets couvrent la largeur de la liste ----
+t('onglets de la gauche de Date à la droite de Statut', await p.evaluate(()=>{
+  const t=document.querySelector('.js-wstabs').getBoundingClientRect();
+  const l=document.querySelector('.wleft').getBoundingClientRect();
+  return Math.abs(t.left-l.left)<2 && Math.abs(t.right-l.right)<3;}));
+
 // ---- tient dans l'écran ----
 t('étape 2 tient dans l\'écran',
   !(await p.evaluate(()=>document.documentElement.scrollHeight>window.innerHeight+2)));

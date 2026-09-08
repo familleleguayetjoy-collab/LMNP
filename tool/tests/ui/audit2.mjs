@@ -58,6 +58,15 @@ await p.locator('.stp[data-go="2"]').click(); await p.waitForTimeout(150);
 t('ventilation survit au changement d\'étape', (await p.locator('.ventil').count())===1);
 
 // --- E. saisie de compte : annulation / champ vide ---
+// (sur une ligne NON ventilée : une facture décomposée n'a plus de compte unique)
+await p.locator('.oprow', {hasText:'BOULANGER'}).click(); await p.waitForTimeout(250);
+t('une facture ventilée n\'a pas de compte unique', await p.evaluate(()=>{
+  const r=[...document.querySelectorAll('.oprow')].find(x=>/MENUISERIE/.test(x.textContent));
+  r.click(); const sel=document.querySelectorAll('.js-imput').length;
+  const ven=document.querySelectorAll('.ventil span').length;
+  [...document.querySelectorAll('.oprow')].find(x=>/BOULANGER/.test(x.textContent)).click();
+  return sel===0 && ven===2;}));
+await p.waitForTimeout(250);
 const avant=await p.locator('.js-imput').inputValue();
 await p.locator('.js-imput').selectOption('__autre__'); await p.waitForTimeout(200);
 await p.click('.js-modal-ok'); await p.waitForTimeout(150);
