@@ -42,8 +42,11 @@ Ouvrir `index.html` dans un navigateur. Aucun serveur, aucune installation,
 aucun appel externe.
 
 **Connexion** (email + mot de passe, session conservée localement), puis
-**Mes dossiers**, séparés en « Nouveaux éléments à traiter » (avec le nombre de
-pièces neuves déposées au Drive) et « Aucune nouvelle pièce disponible ».
+**Mes dossiers** : un tableau — dossier, type, nouvelles pièces, statut —
+avec une recherche, un filtre par type et trois onglets, *Nouveaux éléments*,
+*À jour*, *Tous*. Un dossier qui attend affiche son **nombre de pièces neuves
+en rouge** ; un dossier à jour affiche sa **date de dernière mise à jour**.
+Rien d'autre : le reste se découvre en entrant dedans.
 
 Le parcours d'un dossier tient en cinq écrans, un par décision :
 
@@ -172,7 +175,7 @@ repli et le rangement est marqué comme estimé.
 | suite | ce qu'elle couvre |
 |---|---|
 | `tool/tests/selftest.py` | 206 contrôles sur le moteur — normalisation, FEC, codage, rapprochement, IA simulée, idempotence, classement, coût, trésorerie, rangement |
-| `tool/tests/ui/` | 120 contrôles d'interface pilotés dans un vrai navigateur, dont la vérification **du fichier ASCII réellement produit** et le fait que chacune des 8 règles pilote vraiment quelque chose (voir `tool/tests/ui/LISEZMOI.md`) |
+| `tool/tests/ui/` | 124 contrôles d'interface pilotés dans un vrai navigateur, dont la vérification **du fichier ASCII réellement produit** et le fait que chacune des 8 règles pilote vraiment quelque chose (voir `tool/tests/ui/LISEZMOI.md`) |
 
 ---
 

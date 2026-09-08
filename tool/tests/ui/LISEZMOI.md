@@ -22,7 +22,7 @@ node audit.mjs && node poste.mjs && node regles.mjs && node audit2.mjs && node e
 ```
 
 Chaque script affiche une ligne par contrôle (`OK` / `KO`) puis les erreurs
-JavaScript rencontrées — il ne doit y en avoir aucune. Au total : **120
+JavaScript rencontrées — il ne doit y en avoir aucune. Au total : **124
 contrôles**.
 
 Deux variables d'environnement permettent de changer de cible :

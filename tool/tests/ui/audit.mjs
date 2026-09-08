@@ -22,10 +22,26 @@ t('session survit au rechargement', !(await p.locator('.js-auth').isVisible()));
 
 // ---- 2. ACCUEIL ----
 t('barre d\'étapes masquée sur l\'accueil', !(await p.locator('.stepper').isVisible()));
-const g=await p.locator('.dgroup.g-todo .dcard').count(), d2=await p.locator('.dgroup.g-done .dcard').count();
-t('colonnes 3 + 4 dossiers', g===3&&d2===4, `gauche=${g} droite=${d2}`);
-const pastilles=await p.locator('.dgroup.g-todo .st.neuf').allInnerTexts();
-t('pastilles = nombre de nouvelles pièces', pastilles.every(x=>/\d/.test(x)), pastilles.join(' '));
+const ong=(await p.locator('.accong').allInnerTexts()).map(x=>x.replace(/\n/g,''));
+t('trois onglets : nouveaux, à jour, tous', ong.length===3, ong.join(' | '));
+t('« Nouveaux éléments » ne liste que les dossiers à traiter',
+  (await p.locator('.dosrow').count())===3 && (await p.locator('.pneuf').count())===3);
+t('le nombre de nouvelles pièces est en rouge', await p.evaluate(()=>{
+  const m=/(\d+), (\d+), (\d+)/.exec(getComputedStyle(document.querySelector('.pneuf')).color);
+  return +m[1] > +m[2]+40 && +m[1] > +m[3]+40;}),
+  await p.evaluate(()=>getComputedStyle(document.querySelector('.pneuf')).color));
+await p.locator('.accong').nth(1).click(); await p.waitForTimeout(200);
+t('« À jour » : nom + date de mise à jour, rien d\'autre',
+  (await p.locator('.dosrow').count())===4 && (await p.locator('.pill.maj').count())===4
+  && (await p.locator('.pneuf').count())===0,
+  await p.locator('.pill.maj').first().innerText());
+await p.fill('.js-rech','azur'); await p.waitForTimeout(250);
+t('la recherche filtre', (await p.locator('.dosrow').count())===1,
+  await p.locator('.dosrow .dnom').innerText());
+await p.fill('.js-rech',''); await p.selectOption('.js-filtretype','sci'); await p.waitForTimeout(250);
+t('le filtre par type filtre', (await p.locator('.dosrow').count())===2);
+await p.selectOption('.js-filtretype',''); await p.locator('.accong').nth(0).click();
+await p.waitForTimeout(200);
 await p.click('.js-newdossier'); await p.waitForTimeout(150);
 t('bouton Nouveau dossier ouvre une fenêtre', await p.locator('.js-modal.on').isVisible());
 await p.click('.js-modal-close');
