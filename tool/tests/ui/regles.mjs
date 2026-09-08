@@ -11,6 +11,8 @@ const statuts=async()=>{ await p.locator('.js-wstabs .optab').first().click(); a
   return (await p.locator('.oprow .chip').allInnerTexts()).map(x=>x.trim()); };
 const ouvrir=async()=>{ await p.locator('.stp[data-go="1"]').click(); await p.waitForTimeout(150);
   await p.click('.js-regles'); await p.waitForTimeout(200); };
+const niveau=async(regle,n)=>{ await carte(regle).locator('.niv[data-n="'+n+'"]').click();
+  await p.waitForTimeout(150); };
 const fermer=async()=>{ await p.click('.js-modal-close'); await p.waitForTimeout(150);
   await p.locator('.stp[data-go="2"]').click(); await p.waitForTimeout(250); };
 
@@ -27,63 +29,74 @@ t('les sept statuts sont produits',
 
 // seuil de montant : au-delà du plus gros mouvement, plus aucun « montant élevé »
 await ouvrir();
-await carte('Montant supérieur').locator('.js-seuil').fill('9000'); await p.waitForTimeout(150);
+await carte('Dépense non immobilisable').locator('.js-seuil').fill('9000'); await p.waitForTimeout(150);
 await fermer();
 t('seuil relevé -> plus de « Montant élevé »', !(await statuts()).includes('Montant élevé'));
-await ouvrir(); await carte('Montant supérieur').locator('.js-seuil').fill('1500');
+await ouvrir(); await carte('Dépense non immobilisable').locator('.js-seuil').fill('1500');
 await p.waitForTimeout(150); await fermer();
 t('seuil rétabli -> le statut revient', (await statuts()).includes('Montant élevé'));
 
 // seuil de justificatif : au-delà, plus rien à réclamer
 await ouvrir();
-await carte('sans justificatif').locator('.js-seuil').fill('9000'); await p.waitForTimeout(150);
+await carte('sans facture au-delà').locator('.js-seuil').fill('9000'); await p.waitForTimeout(150);
 await fermer();
 t('seuil de justificatif relevé', !(await statuts()).includes('Justificatif manquant'));
-await ouvrir(); await carte('sans justificatif').locator('.js-seuil').fill('150');
+await ouvrir(); await carte('sans facture au-delà').locator('.js-seuil').fill('150');
 await p.waitForTimeout(150); await fermer();
 
 // décocher une règle la retire complètement
 // les réglages survivent au rechargement
-await ouvrir(); await carte('Montant supérieur').locator('.js-seuil').fill('2200');
+await ouvrir(); await carte('Dépense non immobilisable').locator('.js-seuil').fill('2200');
 await p.waitForTimeout(200); await p.click('.js-modal-close');
 await p.reload(); await p.waitForTimeout(400);
 await p.click('[data-name="LMNP_DUPONT_2026"]'); await p.waitForTimeout(500);
 await p.locator('.js-modal-ok').click().catch(()=>{}); await p.waitForTimeout(200);
 await p.click('.js-regles'); await p.waitForTimeout(250);
 t('réglages conservés après rechargement',
-  (await carte('Montant supérieur').locator('.js-seuil').inputValue())==='2200');
+  (await carte('Dépense non immobilisable').locator('.js-seuil').inputValue())==='2200');
 await p.click('.js-modal-close');
 
 // chaque règle restante pilote bien un statut
 for(const [regle,statut] of [['Acompte ou situation de travaux','Acompte'],
-                             ['plusieurs paiements','Multi-règl.'],
+                             ['Paiement fractionné','Multi-règl.'],
                              ['absent du FEC','Nouveau'],
-                             ['Non comprise par l','À qualifier'],
-                             ['Immobilisation (comptes','Immobilisé'],
-                             ['sans justificatif','Sans pièce']]){
-  await ouvrir(); await carte(regle).locator('.js-regle').uncheck();
-  await p.waitForTimeout(150); await fermer();
+                             ['Confiance de l','À qualifier'],
+                             ['Immobilisation détectée','Immobilisé'],
+                             ['sans facture au-delà','Sans pièce']]){
+  await ouvrir(); await niveau(regle,0); await fermer();
   const sans=!(await statuts()).includes(statut);
-  await ouvrir(); await carte(regle).locator('.js-regle').check();
-  await p.waitForTimeout(150); await fermer();
+  await ouvrir(); await niveau(regle,1); await fermer();
   t('règle « '+regle+' » pilote « '+statut+' »',
     sans && (await statuts()).includes(statut));
 }
 // la règle « sans règlement en banque » gouverne l'onglet des factures hors relevé
-await ouvrir(); await carte('Sans règlement retrouvé').locator('.js-regle').uncheck();
+await ouvrir(); await niveau('Règlement sans facture',0);
 await p.waitForTimeout(150); await fermer();
 const sansOnglet=!(await p.locator('.js-wstabs .optab').allInnerTexts()).some(x=>/Hors relev/i.test(x));
-await ouvrir(); await carte('Sans règlement retrouvé').locator('.js-regle').check();
+await ouvrir(); await niveau('Règlement sans facture',1);
 await p.waitForTimeout(150); await fermer();
 t('la règle « sans règlement » gouverne l\'onglet hors relevé',
   sansOnglet && (await p.locator('.js-wstabs .optab').allInnerTexts()).some(x=>/Hors relev/i.test(x)));
+
+// le niveau « validation obligatoire » interdit le traitement en série
+// SYNDIC AZUR a trois lignes : le bouton de série DOIT exister au niveau 1
+await ouvrir(); await niveau('sans facture au-delà',1); await fermer();
+await p.locator('.oprow', {hasText:'SYNDIC AZUR APPEL T1'}).click(); await p.waitForTimeout(250);
+const serieAvant=await p.locator('.js-serie').count();
+await ouvrir(); await niveau('sans facture au-delà',2); await fermer();
+await p.locator('.oprow', {hasText:'SYNDIC AZUR APPEL T1'}).click(); await p.waitForTimeout(250);
+const serieApres=await p.locator('.js-serie').count();
+t('validation obligatoire : pas de traitement en série',
+  serieAvant===1 && serieApres===0,
+  'à contrôler -> '+serieAvant+' bouton, obligatoire -> '+serieApres);
+await ouvrir(); await niveau('sans facture au-delà',1); await fermer();
 
 // le compteur du pied de la fenêtre
 await p.locator('.stp[data-go="1"]').click(); await p.waitForTimeout(150);
 await p.click('.js-regles'); await p.waitForTimeout(200);
 const n=await p.locator('.rulecard').count();
 t('huit règles, décompte cohérent',
-  n===8 && (await p.locator('.js-rulecount').innerText()).includes('sur '+n),
+  n===8 && /à contrôler/.test(await p.locator('.js-rulecount').innerText()),
   (await p.locator('.js-rulecount').innerText()).replace(/\n/g,' '));
 console.log(R.join('\n'));
 console.log('\nERREURS JS: '+(errs.length?errs.join('\n'):'aucune'));

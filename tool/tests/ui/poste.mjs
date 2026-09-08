@@ -117,6 +117,15 @@ t('la photo déposée remplace l\'aperçu',
   (await p.locator('.facimg').count())===1 && (await p.locator('.facsvg').count())===0,
   (await p.locator('.facimg').getAttribute('src')||'').slice(0,22));
 t('on peut la remplacer', (await p.locator('.depose').innerText()).includes('Remplacer'));
+// un PDF n'est pas une image : il lui faut un lecteur
+const pdf = Buffer.from('%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\ntrailer<</Root 1 0 R>>','latin1');
+await p.setInputFiles('.js-photo', {name:'facture.pdf', mimeType:'application/pdf', buffer:pdf});
+await p.waitForTimeout(400);
+t('un PDF déposé s\'affiche dans un lecteur, pas dans une balise image',
+  (await p.locator('.facpdf').count())===1 && (await p.locator('.facimg').count())===0);
+await p.setInputFiles('.js-photo', {name:'ticket.png', mimeType:'image/png', buffer:png});
+await p.waitForTimeout(300);
+t('retour à une image après un PDF', (await p.locator('.facimg').count())===1);
 
 // ---- le rail : cinq icônes qui se partagent la hauteur ----
 t('les cinq étapes occupent toute la hauteur du rail', await p.evaluate(()=>{

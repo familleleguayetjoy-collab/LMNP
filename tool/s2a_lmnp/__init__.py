@@ -26,7 +26,7 @@ from .sources import (PieceRef, SourcePieces, DossierLocal, pieces_neuves,
 from .pipeline import traiter_dossier, ingerer, traiter_lot
 from .excel import journal_banque_xlsx, lignes_journal_banque, journaux_banque_depuis_fec
 from .rangement import (ranger, chemin, mois_de, resume as resume_rangement,
-                        RACINE, TRAITE, EN_ATTENTE)
+                        Exercice, exercice_de, RACINE, TRAITE, EN_ATTENTE)
 from .controles import revue_analytique, reference
 from .relances import preparer_relances
 
@@ -54,6 +54,6 @@ __all__ = [
     "traiter_dossier", "ingerer", "traiter_lot",
     "journal_banque_xlsx", "lignes_journal_banque", "journaux_banque_depuis_fec",
     "revue_analytique", "reference", "preparer_relances",
-    "ranger", "chemin", "mois_de", "resume_rangement",
+    "ranger", "chemin", "mois_de", "resume_rangement", "Exercice", "exercice_de",
     "RACINE", "TRAITE", "EN_ATTENTE",
 ]

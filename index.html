@@ -63,16 +63,18 @@
    prend toute la largeur disponible. */
 .step[data-s="2"]{max-width:none}
 .step:not([data-s="2"]){width:min(1220px,100%);margin-inline:auto}
-.step[data-s="1"]{width:min(1320px,100%);justify-content:center;gap:20px}
+.step[data-s="1"]{width:min(1320px,100%);justify-content:center;gap:26px}
 .step[data-s="1"] .titlesplit,
-.step[data-s="1"] .grid2{grid-template-columns:1fr 1fr;gap:20px;align-items:stretch}
+.step[data-s="1"] .grid2{grid-template-columns:1fr 1fr;gap:26px;align-items:stretch}
 .step[data-s="1"] .grid2{margin-top:0!important}
 .step[data-s="1"] > *{flex:0 0 auto}
 /* les six cadres ont exactement la même hauteur */
 .step[data-s="1"] .titlesplit > *,
-.step[data-s="1"] .grid2 > *{min-height:126px}
-.step[data-s="1"] .field-card{padding:22px 26px}
-.lmnp h1.js-dossier{min-height:126px}
+.step[data-s="1"] .grid2 > *{min-height:138px}
+.step[data-s="1"] .field-card{padding:26px 30px}
+.step[data-s="1"] .frow{padding:9px 0}
+.step[data-s="1"] .daterow{gap:14px}
+.lmnp h1.js-dossier{min-height:138px}
 .hidden{display:none!important}
 
 /* ---------- Rail vertical : icônes seules, tout l'espace va au travail --- */
@@ -175,8 +177,8 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
 /* ---------- Étape 0 : Mes dossiers (recherche, filtres, tableau) --------- */
 .acc-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap;
   flex:0 0 auto}
-.acc-head h1{font-size:clamp(26px,3vw,34px);color:var(--ink)}
-.acc-sub{color:var(--muted);font-size:14.5px;margin-top:5px}
+.acc-head{align-items:center}
+.acc-head h1{font-size:clamp(34px,4.2vw,46px);color:var(--ink)}
 .acc-head .cta{padding:12px 20px;font-size:14.5px}
 .acc-head .plus{font-size:18px;line-height:1;margin-right:2px}
 .acc-outils{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px;flex:0 0 auto}
@@ -185,14 +187,23 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
 .acc-rech svg{width:17px;height:17px;stroke:var(--muted);fill:none;stroke-width:1.9;flex:0 0 auto}
 .acc-rech input{border:0;background:none;padding:12px 0;width:100%;font-size:14.5px;outline:none}
 .acc-outils .tsel select{padding:12px 40px 12px 15px;border-radius:12px}
-.acc-onglets{display:flex;gap:4px;margin-top:22px;border-bottom:1px solid var(--line);flex:0 0 auto}
-.accong{display:inline-flex;align-items:center;gap:9px;padding:11px 16px;font-family:var(--display);
-  font-weight:600;font-size:14.5px;color:var(--muted);border-bottom:2px solid transparent;
-  margin-bottom:-1px;transition:color .15s ease,border-color .15s ease}
-.accong:hover{color:var(--ink-soft)}
-.accong.on{color:var(--green-2);border-bottom-color:var(--green)}
-.accong b{display:inline-grid;place-items:center;min-width:22px;height:20px;padding:0 6px;
-  border-radius:99px;background:var(--line-2);color:var(--ink-soft);font-size:12px;font-weight:700}
+.acc-onglets{display:flex;gap:10px;margin-top:22px;flex:0 0 auto;flex-wrap:wrap}
+.accong{display:inline-flex;align-items:center;gap:10px;padding:12px 20px;border-radius:14px;
+  font-family:var(--display);font-weight:600;font-size:14.5px;color:var(--ink-soft);
+  background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.8);
+  -webkit-backdrop-filter:saturate(1.8) blur(14px);backdrop-filter:saturate(1.8) blur(14px);
+  box-shadow:0 1px 2px rgba(21,24,28,.05),0 6px 18px rgba(21,24,28,.06),
+    inset 0 1px 0 rgba(255,255,255,.9);
+  transition:transform .15s ease,box-shadow .15s ease,background .15s ease}
+.accong:hover{transform:translateY(-1px);background:rgba(255,255,255,.78);
+  box-shadow:0 2px 4px rgba(21,24,28,.07),0 10px 24px rgba(21,24,28,.09),
+    inset 0 1px 0 rgba(255,255,255,1)}
+.accong.on{background:linear-gradient(180deg,#FFFFFF 0%,#F4F7FB 100%);color:var(--green-2);
+  border-color:var(--green-line);
+  box-shadow:0 2px 4px rgba(27,95,168,.10),0 10px 26px rgba(27,95,168,.14),
+    inset 0 1px 0 rgba(255,255,255,1)}
+.accong b{display:inline-grid;place-items:center;min-width:24px;height:22px;padding:0 7px;
+  border-radius:99px;background:var(--line-2);color:var(--ink-soft);font-size:12.5px;font-weight:700}
 .accong.on b{background:var(--green-soft);color:var(--green-2)}
 .acc-table{margin-top:16px;flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column}
 .acc-table .tblwrap{flex:1;min-height:0;overflow-y:auto;padding:0}
@@ -479,16 +490,25 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
 .rulecat{display:flex;align-items:center;gap:8px;font-family:var(--display);font-weight:700;
   font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);padding-bottom:2px}
 .rulecat svg{width:15px;height:15px;stroke:var(--muted);fill:none;stroke-width:1.8}
-.rulecard{display:flex;flex-direction:column;gap:7px;cursor:pointer;padding:14px;border-radius:13px;height:100%;
+.rulesous{color:var(--muted);font-size:13px;margin-top:6px}
+.rulecard{display:flex;flex-direction:column;gap:7px;padding:13px 14px;border-radius:13px;height:100%;
   border:1px solid var(--line);background:var(--surface);transition:border-color .15s ease,background .15s ease}
-.rulecard.on{border-color:var(--green-line);background:var(--green-soft)}
-.rulehead{display:flex;align-items:flex-start;gap:10px}
-.rulehead input{width:17px;height:17px;flex:0 0 auto;margin-top:1px;accent-color:var(--green)}
-.rulehead b{font-family:var(--display);font-weight:600;font-size:14px;line-height:1.3}
-.ruleseuil{display:flex;align-items:center;gap:7px;margin-left:27px;color:var(--muted);font-size:12.5px}
+.rulecard.n1{border-color:#E9CFA4;background:#FEFBF6}
+.rulecard.n2{border-color:#F0C9C4;background:#FEF8F7}
+.rulet{font-family:var(--display);font-weight:600;font-size:13.5px;line-height:1.3}
+.niveaux{display:flex;gap:4px;margin-top:auto;padding-top:9px;border-top:1px solid var(--line-2)}
+.niv{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:6px 4px;
+  border-radius:8px;font-family:var(--display);font-weight:600;font-size:10.5px;color:var(--muted);
+  border:1px solid transparent;line-height:1.15;text-align:center;transition:background .12s ease}
+.niv:hover{background:var(--line-2)}
+.niv .pt{width:8px;height:8px;border-radius:50%;flex:0 0 auto;background:#C9CDD2}
+.niv .pt.p1{background:var(--warn)} .niv .pt.p2{background:var(--red)}
+.niv.on{background:#fff;border-color:var(--line);color:var(--ink);
+  box-shadow:0 1px 2px rgba(21,24,28,.08)}
+.ruleseuil{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:12.5px}
 .ruleseuil input{width:92px;background:var(--field);border:1px solid var(--field-line);border-radius:9px;
   padding:7px 10px;font-weight:700;font-variant-numeric:tabular-nums;text-align:right;color:var(--ink)}
-.ruled{color:var(--muted);font-size:12px;line-height:1.45;margin-left:27px}
+.ruled{color:var(--muted);font-size:11.5px;line-height:1.45}
 .rulepied{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
   margin-top:18px;padding-top:14px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-soft)}
 .rulehint{color:var(--muted);font-size:12.5px}
@@ -538,7 +558,7 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
 .tbl.ops th:nth-child(1),.tbl.ops td:nth-child(1){width:86px}
 .tbl.ops th:nth-child(2),.tbl.ops td:nth-child(2){padding-left:20px;padding-right:22px}
 .tbl.ops th:nth-child(3),.tbl.ops td:nth-child(3){width:112px;text-align:right;padding-right:24px}
-.tbl.ops th:nth-child(4),.tbl.ops td:nth-child(4){width:170px}
+.tbl.ops th:nth-child(4),.tbl.ops td:nth-child(4){width:212px}
 .oprow{cursor:pointer;transition:background .12s ease}
 .oprow:hover{background:var(--line-2)}
 .oprow.on{background:var(--green-soft);box-shadow:inset 3px 0 0 var(--green)}
@@ -571,6 +591,8 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
 .facsvg{aspect-ratio:300/400;height:auto;width:auto;max-height:100%;max-width:100%;
   border-radius:8px;box-shadow:0 2px 6px rgba(21,24,28,.12),0 14px 32px rgba(21,24,28,.16)}
 .facsvg.ticket{box-shadow:none;border-radius:0}   /* l'ombre est portée par le papier */
+.facpdf{width:100%;height:100%;border:0;border-radius:8px;background:#fff;
+  box-shadow:0 2px 6px rgba(21,24,28,.12),0 14px 32px rgba(21,24,28,.16)}
 .facimg{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;
   border-radius:8px;background:#fff;
   box-shadow:0 2px 6px rgba(21,24,28,.12),0 14px 32px rgba(21,24,28,.16)}
@@ -661,6 +683,11 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
 .champ input{background:var(--field);border:1px solid var(--field-line);border-radius:11px;
   padding:12px 14px;font-weight:600;font-size:15px}
 .champ input:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px var(--green-soft)}
+.champ2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.champ2 .champ{margin-top:14px}
+.ndnote{margin-top:16px;padding:11px 14px;background:var(--green-soft);
+  border:1px solid var(--green-line);border-radius:10px;color:var(--green-2);
+  font-size:12.5px;line-height:1.5}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
 </style>
 
@@ -706,10 +733,7 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
     <!-- ÉTAPE 0 — MES DOSSIERS : recherche, filtres, tableau -->
     <section class="step" data-s="0">
       <div class="acc-head">
-        <div>
-          <h1>Mes dossiers</h1>
-          <p class="acc-sub">Consultez et gérez tous vos dossiers.</p>
-        </div>
+        <h1>Mes dossiers</h1>
         <button class="cta js-newdossier"><span class="plus">+</span> Nouveau dossier</button>
       </div>
 
@@ -760,9 +784,9 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
         <div class="card field-card">
           <div class="daterow">
             <label>Du</label>
-            <span class="inp"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>01/01/2026</span>
+            <span class="inp"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><b class="js-du">01/01/2026</b></span>
             <label>Au</label>
-            <span class="inp"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>31/12/2026</span>
+            <span class="inp"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><b class="js-au">31/12/2026</b></span>
           </div>
           <div class="frow centre" style="border-top:1px solid var(--line-2);margin-top:14px;padding-top:14px">
             <span class="flabel">Type</span>
@@ -1212,9 +1236,21 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
     while(mots.length>1 && mots[0].length<3) mots.shift();
     return mots[0]||'';
   }
+  // Une règle en « validation obligatoire » interdit le traitement en série :
+  // c'est tout l'intérêt du niveau, sinon il ne vaudrait pas mieux que « à
+  // contrôler ». La ligne concernée doit être regardée une par une.
+  function obligatoire(o){
+    var reg=etatRegles();
+    return statutsDe(o).some(function(k){
+      var r=reg[k==='qualifier'?'inconnu':k];
+      return r && r.niv===2;
+    });
+  }
   function memeLib(o){
+    if(obligatoire(o)) return [];
     var k=cleLib(o.lib);
-    return OPS.filter(function(x){return x!==o && cleLib(x.lib)===k && !x.ok;});
+    return OPS.filter(function(x){
+      return x!==o && cleLib(x.lib)===k && !x.ok && !obligatoire(x);});
   }
 
   function listeOnglet(){
@@ -1354,7 +1390,9 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
       // peut en déposer un pour voir le vrai document.
       zp.innerHTML='<div class="facwrap">'
         +(o.piece.src
-          ? '<img class="facimg" src="'+o.piece.src+'" alt="Justificatif — '+o.lib+'"/>'
+          ? (/^data:application\/pdf/.test(o.piece.src)
+             ? '<embed class="facpdf" type="application/pdf" src="'+o.piece.src+'"/>'
+             : '<img class="facimg" src="'+o.piece.src+'" alt="Justificatif — '+o.lib+'"/>')
           : pieceSVG(o))
         +'</div>'
         +'<label class="depose"><input type="file" class="js-photo" accept="image/*,.pdf" hidden/>'
@@ -1474,8 +1512,12 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
     if(ph)ph.addEventListener('change',function(){
       var f=this.files&&this.files[0]; if(!f)return;
       var fr=new FileReader();
-      fr.onload=function(){ o.piece.src=fr.result; renderDetail(); };
-      fr.readAsDataURL(f);           // l'image reste dans le navigateur
+      fr.onload=function(){
+        o.piece.src=fr.result;       // image OU pdf : le rendu s'adapte
+        o.piece.nom=f.name;
+        renderDetail();
+      };
+      fr.readAsDataURL(f);           // le fichier reste dans le navigateur
     });
     var rc=zp.querySelector('.js-reclamer');
     if(rc)rc.addEventListener('click',function(){
@@ -1696,6 +1738,11 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
     if(+root.dataset.step>=1)go(+b.dataset.go);   // navigation libre une fois dans un dossier
   });});
   function cap(s){return s?s.charAt(0)+s.slice(1).toLowerCase():s;}
+  // L'exercice, déduit du nom du dossier à défaut d'être saisi. C'est lui qui
+  // range les sorties : on ne mélange jamais deux années.
+  function EXERCICE(nom){
+    var m=/(20\d{2})/.exec(nom||''); return m?m[1]:String(new Date().getFullYear());
+  }
   function openDossier(name,ex,type){
     $$('.js-dossier').forEach(function(e){e.textContent=name;});
     var sel=$('.js-type'); if(sel&&type)sel.value=type;
@@ -1720,6 +1767,10 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
     root.dataset.banque=bq;
     $$('.js-bq').forEach(function(x){x.setAttribute('aria-pressed',x.dataset.v===bq?'true':'false');});
     var fmt=$('.js-fmt'); if(fmt)fmt.textContent='Format ASCII (Quadra) · contrepartie '+(bq==='oui'?'512':'108');
+    var meta=LISTE.filter(function(x){return x.cle===name;})[0]||{};
+    var du=$('.js-du'), au=$('.js-au');
+    if(du)du.textContent=meta.du||('01/01/'+(EXERCICE(name)));
+    if(au)au.textContent=meta.au||('31/12/'+(EXERCICE(name)));
     CURNOM=name; CURPIECES=NB_PIECES[name]||(OPS.length+RECLAM.length);
     WTAB=0; WSEL=null; WTRI={k:"dt",asc:true}; RECONGLET=0;   // on rouvre au début
     reinitFichierBanque();      // un relevé appartient à UN dossier
@@ -1767,7 +1818,8 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
     });
     if(d.regles)REGLES.forEach(function(g){g.items.forEach(function(it){
       var e=d.regles[it.id]; if(!e)return;
-      it.on=e.on; if(e.seuil!==undefined)it.seuil=e.seuil;});});
+      if(e.niv!==undefined)it.niv=e.niv; else it.niv=e.on?1:0;   // ancien format
+      if(e.seuil!==undefined)it.seuil=e.seuil;});});
   }
 
   var DUPTXT="";
@@ -1807,10 +1859,74 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
   });});
   $$('.js-back').forEach(function(b){b.addEventListener('click',function(){go(Math.max(0,+root.dataset.step-1));});});
   $('.js-home').addEventListener('click',function(){go(0);});
-  $('.js-newdossier').addEventListener('click',function(){openModal(
-    '<h3>Nouveau dossier</h3>'
-    +'<p>Dans l\'outil réel, un nouveau dossier apparaît automatiquement dès qu\'un dossier client existe sur le <b>Drive du cabinet</b> — pas besoin de le créer à la main.</p>'
-    +'<p>On peut aussi le saisir manuellement (nom du client + exercice) si le Drive n\'est pas encore connecté.</p>');});
+  /* --- création d'un dossier : nom, type, exercice ------------------------
+     En production le dossier apparaît tout seul dès qu'il existe sur le Drive ;
+     la saisie manuelle sert au démarrage et aux cas particuliers. L'exercice
+     est demandé ici parce qu'il conditionne TOUT le reste : c'est lui qui
+     range les pièces et qui évite de mélanger deux années. */
+  var AN=new Date().getFullYear();
+  $('.js-newdossier').addEventListener('click',function(){
+    var btn=openModal('<h3>Nouveau dossier</h3>'
+      +'<div class="champ"><label>Nom du dossier</label>'
+      +'<input class="js-nd-nom" placeholder="Ex. LMNP_DURAND_'+AN+'" autocomplete="off"/></div>'
+      +'<div class="champ"><label>Type</label>'
+      +'<div class="tsel"><select class="js-nd-type">'
+      +Object.keys(TYPES).map(function(k){return '<option value="'+k+'">'+TYPES[k]+'</option>';}).join('')
+      +'</select></div></div>'
+      +'<div class="champ2">'
+      +'<div class="champ"><label>Exercice — du</label>'
+      +'<input class="js-nd-du num" value="01/01/'+AN+'" maxlength="10" inputmode="numeric"/></div>'
+      +'<div class="champ"><label>au</label>'
+      +'<input class="js-nd-au num" value="31/12/'+AN+'" maxlength="10" inputmode="numeric"/></div>'
+      +'</div>'
+      +'<p class="ndnote">L\'exercice range les pièces : un dossier par année, pour ne '
+      +'jamais mélanger deux exercices dans le dossier de sortie.</p>',
+      'wide',
+      {libelle:"Créer et ouvrir", onclick:function(){
+        var nom=($('.js-nd-nom').value||'').trim();
+        var du=($('.js-nd-du').value||'').trim(), au=($('.js-nd-au').value||'').trim();
+        if(!nom || !dateFr(du) || !dateFr(au)) return false;   // rien d'incomplet
+        var d={nom:nom, cle:nom.toUpperCase().replace(/[^A-Z0-9]+/g,'_'),
+               type:$('.js-nd-type').value, neuf:0, maj:aujourdhui(),
+               du:du, au:au};
+        if(LISTE.some(function(x){return x.cle===d.cle;})) return false;  // déjà là
+        LISTE.unshift(d);
+        renderAccueil();
+        setTimeout(function(){openDossier(d.cle,'',d.type);},60);
+        return true;
+      }});
+    // le bouton ne s'active que quand la saisie tient debout
+    function verifier(){
+      var ok=($('.js-nd-nom').value||'').trim().length>2
+             && dateFr($('.js-nd-du').value) && dateFr($('.js-nd-au').value);
+      btn.disabled=!ok;
+    }
+    $$('.js-nd-nom,.js-nd-du,.js-nd-au').forEach(function(i){
+      i.addEventListener('input',function(){
+        if(i!==$('.js-nd-nom')) i.value=masqueDate(i.value);
+        verifier();});
+    });
+    verifier();
+  });
+  // Deux aides de saisie de date, partagées avec le volet de décision.
+  function masqueDate(v){
+    var c=(v||'').replace(/\D/g,'').slice(0,8);
+    if(c.length>4)return c.slice(0,2)+'/'+c.slice(2,4)+'/'+c.slice(4);
+    if(c.length>2)return c.slice(0,2)+'/'+c.slice(2);
+    return c;
+  }
+  function dateFr(v){
+    var m=/^(\d{2})\/(\d{2})\/(\d{4})$/.exec((v||'').trim());
+    if(!m)return null;
+    var j=+m[1], mo=+m[2], a=+m[3];
+    if(mo<1||mo>12||a<2000||a>2099)return null;
+    var d=new Date(a,mo-1,j);
+    return d.getDate()===j ? m[0] : null;
+  }
+  function aujourdhui(){
+    var d=new Date(), p=function(n){return (n<10?'0':'')+n;};
+    return p(d.getDate())+'/'+p(d.getMonth()+1)+'/'+d.getFullYear();
+  }
 
   /* --- toggle banque --- */
   $$('.js-bq').forEach(function(b){b.addEventListener('click',function(){
@@ -2060,69 +2176,89 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
   var REGLES=[
     {cat:"Nature de l'opération", icone:"M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6",
      items:[
-      {id:"immo", t:"Immobilisation (comptes 2x)", on:true,
+      {id:"immo", t:"Immobilisation détectée", niv:2,
        d:"L'erreur vit plusieurs exercices dans le tableau d'amortissement."},
-      {id:"acompte", t:"Acompte ou situation de travaux", on:true,
+      {id:"acompte", t:"Acompte ou situation de travaux", niv:1,
        d:"Risque de double comptabilisation avec la facture de solde."},
-      {id:"multipaie", t:"Réglée en plusieurs paiements", on:true,
+      {id:"multipaie", t:"Paiement fractionné d'une même facture", niv:1,
        d:"La charge ne doit être comptabilisée qu'une fois."}]},
     {cat:"Montant et enjeu", icone:"M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6",
      items:[
-      {id:"montant", t:"Montant supérieur à", on:true, seuil:1500,
-       d:"Hors immobilisation. Au-dessus, l'enjeu dépasse le coût du contrôle."},
-      {id:"justif", t:"Dépense sans justificatif au-delà de", on:true, seuil:150,
+      {id:"montant", t:"Dépense non immobilisable au-delà de", niv:1, seuil:1500,
+       d:"Au-dessus, l'enjeu dépasse le coût du contrôle."},
+      {id:"justif", t:"Paiement sans facture au-delà de", niv:1, seuil:150,
        d:"En dessous, on impute sans réclamer : la relance coûte plus que l'enjeu."}]},
-    {cat:"Historique du dossier", icone:"M3 12a9 9 0 1 0 9-9 9 9 0 0 0-8 5M3 3v5h5M12 8v4l3 2",
+    {cat:"Fiabilité de l'affectation", icone:"M3 12a9 9 0 1 0 9-9 9 9 0 0 0-8 5M3 3v5h5M12 8v4l3 2",
      items:[
-      {id:"inconnu", t:"Non comprise par l'IA", on:true,
-       d:"Confiance insuffisante : aucun compte proposé avec certitude."},
-      {id:"sanshisto", t:"Fournisseur absent du FEC N-1", on:true,
+      {id:"inconnu", t:"Confiance de l'IA sous le seuil", niv:2,
+       d:"Aucun compte proposé avec certitude : la ligne reste en 471 sans un humain."},
+      {id:"sanshisto", t:"Fournisseur absent du FEC N-1", niv:1,
        d:"Sans précédent, le compte est une hypothèse, pas une reprise."},
-      {id:"nonrappr", t:"Sans règlement retrouvé en banque", on:true,
+      {id:"nonrappr", t:"Règlement sans facture identifiée", niv:1,
        d:"Soit payée en perso (OD 108), soit hors dossier."}]}
+  ];
+  // Trois niveaux, comme demandé par le cabinet : ce que l'outil fait seul, ce
+  // qu'il montre, et ce qu'il refuse de laisser passer sans une main humaine.
+  var NIVEAUX=[
+    [0,"Automatique","L'outil impute seul, la ligne ne remonte pas."],
+    [1,"À contrôler","La ligne remonte dans « À traiter »."],
+    [2,"Validation obligatoire","La ligne remonte et ne peut pas être traitée en série."]
   ];
   function etatRegles(){
     var e={}; REGLES.forEach(function(g){g.items.forEach(function(r){
-      e[r.id]={on:r.on,seuil:r.seuil};});}); return e;
+      e[r.id]={on:(r.niv||0)>0, niv:r.niv||0, seuil:r.seuil};});}); return e;
   }
   function ouvrirRegles(){
-    var html='<h3>Règles de contrôle humain</h3><div class="rulegrid">';
+    var html='<h3>Règles de contrôle</h3>'
+      +'<p class="rulesous">Pour chaque règle : ce que l\'outil fait seul, ce qu\'il vous montre, '
+      +'et ce qu\'il refuse de laisser passer sans vous.</p><div class="rulegrid">';
     REGLES.forEach(function(g,gi){
       html+='<div class="rulecat" style="grid-column:'+(gi+1)+';grid-row:1">'
         +'<svg viewBox="0 0 24 24"><path d="'+g.icone+'"/></svg>'+g.cat+'</div>';
     });
     REGLES.forEach(function(g,gi){
       g.items.forEach(function(r,ri){
-        html+='<label class="rulecard'+(r.on?' on':'')+'" data-g="'+gi+'" data-r="'+ri+'"'
+        html+='<div class="rulecard n'+(r.niv||0)+'" data-g="'+gi+'" data-r="'+ri+'"'
           +' style="grid-column:'+(gi+1)+';grid-row:'+(ri+2)+'">'
-          +'<span class="rulehead">'
-          +'<input type="checkbox" class="js-regle"'+(r.on?' checked':'')+'/>'
-          +'<b>'+r.t+'</b></span>'
+          +'<b class="rulet">'+r.t+'</b>'
           +(r.seuil!==undefined
             ? '<span class="ruleseuil"><input type="number" class="js-seuil" value="'+r.seuil
               +'" min="0" step="50"/> € TTC</span>' : '')
-          +'<span class="ruled">'+r.d+'</span></label>';
+          +'<span class="ruled">'+r.d+'</span>'
+          +'<div class="niveaux js-niv" role="radiogroup" aria-label="Niveau de contrôle">'
+          +NIVEAUX.map(function(n){
+              return '<button class="niv'+(n[0]===(r.niv||0)?' on':'')+'" data-n="'+n[0]+'"'
+                +' title="'+n[2]+'" role="radio" aria-checked="'+(n[0]===(r.niv||0))+'">'
+                +'<i class="pt p'+n[0]+'"></i>'+n[1]+'</button>';
+            }).join('')
+          +'</div></div>';
       });
     });
     html+='</div><div class="rulepied"><span class="js-rulecount"></span>'
-       +'<span class="rulehint">Coché = vérifié par un humain · décoché = traité par l\'IA</span></div>';
+       +'<span class="rulehint">Le niveau décide de ce qui remonte à l\'écran de traitement.</span></div>';
     openModal(html,'xl');
     function compter(){
-      var n=$$('.js-regle').filter(function(c){return c.checked;}).length;
-      $('.js-rulecount').innerHTML='<b>'+n+'</b> règle'+(n>1?'s':'')+' sur '
-        +$$('.js-regle').length+' en contrôle humain';
+      var t=0,c=0,v=0;
+      REGLES.forEach(function(g){g.items.forEach(function(r){
+        t++; if((r.niv||0)===1)c++; if((r.niv||0)===2)v++;});});
+      $('.js-rulecount').innerHTML='<b>'+c+'</b> à contrôler · <b>'+v
+        +'</b> en validation obligatoire · '+(t-c-v)+' automatique'+((t-c-v)>1?'s':'');
     }
     $$('.rulecard').forEach(function(card){
-      var box=card.querySelector('.js-regle');
-      box.addEventListener('change',function(){
-        var g=REGLES[+card.dataset.g].items[+card.dataset.r];
-        g.on=box.checked; card.classList.toggle('on',box.checked); compter(); sauverTravail(); renderTrancher();
+      var g=REGLES[+card.dataset.g].items[+card.dataset.r];
+      card.querySelectorAll('.niv').forEach(function(b){
+        b.addEventListener('click',function(){
+          g.niv=+b.dataset.n;
+          card.className='rulecard n'+g.niv;
+          card.querySelectorAll('.niv').forEach(function(x){
+            var on=+x.dataset.n===g.niv;
+            x.classList.toggle('on',on); x.setAttribute('aria-checked',on);});
+          compter(); sauverTravail(); renderTrancher();
+        });
       });
       var seuil=card.querySelector('.js-seuil');
       if(seuil)seuil.addEventListener('input',function(){
-        REGLES[+card.dataset.g].items[+card.dataset.r].seuil=parseFloat(this.value)||0;
-        sauverTravail(); renderTrancher();});
-      if(seuil)seuil.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();});
+        g.seuil=parseFloat(this.value)||0; sauverTravail(); renderTrancher();});
     });
     compter();
   }

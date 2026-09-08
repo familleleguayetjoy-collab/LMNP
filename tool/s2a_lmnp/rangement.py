@@ -4,11 +4,20 @@ Le client dépose tout en vrac ; le cabinet a besoin de s'y retrouver un an plus
 tard, et le client aussi. On range donc chaque pièce sous :
 
     Documents générés par l'application/
-        2026-03/
-            Traité/
-            En attente de traitement/
+        Exercice 2026/
+            2026-03/
+                Traité/
+                En attente de traitement/
 
-Deux décisions, prises ici une bonne fois :
+Trois décisions, prises ici une bonne fois :
+
+0. **L'exercice d'abord.** Une pièce appartient à un exercice avant d'appartenir
+   à un mois. Sans ce niveau, une facture de janvier 2027 arrivée dans le dépôt
+   d'un dossier 2026 se rangerait dans `2027-01` à côté des mois de l'exercice
+   en cours, et personne ne verrait le mélange. Avec lui, elle tombe dans
+   « Exercice 2027 » et saute aux yeux. L'exercice est celui **fourni par le
+   dossier** (il peut être décalé : 01/07 → 30/06) ; à défaut, l'année civile de
+   la date de règlement.
 
 1. **Le mois est celui du RÈGLEMENT**, pas celui du dépôt du fichier ni celui de
    la facture. En comptabilité de trésorerie, c'est la date de règlement qui fait
@@ -32,6 +41,39 @@ TRAITE = "Traité"
 EN_ATTENTE = "En attente de traitement"
 
 
+class Exercice:
+    """Les bornes d'un exercice. Un exercice décalé (01/07 → 30/06) porte le
+    millésime de sa date de clôture, comme le fait l'administration."""
+
+    def __init__(self, debut: date, fin: date, libelle: str = ""):
+        if fin < debut:
+            raise ValueError("exercice : la clôture précède l'ouverture")
+        self.debut, self.fin = debut, fin
+        self.libelle = libelle or ("Exercice %d" % fin.year)
+
+    def contient(self, d) -> bool:
+        return isinstance(d, date) and self.debut <= d <= self.fin
+
+    @classmethod
+    def civil(cls, annee: int) -> "Exercice":
+        return cls(date(annee, 1, 1), date(annee, 12, 31))
+
+
+def exercice_de(d, exercice=None) -> str:
+    """Nom du dossier d'exercice pour une date.
+
+    Avec un `exercice` fourni, une date hors bornes est rangée à part : c'est
+    une pièce qui n'appartient PAS à l'exercice qu'on est en train de traiter,
+    et le nom du dossier le dit."""
+    if not isinstance(d, date):
+        return "Exercice indéterminé"
+    if exercice is None:
+        return "Exercice %d" % d.year
+    if exercice.contient(d):
+        return exercice.libelle
+    return "Hors exercice %d" % d.year
+
+
 def mois_de(facture) -> tuple[str, bool]:
     """Renvoie `(AAAA-MM, estime)` pour une pièce.
 
@@ -46,13 +88,15 @@ def mois_de(facture) -> tuple[str, bool]:
     return "%04d-%02d" % (d.year, d.month), estime
 
 
-def chemin(facture, *, traite: bool, racine: str = RACINE) -> str:
+def chemin(facture, *, traite: bool, racine: str = RACINE, exercice=None) -> str:
     """Chemin de rangement d'une pièce, relatif au dossier du client."""
     mois, _ = mois_de(facture)
-    return "%s/%s/%s" % (racine, mois, TRAITE if traite else EN_ATTENTE)
+    d = getattr(facture, "date_reglement", None) or getattr(facture, "date", None)
+    return "%s/%s/%s/%s" % (racine, exercice_de(d, exercice), mois,
+                            TRAITE if traite else EN_ATTENTE)
 
 
-def ranger(factures, rejets=None, *, racine: str = RACINE) -> dict:
+def ranger(factures, rejets=None, *, racine: str = RACINE, exercice=None) -> dict:
     """Construit le plan de rangement complet d'un traitement.
 
     `factures` = pièces retenues (une écriture est produite) -> `Traité`.
@@ -64,7 +108,7 @@ def ranger(factures, rejets=None, *, racine: str = RACINE) -> dict:
     perdue : tout ce qui entre ressort dans le plan."""
     plan: dict[str, list] = {}
     for f in factures or []:
-        c = chemin(f, traite=True, racine=racine)
+        c = chemin(f, traite=True, racine=racine, exercice=exercice)
         mois, estime = mois_de(f)
         plan.setdefault(c, []).append({
             "fichier": getattr(f, "fichier", "") or getattr(f, "fournisseur", ""),
@@ -76,7 +120,7 @@ def ranger(factures, rejets=None, *, racine: str = RACINE) -> dict:
         # un rejet n'a pas d'objet Facture : on range sur ce qu'on sait de lui
         brut = r.get("brut") or {}
         faux = type("P", (), {"date_reglement": None, "date": _d(brut.get("date"))})()
-        c = chemin(faux, traite=False, racine=racine)
+        c = chemin(faux, traite=False, racine=racine, exercice=exercice)
         mois, estime = mois_de(faux)
         plan.setdefault(c, []).append({
             "fichier": r.get("fichier", ""),

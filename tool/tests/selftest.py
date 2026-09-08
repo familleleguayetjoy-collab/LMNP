@@ -818,15 +818,16 @@ fac31, rej31 = factures_depuis_ocr([brut31])
 check(fac31[0].date_reglement == D(2026, 1, 12) and fac31[0].payee,
       "OCR : « prélevé le » -> date_reglement et pièce acquittée")
 
-print("32) Rangement du dossier de sortie : par mois de RÈGLEMENT, puis statut")
-from s2a_lmnp import ranger, chemin, mois_de, resume_rangement, RACINE, TRAITE, EN_ATTENTE
+print("32) Rangement du dossier de sortie : exercice, mois de RÈGLEMENT, statut")
+from s2a_lmnp import (ranger, chemin, mois_de, resume_rangement, Exercice,
+                      exercice_de, RACINE, TRAITE, EN_ATTENTE)
 
 # facture de décembre réglée en janvier -> rangée en 2026-01 (comme l'écriture)
 fr1 = Facture("EDF", D(2025, 12, 28), 69.34); fr1.date_reglement = D(2026, 1, 12)
 fr1.fichier = "edf.pdf"
 check(mois_de(fr1) == ("2026-01", False), "mois = date de règlement, pas de facture")
-check(chemin(fr1, traite=True) == RACINE + "/2026-01/" + TRAITE,
-      "chemin complet racine/mois/Traité")
+check(chemin(fr1, traite=True) == RACINE + "/Exercice 2026/2026-01/" + TRAITE,
+      "chemin complet racine/exercice/mois/Traité")
 
 # sans date de règlement -> repli sur la facture, marqué comme estimé
 fr2 = Facture("BRICO", D(2026, 3, 9), 71.07); fr2.fichier = "brico.pdf"
@@ -841,13 +842,39 @@ rej32 = [{"brut": {"date": "2026-03-15"}, "fichier": "devis.pdf",
           "empreinte": "abc", "motif": "document « devis » : non comptable"}]
 plan = ranger([fr1, fr2], rej32)
 vue = {l["chemin"]: l["pieces"] for l in resume_rangement(plan)}
-check(vue.get(RACINE + "/2026-01/" + TRAITE) == 1, "EDF -> 2026-01/Traité")
-check(vue.get(RACINE + "/2026-03/" + TRAITE) == 1, "Brico -> 2026-03/Traité")
-check(vue.get(RACINE + "/2026-03/" + EN_ATTENTE) == 1, "devis -> 2026-03/En attente")
-attente = plan[RACINE + "/2026-03/" + EN_ATTENTE][0]
+E26 = RACINE + "/Exercice 2026"
+check(vue.get(E26 + "/2026-01/" + TRAITE) == 1, "EDF -> 2026-01/Traité")
+check(vue.get(E26 + "/2026-03/" + TRAITE) == 1, "Brico -> 2026-03/Traité")
+check(vue.get(E26 + "/2026-03/" + EN_ATTENTE) == 1, "devis -> 2026-03/En attente")
+attente = plan[E26 + "/2026-03/" + EN_ATTENTE][0]
 check(attente["motif"] and attente["fichier"] == "devis.pdf",
       "la pièce en attente garde son motif et son nom de fichier")
 check(sum(len(v) for v in plan.values()) == 3, "aucune pièce perdue dans le plan")
+
+# L'exercice passe AVANT le mois : deux années ne se mélangent jamais.
+ex26 = Exercice(D(2026, 1, 1), D(2026, 12, 31))
+hors = Facture("EDF JANVIER 2027", D(2026, 12, 30), 71.0)
+hors.date_reglement = D(2027, 1, 8); hors.fichier = "edf-janv.pdf"
+check(chemin(hors, traite=True, exercice=ex26)
+      == RACINE + "/Hors exercice 2027/2027-01/" + TRAITE,
+      "pièce hors de l'exercice traité -> rangée à part, pas noyée")
+check(chemin(fr1, traite=True, exercice=ex26)
+      == RACINE + "/Exercice 2026/2026-01/" + TRAITE,
+      "pièce de l'exercice -> dossier de l'exercice")
+
+# Un exercice décalé porte le millésime de sa clôture.
+ex_dec = Exercice(D(2026, 7, 1), D(2027, 6, 30))
+check(ex_dec.libelle == "Exercice 2027", "exercice décalé -> millésime de clôture")
+f_dec = Facture("SEPTEMBRE", D(2026, 9, 2), 100.0); f_dec.date_reglement = D(2026, 9, 5)
+check(chemin(f_dec, traite=True, exercice=ex_dec)
+      == RACINE + "/Exercice 2027/2026-09/" + TRAITE,
+      "exercice décalé : septembre 2026 appartient à l'exercice 2027")
+check(exercice_de(None) == "Exercice indéterminé", "sans date -> exercice indéterminé")
+try:
+    Exercice(D(2026, 12, 31), D(2026, 1, 1)); ko = False
+except ValueError:
+    ko = True
+check(ko, "un exercice qui se ferme avant de s'ouvrir est refusé")
 
 print("33) Le relevé fixe la date de règlement de la facture (trésorerie)")
 # la pièce annonce le 28/12 ; la banque dit le 12/01 -> c'est la banque qui gagne

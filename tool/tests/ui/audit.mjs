@@ -42,9 +42,27 @@ await p.fill('.js-rech',''); await p.selectOption('.js-filtretype','sci'); await
 t('le filtre par type filtre', (await p.locator('.dosrow').count())===2);
 await p.selectOption('.js-filtretype',''); await p.locator('.accong').nth(0).click();
 await p.waitForTimeout(200);
-await p.click('.js-newdossier'); await p.waitForTimeout(150);
-t('bouton Nouveau dossier ouvre une fenêtre', await p.locator('.js-modal.on').isVisible());
-await p.click('.js-modal-close');
+// création réelle d'un dossier, avec son exercice
+await p.click('.js-newdossier'); await p.waitForTimeout(200);
+t('Nouveau dossier : le bouton attend une saisie valable',
+  await p.locator('.js-modal-ok').isDisabled());
+await p.fill('.js-nd-nom','SCI_TEST_2027');
+await p.fill('.js-nd-du','01072026'); await p.fill('.js-nd-au','30062027');
+await p.waitForTimeout(200);
+t('Nouveau dossier : les dates se mettent en forme',
+  (await p.locator('.js-nd-du').inputValue())==='01/07/2026'
+  && !(await p.locator('.js-modal-ok').isDisabled()));
+await p.click('.js-modal-ok'); await p.waitForTimeout(500);
+t('Nouveau dossier : créé, ouvert, exercice repris',
+  (await p.getAttribute('.lmnp','data-step'))==='1'
+  && (await p.locator('.step[data-s="1"] .js-dossier').innerText()).includes('SCI_TEST_2027')
+  && (await p.locator('.js-du').innerText())==='01/07/2026'
+  && (await p.locator('.js-au').innerText())==='30/06/2027');
+await p.click('.js-home'); await p.waitForTimeout(250);
+await p.locator('.accong').nth(2).click(); await p.waitForTimeout(200);
+t('Nouveau dossier : présent dans la liste',
+  (await p.locator('[data-name="SCI_TEST_2027"]').count())===1);
+await p.locator('.accong').nth(0).click(); await p.waitForTimeout(200);
 
 // ---- 3. ÉTAPE 1 ----
 await p.click('[data-name="LMNP_DUPONT_2026"]'); await p.waitForTimeout(300);
@@ -73,15 +91,19 @@ t('import banque : fichier accepté', await p.locator('.js-bqok').isVisible(),
 // Règles
 await p.click('.js-regles'); await p.waitForTimeout(200);
 const nCartes=await p.locator('.rulecard').count();
-await p.locator('.rulecard .js-regle').first().uncheck(); await p.waitForTimeout(80);
+const carteM=p.locator('.rulecard').filter({hasText:'Dépense non immobilisable'});
+t('règles : trois niveaux par carte',
+  nCartes===8 && (await p.locator('.rulecard').first().locator('.niv').count())===3);
+await p.locator('.rulecard').first().locator('.niv[data-n="0"]').click(); await p.waitForTimeout(120);
 const pied=await p.locator('.js-rulecount').innerText();
-await p.locator('.rulecard').filter({hasText:'Montant supérieur'}).locator('.js-seuil').fill('2500'); await p.waitForTimeout(80);
-t('règles : cartes + décompte + seuil', nCartes===8 && pied.includes('7'), `${nCartes} cartes, "${pied}"`);
+t('règles : le décompte suit les niveaux', /automatique/.test(pied), pied.replace(/\n/g,' '));
+await carteM.locator('.js-seuil').fill('2500'); await p.waitForTimeout(120);
 await p.click('.js-modal-close');
-await p.click('.js-regles'); await p.waitForTimeout(150);
-t('règles : réglages conservés', (await p.locator('.rulecard').filter({hasText:'Montant supérieur'}).locator('.js-seuil').inputValue())==='2500'
-   && !(await p.locator('.rulecard .js-regle').first().isChecked()));
-await p.locator('.rulecard .js-regle').first().check();
+await p.click('.js-regles'); await p.waitForTimeout(200);
+t('règles : réglages conservés',
+  (await p.locator('.rulecard').filter({hasText:'Dépense non immobilisable'}).locator('.js-seuil').inputValue())==='2500'
+  && (await p.locator('.rulecard').first().locator('.niv.on').getAttribute('data-n'))==='0');
+await p.locator('.rulecard').first().locator('.niv[data-n="2"]').click(); await p.waitForTimeout(120);
 await p.click('.js-modal-close');
 t('bouton historique masqué au 1er import', !(await p.locator('.js-dupbtn').isVisible()));
 

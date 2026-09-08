@@ -16,7 +16,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from s2a_lmnp import (construire, parse_fec, Operation, coder, rapprocher,
                       manquants, to_quadratus, facture_depuis_ocr,
-                      residu, resoudre_residu, ranger, resume_rangement, RACINE)
+                      residu, resoudre_residu, ranger, resume_rangement, RACINE,
+                      Exercice)
 
 D = datetime.date
 
@@ -166,7 +167,7 @@ print("=" * 66)
 # une pièce arrivée mais non comptable : elle ne se perd pas pour autant
 rejets = [{"brut": {"date": "2026-01-22"}, "fichier": "devis_peinture.pdf",
            "empreinte": "d3v15", "motif": "document « devis » : non comptable"}]
-plan = ranger(factures, rejets)
+plan = ranger(factures, rejets, exercice=Exercice(D(2026, 1, 1), D(2026, 12, 31)))
 for ligne in resume_rangement(plan):
     print("  %-58s %d pièce(s)%s"
           % (ligne["chemin"], ligne["pieces"],

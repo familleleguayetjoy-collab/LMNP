@@ -44,7 +44,9 @@ aucun appel externe.
 **Connexion** (email + mot de passe, session conservée localement), puis
 **Mes dossiers** : un tableau — dossier, type, nouvelles pièces, statut —
 avec une recherche, un filtre par type et trois onglets, *Nouveaux éléments*,
-*À jour*, *Tous*. Un dossier qui attend affiche son **nombre de pièces neuves
+*À jour*, *Tous*. **Nouveau dossier** demande le nom, le type et **les bornes
+de l'exercice** — c'est l'exercice qui range les pièces, il est donc saisi dès
+la création. Un dossier qui attend affiche son **nombre de pièces neuves
 en rouge** ; un dossier à jour affiche sa **date de dernière mise à jour**.
 Rien d'autre : le reste se découvre en entrant dedans.
 
@@ -52,7 +54,9 @@ Le parcours d'un dossier tient en cinq écrans, un par décision :
 
 1. **Importer** — période, type (LMNP / LMP / SCI / BNC), assujettissement à la
    TVA, tenue de banque, FEC N‑1, relevé bancaire. Un bouton **Règles de
-   contrôle** ouvre les **8 règles** qui décident de ce qui remonte à l'humain
+   contrôle** ouvre les **8 règles**, réparties en trois familles (nature de
+   l'opération, montant et enjeu, fiabilité de l'affectation), qui décident de
+   ce qui remonte à l'humain
    (immobilisation, acompte, paiements multiples, montant élevé, dépense sans
    justificatif, opération non comprise, fournisseur absent du FEC N‑1, facture
    sans règlement retrouvé en banque). Chacune est activable, deux sont
@@ -74,7 +78,7 @@ Le parcours d'un dossier tient en cinq écrans, un par décision :
    rattaché, un **aperçu schématique** en tient lieu — rendu différemment selon
    qu'il s'agit d'une facture ou d'un ticket de caisse ; dès qu'une image est
    là (le Drive en production, un dépôt à la main en démonstration), c'est
-   **le vrai document** qui s'affiche. À droite la décision, dans
+   **le vrai document** qui s'affiche — image ou PDF, chacun avec son rendu. À droite la décision, dans
    l'ordre où elle se prend : ce que dit la banque (en lecture seule — le relevé fait foi), ce
    que dit la pièce, puis le compte, décomposable sur plusieurs comptes ou
    complétable par un compte saisi à la main. Une facture ventilée n'a plus de
@@ -131,7 +135,7 @@ optionnelles (Pillow, pypdfium2) servent au seul prétraitement des images et le
 absence est **signalée**, jamais silencieuse.
 
 ```bash
-python3 tool/tests/selftest.py        # 206 contrôles
+python3 tool/tests/selftest.py        # 212 contrôles
 python3 tool/demo/demo_pipeline_complet.py
 ```
 
@@ -144,7 +148,8 @@ Voir `tool/README.md` pour le détail des modules. En résumé :
 - `rapprochement.py` — facture ↔ relevé, écarts signalés, OD 108 pour le payé
   perso, virements internes, doublons ;
 - `quadra.py` — export ASCII 251 caractères, contrepartie en ligne ;
-- `rangement.py` — le plan de classement des pièces dans le Drive ;
+- `rangement.py` — le plan de classement des pièces dans le Drive : exercice,
+  puis mois de règlement, puis statut ;
 - `cout.py` — coût réel mesuré sur `response.usage`, avec alerte par dossier ;
 - `manifeste.py` / `sources.py` — empreintes sha256 : une pièce n'est jamais
   relue ni recomptabilisée deux fois.
@@ -156,17 +161,28 @@ Dans le dossier du client, l'outil écrit sous
 
 ```
 Documents générés par l'application/
-    2026-01/
-        Traité/                        (une écriture a été produite)
-        En attente de traitement/      (non comptable, incomplet, en attente client)
-    2026-03/
-        ...
+    Exercice 2026/
+        2026-01/
+            Traité/                    (une écriture a été produite)
+            En attente de traitement/  (non comptable, incomplet, en attente client)
+        2026-03/
+            ...
+    Hors exercice 2027/
+        2027-01/
+            ...
 ```
 
-Le mois est celui du **règlement** — donc celui de l'écriture. Une facture de
-décembre réglée en janvier est rangée en `2026-01`, exactement là où se trouve
-son écriture. À défaut de date de règlement connue, la date de facture sert de
-repli et le rangement est marqué comme estimé.
+**L'exercice d'abord.** Une pièce appartient à un exercice avant d'appartenir à
+un mois. Sans ce niveau, une facture de janvier 2027 tombée dans le dépôt d'un
+dossier 2026 se rangerait dans `2027-01` à côté des mois en cours et personne ne
+verrait le mélange ; avec lui, elle atterrit dans « Hors exercice 2027 » et saute
+aux yeux. Un exercice décalé (01/07 → 30/06) porte le millésime de sa clôture,
+comme le fait l'administration.
+
+Le mois, ensuite, est celui du **règlement** — donc celui de l'écriture. Une
+facture de décembre réglée en janvier est rangée en `2026-01`, exactement là où
+se trouve son écriture. À défaut de date de règlement connue, la date de facture
+sert de repli et le rangement est marqué comme estimé.
 
 ---
 
@@ -174,8 +190,8 @@ repli et le rangement est marqué comme estimé.
 
 | suite | ce qu'elle couvre |
 |---|---|
-| `tool/tests/selftest.py` | 206 contrôles sur le moteur — normalisation, FEC, codage, rapprochement, IA simulée, idempotence, classement, coût, trésorerie, rangement |
-| `tool/tests/ui/` | 124 contrôles d'interface pilotés dans un vrai navigateur, dont la vérification **du fichier ASCII réellement produit** et le fait que chacune des 8 règles pilote vraiment quelque chose (voir `tool/tests/ui/LISEZMOI.md`) |
+| `tool/tests/selftest.py` | 212 contrôles sur le moteur — normalisation, FEC, codage, rapprochement, IA simulée, idempotence, classement, coût, trésorerie, rangement |
+| `tool/tests/ui/` | 131 contrôles d'interface pilotés dans un vrai navigateur, dont la vérification **du fichier ASCII réellement produit** et le fait que chacune des 8 règles pilote vraiment quelque chose (voir `tool/tests/ui/LISEZMOI.md`) |
 
 ---
 
