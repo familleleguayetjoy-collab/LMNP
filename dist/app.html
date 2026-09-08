@@ -448,17 +448,23 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
 .icon-btn:hover{border-color:var(--muted);color:var(--ink-soft)}
 /* en-têtes de groupe dans « opérations complexes » */
 /* ===== POSTE DE TRAVAIL (étape 2) : liste | pièce | décision ===== */
-.lmnp h1.wsname{font-family:var(--wordmark);font-style:italic;font-weight:800;letter-spacing:-.01em;
-  color:#fff;background:linear-gradient(120deg,#0C355E 0%,#1B5FA8 62%,#2C79C9 100%);
-  border-radius:12px;padding:8px 18px;font-size:19px;box-shadow:var(--shadow-sm);
-  flex:0 0 auto;min-height:0;display:block}
-.step[data-s="2"] > .optabs{flex:0 0 auto;margin-top:9px}
-/* trois colonnes : la pièce prend exactement la hauteur disponible, en A4 */
-.wsplit{flex:1;min-height:0;display:grid;gap:12px;margin-top:10px;
-  grid-template-columns:minmax(400px,1fr) minmax(320px,calc((100vh - 202px) / 1.414 + 20px)) 258px}
-@media(max-width:1300px){.wsplit{grid-template-columns:minmax(300px,1fr) minmax(240px,calc((100vh - 202px) / 1.55)) 244px}}
+/* Trois colonnes, sur toute la hauteur : les onglets ne coiffent que la liste,
+   la pièce et la décision partent du haut de l'écran. */
+.wsplit{flex:1;min-height:0;display:grid;gap:10px 12px;
+  grid-template-columns:minmax(560px,1fr) minmax(320px,calc((100vh - 108px) / 1.414 + 20px)) 258px;
+  grid-template-rows:auto minmax(0,1fr) auto}
+@media(max-width:1400px){.wsplit{grid-template-columns:minmax(470px,1fr) minmax(260px,calc((100vh - 108px) / 1.6)) 244px}}
+@media(max-width:1150px){.wsplit{grid-template-columns:minmax(380px,1fr) minmax(220px,calc((100vh - 108px) / 1.9)) 232px}}
+.js-wstabs{grid-column:1;grid-row:1;flex-wrap:nowrap;overflow:hidden}
+.js-wstabs .optab{padding:8px 13px;font-size:13px;flex:0 1 auto;min-width:0}
+.js-wstabs .optab b{min-width:18px;height:18px;font-size:11.5px}
+.wleft{grid-column:1;grid-row:2 / span 2}
+.wpiece{grid-column:2;grid-row:1 / span 2}
+.wright{grid-column:3;grid-row:1 / span 2}
+.wbar{grid-column:2 / span 2;grid-row:3;display:flex;justify-content:flex-start}
 .wleft{min-height:0;overflow:hidden;display:flex;flex-direction:column}
 .wleft .tblwrap{flex:1;min-height:0;overflow-y:auto;padding:0}
+.step[data-s="2"]{padding-bottom:0}
 .wright{min-height:0;overflow:hidden;display:grid;grid-template-rows:1fr auto}
 
 /* --- la liste du relevé --- */
@@ -476,14 +482,14 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
 .tbl.ops .js-sort.tri.desc::after{content:"▼"}
 .tbl.ops th:nth-child(1),.tbl.ops td:nth-child(1){width:78px}
 .tbl.ops th:nth-child(3),.tbl.ops td:nth-child(3){width:104px;text-align:right}
-.tbl.ops th:nth-child(4),.tbl.ops td:nth-child(4){width:126px}
+.tbl.ops th:nth-child(4),.tbl.ops td:nth-child(4){width:136px}
 .oprow{cursor:pointer;transition:background .12s ease}
 .oprow:hover{background:var(--line-2)}
 .oprow.on{background:var(--green-soft);box-shadow:inset 3px 0 0 var(--green)}
-.oprow.fini .lib{color:var(--ink-soft);font-weight:500}
+.oprow.fini .lib{color:var(--ink-soft)}
 .tbl.ops .dt{color:var(--muted);font-size:12.5px}
-.tbl.ops .lib{font-family:var(--display);font-weight:600;font-size:14px}
-.tbl.ops .amt{font-weight:700;font-size:14px;color:var(--ink)}   /* jamais de couleur */
+.tbl.ops .lib{font-family:var(--display);font-weight:500;font-size:14px}
+.tbl.ops .amt{font-weight:500;font-size:14px;color:var(--ink)}   /* ni gras ni couleur */
 /* un seul statut par ligne : une pastille de couleur et deux mots */
 .chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--display);font-weight:600;
   font-size:11.5px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
@@ -507,6 +513,7 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
 .facwrap{height:100%;width:100%;display:flex;align-items:center;justify-content:center}
 .facsvg{aspect-ratio:300/400;height:auto;width:auto;max-height:100%;max-width:100%;
   border-radius:8px;box-shadow:0 2px 6px rgba(21,24,28,.12),0 14px 32px rgba(21,24,28,.16)}
+.facsvg.ticket{box-shadow:none;border-radius:0}   /* l'ombre est portée par le papier */
 .nopiece{text-align:center;color:var(--muted);padding:22px}
 .nopiece svg{width:34px;height:34px;stroke:var(--muted);fill:none;stroke-width:1.5}
 .nopiece p{margin:8px 0 12px;font-size:13.5px}
@@ -531,11 +538,17 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
   color:var(--todo-ink);font-size:11.5px;font-weight:600;line-height:1.45}
 .wcpt{margin-top:10px}
 .wcptact{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-.serie{display:inline-flex;align-items:center;gap:7px;font-family:var(--display);font-weight:700;
-  font-size:12px;color:#fff;background:var(--green);padding:8px 12px;border-radius:9px;
-  box-shadow:0 4px 12px rgba(27,95,168,.22);transition:background .15s ease;text-align:left}
-.serie:hover{background:var(--green-2)}
-.serie::before{content:"⇊";font-size:14px;line-height:1}
+/* les trois sorties : la couleur dit ce que fait le bouton */
+.wb{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+  font-family:var(--display);font-weight:700;font-size:13px;padding:11px 12px;
+  border-radius:10px;border:1px solid transparent;white-space:nowrap;
+  transition:filter .15s ease,background .15s ease}
+.wb:hover{filter:brightness(.96)}
+.wb.ok{background:#1B7F4B;color:#fff;box-shadow:0 4px 12px rgba(27,127,75,.24)}
+.wb.att{background:#FCF1E3;color:#8A5A12;border-color:#E9CFA4}
+.wb.ser{background:#EDEFF2;color:#3F454E;border-color:#DDE1E5;font-size:12px;
+  white-space:normal;line-height:1.25;text-align:center}
+.wb.ser::before{content:"⇊";font-size:14px;line-height:1;flex:0 0 auto}
 .wcpt .ventil{margin-top:10px}
 .wpied{display:flex;flex-direction:column;gap:7px;
   padding:10px 12px;border-top:1px solid var(--line);background:var(--surface)}
@@ -543,7 +556,6 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
 .wpied .mbtn{font-size:12px;padding:9px 12px;justify-content:center;white-space:nowrap}
 .vide{color:var(--muted);font-size:13.5px;text-align:center;padding:30px}
 .actionbar .left .check{width:22px;height:22px}
-.step[data-s="2"] > .actionbar{margin-top:12px}
 @media(max-width:1040px){.wsplit{grid-template-columns:1fr;grid-template-rows:1fr 1fr auto}}
 
 /* onglets des catégories d'opérations complexes */
@@ -767,10 +779,8 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
 
     <!-- ÉTAPE 2 — POSTE DE TRAVAIL : liste | pièce | décision -->
     <section class="step hidden" data-s="2">
-      <h1 class="js-dossier wsname">LMNP_DUPONT_2026</h1>
-      <div class="optabs js-wstabs"></div>
-
       <div class="wsplit">
+        <div class="optabs js-wstabs"></div>
         <!-- le relevé, en-tête figée au défilement -->
         <div class="card wleft">
           <div class="tblwrap">
@@ -794,11 +804,8 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
           <div class="wform js-wform"></div>
           <div class="wpied js-wpied"></div>
         </div>
-      </div>
 
-      <div class="actionbar" style="justify-content:space-between">
-        <div class="left js-wcount"></div>
-        <div class="right">
+        <div class="wbar">
           <button class="cta js-valider">Justificatifs à demander <span class="arw">→</span></button>
         </div>
       </div>
@@ -973,6 +980,22 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
     O("10/07/2026","PEINTURE AZUR RAVALEMENT",640.00,"D","615",
       P("06/07/2026",640.00,106.67,"#7a5c9c","P"),opts("615","2135"),
       {multi:true}),                  // réglée en deux fois
+    O("03/08/2026","LA POSTE NICE GRIMALDI",2.02,"D","626",
+      {type:"ticket", dtf:"31/07/2026", ttc:2.02, tva:0, lignes:[
+        ["TICKET DE CAISSE","","c"],["-"],
+        ["LA POSTE",""],["BUREAU DE NICE GRIMALDI BP",""],["-"],
+        ["Edite le","31/07/2026 14:22:23"],
+        ["Automate NABANCO","069310NBC2I4968"],
+        ["Numero de vente","5615"],["-"],
+        ["DETAIL DE LA COMMANDE","","c"],
+        ["1 LETTRE VERTE SUIVIE","2,02 EUR"],["-"],
+        ["TYPE PAIEMENT","CARTE SANS CONTACT"],
+        ["TOTAL COMMANDE TTC","2,02 EUR","b"],
+        ["TOTAL DISTRIBUE TTC","2,02 EUR"],
+        ["TOTAL DISTRIBUE HT","2,02 EUR"],["-"],
+        ["MERCI ET A BIENTOT","","c"]
+      ]},
+      opts("626","606"),{neuf:true}),   // premier passage : absent du FEC N-1
     O("04/08/2026","PRESSING DU PORT",96.00,"D","606",
       P("02/08/2026",96.00,16.00,"#2f7f7a","P"),opts("606","615"),
       {neuf:true}),                   // fournisseur absent du FEC N-1
@@ -1038,7 +1061,7 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
   // Le détail complet reste visible dans le volet de droite.
   var STATUTS=[
     ["qualifier","À qualifier"],
-    ["immo",     "Immobilisation"],
+    ["immo",     "Immobilisé"],
     ["acompte",  "Acompte"],
     ["multipaie","Multi-règl."],
     ["montant",  "Montant élevé"],
@@ -1046,7 +1069,7 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
     ["sanshisto","Nouveau"]
   ];
   var WTABS=[["tout","Tout"],["todo","À traiter"],["fait","Traité"],
-             ["hors","Réglées hors relevé"]];
+             ["hors","Hors relevé"]];
   var WTAB=0, WSEL=null, WTRI={k:"dt",asc:true};
 
   function libStatut(k){var s=STATUTS.filter(function(x){return x[0]===k;})[0];return s?s[1]:k;}
@@ -1144,10 +1167,10 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
       // UN seul statut : le plus grave. Les autres motifs restent lisibles dans
       // le volet de droite, ils n'ont pas à encombrer la liste.
       var chip = o.attente ? ['att','En attente 471']
-        : o.ok            ? ['ok','Validée']
+        : o.ok            ? ['ok','Traité']
         : o.hors          ? (o.paye ? ['pret','Prête'] : ['justif','Sans date'])
         : st.length       ? [st[0],libStatut(st[0])]
-                          : ['auto','Automatique'];
+                          : ['ok','Traité'];   // aucune règle ne la retient : décidée seule
       var mt = (o.sens==="C"?'+':'−')+o.m.toLocaleString('fr-FR',
         {minimumFractionDigits:2,maximumFractionDigits:2});
       tr.innerHTML='<td class="dt num">'+o.dt.replace(/\/20/,'/')+'</td>'
@@ -1157,19 +1180,37 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
       tr.addEventListener('click',function(){WSEL=o;renderWs();});
       tb.appendChild(tr);
     });
-    var c=$('.js-wcount');
-    if(c){
-      var reste=OPS.filter(aTraiter).length;
-      c.innerHTML = reste
-        ? '<b>'+reste+'</b> opération'+(reste>1?'s':'')+' à traiter'
-        : '<span class="check"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span> Tout est traité';
-    }
     renderDetail();
   }
 
   /* --- le volet de droite : la pièce, puis la décision ------------------ */
+  // Un ticket de caisse ne ressemble pas à une facture : papier étroit, chasse
+  // fixe, pas d'en-tête coloré. On le rend tel qu'il est pour que le
+  // collaborateur reconnaisse la pièce d'un coup d'œil.
+  function ticketSVG(o){
+    var p=o.piece||{}, L=p.lignes||[], y=52;
+    var out='<svg viewBox="0 0 300 400" class="facsvg ticket" xmlns="http://www.w3.org/2000/svg">'
+      +'<defs><filter id="ombreTicket" x="-25%" y="-8%" width="150%" height="120%">'
+      +'<feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#15181C" flood-opacity=".22"/>'
+      +'</filter></defs>'
+      +'<rect x="62" y="16" width="176" height="368" fill="#fff" filter="url(#ombreTicket)"/>';
+    L.forEach(function(l){
+      var t=l[0]||'', a=l[1]||'', gras=l[2]==='b', cen=l[2]==='c';
+      if(t==='-'){ out+='<line x1="72" y1="'+(y-4)+'" x2="228" y2="'+(y-4)+'" stroke="#C9CDD2" stroke-dasharray="2 2"/>'; y+=6; return; }
+      var f='font-family="ui-monospace,Menlo,monospace" font-size="6.4"'
+            +(gras?' font-weight="700"':'')+' fill="#22262B"';
+      out += cen
+        ? '<text x="150" y="'+y+'" text-anchor="middle" '+f+'>'+t+'</text>'
+        : '<text x="72" y="'+y+'" '+f+'>'+t+'</text>'
+          +(a?'<text x="228" y="'+y+'" text-anchor="end" '+f+'>'+a+'</text>':'');
+      y+=11;
+    });
+    return out+'</svg>';
+  }
   function pieceSVG(o){
-    var p=o.piece||{}, col=p.col||'#5b6b7a', ini=p.ini||(o.lib||'?').charAt(0);
+    var p=o.piece||{};
+    if(p.type==='ticket') return ticketSVG(o);
+    var col=p.col||'#5b6b7a', ini=p.ini||(o.lib||'?').charAt(0);
     var lig=[[24,150],[32,190],[40,120]];
     return '<svg viewBox="0 0 300 400" class="facsvg" xmlns="http://www.w3.org/2000/svg">'
       +'<rect width="300" height="400" fill="#fff"/>'
@@ -1217,8 +1258,7 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
       ? '<label>Date de règlement <small>portée par la pièce</small>'
         +'<input type="text" class="js-paie num" inputmode="numeric" maxlength="10"'
         +' placeholder="JJ/MM/AAAA" value="'+(o.paye||'')+'"/></label>'
-      : '<label>Date de règlement <small>le relevé fait foi</small>'
-        +'<input value="'+o.dt+'" readonly/></label>';
+      : '<label>Date de règlement<input value="'+o.dt+'" readonly/></label>';
     var sel='<select class="js-imput">'
       +o.opts.map(function(x){return '<option value="'+x[0]+'"'+(x[0]===o.cpt?' selected':'')+'>'+x[1]+'</option>';}).join('')
       +'<option value="__autre__">+ Autre compte…</option></select>';
@@ -1248,11 +1288,16 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
       +'<button class="lienregles js-split">'
       +'<svg viewBox="0 0 24 24"><path d="M6 3v6a3 3 0 0 0 3 3h9"/><path d="M15 9l3 3-3 3"/><path d="M6 21v-6"/></svg>'
       +((o.split&&o.split.length)?'Modifier la répartition':'Décomposer')+'</button>'
-      +(freres.length?'<button class="serie js-serie">Appliquer aux '+freres.length
-        +' autre'+(freres.length>1?'s':'')+' ligne'+(freres.length>1?'s':'')+' « '+cleLib(o.lib)+' »</button>':'')
       +'</div>'+vent+'</div>';
-    zb.innerHTML='<button class="cta js-okimput">Valider et suivant <span class="arw">→</span></button>'
-      +'<button class="mbtn js-attente">Laisser en attente (471)</button>';
+    // Les trois sorties d'une ligne, dans un seul bloc et codées par la couleur :
+    // vert on valide, ambre on repousse, gris on propage à tout le fournisseur.
+    zb.innerHTML='<button class="wb ok js-okimput">Valider et suivant <span class="arw">→</span></button>'
+      +'<button class="wb att js-attente">Laisser en attente (471)</button>'
+      +(freres.length
+        ? '<button class="wb ser js-serie">Appliquer aux '+freres.length
+          +' autre'+(freres.length>1?'s':'')+' ligne'+(freres.length>1?'s':'')
+          +' « '+cleLib(o.lib)+' »</button>'
+        : '');
 
     // --- crochets --------------------------------------------------------
     var s=zf.querySelector('.js-imput');
@@ -1262,7 +1307,7 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
     });
     zf.querySelector('.js-split').addEventListener('click',function(){
       rouvrirSplit(o,o.split&&o.split.length?o.split:null);});
-    var se=zf.querySelector('.js-serie');
+    var se=zb.querySelector('.js-serie');
     if(se)se.addEventListener('click',function(){
       // La ligne courante compte dans le lot : cliquer « appliquer aux autres »,
       // c'est dire que cette imputation-là est la bonne.
@@ -1653,6 +1698,10 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
     box.classList.toggle('xl',taille==='xl');
     // bouton d'action optionnel : {libelle, onclick} — remplacé à chaque ouverture
     var ok=$('.js-modal-ok'), neuf=ok.cloneNode(false);
+    // cloneNode COPIE les attributs : sans ce nettoyage, un bouton désactivé par
+    // la fenêtre précédente (répartition incomplète) reste désactivé dans la
+    // suivante — « Ajouter ce compte » devenait impossible à cliquer.
+    neuf.disabled=false; neuf.removeAttribute('title');
     ok.parentNode.replaceChild(neuf,ok);
     if(action){
       neuf.textContent=action.libelle;

@@ -55,26 +55,28 @@ Le parcours d'un dossier tient en cinq écrans, un par décision :
    sans règlement retrouvé en banque). Chacune est activable, deux sont
    paramétrables par un seuil, et **chacune pilote réellement l'écran suivant** :
    la décocher fait disparaître ce qu'elle produit.
-2. **Traitement** — l'écran de travail, en trois colonnes sur toute la largeur :
+2. **Traitement** — l'écran de travail, en trois colonnes sur toute la hauteur :
    **le relevé**, **la pièce**, **la décision**. Rien en haut de l'écran : la
    navigation est un rail vertical d'icônes, tout le reste va au travail.
+   Les quatre onglets — **Tout**, **À traiter**, **Traité**, **Hors relevé** —
+   ne coiffent que la liste, à laquelle ils appartiennent.
    Le relevé est triable par date, libellé, montant ou statut, en-tête figée au
    défilement, montants en noir (le signe suffit), libellés tronqués sans jamais
    passer à la ligne. **Un seul statut par ligne** — le plus grave — avec une
-   pastille de couleur : *À qualifier*, *Immobilisation*, *Acompte*,
-   *Multi-règl.*, *Montant élevé*, *Sans pièce*, *Nouveau*, ou *Automatique*
-   quand aucune règle ne retient la ligne. Quatre onglets : **Tout**,
-   **À traiter**, **Traité**, **Réglées hors relevé**.
-   La pièce occupe toute la hauteur au centre. À droite la décision, dans
+   pastille de couleur : *À qualifier*, *Immobilisé*, *Acompte*, *Multi-règl.*,
+   *Montant élevé*, *Sans pièce*, *Nouveau*. Une ligne qu'aucune règle ne
+   retient est **Traité** : la décision a été prise seule, il n'y a rien à
+   regarder.
+   La pièce occupe toute la hauteur au centre — facture ou ticket de caisse,
+   rendus différemment. À droite la décision, dans
    l'ordre où elle se prend : ce que dit la banque (en lecture seule — le relevé fait foi), ce
    que dit la pièce, puis le compte, décomposable sur plusieurs comptes ou
-   complétable par un compte saisi à la main. Deux sorties : **Valider et
-   suivant** ou **Laisser en attente (471)**, qui trace au lieu d'oublier.
-   Trois choses font la vitesse : le clavier (↑ ↓ pour parcourir, Entrée pour
-   valider), l'**imputation en série** — « appliquer aux 11 autres lignes EDF »,
-   qui traite d'un coup toutes les lignes du même fournisseur — et le fait que
-   les lignes sans statut soient déjà imputées et n'apparaissent que dans
-   « Traité ».
+   complétable par un compte saisi à la main. Puis **trois sorties**, dans un
+   seul bloc, codées par la couleur : **Valider et suivant** (vert),
+   **Laisser en attente (471)** (ambre — ça trace au lieu d'oublier), et
+   **Appliquer aux N autres lignes** du même fournisseur (gris).
+   Deux autres choses font la vitesse : le clavier (↑ ↓ pour parcourir, Entrée
+   pour valider) et le fait que les lignes sans statut soient déjà imputées.
    Le quatrième onglet est **l'exception de trésorerie** : les factures
    acquittées qu'on ne retrouve pas au relevé. On y saisit la date portée par
    la pièce, qui datera l'écriture d'OD ; sans date, un bouton l'ajoute à la
@@ -165,7 +167,7 @@ repli et le rangement est marqué comme estimé.
 | suite | ce qu'elle couvre |
 |---|---|
 | `tool/tests/selftest.py` | 206 contrôles sur le moteur — normalisation, FEC, codage, rapprochement, IA simulée, idempotence, classement, coût, trésorerie, rangement |
-| `tool/tests/ui/` | 112 contrôles d'interface pilotés dans un vrai navigateur, dont la vérification **du fichier ASCII réellement produit** et le fait que chacune des 8 règles pilote vraiment quelque chose (voir `tool/tests/ui/LISEZMOI.md`) |
+| `tool/tests/ui/` | 114 contrôles d'interface pilotés dans un vrai navigateur, dont la vérification **du fichier ASCII réellement produit** et le fait que chacune des 8 règles pilote vraiment quelque chose (voir `tool/tests/ui/LISEZMOI.md`) |
 
 ---
 

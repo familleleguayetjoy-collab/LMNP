@@ -57,6 +57,16 @@ await p.click('.js-attente'); await p.waitForTimeout(250);
 await p.locator('.js-wstabs .optab').nth(0).click(); await p.waitForTimeout(200);
 t('471 tracé, pas oublié', (await p.locator('.chip.att').count())>0);
 
+// ---- les trois sorties, dans un seul bloc ----
+await p.locator('.js-wstabs .optab').nth(0).click(); await p.waitForTimeout(200);
+await p.locator('.oprow', {hasText:'VIREMENT LOYER MARS'}).click(); await p.waitForTimeout(250);
+t('les trois sorties dans le même bloc', (await p.locator('.js-wpied .wb').count())===3,
+  (await p.locator('.js-wpied').innerText()).replace(/\n+/g,' | '));
+t('valider en vert, attente en ambre, série en gris', await p.evaluate(()=>{
+  const c=n=>getComputedStyle(document.querySelector('.js-wpied .wb.'+n)).backgroundColor;
+  return c('ok')==='rgb(27, 127, 75)' && c('att')==='rgb(252, 241, 227)'
+      && c('ser')==='rgb(237, 239, 242)';}));
+
 // ---- clavier ----
 const k0=await p.locator('.oprow.on .lib').innerText();
 await p.keyboard.press('ArrowDown'); await p.waitForTimeout(200);
@@ -68,7 +78,7 @@ await p.keyboard.press('Enter'); await p.waitForTimeout(250);
 t('Entrée valide', (await p.locator('.oprow.on .lib').innerText())!==k0);
 
 // ---- factures réglées hors relevé ----
-await p.locator('.js-wstabs .optab', {hasText:'hors relevé'}).click(); await p.waitForTimeout(250);
+await p.locator('.js-wstabs .optab', {hasText:'Hors relevé'}).click(); await p.waitForTimeout(250);
 t('deux factures hors relevé', (await p.locator('.oprow').count())===2);
 await p.locator('.oprow', {hasText:'SYNDIC AZUR APPEL T3'}).click(); await p.waitForTimeout(200);
 t('OD 108 annoncée avec sa date', (await p.locator('.odnote').innerText()).includes('12/07/2026'),

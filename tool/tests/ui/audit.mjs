@@ -107,8 +107,9 @@ while(parseInt((await p.locator('.js-wstabs .optab').nth(1).innerText()).replace
   await p.keyboard.press('Enter'); await p.waitForTimeout(120); tours++;
 }
 t('le dossier se traite entièrement', tours<25 && tours>0, tours+' validations');
-t('compteur à zéro', (await p.locator('.js-wcount').innerText()).includes('Tout est traité'),
-  (await p.locator('.js-wcount').innerText()).replace(/\n/g,' '));
+t('onglet « À traiter » vidé',
+  parseInt((await p.locator('.js-wstabs .optab').nth(1).innerText()).replace(/\D/g,''),10)===0,
+  (await p.locator('.js-wstabs .optab').allInnerTexts()).map(x=>x.replace(/\n/g,'')).join(' / '));
 await p.click('.js-valider'); await p.waitForTimeout(250);
 t('passage aux justificatifs', (await p.getAttribute('.lmnp','data-step'))==='3');
 

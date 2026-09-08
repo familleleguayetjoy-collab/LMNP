@@ -21,7 +21,7 @@ await p.click('.step[data-s="1"] .js-next'); await p.waitForTimeout(300);
 
 const base=await statuts();
 t('les sept statuts sont produits',
-  ['Sans pièce','Immobilisation','Acompte','Multi-règl.','Montant élevé',
+  ['Sans pièce','Immobilisé','Acompte','Multi-règl.','Montant élevé',
    'Nouveau','À qualifier'].every(s=>base.includes(s)),
   [...new Set(base)].join(' / '));
 
@@ -59,7 +59,7 @@ for(const [regle,statut] of [['Acompte ou situation de travaux','Acompte'],
                              ['plusieurs paiements','Multi-règl.'],
                              ['absent du FEC','Nouveau'],
                              ['Non comprise par l','À qualifier'],
-                             ['Immobilisation (comptes','Immobilisation'],
+                             ['Immobilisation (comptes','Immobilisé'],
                              ['sans justificatif','Sans pièce']]){
   await ouvrir(); await carte(regle).locator('.js-regle').uncheck();
   await p.waitForTimeout(150); await fermer();
@@ -72,11 +72,11 @@ for(const [regle,statut] of [['Acompte ou situation de travaux','Acompte'],
 // la règle « sans règlement en banque » gouverne l'onglet des factures hors relevé
 await ouvrir(); await carte('Sans règlement retrouvé').locator('.js-regle').uncheck();
 await p.waitForTimeout(150); await fermer();
-const sansOnglet=!(await p.locator('.js-wstabs .optab').allInnerTexts()).some(x=>/hors relev/.test(x));
+const sansOnglet=!(await p.locator('.js-wstabs .optab').allInnerTexts()).some(x=>/Hors relev/i.test(x));
 await ouvrir(); await carte('Sans règlement retrouvé').locator('.js-regle').check();
 await p.waitForTimeout(150); await fermer();
 t('la règle « sans règlement » gouverne l\'onglet hors relevé',
-  sansOnglet && (await p.locator('.js-wstabs .optab').allInnerTexts()).some(x=>/hors relev/.test(x)));
+  sansOnglet && (await p.locator('.js-wstabs .optab').allInnerTexts()).some(x=>/Hors relev/i.test(x)));
 
 // le compteur du pied de la fenêtre
 await p.locator('.stp[data-go="1"]').click(); await p.waitForTimeout(150);
