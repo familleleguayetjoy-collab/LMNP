@@ -6,7 +6,7 @@ jamais de l'IA. L'IA n'intervient que sur deux tâches, et seulement pour
 *proposer* (l'humain valide) : lire une facture, proposer un compte sur un
 fournisseur inconnu.
 
-## Ce qui marche déjà (testé, `python3 tool/tests/selftest.py` → 132 contrôles OK)
+## Ce qui marche déjà (testé, `python3 tool/tests/selftest.py` → 206 contrôles OK)
 
 | Module | Rôle | État |
 |---|---|---|
@@ -25,6 +25,11 @@ fournisseur inconnu.
 | `ocr.py` | Contrat vision (les 3 pièges des vraies factures) | ✅ contrat ; implémentation réelle dans `client_anthropic.py` |
 | `ia.py` | **Couche IA** : contrat JSON entrée/sortie, résidu ambigu envoyé **en lot**, garde-fous (montant jamais touché, rien validé auto) | ✅ **interface + plomberie testées** |
 | `client_anthropic.py` | **`ClientIA` réel sur l'API Claude** (Haiku 4.5 par défaut, escalade Sonnet 5). Clé lue dans `ANTHROPIC_API_KEY`. Import paresseux → le cœur reste stdlib | ✅ **câblé et testé en réel** (résolution d'ambiguïté + OCR) |
+| `classement.py` | **Classement d'entrée** : avant toute extraction, la pièce est rangée dans une des 9 catégories. Un devis, un bon de commande, un document illisible ou incohérent (HT + TVA ≠ TTC) **ne devient jamais une facture** ; il ressort en rejet motivé | ✅ |
+| `pretraitement.py` | Réduction des images avant envoi (côté max 1500 px, JPEG 80) : moins de jetons, même lisibilité. Pillow / pypdfium2 optionnels — leur absence est **signalée**, jamais silencieuse, et un taux de repli > 5 % déclenche une alerte | ✅ |
+| `cout.py` | **Coût réel mesuré** sur `response.usage` (et non estimé) : jetons entrée/sortie, écriture et lecture de cache, conversion en euros, alerte au-delà du plafond par dossier, taux de réutilisation du préfixe | ✅ |
+| `rangement.py` | **Plan de classement des pièces** dans « Documents générés par l'application » : un dossier par **mois de règlement**, scindé en `Traité` / `En attente de traitement`. Aucune pièce n'est perdue ; un mois déduit de la date de facture est marqué comme estimé | ✅ |
+| `excel.py` | Journal de banque en `.xlsx` (sans dépendance) : opérations triées par date, montants modifiables avant import, un journal par compte 512 du dossier | ✅ |
 
 ## Cas comptables traités (demandés par le cabinet)
 
@@ -113,6 +118,15 @@ rejette le fichier.
 
 ## Règles du cabinet intégrées
 
+- **Comptabilité de trésorerie — le relevé fait foi.** C'est le mouvement
+  bancaire qui définit ce qui est comptabilisé et à quelle date : une facture
+  retrouvée en banque prend la **date du mouvement**, même si la pièce en
+  annonçait une autre (et, réglée en plusieurs fois, la date du **dernier**
+  règlement). Seule exception : une facture portant la mention « payée » qu'on ne
+  retrouve pas en banque — écriture dans le **journal d'OD**, contrepartie
+  **108**, **datée du jour du règlement**. Sans date de règlement sur la pièce,
+  on retombe sur la date de facture **en le signalant** : jamais de date
+  inventée en silence.
 - **TVA (LMNP non assujetti, ≈90 % des cas)** : on comptabilise le **TTC en
   entier** en charge/immobilisation ; aucune écriture de TVA n'est jamais
   générée. La TVA d'une facture ne sert qu'à apprécier le seuil (en HT).
@@ -210,5 +224,14 @@ locale `fr_FR`.
 ## Lancer les tests
 
 ```bash
-python3 tool/tests/selftest.py
+python3 tool/tests/selftest.py          # 206 contrôles sur le moteur
 ```
+
+Et les tests d'interface de la maquette (vrai navigateur, 78 contrôles) :
+
+```bash
+cd tool/tests/ui && npm install playwright-core
+node audit.mjs && node audit2.mjs && node audit3.mjs && node verif.mjs && node export.mjs
+```
+
+Voir `tool/tests/ui/LISEZMOI.md`.

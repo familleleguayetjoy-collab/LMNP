@@ -69,6 +69,11 @@ def rapprocher(ops, factures, jours: int = 25, jours_cheque: int = 60):
             best.facture = fac
             best.ecart = not best_exact
             fac.op = best
+            # Le relevé fait foi : dès qu'une facture est retrouvée en banque,
+            # c'est la date du mouvement qui devient sa date de règlement, même
+            # si la pièce en annonçait une autre. C'est elle qui datera
+            # l'écriture et rangera la pièce dans le bon mois.
+            fac.date_reglement = best.date
     orphelines = [f for f in factures if f.op is None]
     return debits, orphelines
 
@@ -90,6 +95,7 @@ def associer_factures(op, factures, tol=0.02):
     op.facture = factures[0] if factures else None
     for f in factures:
         f.op = op
+        f.date_reglement = op.date      # le relevé fait foi (cf. rapprocher)
         if op not in f.ops:
             f.ops.append(op)
     op.ecart = _ecart(total, op.montant, tol)
@@ -113,6 +119,11 @@ def associer_reglements(facture, ops, tol=0.02):
             o.factures.append(facture)
     reste = round(facture.ttc - total, 2)
     facture.reste = max(0.0, reste)
+    # Plusieurs règlements pour une facture : la pièce est soldée — donc rangée
+    # et datée — au DERNIER mouvement, pas au premier.
+    dates = [o.date for o in libres if o.date]
+    if dates:
+        facture.date_reglement = max(dates)
     if not _ecart(total, facture.ttc, tol):
         statut = "solde"
     elif reste > 0:

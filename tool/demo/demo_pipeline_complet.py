@@ -16,7 +16,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from s2a_lmnp import (construire, parse_fec, Operation, coder, rapprocher,
                       manquants, to_quadratus, facture_depuis_ocr,
-                      residu, resoudre_residu)
+                      residu, resoudre_residu, ranger, resume_rangement, RACINE)
 
 D = datetime.date
 
@@ -156,4 +156,22 @@ for line in ascii_out.split("\r\n"):
               % (line[1:9], line[14:20], line[21:41], line[41], line[43:55], line[55:63]))
 print("\n  (%d octets, %d lignes M — prêt à importer dans Quadra)"
       % (len(ascii_out), ascii_out.count("\r\n")))
+
+# ---------------------------------------------------------------------------
+# 6) LE RANGEMENT — les pièces reclassées dans le Drive du client
+# ---------------------------------------------------------------------------
+print("\n" + "=" * 66)
+print("6) RANGEMENT  —  « %s » (mois de RÈGLEMENT) :" % RACINE)
+print("=" * 66)
+# une pièce arrivée mais non comptable : elle ne se perd pas pour autant
+rejets = [{"brut": {"date": "2026-01-22"}, "fichier": "devis_peinture.pdf",
+           "empreinte": "d3v15", "motif": "document « devis » : non comptable"}]
+plan = ranger(factures, rejets)
+for ligne in resume_rangement(plan):
+    print("  %-58s %d pièce(s)%s"
+          % (ligne["chemin"], ligne["pieces"],
+             "  [mois estimé]" if ligne["estimees"] else ""))
+    for e in plan[ligne["chemin"]]:
+        print("      - %-28s %s" % (e["fichier"], e["motif"]))
+
 print("\nDémo terminée. En prod : FauxIA -> ClientAnthropic, factures en dur -> OCR Drive.")

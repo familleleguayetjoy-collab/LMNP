@@ -1,171 +1,161 @@
-# Assistant de préparation LMNP — S2A · Sud Alpes Audit
+# Saisio — préparation comptable LMNP / LMP / SCI / BNC
 
-**Prototype interne · version bêta.** Maquette fonctionnelle de l'outil décrit dans
-la note *« Automatisation des dossiers LMNP / LMP »* (P. Leguay, 3 août 2026),
-destinée à être montrée à Thierry Bozzola et Julien Lesnes avant le pilote de
-septembre.
+**Cabinet S2A · Sud Alpes Audit.** Outil interne qui prépare les dossiers de
+location meublée : il lit les pièces déposées par le client, code le relevé
+bancaire, ne remonte au collaborateur que ce qui demande un jugement, rédige la
+relance des justificatifs manquants et produit le fichier d'import Quadratus.
 
-Un seul fichier HTML autonome : ouvrir `index.html` dans un navigateur, cliquer
-**« Lancer la préparation »**. Aucune installation, aucun serveur, aucun appel
-externe.
+Le dépôt contient **deux choses distinctes** :
 
----
+| | quoi | où |
+|---|---|---|
+| **La maquette** | l'interface, complète et cliquable, sur un jeu de données fictif | `index.html` (généré depuis `build/template.html`) |
+| **Le moteur** | le code réel qui calcule les écritures, testé, sans dépendance | `tool/s2a_lmnp/` |
 
-## Ce que montre la maquette
-
-### Étape 0 — dossier & tenue de banque
-
-Avant tout : on **crée ou sélectionne un dossier**, puis on indique s'il tient une
-banque en comptabilité. Ce choix fixe le **compte de contrepartie** des écritures :
-
-- **Oui, banque tenue** → contrepartie **512 (banque)**. On se contente d'affecter
-  chaque opération du relevé à son compte de charge / produit.
-- **Non, pas de banque** (petit dossier financé par l'exploitant) → on apporte le
-  relevé Excel et les écritures sont passées avec le **compte de l'exploitant
-  (108)** en contrepartie : **débit charge / crédit 108**, et **débit 108 / crédit
-  706** pour les loyers.
-
-Le sélecteur en tête du poste de travail bascule le journal entre les deux (colonne
-**Contrepartie**). État exposé par la variable `HAS_BANK`.
-
-### Export Quadratus (ASCII)
-
-Le bouton **Export Quadra (ASCII)** génère un fichier texte à largeur fixe
-(256 car., enregistrements « M »), en **écritures de partie double équilibrées**,
-dans le journal **BQ** (si banque tenue) ou **OD** (contrepartie 108). Les
-échéances de prêt sont ventilées 661 / 164. Positions des champs documentées en
-tête de la fonction `quadraAscii()` dans `build/template.html`.
-
-> ⚠️ Le format a été implémenté d'après le **standard Quadratus ASCII** ; les
-> positions exactes des champs et les **codes journaux** (BQ, OD) doivent être
-> **validés dans le paramétrage d'import de votre Quadra** avant un usage réel.
-> Les libellés de compte proviennent du plan comptable LMNP (les comptes doivent
-> exister dans le dossier, ou être créés par l'import).
-
-### Les deux sources
-
-- **Le client** partage son **Drive** et y scanne / photographie ses factures au
-  fil de l'eau (`01_Factures/`).
-- **Le cabinet** ajoute le **FEC N-1** et le **relevé bancaire annuel** (Excel) à
-  coder.
-
-### La chaîne, jouée sur un dossier fictif (`LMNP_DUPONT_2026`)
-
-1. **Temps 1 — apprentissage.** L'outil lit le FEC 2025 (N-1) et en tire le
-   dictionnaire comptable propre au client (« *SYNDIC AZUR* → 614 »).
-2. **Temps 2 — codage du relevé.** Chaque ligne reçoit un compte proposé et un
-   **niveau de confiance**. Les **fournisseurs inconnus** sont identifiés par
-   **recherche en ligne** puis affectés automatiquement (Orange → 626, Chubb → 616).
-3. **Temps 3 — lecture & rapprochement des factures.** Chaque pièce (date,
-   fournisseur, HT, TVA, TTC) est rapprochée de la ligne bancaire correspondante
-   (même montant, date proche). Les écarts sont signalés, pas corrigés en silence.
-4. **Temps 4 — les livrables :**
-   - le **journal de banque codé**, exportable en **écritures Quadratus (ASCII)**
-     ou en CSV ;
-   - l'**écran d'arbitrage** : uniquement les lignes qui demandent un jugement
-     humain (travaux, immobilisations, apports), triées par montant, avec la
-     **raison du doute** affichée ;
-   - la **liste des justificatifs manquants** et le **mail de relance** déjà rédigé
-     (copiable).
-
-### Les règles d'affectation & de relance
-
-| Cas | Action |
-|---|---|
-| Fournisseur **connu** (FEC N-1) | Affectation directe, même sans facture |
-| Fournisseur **inconnu** | Recherche en ligne (sur le seul nom) → affectation auto |
-| Dépense **> seuil** (150 €) sans justificatif | Relance client par mail |
-| Dépense **≤ seuil** sans justificatif | Affectée, **non** réclamée |
-| **Travaux / immobilisation** | **Toujours** remonté à l'humain, quel que soit le montant |
-
-### La cadence de relance (double passe)
-
-- **15 janvier** — 1er scan du Drive, email de relance dans la foulée.
-- **31 janvier** — 2ᵉ scan, uniquement les **nouveaux éléments** ; 2ᵉ email sur ce
-  qu'il reste (ton plus ferme). Démontré par le sélecteur *Passe 1 / Passe 2*.
-
-Une section **« Ce qu'il faut, et quand »** résume les quatre briques
-(Claude Code · Skill · Cowork · Drive), le calendrier de déploiement (août 2026 →
-avril 2027) et le périmètre (ce que l'outil fait / ne fera jamais).
+La règle qui gouverne les deux : **les montants sont du code, jamais de l'IA.**
+L'IA lit les pièces et propose ; elle ne décide d'aucun chiffre.
 
 ---
 
-## Réel vs simulé — à dire aux associés
+## La règle comptable de fond
 
-Pour ne pas survendre : cette page est une **démonstration**, pas encore l'outil.
+On tient ces dossiers en **comptabilité de trésorerie**. Deux conséquences, qui
+expliquent presque tout le comportement de l'outil :
 
-| Réel dans la maquette | Simulé / à construire |
-|---|---|
-| Le **moteur de codage** est du vrai code déterministe : dictionnaire tiré du FEC, application par recouvrement de libellés, niveaux de confiance, seuil de matérialité, rapprochement par montant + date, calcul des manquants, double passe et mail. | La **lecture des PDF/photos par IA** (OCR + extraction) est pré-remplie : les factures sont fournies déjà lues. Dans la version réelle, c'est l'API Claude qui lit les pièces. |
-| Les **montants et totaux** sont calculés, jamais « devinés ». | La **recherche en ligne** des fournisseurs inconnus est ici une table de correspondance figée. Dans la version réelle, c'est une vraie recherche web de Claude sur le seul nom du fournisseur. |
-| La logique **auto / arbitrage humain** avec raison du doute. | Le **connecteur Google Drive** et le **Skill** (mode d'emploi permanent) restent à câbler. Le FEC et le relevé sont un jeu de démonstration. |
+1. **Le relevé bancaire fait foi.** C'est lui qui définit ce qui est comptabilisé
+   et à quelle date. Une facture retrouvée en banque prend la date du mouvement,
+   même si la pièce en annonçait une autre.
+2. **Une seule exception** : une facture portant la mention « payée » qu'on ne
+   retrouve **pas** en banque (réglée par l'exploitant à titre personnel). On
+   passe alors une écriture dans le **journal d'OD**, contrepartie **108
+   (compte de l'exploitant)**, **datée du jour du règlement** — pas de la facture.
+   Quand la date de règlement est absente de la pièce, l'outil retombe sur la
+   date de facture **et le signale** ; il n'invente jamais une date en silence.
 
-Principe qui reste vrai dans la version réelle : l'IA n'intervient que là où
-l'erreur est visible et rattrapable — **lire une facture** et **identifier un
-fournisseur inconnu** (recherche en ligne, sur le seul nom, aucune donnée client
-transmise). Les vrais **arbitrages** — travaux entretien/amélioration,
-immobilisations — **restent remontés à l'humain**. Tout le reste est du code.
-L'outil prépare ; la revue du collaborateur reste l'acte professionnel qui engage
-le cabinet.
-
-Le jeu de démonstration est un **relevé d'année pleine** (57 lignes : loyers,
-échéances de prêt ventilées par le tableau d'amortissement, énergie avec bascule
-de fournisseur en cours d'année, eau, syndic trimestriel, assurances, taxe
-foncière, CFE, honoraires, mobilier, travaux, appel de fonds copropriété, apport
-en compte courant, indemnité de sinistre…). La maquette produit : **88 %** de
-lignes codées seules (dont l'identification en ligne des fournisseurs inconnus),
-**78 %** de dépenses déjà justifiées, **7** lignes à arbitrer et **4** relances à
-envoyer au-dessus du seuil de 150 € (deux pièces sous le seuil, affectées sans
-relancer). Ces taux sont illustratifs — ils devront être **confirmés par le pilote
-de septembre** (point d'arrêt : si < 60 %, on ajuste ou on arrête).
+C'est aussi cette date qui range la pièce dans le Drive (voir « Rangement »).
 
 ---
 
-## Le dossier de démonstration
+## La maquette
 
-Les données fictives sont regroupées, lisibles et modifiables en tête du bloc
-`<script>` de `build/template.html` :
+Ouvrir `index.html` dans un navigateur. Aucun serveur, aucune installation,
+aucun appel externe.
 
-- `FEC` — les libellés déjà codés en 2025 (source du dictionnaire) ;
-- `BANK` — les 57 lignes du relevé 2026 à coder (les échéances de prêt portent le
-  champ `amort:[intérêts, capital]`, ventilation issue du tableau d'amortissement) ;
-- `INVOICES` — les 21 factures déposées (volontairement incomplètes, pour faire
-  apparaître la liste de relance ; une facture Boulanger diverge du montant bancaire
-  pour illustrer la détection d'écart) ;
-- `COMPTES` — le plan comptable LMNP utilisé pour les intitulés ;
-- `SEUIL` — le seuil de matérialité (€) qui déclenche la relance ;
-- `RECU_P2` — les pièces réputées transmises par le client entre les deux passes ;
-- `webSearch()` — la table de correspondance « fournisseur inconnu → compte ».
+**Connexion** (email + mot de passe, session conservée localement), puis
+**Mes dossiers**, séparés en « Nouveaux éléments à traiter » (avec le nombre de
+pièces neuves déposées au Drive) et « Aucune nouvelle pièce disponible ».
 
-Pour tester un autre scénario devant les associés, il suffit de modifier ces
-tableaux et de reconstruire.
+Le parcours d'un dossier tient en cinq écrans, un par décision :
 
----
+1. **Importer** — période, type (LMNP / LMP / SCI / BNC), assujettissement à la
+   TVA, tenue de banque, FEC N‑1, relevé bancaire. Un bouton **Règles de
+   contrôle** ouvre la grille 3 × 3 des règles qui décident de ce qui remonte à
+   l'humain (immobilisations, montant élevé, acompte, paiements multiples,
+   opération non comprise, fournisseur sans historique, non rapprochée…), chacune
+   activable et, pour le montant, paramétrable.
+2. **Opérations complexes à affecter** — uniquement les lignes qu'une règle a
+   retenues, **découpées en onglets par motif** : on valide une catégorie pour
+   passer à la suivante, sans quitter l'écran. Chaque ligne affiche son
+   règlement (« Payé le … » ou « Paiement introuvable », avec saisie de la date),
+   son justificatif, et son compte — modifiable, complétable par un compte saisi
+   à la main, ou **décomposable sur plusieurs comptes**.
+3. **Justificatifs à demander** — deux onglets : *Pièce manquante* et
+   *Règlement à justifier* (facture réputée payée dont on n'a ni trace bancaire
+   ni date).
+4. **Le mail** — brouillon prêt, en deux sections correspondant aux deux onglets,
+   synchronisé avec les cases cochées.
+5. **Le fichier** — journal de banque Excel (si banque tenue) et écritures ASCII
+   Quadratus, horodatés, avec le nombre de lignes produites.
 
-## Identité de marque
+**Reprise et anti‑doublon.** Chaque import est enregistré (empreinte + date).
+À la réouverture d'un dossier déjà traité, l'outil affiche ce qui restait ouvert,
+confronté aux pièces déposées depuis, et laisse cocher « Régularisé hors Saisio ».
+Les imputations, ventilations, dates saisies et réglages de règles sont conservés
+d'une session à l'autre.
 
-Couleurs (navy / or), typographies (Poppins / Montserrat) et logo repris du
-simulateur LMNP du cabinet, pour une continuité visuelle. Thème clair/sombre et
-export **Imprimer / PDF** (mise en page adaptée pour un tirage de réunion).
+### Reconstruire la maquette
 
----
-
-## Reconstruire
-
-`index.html` est **généré** : polices et logos y sont intégrés en base64 pour un
-fichier 100 % autonome.
+`index.html` est **généré** (polices et logos intégrés en base64, fichier
+autonome) :
 
 ```bash
-python3 build/build.py
+python3 build/build.py     # -> index.html + dist/app.html
 ```
 
-- `build/template.html` — code source (HTML / CSS / JS) avec jetons `__…__` et le
-  jeu de données de démonstration ;
-- `build/assets/` — polices `.woff2`, logos `.webp`, favicon `.svg` ;
-- `build/build.py` — injecte les assets et produit `index.html` + `dist/app.html`.
+- `build/template.html` — la source (HTML / CSS / JS) et le jeu de démonstration ;
+- `build/assets/` — polices `.woff2`, logos, favicon ;
+- `build/build.py` — injecte les assets.
+
+Les données fictives (`DOSSIERS`, `DEFAULT_TRANCHER`, `DEFAULT_RECLAM`,
+`REGLES`, `NB_PIECES`) sont regroupées en tête du bloc `<script>` : pour jouer un
+autre scénario, il suffit de les modifier et de reconstruire.
 
 ---
 
-*Le déploiement réel est subordonné à la signature du DPA Anthropic et à la mise à
-jour des lettres de mission (dépôt des pièces + recours à un sous-traitant
-technique). Taux et gains de temps à confirmer par le pilote avant tout engagement.*
+## Le moteur
+
+Python 3, **bibliothèque standard uniquement** pour le cœur. Deux dépendances
+optionnelles (Pillow, pypdfium2) servent au seul prétraitement des images et leur
+absence est **signalée**, jamais silencieuse.
+
+```bash
+python3 tool/tests/selftest.py        # 206 contrôles
+python3 tool/demo/demo_pipeline_complet.py
+```
+
+Voir `tool/README.md` pour le détail des modules. En résumé :
+
+- `fec.py` / `dico.py` — le FEC N‑1 fait le dictionnaire comptable du client ;
+- `classement.py` — **avant** toute extraction, la pièce est classée : un devis,
+  un bon de commande ou un document illisible ne devient jamais une facture ;
+- `codage.py` — affectation déterministe, seuil d'immobilisation **500 € HT** ;
+- `rapprochement.py` — facture ↔ relevé, écarts signalés, OD 108 pour le payé
+  perso, virements internes, doublons ;
+- `quadra.py` — export ASCII 251 caractères, contrepartie en ligne ;
+- `rangement.py` — le plan de classement des pièces dans le Drive ;
+- `cout.py` — coût réel mesuré sur `response.usage`, avec alerte par dossier ;
+- `manifeste.py` / `sources.py` — empreintes sha256 : une pièce n'est jamais
+  relue ni recomptabilisée deux fois.
+
+### Rangement des sorties
+
+Dans le dossier du client, l'outil écrit sous
+`Documents générés par l'application/` :
+
+```
+Documents générés par l'application/
+    2026-01/
+        Traité/                        (une écriture a été produite)
+        En attente de traitement/      (non comptable, incomplet, en attente client)
+    2026-03/
+        ...
+```
+
+Le mois est celui du **règlement** — donc celui de l'écriture. Une facture de
+décembre réglée en janvier est rangée en `2026-01`, exactement là où se trouve
+son écriture. À défaut de date de règlement connue, la date de facture sert de
+repli et le rangement est marqué comme estimé.
+
+---
+
+## Tests
+
+| suite | ce qu'elle couvre |
+|---|---|
+| `tool/tests/selftest.py` | 206 contrôles sur le moteur — normalisation, FEC, codage, rapprochement, IA simulée, idempotence, classement, coût, trésorerie, rangement |
+| `tool/tests/ui/` | 78 contrôles d'interface pilotés dans un vrai navigateur, dont la vérification **du fichier ASCII réellement produit** (voir `tool/tests/ui/LISEZMOI.md`) |
+
+---
+
+## Ce qui reste à câbler avant la mise en service
+
+- le **connecteur Google Drive** (Picker + `drive.file` en première intention) ;
+- le **connecteur Gmail** pour déposer les brouillons de relance ;
+- la **clé API** dans l'environnement de déploiement ;
+- la **campagne de calibrage** du classement sur 50 pièces réelles (objectif :
+  ≥ 95 % sur les devis).
+
+---
+
+*Déploiement subordonné à la signature du DPA Anthropic et à la mise à jour des
+lettres de mission (dépôt des pièces + recours à un sous-traitant technique).*

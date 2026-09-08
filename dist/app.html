@@ -125,13 +125,6 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
 .statspanel .pct span{font-family:var(--sans);font-style:normal;font-weight:600;font-size:15px;color:var(--muted);margin-left:8px}
 .statspanel .found{display:flex;align-items:center;gap:9px;font-weight:600;color:var(--ink-soft);font-size:15px}
 .pagehead .meta{color:var(--muted);font-size:15px;padding-top:12px;white-space:nowrap}
-.ready{display:flex;align-items:center;gap:16px;margin-top:14px;flex-wrap:wrap}
-.ready .pct{font-family:var(--display);color:var(--green);font-size:26px;font-weight:700}
-.ready .pct span{font-weight:500}
-.ready .divider{width:1px;height:24px;background:var(--line)}
-.ready .found{display:flex;align-items:center;gap:9px;font-family:var(--display);font-weight:600;font-size:18px;color:var(--ink)}
-.bar{height:12px;border-radius:99px;background:var(--line);margin-top:14px;overflow:hidden}
-.bar>i{display:block;height:100%;width:88%;background:var(--green);border-radius:99px}
 .check{width:26px;height:26px;border-radius:50%;background:var(--green);display:inline-grid;place-items:center;flex:0 0 auto}
 .check svg{width:14px;height:14px;stroke:#fff;stroke-width:3;fill:none}
 
@@ -247,7 +240,6 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
   border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:translateY(-70%) rotate(45deg);pointer-events:none}
 .dcard .tags{display:flex;align-items:center;gap:10px;margin-top:16px;flex-wrap:wrap}
 .dcard .st{margin-top:0}
-.dtype{font-family:var(--display);font-weight:600;font-size:12.5px;padding:6px 12px;border-radius:99px;border:1px solid var(--line);color:var(--muted)}
 
 /* Footer action bar */
 .actionbar{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:30px;flex-wrap:wrap}
@@ -307,6 +299,10 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
 .mail .v{font-weight:600}
 .mail .body{padding:22px 26px}
 .mail .body p{margin:10px 0}
+.mailsec{margin:16px 0 4px;padding:14px 16px;background:var(--green-soft);
+  border:1px solid var(--green-line);border-radius:12px}
+.mailsec>p:first-child{margin-top:0;color:var(--green-2)}
+.mailsec ul{margin:8px 0 0;padding-left:2px;list-style:none}
 .mail .body ul{margin:10px 0;padding-left:2px;list-style:none}
 .mail .body li{display:flex;justify-content:space-between;gap:18px;padding:5px 0;max-width:520px}
 .mail .body li b{font-weight:600}
@@ -444,14 +440,13 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
 .rulepied{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
   margin-top:18px;padding-top:14px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-soft)}
 .rulehint{color:var(--muted);font-size:12.5px}
+.regul{display:flex;align-items:center;gap:8px;margin-left:auto;font-size:12px;font-weight:600;
+  color:var(--todo-ink);white-space:nowrap;cursor:pointer}
+.regul input{width:16px;height:16px;accent-color:var(--green)}
+.icon-btn{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;
+  color:var(--muted);border:1px solid var(--line);background:var(--surface)}
+.icon-btn:hover{border-color:var(--muted);color:var(--ink-soft)}
 /* en-têtes de groupe dans « opérations complexes » */
-.grouprow td{background:var(--green-soft);border-top:1px solid var(--green-line);
-  border-bottom:1px solid var(--green-line);padding:11px 18px!important}
-.gtag{display:inline-flex;align-items:center;gap:8px;font-family:var(--display);font-weight:700;
-  font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--green-2)}
-.gtag b{display:inline-grid;place-items:center;min-width:19px;height:19px;padding:0 6px;border-radius:99px;
-  background:var(--green);color:#fff;font-size:11px;letter-spacing:0}
-.gwhy{margin-left:14px;color:var(--muted);font-size:12px;font-weight:500;text-transform:none;letter-spacing:0}
 /* onglets des catégories d'opérations complexes */
 .optabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
 .optab{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:99px;
@@ -466,7 +461,14 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
 .optab.fait{border-color:var(--green-line);background:var(--green-soft);color:var(--green-2)}
 .optab.fait b{background:var(--green-line);color:var(--green-2)}
 .optab svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.6}
-.opwhy{margin:12px 0 0;color:var(--muted);font-size:13px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px}
+.chips i{font-style:normal;font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:99px;
+  background:var(--todo-bg);color:var(--todo-ink);white-space:nowrap}
+.regl-saisie{display:flex;flex-direction:column;gap:7px}
+.regl-saisie label{display:flex;flex-direction:column;gap:4px;font-size:11px;font-weight:600;color:var(--muted)}
+.regl-saisie input{background:var(--field);border:1px solid var(--field-line);border-radius:9px;
+  padding:7px 9px;font-weight:600;font-size:12.5px;color:var(--ink)}
+.regl-saisie input:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px var(--green-soft)}
 /* ventilation enregistrée d'une facture sur plusieurs comptes */
 .ventil{display:flex;flex-direction:column;gap:6px}
 .ventil span{display:flex;align-items:center;justify-content:space-between;gap:14px;
@@ -512,6 +514,9 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
       <button class="stp" data-go="4"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M4 7l8 6 8-6"/></svg><span>Mail</span></button>
       <button class="stp" data-go="5"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg><span>Fichier</span></button>
     </nav>
+    <button class="icon-btn js-logout" aria-label="Se déconnecter" title="Se déconnecter">
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg>
+    </button>
   </header>
 
   <main class="wrap">
@@ -689,12 +694,14 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
       <div class="pagehead"><h1 class="js-dossier">LMNP_DUPONT_2026</h1></div>
 
       <div class="badge-h"><span class="n">2</span><h2>Justificatifs à demander</h2></div>
+
+      <div class="optabs js-rectabs"></div>
       <div class="rlist js-reclam"></div>
 
       <div class="actionbar" style="justify-content:flex-end">
         <div class="right">
           <button class="btn-secondary js-back"><span class="cv">‹</span> Retour</button>
-          <button class="cta js-next">Préparer le mail <span class="arw">→</span></button>
+          <button class="cta js-recvalider">Valider <span class="arw">→</span></button>
         </div>
       </div>
     </section>
@@ -706,12 +713,12 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
       <div class="card mail" style="margin-top:24px">
         <div class="mail-head">
           <div class="row"><span class="k">À :</span><span class="v js-client-mail">client.dupont@email.fr</span></div>
-          <div class="row"><span class="k">Objet :</span><span class="v">Dossier LMNP 2026 — <span class="js-mail-n">4</span> justificatifs</span></div>
+          <div class="row"><span class="k">Objet :</span><span class="v">Dossier LMNP 2026 — <span class="js-mail-n">4</span> point(s) à compléter</span></div>
         </div>
         <div class="body">
           <p>Bonjour <span class="js-client-name">M. Dupont</span>,</p>
-          <p>Vous trouverez ci-joint les <span class="js-mail-n">4</span> justificatifs manquants :</p>
-          <ul class="js-mail-list"></ul>
+          <p>Pour finaliser votre dossier, <span class="js-mail-n">4</span> point(s) restent à compléter :</p>
+          <div class="js-mail-blocs"></div>
           <p>Cordialement,<br/>Cabinet S2A — Sud Alpes Audit</p>
         </div>
       </div>
@@ -797,20 +804,20 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
   var DEFAULT_TRANCHER=[
     {dt:"18/03/2026",lib:"Menuiserie Des Cimes",m:3480.00,paye:"20/03/2026",cpt:"2135",col:"#8a7355",ini:"M",
       opts:[["2135","2135 — Agencements, installations"],["615","615 — Entretien et réparations"],["2313","2313 — Constructions"]]},
-    {dt:"20/04/2026",lib:"M Dupont Apport Cc",m:2500.00,paye:"20/04/2026",cpt:"108",col:"#3f7d9c",ini:"V",
+    {dt:"20/04/2026",lib:"M Dupont Apport Cc",inconnu:true,m:2500.00,paye:"20/04/2026",cpt:"108",col:"#3f7d9c",ini:"V",
       opts:[["108","108 — Compte de l'exploitant"],["455","455 — Associé - compte courant"]]},
     {dt:"22/02/2026",lib:"Boulanger Electromenager",m:890.00,paye:"",cpt:"2184",col:"#c0392b",ini:"B",
       opts:[["2184","2184 — Mobilier (immobilisations)"],["606","606 — Petit équipement"],["615","615 — Entretien"]]},
     {dt:"12/09/2026",lib:"Copro Azur Appel Fonds Travaux",m:720.00,paye:"15/09/2026",cpt:"614",col:"#5b6b7a",ini:"C",
       opts:[["614","614 — Charges de copropriété"],["615","615 — Entretien"],["2135","2135 — Agencements"]]},
-    {dt:"08/11/2026",lib:"Axa Indemnisation Sinistre",m:640.00,paye:"12/11/2026",cpt:"758",col:"#1f4fa3",ini:"A",
+    {dt:"08/11/2026",lib:"Axa Indemnisation Sinistre",inconnu:true,m:640.00,paye:"12/11/2026",cpt:"758",col:"#1f4fa3",ini:"A",
       opts:[["758","758 — Produits divers (indemnités)"],["791","791 — Transfert de charges"]]}
   ];
   var DEFAULT_RECLAM=[
-    {lib:"Menuiserie Des Cimes",dt:"18/03/2026",m:3480.00,on:true},
-    {lib:"Copro Azur Appel Fonds Travaux",dt:"12/09/2026",m:720.00,on:true},
-    {lib:"Syndic Azur Appel T3",dt:"09/07/2026",m:438.00,on:true},
-    {lib:"Chubb GLI",dt:"16/05/2026",m:168.00,on:true}
+    {lib:"Menuiserie Des Cimes",dt:"18/03/2026",m:3480.00,on:true,nature:"piece"},
+    {lib:"Copro Azur Appel Fonds Travaux",dt:"12/09/2026",m:720.00,on:true,nature:"piece"},
+    {lib:"Syndic Azur Appel T3",dt:"09/07/2026",m:438.00,on:true,nature:"reglement"},
+    {lib:"Chubb GLI",dt:"16/05/2026",m:168.00,on:true,nature:"reglement"}
   ];
   // Jeux de données par dossier (dans l'outil réel : produits par le moteur).
   var DOSSIERS={
@@ -819,12 +826,12 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
       note:"",
       auto:[],
       trancher:[
-        {dt:"09/01/2026",lib:"Brico Dépôt",m:71.07,paye:"",cpt:"615",col:"#c0392b",ini:"B",
+        {dt:"09/01/2026",lib:"Brico Dépôt",inconnu:true,m:71.07,paye:"",cpt:"615",col:"#c0392b",ini:"B",
           opts:[["615","615 — Entretien et réparations"],["606","606 — Petit équipement"],["2184","2184 — Mobilier (immobilisation)"]]}
       ],
       reclam:[
-        {lib:"Assurance PNO (récurrent N-1)",dt:"réf. N-1",m:182.00,on:true},
-        {lib:"Taxe foncière 2026 (récurrent N-1)",dt:"réf. N-1",m:520.00,on:true}
+        {lib:"Assurance PNO (récurrent N-1)",dt:"réf. N-1",m:182.00,on:true,nature:"piece"},
+        {lib:"Taxe foncière 2026 (récurrent N-1)",dt:"réf. N-1",m:520.00,on:true,nature:"piece"}
       ]
     }
   };
@@ -848,21 +855,37 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
     var tb=$('.js-trancher'); tb.innerHTML='';
     // Regroupement par MOTIF de remontée : chaque bloc correspond à une règle de
     // contrôle activée, pour qu'on sache pourquoi la ligne est là.
+    // Les onglets découlent des RÈGLES paramétrées : une règle décochée ne
+    // remonte plus rien, et le seuil de montant est celui saisi par le cabinet.
     var MOTIFS=[
       ["immo","Immobilisations"],
       ["montant","Montant élevé (hors immobilisation)"],
       ["inconnu","Non comprise par l'IA"],
       ["nonrappr","Sans règlement retrouvé en banque"]
     ];
-    function motifDe(r){
-      if(!r.paye)return "nonrappr";
-      if(r.motif)return r.motif;
-      if(/^2/.test(r.cpt))return "immo";
-      if(r.m>=1500)return "montant";
-      return "inconnu";
+    var reg=etatRegles();
+    function motifsDe(r){
+      // une opération cumule souvent plusieurs motifs : on les collecte TOUS,
+      // le premier servant au classement, les autres à l'affichage.
+      var m=[];
+      // On classe sur le compte PROPOSÉ, jamais sur celui que le collaborateur
+      // vient de choisir : sinon une ligne quitterait son onglet dès qu'on
+      // l'impute, et changerait de place d'une session à l'autre.
+      var cpt=r.prop||r.cpt;
+      if(reg.immo && reg.immo.on && /^2/.test(cpt)) m.push("immo");
+      if(reg.montant && reg.montant.on && r.m>=(reg.montant.seuil||0)
+         && !/^2/.test(cpt)) m.push("montant");
+      if(reg.inconnu && reg.inconnu.on && r.inconnu) m.push("inconnu");
+      // « sans règlement retrouvé en banque » n'a de sens que s'il y a un relevé :
+      // sur un dossier sans banque, toutes les lignes le seraient.
+      if(reg.nonrappr && reg.nonrappr.on && !r.propPaye
+         && root.dataset.banque==='oui') m.push("nonrappr");
+      return m;
     }
     var groupes={}; TRANCHER.forEach(function(r,i){
-      var k=motifDe(r); (groupes[k]=groupes[k]||[]).push([r,i]);});
+      var m=motifsDe(r); r.motifs=m;
+      if(!m.length)return;                 // aucune règle ne la retient -> auto
+      (groupes[m[0]]=groupes[m[0]]||[]).push([r,i]);});
     // Un onglet par catégorie non vide : on valide la première pour passer à la
     // suivante, sans quitter « Opérations complexes à affecter ».
     ONGLETS=MOTIFS.filter(function(mo){return (groupes[mo[0]]||[]).length;});
@@ -903,13 +926,22 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
           +'<option value="__autre__">＋ Autre compte…</option></select></div>';
       }
       // Règlement : rapproché sur le relevé, ou introuvable (-> payé perso, OD 108)
+      // Sans règlement retrouvé : le collaborateur saisit la date de paiement
+      // portée par la pièce. En trésorerie, c'est elle qui datera l'écriture d'OD.
       var reg = r.paye
         ? '<span class="regl ok"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg>'
           +'<span>Payé le<b>'+r.paye+'</b></span></span>'
-        : '<span class="regl ko"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/>'
+        : '<div class="regl-saisie"><span class="regl ko">'
+          +'<svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/>'
           +'<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>'
-          +'<span>Paiement<b>introuvable</b></span></span>';
-      tr.innerHTML='<td class="dt num">'+r.dt+'</td><td class="lib">'+r.lib+'</td>'
+          +'<span>Paiement<b>introuvable</b></span></span>'
+          +'<label>Payé le<input type="date" class="js-datepaie" data-i="'+i+'"'
+          +(r.payeSaisi?' value="'+r.payeSaisi+'"':'')+'/></label></div>';
+      var chips=(r.motifs||[]).length>1
+        ? '<span class="chips">'+r.motifs.slice(1).map(function(k){
+            var mo=MOTIFS.filter(function(x){return x[0]===k;})[0];
+            return '<i>'+(mo?mo[1]:k)+'</i>';}).join('')+'</span>' : '';
+      tr.innerHTML='<td class="dt num">'+r.dt+'</td><td class="lib">'+r.lib+chips+'</td>'
         +'<td class="amt num">'+eur(r.m)+'</td>'
         +'<td class="cell-regl">'+reg+'</td>'
         +'<td class="cell-photo"><button class="thumb js-thumb" data-lib="'+r.lib+'" aria-label="Ouvrir le justificatif">'+thumbSVG(r.col,r.ini)+'</button></td>'
@@ -919,13 +951,59 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
         +(r.split&&r.split.length?'Modifier la répartition':'Décomposer')+'</button></td>';
       tb.appendChild(tr);
       // Persistance de l'imputation : sans cela, changer d'onglet efface le choix.
+      var dp=tr.querySelector('.js-datepaie');
+      if(dp)dp.addEventListener('change',function(){
+        r.payeSaisi=this.value;                 // AAAA-MM-JJ
+        r.paye=this.value?this.value.split('-').reverse().join('/'):'';
+        sauverTravail(); renderTrancher();
+      });
       var s=tr.querySelector('.js-imput');
       if(s)s.addEventListener('change',function(){
         if(this.value==='__autre__'){ajouterCompte(r,this);return;}
-        r.cpt=this.value;
+        r.cpt=this.value; sauverTravail();
       });
     }
   }
+  /* --- reprise : ce qui restait en attente, confronté aux nouvelles pièces ---
+     À la réouverture d'un dossier déjà importé, on ne repart pas de zéro : on
+     reprend la liste des points ouverts et, pour chacun, soit la pièce est
+     arrivée dans le dépôt du client, soit le collaborateur l'a régularisée
+     autrement. Rien ne disparaît sans qu'on ait dit ce qu'il en est. */
+  function ecranReprise(hist){
+    var ouverts=RECLAM.filter(function(r){return r.on;});
+    if(!ouverts.length)return;
+    // en démonstration, on considère qu'une pièce sur deux est arrivée
+    var arrivees=ouverts.filter(function(_,i){return i%2===0;});
+    var html='<h3>Reprise du dossier</h3>'
+      +'<p>Dernier import le <b>'+hist.date+'</b>. Voici les points restés ouverts, '
+      +'confrontés aux pièces déposées depuis par le client.</p>'
+      +'<div class="hist" style="max-height:44vh">';
+    ouverts.forEach(function(r,i){
+      var recue=arrivees.indexOf(r)>=0;
+      html+='<div class="hitem'+(recue?'':' dup')+'">'
+        +'<span class="hdot"></span>'
+        +'<div class="hmain"><div class="hnom">'+r.lib+'</div>'
+        +'<div class="hmeta">'+eur(r.m)+' · '+(recue
+            ? 'pièce déposée par le client depuis le dernier passage'
+            : 'toujours pas de pièce au dépôt')+'</div></div>'
+        +(recue
+          ? '<span class="hstat">Reçue ✓</span>'
+          : '<label class="regul"><input type="checkbox" class="js-regul" data-i="'
+            +RECLAM.indexOf(r)+'"/>Régularisé hors Saisio</label>')
+        +'</div>';
+    });
+    html+='</div>';
+    openModal(html,'wide',{libelle:"Reprendre le dossier", onclick:function(){
+      $$('.js-regul').forEach(function(c){
+        if(c.checked){var r=RECLAM[+c.dataset.i]; if(r){r.on=false;r.regularise=true;}}
+      });
+      // les pièces arrivées sortent aussi de la liste à réclamer
+      arrivees.forEach(function(r){r.on=false;r.recue=true;});
+      sauverTravail(); renderReclam();
+      return true;
+    }});
+  }
+
   /* --- saisie d'un compte hors des propositions --- */
   function ajouterCompte(r,select,apres){
     var avant=r.cpt;
@@ -949,27 +1027,84 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
       }});
   }
 
+  // Deux natures de demande, qui n'appellent pas la même chose du client :
+  //  - « Pièce manquante »      : une opération est en banque, le justificatif manque.
+  //  - « Règlement à justifier » : la facture est là mais on ne sait ni quand ni
+  //    comment elle a été réglée (pas de date, pas de trace en banque).
+  var RECTABS=[["piece","Pièce manquante"],["reglement","Règlement à justifier"]];
+  var RECONGLET=0;
+  function natureRec(r){ return r.nature || "piece"; }
+  function recParNature(k){ return RECLAM.filter(function(r){return natureRec(r)===k;}); }
+
   function renderReclam(){
+    var barre=$('.js-rectabs');
+    if(barre){
+      barre.innerHTML='';
+      RECTABS.forEach(function(mo,k){
+        var lot=recParNature(mo[0]); if(!lot.length)return;
+        var b=document.createElement('button');
+        b.className='optab'+(k===RECONGLET?' on':'');
+        b.innerHTML=mo[1]+'<b>'+lot.length+'</b>';
+        b.addEventListener('click',function(){RECONGLET=k;renderReclam();});
+        barre.appendChild(b);
+      });
+      // si l'onglet courant est vide, on bascule sur le premier qui ne l'est pas
+      if(!recParNature(RECTABS[RECONGLET][0]).length){
+        for(var k=0;k<RECTABS.length;k++){
+          if(recParNature(RECTABS[k][0]).length){RECONGLET=k;break;}}
+      }
+    }
     var box=$('.js-reclam'); box.innerHTML='';
-    RECLAM.forEach(function(r,i){
+    recParNature(RECTABS[RECONGLET][0]).forEach(function(r){
       var d=document.createElement('div');
-      d.className='ritem'; d.setAttribute('aria-checked',r.on?'true':'false'); d.dataset.i=i;
+      d.className='ritem'; d.setAttribute('aria-checked',r.on?'true':'false');
+      var detail = natureRec(r)==='reglement'
+        ? '<span class="rdt num">date de règlement inconnue</span>'
+        : '<span class="rdt num">'+r.dt+'</span>';
       d.innerHTML='<span class="ck"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span>'
-        +'<span class="rlib">'+r.lib+'</span><span class="rdt num">'+r.dt+'</span><span class="ramt num">'+eur(r.m)+'</span>';
-      d.addEventListener('click',function(){r.on=!r.on;d.setAttribute('aria-checked',r.on?'true':'false');syncMail();});
+        +'<span class="rlib">'+r.lib+'</span>'+detail
+        +'<span class="ramt num">'+eur(r.m)+'</span>';
+      d.addEventListener('click',function(){
+        r.on=!r.on; d.setAttribute('aria-checked',r.on?'true':'false');
+        syncMail(); sauverTravail();});
       box.appendChild(d);
     });
+    var cta=$('.js-recvalider');
+    if(cta){
+      var suiv=null;
+      for(var k=RECONGLET+1;k<RECTABS.length;k++){
+        if(recParNature(RECTABS[k][0]).length){suiv=RECTABS[k];break;}}
+      cta.innerHTML = suiv ? 'Valider — suite : '+suiv[1]+' <span class="arw">→</span>'
+                           : 'Préparer le mail <span class="arw">→</span>';
+      cta.dataset.suivant = suiv ? '1' : '';
+    }
     syncMail();
   }
+
   function syncMail(){
-    var sel=RECLAM.filter(function(r){return r.on;});
-    $$('.js-reclam-n').concat($$('.js-mail-n')).forEach(function(e){e.textContent=sel.length;});
-    var ul=$('.js-mail-list'); ul.innerHTML='';
-    sel.forEach(function(r){
-      var li=document.createElement('li');
-      li.innerHTML='<b>'+r.lib+' — '+r.dt+'</b><span class="num">'+eur(r.m)+'</span>';
-      ul.appendChild(li);
-    });
+    var pieces=recParNature('piece').filter(function(r){return r.on;});
+    var regls =recParNature('reglement').filter(function(r){return r.on;});
+    var tot=pieces.length+regls.length;
+    $$('.js-mail-n').forEach(function(e){e.textContent=tot;});
+    // Deux sections dans le mail : la demande n'est pas la même.
+    var bloc=$('.js-mail-blocs'); if(!bloc)return;
+    bloc.innerHTML='';
+    function section(titre,intro,liste,avecDate){
+      if(!liste.length)return;
+      var h=document.createElement('div'); h.className='mailsec';
+      h.innerHTML='<p><b>'+titre+'</b></p><p>'+intro+'</p><ul>'
+        +liste.map(function(r){
+          return '<li><b>'+r.lib+(avecDate?'':' — '+r.dt)+'</b>'
+            +'<span class="num">'+eur(r.m)+'</span></li>';}).join('')
+        +'</ul>';
+      bloc.appendChild(h);
+    }
+    section('Justificatifs manquants',
+            'Merci de nous transmettre les pièces suivantes :', pieces, false);
+    section('Règlements à justifier',
+            'Ces factures sont en notre possession mais nous n\'avons pas trouvé '
+            +'le règlement correspondant. Merci de nous préciser la date et le '
+            +'moyen de paiement :', regls, true);
   }
 
   /* --- étape 5 : nature des fichiers produits (pas d'aperçu) --- */
@@ -996,12 +1131,9 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
     if(+root.dataset.step>=1)go(+b.dataset.go);   // navigation libre une fois dans un dossier
   });});
   function cap(s){return s?s.charAt(0)+s.slice(1).toLowerCase():s;}
-  function toggleBnc(on){$$('.js-bnc-note').forEach(function(e){e.classList.toggle('hidden',!on);});}
   function openDossier(name,ex,type){
     $$('.js-dossier').forEach(function(e){e.textContent=name;});
-    $$('.js-ex').forEach(function(e){e.textContent=ex;});
     var sel=$('.js-type'); if(sel&&type)sel.value=type;
-    toggleBnc(type==='bnc');
     var parts=name.split('_'), id=parts.slice(1,-1);
     var key=id.length?id[id.length-1]:parts[0];
     var disp = type==='sci' ? 'SCI '+id.map(cap).join(' ')
@@ -1011,6 +1143,13 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
     $$('.js-client-mail').forEach(function(e){e.textContent='client.'+key.toLowerCase()+'@email.fr';});
     var ds=DOSSIERS[name];
     TRANCHER=(ds&&ds.trancher)||DEFAULT_TRANCHER;
+    // Compte et règlement PROPOSÉS, figés avant toute reprise du travail : ils
+    // servent au classement par onglet, que le collaborateur ne doit pas voir
+    // se réorganiser sous ses doigts.
+    TRANCHER.forEach(function(r){
+      if(r.prop===undefined)r.prop=r.cpt;
+      if(r.propPaye===undefined)r.propPaye=r.paye||"";
+    });
     RECLAM=(ds&&ds.reclam)||DEFAULT_RECLAM;
     CURNOTE=(ds&&ds.note)||"";CURAUTO=(ds&&ds.auto)||[];
     var bq=(ds&&ds.banque)||'oui';
@@ -1018,11 +1157,51 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
     $$('.js-bq').forEach(function(x){x.setAttribute('aria-pressed',x.dataset.v===bq?'true':'false');});
     var fmt=$('.js-fmt'); if(fmt)fmt.textContent='Format ASCII (Quadra) · contrepartie '+(bq==='oui'?'512':'108');
     CURNOM=name; CURPIECES=NB_PIECES[name]||(TRANCHER.length+RECLAM.length);
-    ONGLET=0;
+    ONGLET=0; RECONGLET=0;      // on rouvre toujours sur la première catégorie
+    reinitFichierBanque();      // un relevé appartient à UN dossier
+    chargerTravail();           // reprise du travail déjà fait sur ce dossier
+    var d=dejaTraite(CURNOM);
+    if(d)setTimeout(function(){ecranReprise(d);},260);
     majBanniereDoublon();
     renderTrancher();renderReclam();
     go(1);
   }
+  /* --- sauvegarde du travail par dossier (imputations, ventilations, règles) ---
+     Sans cela, fermer l'onglet efface tout : sur 200 factures c'est inacceptable. */
+  var TKEY='saisio_travail_v1';
+  function sauverTravail(){
+    if(!CURNOM)return;
+    var tout=lsGet(TKEY,{})||{};
+    tout[CURNOM]={
+      lignes:TRANCHER.map(function(r){
+        return {lib:r.lib, cpt:r.cpt, split:r.split||null, paye:r.paye||"",
+                opts:r.opts};}),
+      reclam:RECLAM.map(function(x){return {lib:x.lib, on:x.on};}),
+      regles:etatRegles(), onglet:ONGLET
+    };
+    lsSet(TKEY,tout);
+  }
+  function chargerTravail(){
+    if(!CURNOM)return;
+    var d=(lsGet(TKEY,{})||{})[CURNOM]; if(!d)return;
+    (d.lignes||[]).forEach(function(sv){
+      var r=TRANCHER.filter(function(x){return x.lib===sv.lib;})[0];
+      if(!r)return;
+      if(sv.opts)r.opts=sv.opts;
+      if(sv.cpt)r.cpt=sv.cpt;
+      if(sv.split)r.split=sv.split;
+      if(sv.paye!==undefined)r.paye=sv.paye;
+    });
+    (d.reclam||[]).forEach(function(sv){
+      var x=RECLAM.filter(function(y){return y.lib===sv.lib;})[0];
+      if(x)x.on=sv.on;
+    });
+    if(d.regles)REGLES.forEach(function(g){g.items.forEach(function(it){
+      var e=d.regles[it.id]; if(!e)return;
+      it.on=e.on; if(e.seuil!==undefined)it.seuil=e.seuil;});});
+    if(typeof d.onglet==='number')ONGLET=d.onglet;
+  }
+
   var DUPTXT="";
   function majBanniereDoublon(){
     var btn=$('.js-dupbtn'); if(!btn)return;
@@ -1035,7 +1214,11 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
     openModal('<h3>Historique d\'import</h3><div class="dupbanner"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><span>'+DUPTXT+'</span></div>');
   });
   $$('.js-open').forEach(function(b){b.addEventListener('click',function(){openDossier(b.dataset.name,b.dataset.ex,b.dataset.type);});});
-  $('.js-type').addEventListener('change',function(){toggleBnc(this.value==='bnc');});
+  var rvld=$('.js-recvalider');
+  if(rvld)rvld.addEventListener('click',function(){
+    if(this.dataset.suivant){RECONGLET++;renderReclam();return;}
+    go(4);
+  });
   var vld=$('.js-valider');
   if(vld)vld.addEventListener('click',function(){
     if(ONGLET < ONGLETS.length-1){ONGLET++;renderTrancher();
@@ -1109,16 +1292,25 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
     put(117,clean(lib,87));put(204,'0000000001');put(214,'_IMP');put(218,'12062026120000');
     return b.join('');
   }
+  // Trésorerie : l'écriture est datée du JOUR DU RÈGLEMENT quand on le connaît.
+  function dateEcriture(r){ return r.paye || r.dt; }
   function horodatage(){var d=new Date();function p(n){return (n<10?'0':'')+n;}
     return d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+'-'+p(d.getHours())+p(d.getMinutes());}
   $('.js-download').addEventListener('click',function(){
     var nom=$('.js-dossier')?$('.js-dossier').textContent:'DOSSIER';
     var avecBanque=root.dataset.banque==='oui';
-    var rows=$$('.js-trancher tr');
-    var out=TRANCHER.map(function(r,i){
-      var cpt=r.cpt, s=rows[i]?rows[i].querySelector('select'):null; if(s)cpt=s.value;
-      var sens=(cpt==='758'||cpt==='108')?'C':'D';
-      return ligneM(cpt,r.dt,r.lib,sens,r.m,'108','OD');
+    // On lit les DONNÉES, jamais le DOM : depuis les onglets, les lignes
+    // affichées ne sont qu'un sous-ensemble, et rows[i] désignait une autre
+    // opération que TRANCHER[i]. Les imputations sont de toute façon persistées.
+    var out=[];
+    TRANCHER.forEach(function(r){
+      var lignes = (r.split&&r.split.length)
+        ? r.split                                   // facture ventilée -> N lignes
+        : [{compte:r.cpt, montant:r.m}];            // imputation simple -> 1 ligne
+      lignes.forEach(function(l){
+        var sens=(l.compte==='758'||l.compte==='108')?'C':'D';
+        out.push(ligneM(l.compte,dateEcriture(r),r.lib,sens,l.montant,'108','OD'));
+      });
     });
     var stamp=horodatage();
     var fichier=nom+'_OD_'+stamp+'.txt';
@@ -1132,7 +1324,7 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
       +'<p>Le fichier est <b>exporté</b> et, au même moment, <b>enregistré automatiquement</b> (horodaté) dans <b>« Documents générés par l\'application »</b> de <b>'+nom+'</b> sur le Drive :</p>'
       +'<div class="hist" style="margin-top:6px">'
       +(avecBanque?'<div class="hitem"><span class="hdot"></span><div class="hmain"><div class="hnom">'+nom+'_BANQUE_'+stamp+'.xlsx</div><div class="hmeta">journal de banque · triées par date, modifiables</div></div></div>':'')
-      +'<div class="hitem"><span class="hdot"></span><div class="hmain"><div class="hnom">'+fichier+'</div><div class="hmeta">'+(avecBanque?'journal d\'OD · contrepartie 108':'écritures fermes · prêtes à importer')+'</div></div></div>'
+      +'<div class="hitem"><span class="hdot"></span><div class="hmain"><div class="hnom">'+fichier+'</div><div class="hmeta js-odmeta">'+(avecBanque?'journal d\'OD · contrepartie 108':'écritures fermes · prêtes à importer')+' · <b>'+out.length+'</b> ligne'+(out.length>1?'s':'')+' d\'écriture</div></div></div>'
       +'</div>');
   });
 
@@ -1144,6 +1336,10 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
     var mail=($('.js-email').value||'').trim();
     lsSet(SKEY,{mail:mail||'demo@s2a-audit.fr',t:Date.now()});
     setAuthed(true);
+  });
+  $('.js-logout').addEventListener('click',function(){
+    try{localStorage.removeItem(SKEY);}catch(e){}
+    setAuthed(false); go(0);
   });
   setAuthed(!!lsGet(SKEY,null));
 
@@ -1163,6 +1359,12 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
     $('.js-bqmeta').textContent='· '+(f.size>1024?Math.round(f.size/1024)+' Ko':f.size+' o');
     $('.js-bqok').classList.remove('hidden');
     $('.js-bqlabel').innerHTML='Remplacer le fichier — <u>parcourir</u>';
+  }
+  function reinitFichierBanque(){
+    if(!bqfile)return;
+    bqfile.value='';
+    $('.js-bqok').classList.add('hidden');
+    $('.js-bqlabel').innerHTML='Glisser-déposer ou <u>parcourir</u>';
   }
   bqdrop.addEventListener('click',function(){bqfile.click();});
   bqfile.addEventListener('change',function(){accepterFichier(this.files&&this.files[0]);});
@@ -1193,6 +1395,7 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
         if(lignes.length<2)return false;
         r.split=lignes;          // ventilation conservée sur l'opération
         r.cpt=lignes[0].compte;  // compte principal = première ligne
+        sauverTravail();
         renderTrancher();        // la ligne affiche désormais sa ventilation
         return true;
       }});
@@ -1335,11 +1538,12 @@ main.wrap{padding:24px 20px 24px;flex:1;min-height:0;display:flex;flex-direction
       var box=card.querySelector('.js-regle');
       box.addEventListener('change',function(){
         var g=REGLES[+card.dataset.g].items[+card.dataset.r];
-        g.on=box.checked; card.classList.toggle('on',box.checked); compter();
+        g.on=box.checked; card.classList.toggle('on',box.checked); compter(); sauverTravail(); renderTrancher();
       });
       var seuil=card.querySelector('.js-seuil');
       if(seuil)seuil.addEventListener('input',function(){
-        REGLES[+card.dataset.g].items[+card.dataset.r].seuil=parseFloat(this.value)||0;});
+        REGLES[+card.dataset.g].items[+card.dataset.r].seuil=parseFloat(this.value)||0;
+        sauverTravail(); renderTrancher();});
       if(seuil)seuil.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();});
     });
     compter();

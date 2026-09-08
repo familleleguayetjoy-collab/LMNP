@@ -818,4 +818,68 @@ fac31, rej31 = factures_depuis_ocr([brut31])
 check(fac31[0].date_reglement == D(2026, 1, 12) and fac31[0].payee,
       "OCR : « prélevé le » -> date_reglement et pièce acquittée")
 
+print("32) Rangement du dossier de sortie : par mois de RÈGLEMENT, puis statut")
+from s2a_lmnp import ranger, chemin, mois_de, resume_rangement, RACINE, TRAITE, EN_ATTENTE
+
+# facture de décembre réglée en janvier -> rangée en 2026-01 (comme l'écriture)
+fr1 = Facture("EDF", D(2025, 12, 28), 69.34); fr1.date_reglement = D(2026, 1, 12)
+fr1.fichier = "edf.pdf"
+check(mois_de(fr1) == ("2026-01", False), "mois = date de règlement, pas de facture")
+check(chemin(fr1, traite=True) == RACINE + "/2026-01/" + TRAITE,
+      "chemin complet racine/mois/Traité")
+
+# sans date de règlement -> repli sur la facture, marqué comme estimé
+fr2 = Facture("BRICO", D(2026, 3, 9), 71.07); fr2.fichier = "brico.pdf"
+check(mois_de(fr2) == ("2026-03", True), "sans règlement -> mois estimé depuis la facture")
+
+# une pièce sans aucune date ne fait pas planter le rangement
+fr3 = Facture("SANS DATE", None, 10.0)
+check(mois_de(fr3) == ("sans-date", True), "pièce sans date -> dossier « sans-date »")
+
+# les rejets partent en attente, avec leur motif
+rej32 = [{"brut": {"date": "2026-03-15"}, "fichier": "devis.pdf",
+          "empreinte": "abc", "motif": "document « devis » : non comptable"}]
+plan = ranger([fr1, fr2], rej32)
+vue = {l["chemin"]: l["pieces"] for l in resume_rangement(plan)}
+check(vue.get(RACINE + "/2026-01/" + TRAITE) == 1, "EDF -> 2026-01/Traité")
+check(vue.get(RACINE + "/2026-03/" + TRAITE) == 1, "Brico -> 2026-03/Traité")
+check(vue.get(RACINE + "/2026-03/" + EN_ATTENTE) == 1, "devis -> 2026-03/En attente")
+attente = plan[RACINE + "/2026-03/" + EN_ATTENTE][0]
+check(attente["motif"] and attente["fichier"] == "devis.pdf",
+      "la pièce en attente garde son motif et son nom de fichier")
+check(sum(len(v) for v in plan.values()) == 3, "aucune pièce perdue dans le plan")
+
+print("33) Le relevé fixe la date de règlement de la facture (trésorerie)")
+# la pièce annonce le 28/12 ; la banque dit le 12/01 -> c'est la banque qui gagne
+f33 = Facture("EDF ENERGIE", D(2025, 12, 28), 69.34)
+f33.date_reglement = D(2025, 12, 28)          # ce que prétendait la pièce
+o33 = Operation(D(2026, 1, 12), "EDF ENERGIE ELECTRICITE", 69.34, "D")
+rapprocher([o33], [f33])
+check(f33.op is o33 and f33.date_reglement == D(2026, 1, 12),
+      "facture retrouvée en banque -> date du mouvement, pas celle de la pièce")
+check(mois_de(f33) == ("2026-01", False), "et elle se range dans le mois du mouvement")
+
+# facture jamais retrouvée : sa date de règlement n'est pas inventée
+f33b = Facture("HORS BANQUE", D(2026, 5, 4), 42.0)
+rapprocher([Operation(D(2026, 5, 4), "AUTRE CHOSE", 999.0, "D")], [f33b])
+check(f33b.op is None and f33b.date_reglement is None,
+      "facture non rapprochée -> aucune date de règlement inventée")
+
+# un seul règlement pour deux factures : les deux sont datées du mouvement
+fa = Facture("A", D(2026, 2, 1), 60.0); fb = Facture("B", D(2026, 2, 2), 40.0)
+oc = Operation(D(2026, 3, 5), "PAIEMENT GROUPE", 100.0, "D")
+associer_factures(oc, [fa, fb])
+check(fa.date_reglement == D(2026, 3, 5) and fb.date_reglement == D(2026, 3, 5),
+      "un règlement pour plusieurs factures -> toutes datées du mouvement")
+
+# une facture réglée en trois fois : elle est soldée au DERNIER mouvement
+f3x = Facture("EN TROIS FOIS", D(2026, 1, 10), 300.0)
+o3x = [Operation(D(2026, 1, 15), "ACOMPTE 1", 100.0, "D"),
+       Operation(D(2026, 3, 15), "SOLDE", 100.0, "D"),
+       Operation(D(2026, 2, 15), "ACOMPTE 2", 100.0, "D")]
+associer_reglements(f3x, o3x)
+check(f3x.date_reglement == D(2026, 3, 15),
+      "règlements multiples -> la facture est datée du dernier")
+check(mois_de(f3x) == ("2026-03", False), "et rangée dans le mois du solde")
+
 print("\n%d contrôles OK — moteur cohérent." % ok)
