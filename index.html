@@ -1470,6 +1470,44 @@
   #expert-app .kpi-meta,#client-app .kpi-meta{text-align:center;}
   #expert-app .kpi-meta .km-primary,#client-app .kpi-meta .km-primary{font-size:1.2rem;}
   #expert-app .kpi-meta .km-secondary,#client-app .kpi-meta .km-secondary{justify-content:center;}
+  /* ---- Lecteur PDF « livre » (comptes annuels) ---- */
+  .pdfb{display:none;flex-direction:column;gap:14px;}
+  .pdfb.on{display:flex;}
+  .pdfb-stage{position:relative;display:flex;align-items:center;justify-content:center;overflow:auto;
+    background:linear-gradient(158deg,#FFFFFF 0%,#F2F6FC 100%);border:1px solid rgba(20,50,90,.10);border-radius:var(--radius);
+    box-shadow:0 1px 2px rgba(20,50,90,.07),0 8px 18px rgba(20,50,90,.09),0 26px 52px rgba(20,50,90,.11);
+    padding:16px;height:calc(100vh - 274px);min-height:300px;}
+  .pdfb-stage canvas{display:block;background:#fff;border-radius:4px;
+    box-shadow:0 2px 6px rgba(20,50,90,.14),0 12px 30px rgba(20,50,90,.16);max-width:none;}
+  .pdfb-bar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
+    background:rgba(255,255,255,.62);-webkit-backdrop-filter:blur(14px) saturate(1.5);backdrop-filter:blur(14px) saturate(1.5);
+    border:1px solid rgba(255,255,255,.75);border-radius:999px;padding:7px 10px;
+    box-shadow:0 1px 2px rgba(20,50,90,.06),0 8px 20px rgba(20,50,90,.10);}
+  .pdfb-nav{background:var(--cg);color:#fff;border:none;border-radius:999px;padding:10px 18px;
+    font-family:var(--wordmark);font-weight:700;font-size:.92rem;cursor:pointer;
+    box-shadow:0 6px 16px rgba(26,98,196,.28);transition:filter .15s,opacity .15s;}
+  .pdfb-nav:hover:not(:disabled){filter:brightness(1.06);}
+  .pdfb-nav:disabled{background:#E3E9F2;color:#9AA7BD;box-shadow:none;cursor:default;}
+  .pdfb-mid{display:flex;align-items:center;gap:18px;flex-wrap:wrap;justify-content:center;}
+  .pdfb-count{font-family:var(--wordmark);font-weight:600;font-size:.92rem;color:#3A4653;}
+  .pdfb-count b{font-weight:800;color:#124E9E;}
+  .pdfb-zoom{display:inline-flex;align-items:center;gap:6px;}
+  .pdfb-zoom button{width:30px;height:30px;border-radius:50%;border:1px solid rgba(20,50,90,.14);background:#fff;
+    color:var(--c-blue);font-size:1rem;font-weight:700;line-height:1;cursor:pointer;font-family:var(--font);}
+  .pdfb-zoom button.txt{width:auto;border-radius:999px;padding:0 13px;font-size:.82rem;font-weight:600;}
+  .pdfb-zoom button:hover{border-color:var(--c-blue);background:#F5F9FF;}
+  .pdfb-zoom #pdfb-zlevel{font-family:var(--wordmark);font-weight:700;font-size:.85rem;color:#2C3845;min-width:52px;text-align:center;}
+  .pdfb-empty{display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:6px;
+    background:linear-gradient(158deg,#FFFFFF 0%,#F2F6FC 100%);border:1px solid rgba(20,50,90,.10);border-radius:var(--radius);
+    box-shadow:0 1px 2px rgba(20,50,90,.07),0 8px 18px rgba(20,50,90,.09);padding:52px 24px;}
+  .pdfb-empty.on{display:flex;}
+  .pdfb-empty h3{font-family:var(--wordmark);font-weight:800;color:#124E9E;font-size:1.15rem;margin:6px 0 0;}
+  .pdfb-empty p{font-size:.92rem;color:#5B6B82;max-width:420px;margin:0;}
+  .pdfb-empty .pe-ico{color:var(--c-blue);display:flex;}
+  .pdfb-empty .pe-ico svg{width:34px;height:34px;}
+  @media (max-height:830px){ .pdfb-stage{height:calc(100vh - 224px);min-height:0;} }
+  @media (max-width:760px){ .pdfb-bar{justify-content:center;} .pdfb-nav{padding:9px 14px;font-size:.85rem;} }
+
   /* Lien de retour : de l'air avant le contenu du détail */
   #client-app .backlink{margin-bottom:16px;box-shadow:0 1px 2px rgba(20,50,90,.05),0 4px 10px rgba(20,50,90,.06);}
 
@@ -1888,6 +1926,7 @@
     </div>
     <nav class="tb-nav">
       <button class="tb-tab active" data-xtab="essentiel">L'essentiel</button>
+      <button class="tb-tab" data-xtab="comptes">Comptes annuels</button>
       <button class="tb-tab" data-xtab="reco">Recommandations IA</button>
     </nav>
     <div class="tb-actions">
@@ -1906,6 +1945,30 @@
           <p id="x-retenir">—</p>
           <div class="ai-flag" id="x-retenir-flag" style="display:none;"></div>
         </div>
+      </div>
+    </section>
+    <section class="app-page" id="x-page-comptes">
+      <h1>Comptes annuels</h1>
+      <div class="pdfb" id="pdfb">
+        <div class="pdfb-stage" id="pdfb-stage"><canvas id="pdfb-canvas"></canvas></div>
+        <div class="pdfb-bar">
+          <button class="pdfb-nav" id="pdfb-prev">‹ Précédente</button>
+          <div class="pdfb-mid">
+            <span class="pdfb-count">Page <b id="pdfb-page">–</b> / <span id="pdfb-total">–</span></span>
+            <span class="pdfb-zoom">
+              <button id="pdfb-zout" title="Réduire">−</button>
+              <span id="pdfb-zlevel">100 %</span>
+              <button id="pdfb-zin" title="Agrandir">+</button>
+              <button id="pdfb-zfit" class="txt" title="Ajuster à la page">Ajuster</button>
+            </span>
+          </div>
+          <button class="pdfb-nav" id="pdfb-next">Suivante ›</button>
+        </div>
+      </div>
+      <div class="pdfb-empty" id="pdfb-empty">
+        <div class="pe-ico" id="pdfb-empty-ico"></div>
+        <h3>Aucun PDF de comptes annuels</h3>
+        <p>Importez le PDF des comptes annuels lors du chargement du dossier pour le consulter ici.</p>
       </div>
     </section>
     <section class="app-page" id="x-page-reco">
@@ -2531,6 +2594,7 @@
   <div class="ep-body" id="ep-body"></div>
 </div>
 
+<script src="assets/vendor/pdf.min.js"></script>
 <script>
 /* ============================================================
    1. PARSER FEC
@@ -4178,7 +4242,7 @@ function openUploadForDossier(d){
     document.getElementById('amont-wrap').style.display='none';
   }
   // reset état d'import
-  rawEcritures=[]; rawExercices=null; selectedPdf=null;
+  rawEcritures=[]; rawExercices=null; selectedPdf=null; setComptesPdf(null);
   document.getElementById('analyser-btn').disabled=true;
   document.getElementById('fec-status').className='dz-status'; document.getElementById('fec-status').innerHTML='';
   document.getElementById('arrete-inline').style.display='none';
@@ -4326,6 +4390,7 @@ document.getElementById('file-input').addEventListener('change', e=>handleFecFil
 document.getElementById('pdf-drop').addEventListener('click', ()=>document.getElementById('pdf-input').click());
 document.getElementById('pdf-input').addEventListener('change', e=>{
   selectedPdf = e.target.files[0] || null;
+  setComptesPdf(selectedPdf);
   const st = document.getElementById('pdf-status');
   if(selectedPdf){ st.className='dz-status ok'; st.innerHTML='<span class="dot">✓</span> '+selectedPdf.name; }
   else { st.className='dz-status'; st.innerHTML=''; }
@@ -4338,7 +4403,7 @@ function wireDrop(zoneId, handler){
   z.addEventListener('drop', e=>{ if(e.dataTransfer.files[0]) handler(e.dataTransfer.files[0]); });
 }
 wireDrop('fec-drop', handleFecFile);
-wireDrop('pdf-drop', f=>{ document.getElementById('pdf-input').files=null; selectedPdf=f; const st=document.getElementById('pdf-status'); st.className='dz-status ok'; st.innerHTML='<span class="dot">✓</span> '+f.name; });
+wireDrop('pdf-drop', f=>{ document.getElementById('pdf-input').files=null; selectedPdf=f; setComptesPdf(f); const st=document.getElementById('pdf-status'); st.className='dz-status ok'; st.innerHTML='<span class="dot">✓</span> '+f.name; });
 function scaleEcritures(ecr, factor, deltaYear){
   return ecr.map(e=>({...e,
     Debit: Math.round((e.Debit||0)*factor*100)/100,
@@ -4569,12 +4634,98 @@ function demoRecos(){
   ];
 }
 /* ---- Routing Expert ---- */
+const EXPERT_PAGES={essentiel:'x-page-essentiel',comptes:'x-page-comptes',reco:'x-page-reco'};
 function setExpertTab(tab){
   document.querySelectorAll('#expert-app .tb-tab').forEach(b=>b.classList.toggle('active', b.dataset.xtab===tab));
-  document.getElementById('x-page-essentiel').classList.toggle('active', tab==='essentiel');
-  document.getElementById('x-page-reco').classList.toggle('active', tab==='reco');
-  const ap=document.getElementById(tab==='reco'?'x-page-reco':'x-page-essentiel'); if(ap){ ap.classList.remove('active'); void ap.offsetWidth; ap.classList.add('active'); }
+  Object.entries(EXPERT_PAGES).forEach(([k,id])=>{ const el=document.getElementById(id); if(el) el.classList.toggle('active', k===tab); });
+  const ap=document.getElementById(EXPERT_PAGES[tab]||EXPERT_PAGES.essentiel);
+  if(ap){ ap.classList.remove('active'); void ap.offsetWidth; ap.classList.add('active'); }
+  if(tab==='comptes') openComptesPdf();
 }
+
+/* ============ Lecteur PDF « livre » — comptes annuels ============ */
+const PDF_WORKER_SRC='assets/vendor/pdf.worker.min.js';
+let comptesPdfData=null;                 // Uint8Array du PDF importé
+const pdfb={doc:null,page:1,zoom:null,fit:1,busy:false,loaded:false};
+
+function setComptesPdf(file){
+  comptesPdfData=null; pdfb.doc=null; pdfb.loaded=false; pdfb.page=1; pdfb.zoom=null;
+  if(!file) return;
+  const r=new FileReader();
+  r.onload=()=>{ comptesPdfData=new Uint8Array(r.result); };
+  r.readAsArrayBuffer(file);
+}
+function pdfbShow(hasPdf){
+  document.getElementById('pdfb').classList.toggle('on', hasPdf);
+  document.getElementById('pdfb-empty').classList.toggle('on', !hasPdf);
+}
+async function openComptesPdf(){
+  if(!comptesPdfData || typeof pdfjsLib==='undefined'){ pdfbShow(false); return; }
+  pdfbShow(true);
+  if(!pdfb.loaded){
+    pdfb.loaded=true;
+    try{
+      pdfjsLib.GlobalWorkerOptions.workerSrc=PDF_WORKER_SRC;
+      pdfb.doc=await pdfjsLib.getDocument({data:comptesPdfData.slice()}).promise;
+      document.getElementById('pdfb-total').textContent=pdfb.doc.numPages;
+      pdfb.page=1; pdfb.zoom=null;
+    }catch(e){ pdfb.loaded=false; pdfbShow(false); return; }
+  }
+  renderPdfPage();
+}
+async function renderPdfPage(){
+  if(!pdfb.doc || pdfb.busy) return;
+  pdfb.busy=true;
+  try{
+    const page=await pdfb.doc.getPage(pdfb.page);
+    const stage=document.getElementById('pdfb-stage');
+    const base=page.getViewport({scale:1});
+    const pad=34;
+    pdfb.fit=Math.min((stage.clientWidth-pad)/base.width,(stage.clientHeight-pad)/base.height);
+    if(!isFinite(pdfb.fit)||pdfb.fit<=0) pdfb.fit=1;
+    const scale=pdfb.zoom!=null? pdfb.zoom : pdfb.fit;
+    const dpr=Math.min(window.devicePixelRatio||1,2);
+    const vp=page.getViewport({scale:scale*dpr});
+    const cv=document.getElementById('pdfb-canvas'), ctx=cv.getContext('2d');
+    cv.width=Math.floor(vp.width); cv.height=Math.floor(vp.height);
+    cv.style.width=Math.floor(vp.width/dpr)+'px'; cv.style.height=Math.floor(vp.height/dpr)+'px';
+    await page.render({canvasContext:ctx,viewport:vp}).promise;
+    document.getElementById('pdfb-page').textContent=pdfb.page;
+    document.getElementById('pdfb-zlevel').textContent=Math.round((scale/pdfb.fit)*100)+' %';
+    document.getElementById('pdfb-prev').disabled=(pdfb.page<=1);
+    document.getElementById('pdfb-next').disabled=(pdfb.page>=pdfb.doc.numPages);
+  }catch(e){}
+  pdfb.busy=false;
+}
+function pdfbGo(d){
+  if(!pdfb.doc) return;
+  const n=pdfb.page+d;
+  if(n<1||n>pdfb.doc.numPages) return;
+  pdfb.page=n; document.getElementById('pdfb-stage').scrollTop=0; renderPdfPage();
+}
+function pdfbSetZoom(mult){
+  const cur=pdfb.zoom!=null? pdfb.zoom : pdfb.fit;
+  pdfb.zoom=Math.max(pdfb.fit*0.5,Math.min(pdfb.fit*4,cur*mult));
+  renderPdfPage();
+}
+document.getElementById('pdfb-prev').addEventListener('click',()=>pdfbGo(-1));
+document.getElementById('pdfb-next').addEventListener('click',()=>pdfbGo(1));
+document.getElementById('pdfb-zin').addEventListener('click',()=>pdfbSetZoom(1.25));
+document.getElementById('pdfb-zout').addEventListener('click',()=>pdfbSetZoom(1/1.25));
+document.getElementById('pdfb-zfit').addEventListener('click',()=>{ pdfb.zoom=null; renderPdfPage(); });
+document.addEventListener('keydown',e=>{
+  const pg=document.getElementById('x-page-comptes');
+  if(!pg||!pg.classList.contains('active')||!pdfb.doc) return;
+  if(e.key==='ArrowRight'||e.key==='PageDown'){ e.preventDefault(); pdfbGo(1); }
+  if(e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); pdfbGo(-1); }
+});
+setTimeout(()=>{ const el=document.getElementById('pdfb-empty-ico'); if(el) el.innerHTML=svgIcon('bars'); },0);
+let pdfbResizeT=null;
+window.addEventListener('resize',()=>{
+  const pg=document.getElementById('x-page-comptes');
+  if(!pg||!pg.classList.contains('active')||!pdfb.doc) return;
+  clearTimeout(pdfbResizeT); pdfbResizeT=setTimeout(()=>{ if(pdfb.zoom==null) renderPdfPage(); },180);
+});
 function enterExpert(){
   computeNN1();
   const {mn,mx}=ecrituresBounds(rawExercices?rawExercices.ecrN:rawEcritures);
