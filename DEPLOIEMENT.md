@@ -160,6 +160,23 @@ Pour le pilote, on installe sur **votre** poste, pas sur le serveur du cabinet.
 Deux raisons : vous n'avez besoin de personne, et si quelque chose ne va pas,
 ça n'affecte personne d'autre. Le serveur, ce sera la partie D.
 
+> ### À lire avant de copier quoi que ce soit
+>
+> Les commandes de ce guide sont encadrées par des lignes de trois accents
+> graves. **Ces lignes ne se copient pas** : ce sont des marques de mise en
+> page, pas des commandes. Seule la ligne du milieu se copie.
+>
+> ```
+> ```powershell        ← ne pas copier
+> python --version     ← copier seulement ceci
+> ```                  ← ne pas copier
+> ```
+>
+> Si vous collez une ligne d'accents graves, le terminal répond
+> `Le terme «```powershell» n'est pas reconnu…`. Ce n'est pas une panne :
+> il vous dit qu'il ne connaît pas cette commande, parce que ce n'en est pas
+> une. Ignorez et copiez la bonne ligne.
+
 ## B1. Ouvrir le terminal
 
 C'est une fenêtre où l'on tape des commandes au lieu de cliquer.
@@ -186,13 +203,35 @@ python3 --version
 python --version
 ```
 
-Si vous voyez `Python 3.11.5` (ou n'importe quel numéro qui commence par 3),
+Si vous voyez `Python 3.13.2` (ou n'importe quel numéro qui commence par 3),
 c'est bon, passez à B3.
 
-Si vous voyez une erreur : allez sur **python.org/downloads**, téléchargez la
-version proposée, installez-la. **Sur Windows, à la première fenêtre de
-l'installateur, cochez la case « Add Python to PATH » en bas** — sans elle, la
-commande ne sera pas trouvée. Fermez le terminal, rouvrez-en un, recommencez.
+### Si Python n'est pas installé
+
+**Sur Windows**, le message est : *« Python est introuvable ; exécutez sans
+arguments à installer à partir du Microsoft Store »*. Faites exactement ce
+qu'il dit — tapez la commande **sans rien derrière** :
+
+```powershell
+python
+```
+
+Le Microsoft Store s'ouvre sur la page Python. Cliquez **Obtenir**, prenez la
+version la plus récente proposée, attendez la fin de l'installation.
+
+C'est la voie la plus simple sous Windows : le Store règle tout seul le
+réglage que l'installateur classique de python.org fait rater à tout le monde
+(la case « Add Python to PATH », qu'il faut cocher au bon moment sur le premier
+écran, sinon rien ne fonctionne ensuite).
+
+**Sur Mac**, allez sur **python.org/downloads** et installez la version
+proposée.
+
+Dans les deux cas, **fermez complètement la fenêtre du terminal et rouvrez-en
+une neuve** avant de refaire `python --version`. Une fenêtre déjà ouverte ne
+voit pas ce qui vient d'être installé — c'est l'erreur classique à cette étape,
+et elle donne exactement le même message qu'avant, ce qui laisse croire que
+l'installation a échoué.
 
 ## B3. Télécharger Saisio
 
