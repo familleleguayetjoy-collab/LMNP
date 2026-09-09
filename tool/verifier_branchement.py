@@ -28,6 +28,38 @@ import tempfile
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
+# --- réglages : un simple fichier texte, pas des variables d'environnement ---
+# Un débutant ne devrait pas avoir à se battre avec `export` sous Mac et `setx`
+# sous Windows. On lit `saisio.env` à la racine du projet, une ligne par
+# réglage, et on ne touche à rien s'il n'existe pas.
+def charger_reglages():
+    racine = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    # « saisio.env.txt » : le Bloc-notes ajoute l'extension sans le dire, et le
+    # débutant cherche alors une faute qu'il n'a pas faite.
+    for nom in ("saisio.env", "saisio.env.txt"):
+        fichier = os.path.join(racine, nom)
+        if os.path.exists(fichier):
+            break
+    else:
+        return None
+    lus = 0
+    # utf-8-sig : le Bloc-notes de Windows préfixe le fichier d'un BOM, qui
+    # collerait sinon au nom du premier réglage — la clé serait « invisible ».
+    with open(fichier, encoding="utf-8-sig") as f:
+        for ligne in f:
+            ligne = ligne.strip()
+            if not ligne or ligne.startswith("#") or "=" not in ligne:
+                continue
+            cle, _, val = ligne.partition("=")
+            val = val.strip().strip('"').strip("'")
+            if val:
+                os.environ.setdefault(cle.strip(), val)
+                lus += 1
+    return fichier if lus else None
+
+
+FICHIER_REGLAGES = charger_reglages()
+
 VERT, ROUGE, JAUNE, GRIS, FIN = "\033[32m", "\033[31m", "\033[33m", "\033[90m", "\033[0m"
 
 
@@ -78,8 +110,9 @@ def etape_cle() -> bool:
     titre(2, "La clé API Anthropic")
     cle = os.environ.get("ANTHROPIC_API_KEY", "")
     if not cle:
-        return ko("ANTHROPIC_API_KEY absente",
-                  "export ANTHROPIC_API_KEY='sk-ant-…' (ou dans le service systemd)")
+        return ko("clé API absente",
+                  "ajoutez la ligne  ANTHROPIC_API_KEY=sk-ant-…  "
+                  "dans le fichier saisio.env, à la racine du projet")
     ok("clé présente", "…%s" % cle[-6:])
     try:
         import anthropic          # noqa: F401
@@ -103,8 +136,9 @@ def etape_cle() -> bool:
 def etape_drive(dossier_id: str, cles: str) -> bool:
     titre(3, "Le Drive du cabinet")
     if not dossier_id:
-        return ko("identifiant du dossier d'entrée manquant",
-                  "--drive <id>  (l'id est dans l'URL du dossier Drive)")
+        return ko("identifiant du dossier Drive manquant",
+                  "ajoutez la ligne  SAISIO_DRIVE_ENTREE=1AbC…  dans saisio.env "
+                  "(l'identifiant est dans l'URL du dossier Drive)")
     from s2a_lmnp import verifier_acces, DependanceManquante
     try:
         r = verifier_acces(dossier_id, cles)
@@ -213,6 +247,11 @@ def main():
 
     print("\nSAISIO — vérification de branchement")
     print("=" * 44)
+    if FICHIER_REGLAGES:
+        print("%sréglages lus dans %s%s" % (GRIS, FICHIER_REGLAGES, FIN))
+    else:
+        print("%saucun fichier saisio.env — voir DEPLOIEMENT.md, partie B5%s"
+              % (GRIS, FIN))
 
     etapes = [
         ("moteur", lambda: etape_moteur()),

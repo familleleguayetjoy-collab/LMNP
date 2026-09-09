@@ -233,10 +233,18 @@ sert de repli et le rangement est marqué comme estimé.
 
 ## Brancher — voir `DEPLOIEMENT.md`
 
+`DEPLOIEMENT.md` est écrit pour quelqu'un qui n'a jamais ouvert un terminal :
+chaque clic et chaque commande y sont donnés en toutes lettres, Mac et Windows.
+
+Les réglages tiennent dans un fichier texte, `saisio.env`, copié depuis
+`saisio.env.exemple` — pas de variables d'environnement à poser. Il est exclu du
+dépôt : il contient la clé API et le chemin du compte de service.
+
 Quatre étapes, chacune vérifiable :
 
 ```bash
 python3 tool/verifier_branchement.py        # moteur, clé API, Drive, bout en bout
+python3 tool/verifier_branchement.py --etape cle    # une seule
 ```
 
 Le script ne modifie rien et s'arrête au premier obstacle en disant quoi faire.

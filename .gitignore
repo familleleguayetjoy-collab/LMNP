@@ -1,6 +1,10 @@
 node_modules/
+node_modules
 .DS_Store
 
 # Python
 __pycache__/
 *.pyc
+saisio.env
+saisio.env.txt
+*.json.key
