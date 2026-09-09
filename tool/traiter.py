@@ -22,7 +22,8 @@ payées. Le moteur sait faire (`traiter_dossier`), il lui manque le relevé.
 
 Le manifeste garantit qu'une pièce déjà lue n'est jamais relue : il vit dans le
 dossier personnel de l'utilisateur, pas dans le projet, pour qu'une mise à jour
-de l'outil ne fasse pas repayer tout l'OCR.
+de l'outil ne fasse pas repayer tout l'OCR. `--refaire` passe outre — utile en
+phase de calage, et l'OCR est alors repayé.
 """
 from __future__ import annotations
 
@@ -72,6 +73,8 @@ def main():
                          "(sans ce drapeau, rien n'est écrit)")
     ap.add_argument("--limite", type=int, default=0,
                     help="ne lire que N pièces (0 = toutes)")
+    ap.add_argument("--refaire", action="store_true",
+                    help="rejouer des pièces déjà traitées (l'OCR est repayé)")
     ap.add_argument("--entree", default=os.environ.get("SAISIO_DRIVE_ENTREE", ""))
     ap.add_argument("--sortie", default=os.environ.get("SAISIO_DRIVE_SORTIE", ""))
     ap.add_argument("--cles", default=os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", ""))
@@ -93,6 +96,28 @@ def main():
         return stop("dossier d'entrée inconnu",
                     "renseignez SAISIO_DRIVE_ENTREE dans saisio.env")
 
+    # -- 0. le dépôt est-il possible ? AVANT de payer le moindre OCR ---------
+    # L'ordre compte : une lecture réussie marque les pièces dans le manifeste.
+    # Échouer sur le dossier de sortie APRÈS la lecture laissait des pièces
+    # payées, marquées traitées, et jamais déposées — il fallait alors --refaire
+    # pour les rattraper. On vérifie donc d'abord, on lit ensuite.
+    depot = None
+    if a.deposer:
+        if not a.sortie:
+            return stop("dossier de sortie inconnu",
+                        "renseignez SAISIO_DRIVE_SORTIE dans saisio.env "
+                        "(l'identifiant est dans l'URL du dossier de sortie)")
+        try:
+            depot = DepotDrive(a.sortie, a.cles)
+            v = depot.verifier()
+        except Exception as e:
+            return stop("Drive de sortie inaccessible",
+                        "le dossier est-il partagé au compte de service "
+                        "(adresse en …iam.gserviceaccount.com) ? %s" % e)
+        if not v["ok"]:
+            return stop("écriture refusée sur « %s »" % v["dossier"], v["conseil"])
+        ok("dossier de sortie", "« %s », accessible en écriture" % v["dossier"])
+
     # -- 1. le dossier du client -------------------------------------------
     try:
         racine = DriveGoogle(a.entree, a.cles)
@@ -112,14 +137,19 @@ def main():
     os.makedirs(DOSSIER_ETAT, exist_ok=True)
     cle_etat = "".join(c if c.isalnum() else "_" for c in chemin_client)
     man = Manifeste(os.path.join(DOSSIER_ETAT, cle_etat + ".json"))
-    neuves = pieces_neuves(source, man)
+    if a.refaire:
+        neuves = source.lister()
+        print("  %s⚠ --refaire : les pièces déjà lues sont relues, et l'OCR est "
+              "repayé.%s" % (JAUNE, FIN))
+    else:
+        neuves = pieces_neuves(source, man)
     if a.limite:
         neuves = neuves[:a.limite]
     if not neuves:
-        ok("aucune pièce neuve", "tout a déjà été traité")
+        ok("aucune pièce neuve", "tout a déjà été traité — --refaire pour rejouer")
         print()
         return 0
-    ok("%d pièce(s) neuve(s)" % len(neuves),
+    ok("%d pièce(s) %s" % (len(neuves), "à rejouer" if a.refaire else "neuve(s)"),
        " · ".join(p.nom for p in neuves[:4]) + (" …" if len(neuves) > 4 else ""))
 
     # -- 3. lecture et classement ------------------------------------------
@@ -152,14 +182,7 @@ def main():
               % (GRIS, a.client, l["chemin"], l["pieces"], est, FIN))
 
     # -- 5. dépôt ------------------------------------------------------------
-    if a.deposer:
-        if not a.sortie:
-            return stop("dossier de sortie inconnu",
-                        "renseignez SAISIO_DRIVE_SORTIE dans saisio.env")
-        try:
-            depot = DepotDrive(a.sortie, a.cles)
-        except Exception as e:
-            return stop("Drive de sortie indisponible", str(e))
+    if depot is not None:
         rap = deposer_plan(depot, plan, source, neuves, prefixe=a.client, ecrire=True)
         ok("déposé", "%d fichier(s)" % len(rap["deposes"]))
         if rap["deja"]:

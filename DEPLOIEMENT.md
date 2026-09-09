@@ -491,6 +491,16 @@ Documents générés par l'application/
     Autres éléments sans rapport avec la comptabilité/
 ```
 
+Une pièce déjà lue n'est jamais relue ni repayée. Pour rejouer un dossier
+entier pendant la phase de calage :
+
+```powershell
+python tool\traiter.py --client "LMNP POLO TEST" --exercice 2026 --refaire --deposer
+```
+
+L'OCR est alors repayé, mais le dépôt ne duplique rien : les pièces déjà
+présentes dans le Drive de sortie sont reconnues et laissées en place.
+
 Il faut pour cela que **`SAISIO_DRIVE_SORTIE`** soit renseigné dans
 `saisio.env` (l'identifiant du dossier de sortie, pris dans son URL comme pour
 l'entrée), et que ce dossier soit partagé au compte de service en **Éditeur**,

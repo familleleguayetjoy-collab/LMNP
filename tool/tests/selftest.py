@@ -1121,6 +1121,7 @@ class FauxDepot:
         self.noeuds = {"sortie": {"nom": "SORTIE", "parent": None,
                                   "dossier": True, "taille": 0}}
         self.creations, self.uploads, self.listages = 0, 0, 0
+        self.editeur = True
 
     def files(self):
         return self
@@ -1156,6 +1157,11 @@ class FauxDepot:
                     and n["dossier"] == veut_dossier):
                 out.append({"id": i, "name": nom, "size": str(n["taille"])})
         self._rep = {"files": out}
+        return self
+
+    def get(self, fileId=None, **kw):
+        self._rep = {"id": fileId, "name": "SORTIE",
+                     "capabilities": {"canAddChildren": self.editeur}}
         return self
 
     def create(self, body=None, media_body=None, **kw):
@@ -1239,6 +1245,17 @@ try:
 except ValueError:
     _v = True
 check(_v, "un dossier de sortie vide est refusé")
+
+# Le partage en « Lecteur » doit se voir AVANT de payer le moindre OCR : sinon
+# les pièces sont lues, marquées traitées, et jamais déposées.
+check(DepotDrive("sortie", service=FauxDepot()).verifier()["ok"],
+      "un dossier partagé en Éditeur est déclaré accessible en écriture")
+_lect = FauxDepot(); _lect.editeur = False
+_vl = DepotDrive("sortie", service=_lect).verifier()
+check(not _vl["ok"] and "Éditeur" in _vl["conseil"],
+      "un dossier partagé en Lecteur est refusé, en disant quoi corriger")
+check(_lect.creations == 0 and _lect.uploads == 0,
+      "et le constat se fait sans écrire un fichier d'essai")
 
 # racine="" : on dépose DANS le dossier de sortie, le plan doit donc être
 # relatif. Avec la racine, on recréait « Documents générés par l'application »

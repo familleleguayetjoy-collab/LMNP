@@ -86,6 +86,25 @@ class DepotDrive:
         self.service = build("drive", "v3", credentials=creds,
                              cache_discovery=False)
 
+    def verifier(self) -> dict:
+        """Le compte de service voit-il le dossier, et peut-il y écrire ?
+
+        À appeler AVANT de lire la moindre pièce : découvrir un partage en
+        « Lecteur » après avoir payé l'OCR laisse des pièces lues, marquées
+        traitées dans le manifeste, et jamais déposées. Drive répond
+        `canAddChildren` sans qu'on ait à tenter une écriture d'essai — donc
+        sans laisser de fichier de test derrière soi."""
+        meta = self.service.files().get(
+            fileId=self.racine_id, fields="id, name, capabilities/canAddChildren",
+            supportsAllDrives=True).execute()
+        peut = bool((meta.get("capabilities") or {}).get("canAddChildren"))
+        return {"ok": peut, "dossier": meta.get("name", ""),
+                "ecriture": peut,
+                "conseil": "" if peut else
+                           "le dossier « %s » est partagé au compte de service "
+                           "en Lecteur : passez-le en Éditeur."
+                           % meta.get("name", "")}
+
     # -- arborescence -------------------------------------------------------
     def _chercher(self, nom: str, parent_id: str, dossier: bool):
         """Premier enfant portant ce nom, ou None. On échappe l'apostrophe :
