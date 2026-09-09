@@ -110,11 +110,16 @@ def mois_de(facture) -> tuple[str, bool]:
 
 
 def chemin(facture, *, traite: bool, racine: str = RACINE, exercice=None) -> str:
-    """Chemin de rangement d'une pièce, relatif au dossier du client."""
+    """Chemin de rangement d'une pièce, relatif au dossier du client.
+
+    `racine=""` rend un chemin **relatif**, sans le nom du dossier de sortie :
+    c'est ce qu'il faut quand on dépose DANS ce dossier, sinon on recrée à
+    l'intérieur un dossier du même nom que lui."""
     mois, _ = mois_de(facture)
     d = getattr(facture, "date_reglement", None) or getattr(facture, "date", None)
-    return "%s/%s/%s/%s" % (racine, exercice_de(d, exercice), mois,
-                            TRAITE if traite else EN_ATTENTE)
+    parts = [racine, exercice_de(d, exercice), mois,
+             TRAITE if traite else EN_ATTENTE]
+    return "/".join(p for p in parts if p)
 
 
 def ranger(factures, rejets=None, *, racine: str = RACINE, exercice=None) -> dict:
@@ -143,7 +148,8 @@ def ranger(factures, rejets=None, *, racine: str = RACINE, exercice=None) -> dic
     for r in rejets or []:
         if sans_rapport(r):
             # ni écriture, ni relance, ni revue : hors du rangement par mois
-            plan.setdefault("%s/%s" % (racine, SANS_RAPPORT), []).append({
+            plan.setdefault("/".join(p for p in (racine, SANS_RAPPORT) if p),
+                            []).append({
                 "fichier": r.get("fichier", ""),
                 "empreinte": r.get("empreinte", ""),
                 "mois_estime": False,

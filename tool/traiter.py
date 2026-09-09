@@ -140,11 +140,16 @@ def main():
                                      r.get("motif", ""), FIN))
 
     # -- 4. plan de rangement ----------------------------------------------
-    plan = ranger(factures, rejets, exercice=Exercice.civil(a.exercice))
+    # `racine=""` : le plan est RELATIF au dossier de sortie, puisqu'on dépose
+    # dedans. Avec la racine, on recréerait « Documents générés par
+    # l'application » à l'intérieur de « Documents générés par l'application ».
+    plan = ranger(factures, rejets, racine="", exercice=Exercice.civil(a.exercice))
     ok("plan de rangement", "%d dossier(s)" % len(plan))
     for l in resume_rangement(plan):
-        est = (" (%d mois estimé[s])" % l["estimees"]) if l["estimees"] else ""
-        print("    %s%s → %d pièce(s)%s%s" % (GRIS, l["chemin"], l["pieces"], est, FIN))
+        est = (" — mois estimé, pas de date de règlement sur la pièce"
+               if l["estimees"] else "")
+        print("    %s%s/%s → %d pièce(s)%s%s"
+              % (GRIS, a.client, l["chemin"], l["pieces"], est, FIN))
 
     # -- 5. dépôt ------------------------------------------------------------
     if a.deposer:

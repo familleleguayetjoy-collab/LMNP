@@ -1240,6 +1240,30 @@ except ValueError:
     _v = True
 check(_v, "un dossier de sortie vide est refusé")
 
+# racine="" : on dépose DANS le dossier de sortie, le plan doit donc être
+# relatif. Avec la racine, on recréait « Documents générés par l'application »
+# à l'intérieur de « Documents générés par l'application ».
+_fac = Facture("EDF", D(2026, 8, 3), 57.79)
+_fac.date_reglement = D(2026, 8, 20)
+check(chemin(_fac, traite=True, racine="") == "Exercice 2026/2026-08/Traité",
+      "racine vide -> chemin relatif, sans le nom du dossier de sortie")
+check(chemin(_fac, traite=True).startswith(RACINE + "/"),
+      "et par défaut le chemin porte toujours la racine")
+_planr = ranger([], [{"categorie": "hors_sujet", "fichier": "photo.jpg",
+                      "empreinte": "e", "motif": "photo"}], racine="")
+check(list(_planr) == [SANS_RAPPORT],
+      "les pièces sans rapport aussi : pas de racine en double")
+
+# la composition telle que la fait `traiter.py` : plan relatif + nom du client,
+# déposé dans le dossier de sortie. C'est le chemin final vu par le cabinet.
+_fac.fichier, _fac.empreinte = "9ubucda.pdf", _refs[0].empreinte
+_fd3 = FauxDepot()
+_rapc = deposer_plan(DepotDrive("sortie", service=_fd3),
+                     ranger([_fac], racine="", exercice=Exercice.civil(2026)),
+                     _src2, _refs, prefixe="LMNP POLO TEST", ecrire=True)
+check(_rapc["dossiers"] == ["LMNP POLO TEST/Exercice 2026/2026-08/Traité"],
+      "chemin final : client/exercice/mois/statut, sous le dossier de sortie")
+
 # résolution CLIENT/année côté lecture : on ne crée rien, et on ne devine rien
 _srcd = DriveGoogle("racine", service=FauxDrive())
 check(resoudre_chemin(_srcd, "DUPONT/2026") == "d2",
