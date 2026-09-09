@@ -820,7 +820,8 @@ check(fac31[0].date_reglement == D(2026, 1, 12) and fac31[0].payee,
 
 print("32) Rangement du dossier de sortie : exercice, mois de RÈGLEMENT, statut")
 from s2a_lmnp import (ranger, chemin, mois_de, resume_rangement, Exercice,
-                      exercice_de, RACINE, TRAITE, EN_ATTENTE)
+                      exercice_de, sans_rapport, RACINE, TRAITE, EN_ATTENTE,
+                      SANS_RAPPORT)
 
 # facture de décembre réglée en janvier -> rangée en 2026-01 (comme l'écriture)
 fr1 = Facture("EDF", D(2025, 12, 28), 69.34); fr1.date_reglement = D(2026, 1, 12)
@@ -875,6 +876,32 @@ try:
 except ValueError:
     ko = True
 check(ko, "un exercice qui se ferme avant de s'ouvrir est refusé")
+
+# Ce qui n'a rien à voir avec la comptabilité sort du rangement par mois.
+hors_compta = [
+    {"brut": {"date": "2026-04-02"}, "categorie": "hors_sujet",
+     "fichier": "photo_chat.jpg", "empreinte": "c4t",
+     "motif": "document « hors_sujet » : non comptable"},
+    {"brut": {"date": "2026-01-15"}, "categorie": "contrat",
+     "fichier": "bail_signe.pdf", "empreinte": "b41l",
+     "motif": "document « contrat » : non comptable"},
+    {"brut": {"date": "2026-02-01"}, "categorie": "releve_bancaire",
+     "fichier": "releve_fevrier.pdf", "empreinte": "r3l",
+     "motif": "document « releve_bancaire » : non comptable"},
+]
+check(all(sans_rapport(r) for r in hors_compta), "photo, contrat, relevé : sans rapport")
+check(not sans_rapport(rej32[0]), "un devis A un rapport : il peut devenir une facture")
+
+plan34 = ranger([fr1], hors_compta + rej32, exercice=ex26)
+dossier_autres = RACINE + "/" + SANS_RAPPORT
+check(len(plan34.get(dossier_autres, [])) == 3,
+      "les trois pièces hors comptabilité vont dans un dossier unique")
+check(all("/2026-" not in dossier_autres for _ in [0]),
+      "ce dossier n'est PAS rangé par mois")
+check(len(plan34.get(RACINE + "/Exercice 2026/2026-03/" + EN_ATTENTE, [])) == 1,
+      "le devis reste en attente, dans son mois")
+check(sum(len(v) for v in plan34.values()) == 5, "aucune pièce perdue")
+check(plan34[dossier_autres][0]["motif"], "chaque pièce écartée garde son motif")
 
 print("33) Le relevé fixe la date de règlement de la facture (trésorerie)")
 # la pièce annonce le 28/12 ; la banque dit le 12/01 -> c'est la banque qui gagne

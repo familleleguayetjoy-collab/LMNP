@@ -79,7 +79,14 @@ t('Entrée valide', (await p.locator('.oprow.on .lib').innerText())!==k0);
 
 // ---- factures réglées hors relevé ----
 await p.locator('.js-wstabs .optab', {hasText:'Hors relevé'}).click(); await p.waitForTimeout(250);
-t('deux factures hors relevé', (await p.locator('.oprow').count())===2);
+t('trois factures hors relevé', (await p.locator('.oprow').count())===3,
+  (await p.locator('.oprow .chip').allInnerTexts()).map(x=>x.trim()).join(' / '));
+// trois états bien distincts : datée, acquittée sans date, jamais réglée
+await p.locator('.oprow', {hasText:'STORES'}).click(); await p.waitForTimeout(250);
+t('facture sans aucun règlement : aucune écriture annoncée',
+  /Aucune écriture ne sera produite/.test(await p.locator('.odnote').innerText()));
+t('et on peut interroger le client',
+  (await p.locator('.js-demdate').innerText()).includes('réglée'));
 await p.locator('.oprow', {hasText:'SYNDIC AZUR APPEL T3'}).click(); await p.waitForTimeout(200);
 t('OD 108 annoncée avec sa date', (await p.locator('.odnote').innerText()).includes('12/07/2026'),
   (await p.locator('.odnote').innerText()));

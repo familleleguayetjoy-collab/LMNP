@@ -99,10 +99,16 @@ Le parcours d'un dossier tient en cinq écrans, un par décision :
    **Appliquer aux N autres lignes** du même fournisseur (gris).
    Deux autres choses font la vitesse : le clavier (↑ ↓ pour parcourir, Entrée
    pour valider) et le fait que les lignes sans statut soient déjà imputées.
-   Le quatrième onglet est **l'exception de trésorerie** : les factures
-   acquittées qu'on ne retrouve pas au relevé. On y saisit la date portée par
-   la pièce, qui datera l'écriture d'OD ; sans date, un bouton l'ajoute à la
-   liste des demandes au client.
+   Le quatrième onglet réunit **les factures absentes du relevé**, dans les
+   trois états possibles — et un seul produit une écriture, parce qu'en
+   trésorerie, pas de flux, pas d'écriture :
+   - *Prête* : la pièce porte sa date de règlement → OD 108 à cette date ;
+   - *Sans date* : la pièce dit « payée » sans dire quand → on demande la date
+     au client, rien ne sort tant qu'on ne l'a pas ;
+   - *Non réglée* : ni mouvement en banque, ni mention sur la pièce → **aucune
+     écriture**, la facture reste ouverte pour l'exercice suivant et on
+     interroge le client. L'écran de sortie le rappelle : « 2 factures sans
+     règlement identifié : aucune écriture produite ».
 3. **Justificatifs à demander** — deux onglets : *Pièce manquante* et
    *Règlement à justifier*, alimentés depuis l'écran précédent.
 4. **Le mail** — brouillon prêt, en deux sections correspondant aux deux
@@ -153,7 +159,7 @@ optionnelles (Pillow, pypdfium2) servent au seul prétraitement des images et le
 absence est **signalée**, jamais silencieuse.
 
 ```bash
-python3 tool/tests/selftest.py        # 212 contrôles
+python3 tool/tests/selftest.py        # 219 contrôles
 python3 tool/demo/demo_pipeline_complet.py
 ```
 
@@ -182,13 +188,22 @@ Documents générés par l'application/
     Exercice 2026/
         2026-01/
             Traité/                    (une écriture a été produite)
-            En attente de traitement/  (non comptable, incomplet, en attente client)
+            En attente de traitement/  (devis, scan illisible, montants incohérents)
         2026-03/
             ...
     Hors exercice 2027/
         2027-01/
             ...
+    Autres éléments sans rapport avec la comptabilité/
 ```
+
+**Ce qui n'a rien à voir avec la comptabilité sort du rangement par mois.** Une
+photo prise par erreur, un contrat de bail, un relevé bancaire que le cabinet a
+déjà : rien à comptabiliser, rien à réclamer, et surtout rien à revoir chaque
+mois. Ces pièces vont dans un dossier unique à la racine plutôt que d'encombrer
+les mois de l'exercice — on ne les perd pas, on cesse de les croiser. Un devis
+ou un bon de commande n'en font pas partie : ils peuvent devenir une facture,
+ils restent « en attente ».
 
 **L'exercice d'abord.** Une pièce appartient à un exercice avant d'appartenir à
 un mois. Sans ce niveau, une facture de janvier 2027 tombée dans le dépôt d'un
@@ -208,8 +223,8 @@ sert de repli et le rangement est marqué comme estimé.
 
 | suite | ce qu'elle couvre |
 |---|---|
-| `tool/tests/selftest.py` | 212 contrôles sur le moteur — normalisation, FEC, codage, rapprochement, IA simulée, idempotence, classement, coût, trésorerie, rangement |
-| `tool/tests/ui/` | 139 contrôles d'interface pilotés dans un vrai navigateur, dont la vérification **du fichier ASCII réellement produit** et le fait que chacune des 8 règles pilote vraiment quelque chose (voir `tool/tests/ui/LISEZMOI.md`) |
+| `tool/tests/selftest.py` | 219 contrôles sur le moteur — normalisation, FEC, codage, rapprochement, IA simulée, idempotence, classement, coût, trésorerie, rangement |
+| `tool/tests/ui/` | 142 contrôles d'interface pilotés dans un vrai navigateur, dont la vérification **du fichier ASCII réellement produit** et le fait que chacune des 8 règles pilote vraiment quelque chose (voir `tool/tests/ui/LISEZMOI.md`) |
 
 ---
 

@@ -28,10 +28,18 @@ Trois décisions, prises ici une bonne fois :
    est marquée comme telle (`mois_estime`) pour qu'on sache que le rangement est
    une hypothèse.
 
-2. **Deux états seulement** : `Traité` (une écriture a été produite) et
-   `En attente de traitement` (tout le reste : pièce non comptable, incomplète,
-   en attente d'une information du client). Un état intermédiaire de plus serait
-   un état que personne ne maintient.
+2. **Deux états, plus une sortie de côté.** Sous chaque mois : `Traité` (une
+   écriture a été produite) et `En attente de traitement` (la pièce est du
+   ressort de la comptabilité mais il manque quelque chose : un devis qui
+   deviendra une facture, un scan illisible, des montants incohérents).
+   Un état intermédiaire de plus serait un état que personne ne maintient.
+
+3. **Ce qui n'a rien à voir avec la comptabilité sort du rangement par mois.**
+   Une photo prise par erreur, un contrat de bail, un relevé bancaire que le
+   cabinet a déjà : rien à comptabiliser, rien à réclamer, et surtout rien à
+   revoir chaque mois. Ces pièces vont dans un dossier unique à la racine —
+   `Autres éléments sans rapport avec la comptabilité` — au lieu d'encombrer
+   les mois de l'exercice. On ne les perd pas, on cesse de les croiser.
 """
 from __future__ import annotations
 from datetime import date
@@ -39,6 +47,19 @@ from datetime import date
 RACINE = "Documents générés par l'application"
 TRAITE = "Traité"
 EN_ATTENTE = "En attente de traitement"
+SANS_RAPPORT = "Autres éléments sans rapport avec la comptabilité"
+
+# Catégories du classement qui n'appellent AUCUN traitement comptable : ni
+# écriture, ni relance, ni revue. Un devis ou un bon de commande n'en font pas
+# partie — ils peuvent devenir une facture, ils restent « en attente ».
+CATEGORIES_SANS_RAPPORT = ("hors_sujet", "contrat", "releve_bancaire")
+
+
+def sans_rapport(rejet) -> bool:
+    """Vrai si la pièce refusée n'a rien à voir avec la comptabilité."""
+    cat = (rejet.get("categorie")
+           or (rejet.get("brut") or {}).get("categorie") or "").strip().lower()
+    return cat in CATEGORIES_SANS_RAPPORT
 
 
 class Exercice:
@@ -100,8 +121,11 @@ def ranger(factures, rejets=None, *, racine: str = RACINE, exercice=None) -> dic
     """Construit le plan de rangement complet d'un traitement.
 
     `factures` = pièces retenues (une écriture est produite) -> `Traité`.
-    `rejets`   = pièces écartées par le classement (devis, illisible, montants
-                 incohérents...) -> `En attente de traitement`, avec leur motif.
+    `rejets`   = pièces écartées par le classement. Celles qui n'ont rien à voir
+                 avec la comptabilité (photo, contrat, relevé) partent dans
+                 `Autres éléments sans rapport avec la comptabilité`, à la
+                 racine ; les autres (devis, illisible, montants incohérents)
+                 dans `En attente de traitement` du mois, avec leur motif.
 
     Renvoie `{chemin: [entrées]}`, chaque entrée portant le nom du fichier, son
     empreinte, et le motif quand la pièce est en attente. Aucune pièce n'est
@@ -117,6 +141,15 @@ def ranger(factures, rejets=None, *, racine: str = RACINE, exercice=None) -> dic
             "motif": "",
         })
     for r in rejets or []:
+        if sans_rapport(r):
+            # ni écriture, ni relance, ni revue : hors du rangement par mois
+            plan.setdefault("%s/%s" % (racine, SANS_RAPPORT), []).append({
+                "fichier": r.get("fichier", ""),
+                "empreinte": r.get("empreinte", ""),
+                "mois_estime": False,
+                "motif": r.get("motif", ""),
+            })
+            continue
         # un rejet n'a pas d'objet Facture : on range sur ce qu'on sait de lui
         brut = r.get("brut") or {}
         faux = type("P", (), {"date_reglement": None, "date": _d(brut.get("date"))})()

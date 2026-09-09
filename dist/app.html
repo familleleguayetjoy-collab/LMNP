@@ -1027,10 +1027,17 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
   }
   // P(date de la facture, TTC, TVA, couleur, initiale)
   function P(dtf,ttc,tva,col,ini){return {dtf:dtf,ttc:ttc,tva:tva,col:col,ini:ini};}
-  // H(...) : facture acquittée JAMAIS retrouvée au relevé -> OD, contrepartie 108
-  function H(dtf,lib,ttc,tva,paye,cpt,op,col,ini){
+  // H(...) : facture absente du relevé. Trois cas, et un seul produit une
+  // écriture — en trésorerie, pas de flux, pas d'écriture :
+  //   `paye` renseigné            -> OD 108 à cette date. Exportée.
+  //   `acquittee` sans date       -> la pièce dit « payée » mais ne dit pas
+  //                                  quand : on demande la date, rien ne sort.
+  //   ni l'un ni l'autre          -> rien ne prouve un règlement : NON RÉGLÉE,
+  //                                  rien ne sort, on interroge le client.
+  function H(dtf,lib,ttc,tva,paye,cpt,op,col,ini,acquittee){
     var o=O(dtf,lib,ttc,"D",cpt,P(dtf,ttc,tva,col,ini),op,{hors:true});
     o.paye=paye; o.payeIso=paye?paye.split('/').reverse().join('-'):"";
+    o.acquittee=!!(paye || acquittee);
     return o;
   }
 
@@ -1090,7 +1097,9 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
     H("09/07/2026","SYNDIC AZUR APPEL T3",438.00,0,"12/07/2026","614",
       opts("614","615"),"#5b6b7a","S"),
     H("03/10/2026","PLOMBERIE RIVIERA",295.00,49.17,"","615",
-      opts("615","2135"),"#b06a2c","P")   // sans date : à demander au client
+      opts("615","2135"),"#b06a2c","P",true),  // « payée », sans date : à demander
+    H("18/11/2026","STORES & VOLETS AZUR",1240.00,206.67,"","615",
+      opts("615","2135","2184"),"#4a6b8a","S")  // aucune trace de règlement
   ];
   var DEFAULT_RECLAM=[
     {lib:"Menuiserie Des Cimes",dt:"18/03/2026",m:3480.00,on:true,nature:"piece"},
@@ -1355,7 +1364,9 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
       // le volet de droite, ils n'ont pas à encombrer la liste.
       var chip = o.attente ? ['att','En attente 471']
         : o.ok            ? ['ok','Traité']
-        : o.hors          ? (o.paye ? ['pret','Prête'] : ['justif','Sans date'])
+        : o.hors          ? (o.paye ? ['pret','Prête']
+                             : o.acquittee ? ['justif','Sans date']
+                                           : ['montant','Non réglée'])
         : st.length       ? [st[0],libStatut(st[0])]
                           : ['ok','Traité'];   // aucune règle ne la retient : décidée seule
       var mt = (o.sens==="C"?'+':'−')+o.m.toLocaleString('fr-FR',
@@ -1480,10 +1491,21 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
       +(hors
         ? (o.paye
            ? '<p class="odnote">Écriture au <b>journal d\'OD</b>, contrepartie <b>108</b>, datée du <b>'+o.paye+'</b>.</p>'
-           : '<p class="odnote manque">Sans date de règlement, l\'écriture d\'OD ne peut pas être datée.'
-             +' <button class="lienregles js-demdate'+(demandeReg&&demandeReg.on?' actif':'')+'">'
-             +(demandeReg&&demandeReg.on?'✓ Date demandée au client':'Demander la date au client')
-             +'</button></p>')
+           : o.acquittee
+             ? '<p class="odnote manque">La pièce indique qu\'elle est payée mais ne dit pas quand : '
+               +'sans date, l\'écriture d\'OD ne peut pas être datée.'
+               +' <button class="lienregles js-demdate'+(demandeReg&&demandeReg.on?' actif':'')+'">'
+               +(demandeReg&&demandeReg.on?'✓ Date demandée au client':'Demander la date au client')
+               +'</button></p>'
+             // Ni mouvement en banque, ni mention de règlement : en trésorerie,
+             // pas de flux, donc PAS D'ÉCRITURE. La pièce n'est pas perdue pour
+             // autant — elle attend une réponse du client.
+             : '<p class="odnote manque">Aucun règlement : ni mouvement en banque, ni mention '
+               +'sur la pièce. <b>Aucune écriture ne sera produite</b> — en trésorerie, pas de '
+               +'flux, pas d\'écriture. La facture reste ouverte pour l\'exercice suivant.'
+               +' <button class="lienregles js-demdate'+(demandeReg&&demandeReg.on?' actif':'')+'">'
+               +(demandeReg&&demandeReg.on?'✓ Question posée au client':'Demander au client si elle a été réglée')
+               +'</button></p>')
         : '')
       +'<div class="wcpt"><label>Comptabiliser en'
       +(ventile?'':sel)+'</label>'
@@ -2051,7 +2073,13 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
       if(avecBanque) ecrire(o,'BQ','512');
       else           ecrire(o,'OD','108');
     });
-    HORS.forEach(function(o){ ecrire(o,'OD','108'); });
+    // Seule une facture DATÉE d'un règlement produit une écriture : sans flux,
+    // la comptabilité de trésorerie n'a rien à enregistrer.
+    var ignorees=0;
+    HORS.forEach(function(o){
+      if(!o.paye){ ignorees++; return; }
+      ecrire(o,'OD','108');
+    });
     var stamp=horodatage();
     var fichier=nom+'_OD_'+stamp+'.txt';
     // Export réel : on génère le fichier ASCII et on le télécharge.
@@ -2064,6 +2092,9 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
       +'<p>Le fichier est <b>exporté</b> et, au même moment, <b>enregistré automatiquement</b> (horodaté) dans <b>« Documents générés par l\'application »</b> de <b>'+nom+'</b> sur le Drive :</p>'
       +'<div class="hist" style="margin-top:6px">'
       +(avecBanque?'<div class="hitem"><span class="hdot"></span><div class="hmain"><div class="hnom">'+nom+'_BANQUE_'+stamp+'.xlsx</div><div class="hmeta">journal de banque · triées par date, modifiables</div></div></div>':'')
+      +(ignorees?'<p class="odnote manque" style="margin-bottom:10px">'+ignorees
+        +' facture'+(ignorees>1?'s':'')+' sans règlement identifié : aucune écriture produite, '
+        +(ignorees>1?'elles restent ouvertes':'elle reste ouverte')+' pour l\'exercice suivant.</p>':'')
       +'<div class="hitem"><span class="hdot"></span><div class="hmain"><div class="hnom">'+fichier+'</div><div class="hmeta js-odmeta">'+(avecBanque?'journal d\'OD · contrepartie 108':'écritures fermes · prêtes à importer')+' · <b>'+out.length+'</b> ligne'+(out.length>1?'s':'')+' d\'écriture</div></div></div>'
       +'</div>');
   });

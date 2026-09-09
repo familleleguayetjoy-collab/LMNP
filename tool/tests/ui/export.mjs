@@ -30,7 +30,12 @@ const bq=L0.filter(l=>l.slice(9,11)==='BQ'), od=L0.filter(l=>l.slice(9,11)==='OD
 t('relevé -> journal BQ, contrepartie 512',
   bq.length>0 && bq.every(l=>l.slice(55,63)==='51200000'), bq.length+' lignes');
 t('hors relevé -> journal OD, contrepartie 108',
-  od.length===2 && od.every(l=>l.slice(55,63)==='10800000'), od.length+' lignes');
+  od.length===1 && od.every(l=>l.slice(55,63)==='10800000'), od.length+' ligne');
+// En trésorerie, pas de flux, pas d'écriture : une facture dont le règlement
+// n'est ni en banque ni mentionné sur la pièce ne doit RIEN produire.
+t('facture sans règlement identifié : aucune écriture',
+  !L0.some(l=>/STORES/.test(l)),
+  'STORES & VOLETS AZUR (1 240 €) absente du fichier');
 t('sens : les crédits sont au crédit',
   L0.some(l=>l[41]==='C') && L0.some(l=>l[41]==='D'),
   'C='+L0.filter(l=>l[41]==='C').length+' D='+L0.filter(l=>l[41]==='D').length);
@@ -42,7 +47,9 @@ await p.locator('.oprow', {hasText:'PLOMBERIE'}).click(); await p.waitForTimeout
 await p.locator('.js-paie').fill('05/11/2026');
 await p.locator('.js-paie').blur(); await p.waitForTimeout(250);
 const L1=await exporter();
-t('OD datée du règlement saisi', L1.filter(l=>l.slice(9,11)==='OD').some(l=>l.slice(14,20)==='051126'),
+t('la date saisie fait naître l\'écriture',
+  L1.filter(l=>l.slice(9,11)==='OD').length===2
+  && L1.filter(l=>l.slice(9,11)==='OD').some(l=>l.slice(14,20)==='051126'),
   L1.filter(l=>l.slice(9,11)==='OD').map(l=>l.slice(14,20)).join(' '));
 
 // une ventilation produit une ligne de plus

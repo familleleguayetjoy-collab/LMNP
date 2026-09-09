@@ -6,7 +6,7 @@ jamais de l'IA. L'IA n'intervient que sur deux tâches, et seulement pour
 *proposer* (l'humain valide) : lire une facture, proposer un compte sur un
 fournisseur inconnu.
 
-## Ce qui marche déjà (testé, `python3 tool/tests/selftest.py` → 212 contrôles OK)
+## Ce qui marche déjà (testé, `python3 tool/tests/selftest.py` → 219 contrôles OK)
 
 | Module | Rôle | État |
 |---|---|---|
@@ -224,7 +224,7 @@ locale `fr_FR`.
 ## Lancer les tests
 
 ```bash
-python3 tool/tests/selftest.py          # 212 contrôles sur le moteur
+python3 tool/tests/selftest.py          # 219 contrôles sur le moteur
 ```
 
 Et les tests d'interface de la maquette (vrai navigateur, 78 contrôles) :
