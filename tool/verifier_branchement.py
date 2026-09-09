@@ -28,35 +28,7 @@ import tempfile
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-# --- réglages : un simple fichier texte, pas des variables d'environnement ---
-# Un débutant ne devrait pas avoir à se battre avec `export` sous Mac et `setx`
-# sous Windows. On lit `saisio.env` à la racine du projet, une ligne par
-# réglage, et on ne touche à rien s'il n'existe pas.
-def charger_reglages():
-    racine = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    # « saisio.env.txt » : le Bloc-notes ajoute l'extension sans le dire, et le
-    # débutant cherche alors une faute qu'il n'a pas faite.
-    for nom in ("saisio.env", "saisio.env.txt"):
-        fichier = os.path.join(racine, nom)
-        if os.path.exists(fichier):
-            break
-    else:
-        return None
-    lus = 0
-    # utf-8-sig : le Bloc-notes de Windows préfixe le fichier d'un BOM, qui
-    # collerait sinon au nom du premier réglage — la clé serait « invisible ».
-    with open(fichier, encoding="utf-8-sig") as f:
-        for ligne in f:
-            ligne = ligne.strip()
-            if not ligne or ligne.startswith("#") or "=" not in ligne:
-                continue
-            cle, _, val = ligne.partition("=")
-            val = val.strip().strip('"').strip("'")
-            if val:
-                os.environ.setdefault(cle.strip(), val)
-                lus += 1
-    return fichier if lus else None
-
+from reglages import charger as charger_reglages
 
 FICHIER_REGLAGES = charger_reglages()
 

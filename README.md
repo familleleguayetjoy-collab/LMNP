@@ -247,6 +247,19 @@ python3 tool/verifier_branchement.py        # moteur, clé API, Drive, bout en b
 python3 tool/verifier_branchement.py --etape cle    # une seule
 ```
 
+Puis la commande de tous les jours, qui lit un dossier client et range ses
+pièces dans le Drive de sortie :
+
+```bash
+python3 tool/traiter.py --client "LMNP POLO TEST" --exercice 2026            # à blanc
+python3 tool/traiter.py --client "LMNP POLO TEST" --exercice 2026 --deposer  # dépose
+```
+
+Sans `--deposer`, rien n'est écrit nulle part. Le dépôt n'écrase ni ne supprime
+jamais rien, et relancer le même traitement ne duplique pas une pièce déjà
+déposée. `maj.ps1` met l'outil à jour sans toucher à `saisio.env` ni aux
+manifestes.
+
 Le script ne modifie rien et s'arrête au premier obstacle en disant quoi faire.
 La dernière étape lit de vraies pièces, les classe, les range et chiffre le
 coût — sans rien écrire ni sur le Drive ni dans le dossier d'entrée.
@@ -254,7 +267,8 @@ coût — sans rien écrire ni sur le Drive ni dans le dossier d'entrée.
 ## Ce qui reste à câbler avant la mise en service
 
 - le **connecteur Gmail** pour déposer les brouillons de relance ;
-- la **clé API** dans l'environnement de déploiement ;
+- un **lecteur de relevé bancaire** — sans lui, aucune écriture n'est produite :
+  en trésorerie, c'est le relevé qui fait foi ;
 - la **campagne de calibrage** du classement sur 50 pièces réelles (objectif :
   ≥ 95 % sur les devis).
 

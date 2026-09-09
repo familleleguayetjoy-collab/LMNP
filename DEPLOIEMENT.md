@@ -12,11 +12,13 @@ chaque partie vérifie la précédente.
 | **A** | Créer les deux comptes et récupérer trois informations | dans votre navigateur | 45 min |
 | **B** | Installer Saisio sur **votre** ordinateur | terminal, copier-coller | 20 min |
 | **C** | Le premier vrai test, sur un vrai dossier | terminal, une commande | 30 min |
-| **D** | Plus tard : les 15 postes du cabinet | un technicien | — |
+| **D** | Se servir de l'outil, et le mettre à jour | terminal, une commande | 10 min |
+| **E** | Plus tard : les 15 postes du cabinet | un technicien | — |
 
-Une règle avant de commencer : **rien de ce que vous allez faire n'écrit quoi
-que ce soit**, ni sur le Drive, ni dans vos dossiers clients. Saisio lit. Vous
-ne pouvez pas casser quelque chose en essayant.
+Une règle avant de commencer : **jusqu'à la fin de la partie C, rien n'écrit
+quoi que ce soit**, ni sur le Drive, ni dans vos dossiers clients. Saisio lit.
+Vous ne pouvez pas casser quelque chose en essayant. La seule commande qui
+dépose des fichiers est en partie D, et il faut le lui demander explicitement.
 
 ---
 
@@ -27,7 +29,7 @@ Ce sont elles qui font tout marcher :
 
 1. une **clé API Anthropic** — une longue suite de caractères qui commence par `sk-ant-`
 2. un **fichier JSON** téléchargé depuis Google — le laissez-passer du robot
-3. l'**identifiant du dossier Drive d'entrée** — un bout de l'adresse du dossier
+3. les **identifiants des deux dossiers Drive** — un bout de leur adresse
 
 Gardez-les de côté au fur et à mesure. On les rassemblera en partie B.
 
@@ -146,11 +148,16 @@ que vous lui partagez explicitement. Il ne peut pas fouiller votre Drive.
                                           └────── copiez ceci ──────┘
    ```
 
-   Copiez ce qui suit `folders/` dans votre fichier texte. C'est la troisième
-   information.
+   Copiez ce qui suit `folders/` dans votre fichier texte.
+
+5. **Refaites la même chose sur « Documents générés par l'application ».**
+   Notez bien lequel est lequel : c'est le dossier d'entrée que Saisio lit, et
+   le dossier de sortie où il dépose. Les intervertir est l'erreur la plus
+   naturelle du branchement — et la plus déroutante, parce que le dossier de
+   sortie est vide et ressemble alors trait pour trait à un partage raté.
 
 **Fin de la partie A.** Vous avez : la clé `sk-ant-…`, le fichier JSON dans
-*Documents/Saisio*, et l'identifiant du dossier d'entrée.
+*Documents/Saisio*, et les identifiants des deux dossiers Drive.
 
 ---
 
@@ -158,7 +165,7 @@ que vous lui partagez explicitement. Il ne peut pas fouiller votre Drive.
 
 Pour le pilote, on installe sur **votre** poste, pas sur le serveur du cabinet.
 Deux raisons : vous n'avez besoin de personne, et si quelque chose ne va pas,
-ça n'affecte personne d'autre. Le serveur, ce sera la partie D.
+ça n'affecte personne d'autre. Le serveur, ce sera la partie E.
 
 > ### À lire avant de copier quoi que ce soit
 >
@@ -332,7 +339,8 @@ Trois pièges, les seuls :
   du terminal, le chemin s'écrit tout seul. Sur Windows, clic droit sur le
   fichier → *Copier en tant que chemin d'accès*, et **retirez les guillemets**
   que Windows ajoute.
-- Ne mettez rien dans `SAISIO_DRIVE_SORTIE` pour l'instant : on ne fait que lire.
+- `SAISIO_DRIVE_SORTIE` ne sert qu'en partie D, au moment de déposer ; vous
+  pouvez le remplir tout de suite, ça ne déclenche rien.
 
 Enregistrez, fermez.
 
@@ -433,7 +441,102 @@ leurs mains.
 
 ---
 
-# D. Plus tard : le cabinet
+# D. Se servir de l'outil
+
+`verifier_branchement.py` vérifie ; il ne travaille pas. La commande de tous
+les jours est **`traiter.py`**.
+
+## D1. Ranger le Drive d'entrée
+
+```
+Input compta tréso/
+  LMNP POLO TEST/
+    2026/
+      facture-edf.pdf
+      ...
+```
+
+Un dossier par client, un sous-dossier par année. C'est ce que la commande
+attend, et c'est ce que le Drive de sortie reproduira.
+
+## D2. Le premier passage, à blanc
+
+```powershell
+cd $HOME\Documents\Saisio\LMNP ; python tool\traiter.py --client "LMNP POLO TEST" --exercice 2026
+```
+
+**Rien n'est écrit.** C'est le comportement par défaut, et il n'y a pas de
+raison d'en changer tant que vous n'êtes pas d'accord avec ce que la commande
+annonce. Elle affiche : les pièces neuves, le classement avec le motif de
+chaque pièce écartée, le plan de rangement complet, ce qu'elle aurait déposé,
+et ce que l'OCR a coûté.
+
+## D3. Le dépôt réel
+
+Quand le plan vous convient, ajoutez `--deposer` :
+
+```powershell
+cd $HOME\Documents\Saisio\LMNP ; python tool\traiter.py --client "LMNP POLO TEST" --exercice 2026 --deposer
+```
+
+Les pièces arrivent alors dans le Drive de sortie, sous :
+
+```
+Documents générés par l'application/
+  LMNP POLO TEST/
+    Exercice 2026/
+      2026-03/
+        Traité/
+        En attente de traitement/
+    Autres éléments sans rapport avec la comptabilité/
+```
+
+Il faut pour cela que **`SAISIO_DRIVE_SORTIE`** soit renseigné dans
+`saisio.env` (l'identifiant du dossier de sortie, pris dans son URL comme pour
+l'entrée), et que ce dossier soit partagé au compte de service en **Éditeur**,
+pas en Lecteur.
+
+Trois garanties tenues par le code, pas par la consigne :
+
+- **rien n'est jamais écrasé ni supprimé.** Un nom déjà présent est laissé tel
+  quel et signalé ;
+- **relancer ne duplique rien.** Une pièce déjà déposée est reconnue ;
+- **le dossier d'entrée n'est jamais modifié.** Il est partagé en Lecteur, et
+  le connecteur de lecture ne contient aucune méthode d'écriture.
+
+## D4. Ce que la commande ne fait pas encore
+
+Elle **ne produit aucune écriture comptable**, et c'est volontaire. En
+comptabilité de trésorerie, c'est le relevé bancaire qui décide de ce qui est
+comptabilisé et à quelle date. Produire des écritures à partir des seules
+factures donnerait des dates fausses et des charges peut-être jamais payées.
+
+Le moteur sait tenir tout le chemin — il est testé — il lui manque **un lecteur
+de relevé bancaire**. Pour le construire, il me faut un export réel de votre
+banque (CSV ou Excel, anonymisé si vous préférez) et le FEC N‑1 du dossier
+pilote.
+
+## D5. Mettre à jour l'outil
+
+```powershell
+cd $HOME\Documents\Saisio\LMNP ; .\maj.ps1
+```
+
+Le script retélécharge la dernière version et la pose par-dessus. **Votre
+`saisio.env` n'est pas touché** — il ne fait pas partie du téléchargement. Les
+manifestes non plus : ils vivent dans `~/.saisio`, hors du projet, précisément
+pour qu'une mise à jour ne fasse pas repayer l'OCR de tout l'historique.
+
+Si Windows refuse d'exécuter le script (« l'exécution de scripts est désactivée
+sur ce système »), autorisez-le une fois pour votre compte :
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+```
+
+---
+
+# E. Plus tard : le cabinet
 
 Rien de ce qui suit n'est nécessaire pour le pilote. C'est la liste à donner à
 un technicien le jour où les 15 postes doivent y accéder.

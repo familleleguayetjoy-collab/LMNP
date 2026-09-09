@@ -217,6 +217,31 @@ class DriveGoogle:
         return n
 
 
+def resoudre_chemin(source: "DriveGoogle", chemin: str) -> str:
+    """Identifiant du sous-dossier `CLIENT/2026` sous le dossier d'entrée.
+
+    Lecture seule : on ne crée rien. Renvoie "" si un segment est introuvable —
+    traiter tout le dossier d'entrée parce qu'un nom de client est mal
+    orthographié coûterait un OCR sur toutes les pièces de tous les clients.
+
+    Le nom est comparé sans tenir compte de la casse ni des espaces de bord :
+    « LMNP POLO TEST » et « lmnp polo test  » désignent le même dossier pour un
+    humain, et le rappeler à chaque frappe n'apprend rien à personne."""
+    courant = source.dossier_id
+    for seg in [s for s in (chemin or "").split("/") if s.strip()]:
+        cible = seg.strip().lower()
+        trouve = ""
+        for f in source._enfants(courant):
+            if (f.get("mimeType") == "application/vnd.google-apps.folder"
+                    and (f.get("name") or "").strip().lower() == cible):
+                trouve = f["id"]
+                break
+        if not trouve:
+            return ""
+        courant = trouve
+    return courant
+
+
 def verifier_acces(dossier_id: str, cles: str = None) -> dict:
     """Diagnostic de branchement, à lancer avant tout traitement.
 

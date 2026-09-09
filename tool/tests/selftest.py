@@ -1107,4 +1107,147 @@ check("2 retenue(s), 1 écartée(s)" in _txt,
 check("RIEN n'a été écrit" in _txt, "et il rappelle qu'il n'a rien écrit")
 shutil.rmtree(_bac, ignore_errors=True)
 
+print("37) Le dépôt dans le Drive de sortie")
+from s2a_lmnp import DepotDrive, deposer_plan, resoudre_chemin
+
+
+class FauxDepot:
+    """Reproduit ce que Saisio demande à l'API v3 côté écriture, et rien de plus.
+
+    Tient une vraie arborescence en mémoire : c'est le seul moyen de vérifier
+    qu'on ne recrée pas dix fois le même mois et qu'on n'écrase jamais rien."""
+
+    def __init__(self):
+        self.noeuds = {"sortie": {"nom": "SORTIE", "parent": None,
+                                  "dossier": True, "taille": 0}}
+        self.creations, self.uploads, self.listages = 0, 0, 0
+
+    def files(self):
+        return self
+
+    @staticmethod
+    def _litteral(q):
+        """Lit la chaîne échappée qui suit `name = '`, comme le fait Drive :
+        un `\\'` est une apostrophe, pas une fin de chaîne. Un bouchon qui
+        couperait au premier guillemet validerait une requête que Drive
+        refuserait — le test ne prouverait plus rien."""
+        i, out, ech = q.index("name = '") + 8, [], False
+        while i < len(q):
+            c = q[i]
+            if ech:
+                out.append(c); ech = False
+            elif c == "\\":
+                ech = True
+            elif c == "'":
+                break
+            else:
+                out.append(c)
+            i += 1
+        return "".join(out)
+
+    def list(self, q="", **kw):
+        self.listages += 1
+        nom = self._litteral(q)
+        parent = q.split("' in parents")[0].rsplit("'", 1)[-1]
+        veut_dossier = "mimeType = 'application/vnd.google-apps.folder'" in q
+        out = []
+        for i, n in self.noeuds.items():
+            if (n["nom"] == nom and n["parent"] == parent
+                    and n["dossier"] == veut_dossier):
+                out.append({"id": i, "name": nom, "size": str(n["taille"])})
+        self._rep = {"files": out}
+        return self
+
+    def create(self, body=None, media_body=None, **kw):
+        dossier = body.get("mimeType") == "application/vnd.google-apps.folder"
+        if dossier:
+            self.creations += 1
+        else:
+            self.uploads += 1
+        i = "n%d" % len(self.noeuds)
+        self.noeuds[i] = {"nom": body["name"], "parent": body["parents"][0],
+                          "dossier": dossier, "taille": 7}
+        self._rep = {"id": i, "name": body["name"]}
+        return self
+
+    def execute(self):
+        return self._rep
+
+
+_fd = FauxDepot()
+_dep = DepotDrive("sortie", service=_fd)
+_id1 = _dep.assurer_chemin("DUPONT/Exercice 2026/2026-03/Traité")
+check(_fd.creations == 4, "l'arborescence manquante est créée, segment par segment")
+_id2 = _dep.assurer_chemin("DUPONT/Exercice 2026/2026-03/Traité")
+check(_id2 == _id1 and _fd.creations == 4,
+      "le même chemin redemandé ne recrée rien")
+_avant = _fd.creations
+_dep.assurer_chemin("DUPONT/Exercice 2026/2026-04/Traité")
+check(_fd.creations == _avant + 2,
+      "un mois voisin ne recrée que ce qui manque, pas la branche entière")
+
+# l'apostrophe de « Documents générés par l'application » : une requête Drive
+# mal échappée ne lève pas, elle renvoie zéro résultat — et on recrée un dossier
+# en double à chaque passage, sans que rien ne le signale.
+_dep2 = DepotDrive("sortie", service=_fd)
+_a1 = _dep2.assurer_chemin("L'ATELIER")
+_dep3 = DepotDrive("sortie", service=_fd)
+check(_dep3.assurer_chemin("L'ATELIER") == _a1,
+      "un nom de dossier contenant une apostrophe est retrouvé, pas dupliqué")
+
+_bac2 = tempfile.mkdtemp(prefix="saisio-depot-")
+_p1 = os.path.join(_bac2, "edf.pdf")
+with open(_p1, "wb") as _fh:
+    _fh.write(b"1234567")
+_r = _dep.deposer(_p1, "edf.pdf", _id1)
+check(_r["etat"] == "depose" and _fd.uploads == 1, "la pièce est déposée")
+_r2 = _dep.deposer(_p1, "edf.pdf", _id1)
+check(_r2["etat"] == "deja" and _fd.uploads == 1,
+      "relancée, elle n'est ni redéposée ni écrasée")
+
+# le plan complet, avec une pièce dont l'empreinte n'est dans aucune source
+_src2 = DossierLocal(_bac2)
+_refs = _src2.lister()
+_plan = {"Exercice 2026/2026-03/Traité": [
+             {"fichier": "edf.pdf", "empreinte": _refs[0].empreinte, "motif": ""}],
+         "Exercice 2026/2026-03/En attente de traitement": [
+             {"fichier": "perdu.pdf", "empreinte": "inconnue", "motif": "devis"}]}
+_fdn = FauxDepot()
+_depn = DepotDrive("sortie", service=_fdn)
+_rap = deposer_plan(_depn, _plan, _src2, _refs, prefixe="DUPONT", ecrire=True)
+check([d["chemin"] for d in _rap["deposes"]]
+      == ["DUPONT/Exercice 2026/2026-03/Traité"],
+      "le plan dépose chaque pièce dans son dossier, préfixé par le client")
+check(len(_rap["manquants"]) == 1 and _rap["manquants"][0]["fichier"] == "perdu.pdf",
+      "une pièce introuvable à la source est signalée, jamais devinée")
+# relancer le même traitement ne duplique rien : c'est ce qui rend une commande
+# de tous les jours rejouable sans crainte.
+_rap2 = deposer_plan(_depn, _plan, _src2, _refs, prefixe="DUPONT", ecrire=True)
+check(_rap2["deposes"] == [] and len(_rap2["deja"]) == 1 and _fdn.uploads == 1,
+      "le même traitement relancé ne dépose rien une seconde fois")
+
+_fd2 = FauxDepot()
+_dep4 = DepotDrive("sortie", service=_fd2)
+_rapb = deposer_plan(_dep4, _plan, _src2, _refs, prefixe="DUPONT", ecrire=False)
+check(_fd2.creations == 0 and _fd2.uploads == 0,
+      "sans --deposer, aucun dossier créé et aucun fichier envoyé")
+check(len(_rapb["deposes"]) == 1 and _rapb["deposes"][0]["simule"],
+      "et l'essai à blanc dit quand même ce qu'il aurait déposé")
+
+try:
+    DepotDrive(""); _v = False
+except ValueError:
+    _v = True
+check(_v, "un dossier de sortie vide est refusé")
+
+# résolution CLIENT/année côté lecture : on ne crée rien, et on ne devine rien
+_srcd = DriveGoogle("racine", service=FauxDrive())
+check(resoudre_chemin(_srcd, "DUPONT/2026") == "d2",
+      "le sous-dossier client/année est retrouvé dans le Drive d'entrée")
+check(resoudre_chemin(_srcd, " dupont / 2026 ") == "d2",
+      "la casse et les espaces de bord ne font pas échouer la recherche")
+check(resoudre_chemin(_srcd, "DUPONT/2027") == "",
+      "un client mal orthographié ne retombe PAS sur tout le dossier d'entrée")
+shutil.rmtree(_bac2, ignore_errors=True)
+
 print("\n%d contrôles OK — moteur cohérent." % ok)
