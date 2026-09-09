@@ -38,10 +38,11 @@ t('seuil rétabli -> le statut revient', (await statuts()).includes('Montant él
 
 // seuil de justificatif : au-delà, plus rien à réclamer
 await ouvrir();
-await carte('sans facture au-delà').locator('.js-seuil').fill('9000'); await p.waitForTimeout(150);
+await carte('sans facture disponible').locator('.js-seuil').fill('9000'); await p.waitForTimeout(150);
 await fermer();
-t('seuil de justificatif relevé', !(await statuts()).includes('Justificatif manquant'));
-await ouvrir(); await carte('sans facture au-delà').locator('.js-seuil').fill('150');
+t('seuil de justificatif relevé -> plus de « Sans pièce »',
+  !(await statuts()).includes('Sans pièce'));
+await ouvrir(); await carte('sans facture disponible').locator('.js-seuil').fill('150');
 await p.waitForTimeout(150); await fermer();
 
 // décocher une règle la retire complètement
@@ -59,10 +60,10 @@ await p.click('.js-modal-close');
 // chaque règle restante pilote bien un statut
 for(const [regle,statut] of [['Acompte ou situation de travaux','Acompte'],
                              ['Paiement fractionné','Multi-règl.'],
-                             ['absent du FEC','Nouveau'],
+                             ['jamais utilisé auparavant','Nouveau'],
                              ['Confiance de l','À qualifier'],
                              ['Immobilisation détectée','Immobilisé'],
-                             ['sans facture au-delà','Sans pièce']]){
+                             ['sans facture disponible','Sans pièce']]){
   await ouvrir(); await niveau(regle,0); await fermer();
   const sans=!(await statuts()).includes(statut);
   await ouvrir(); await niveau(regle,1); await fermer();
@@ -80,16 +81,16 @@ t('la règle « sans règlement » gouverne l\'onglet hors relevé',
 
 // le niveau « validation obligatoire » interdit le traitement en série
 // SYNDIC AZUR a trois lignes : le bouton de série DOIT exister au niveau 1
-await ouvrir(); await niveau('sans facture au-delà',1); await fermer();
+await ouvrir(); await niveau('sans facture disponible',1); await fermer();
 await p.locator('.oprow', {hasText:'SYNDIC AZUR APPEL T1'}).click(); await p.waitForTimeout(250);
 const serieAvant=await p.locator('.js-serie').count();
-await ouvrir(); await niveau('sans facture au-delà',2); await fermer();
+await ouvrir(); await niveau('sans facture disponible',2); await fermer();
 await p.locator('.oprow', {hasText:'SYNDIC AZUR APPEL T1'}).click(); await p.waitForTimeout(250);
 const serieApres=await p.locator('.js-serie').count();
 t('validation obligatoire : pas de traitement en série',
   serieAvant===1 && serieApres===0,
   'à contrôler -> '+serieAvant+' bouton, obligatoire -> '+serieApres);
-await ouvrir(); await niveau('sans facture au-delà',1); await fermer();
+await ouvrir(); await niveau('sans facture disponible',1); await fermer();
 
 // le compteur du pied de la fenêtre
 await p.locator('.stp[data-go="1"]').click(); await p.waitForTimeout(150);

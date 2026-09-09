@@ -54,7 +54,7 @@ Le parcours d'un dossier tient en cinq écrans, un par décision :
 
 1. **Importer** — période, type (LMNP / LMP / SCI / BNC), assujettissement à la
    TVA, tenue de banque, FEC N‑1, relevé bancaire. Un bouton **Règles de
-   contrôle** ouvre le paramétrage complet du cabinet : **32 règles** en six
+   contrôle** ouvre le paramétrage complet du cabinet : **36 règles** en six
    familles — montant et significativité, fiabilité de l'affectation, anomalies
    documentaires et règlements, opérations sensibles, cohérence avec l'activité,
    doublons.
