@@ -194,17 +194,54 @@ version proposée, installez-la. **Sur Windows, à la première fenêtre de
 l'installateur, cochez la case « Add Python to PATH » en bas** — sans elle, la
 commande ne sera pas trouvée. Fermez le terminal, rouvrez-en un, recommencez.
 
-## B3. Récupérer Saisio
+## B3. Télécharger Saisio
 
-```bash
-cd ~/Documents/Saisio
-git clone https://github.com/familleleguayetjoy-collab/LMNP.git
-cd LMNP
-```
+Pas besoin d'installer git : le code se télécharge comme n'importe quel fichier,
+depuis votre navigateur.
 
-Si `git` n'est pas reconnu : sur Mac, la commande vous propose elle-même de
-l'installer, acceptez. Sur Windows, installez **git-scm.com/download/win** en
-laissant toutes les options par défaut, puis rouvrez PowerShell.
+1. Cliquez sur ce lien — le téléchargement démarre tout seul :
+
+   **https://github.com/familleleguayetjoy-collab/LMNP/archive/refs/heads/claude/s2a-intelligent-prototype-uv1peq.zip**
+
+   *(Si vous préférez passer par la page du projet : allez sur
+   github.com/familleleguayetjoy-collab/LMNP, cliquez sur le **sélecteur de
+   branche** en haut à gauche de la liste des fichiers, choisissez
+   `claude/s2a-intelligent-prototype-uv1peq`, puis bouton vert **Code** →
+   **Download ZIP**. Cette branche-là et pas une autre : celle qui s'affiche par
+   défaut est un autre projet.)*
+
+2. Ouvrez le fichier `.zip` téléchargé (double-clic) : il produit un dossier
+   nommé `LMNP-claude-s2a-intelligent-prototype-uv1peq`.
+3. **Renommez-le en `LMNP`** (clic droit → Renommer) et **déplacez-le dans le
+   dossier `Saisio`** que vous avez créé en A2. Vous devez donc avoir :
+
+   ```
+   Documents/
+     Saisio/
+       saisio-123456.json          ← le laissez-passer Google
+       LMNP/                       ← le code
+         README.md
+         DEPLOIEMENT.md
+         saisio.env.exemple
+         tool/
+   ```
+
+4. Retournez dans le terminal et placez-vous dans ce dossier :
+
+   ```bash
+   cd ~/Documents/Saisio/LMNP
+   ```
+
+   *(Sur Windows : `cd $HOME\Documents\Saisio\LMNP`)*
+
+   Vérifiez que vous êtes au bon endroit : tapez `ls` (Mac) ou `dir` (Windows).
+   Vous devez voir `README.md`, `DEPLOIEMENT.md` et `tool`. Si vous voyez autre
+   chose ou une erreur, c'est le nom du dossier qui ne correspond pas — revenez
+   à l'étape 3.
+
+> **Pour mettre à jour plus tard** : retéléchargez le ZIP, remplacez le dossier
+> `LMNP` par le nouveau, et **recopiez votre `saisio.env`** dedans — il n'est pas
+> dans le ZIP, c'est voulu, il contient vos secrets.
 
 ## B4. Le premier test, tout de suite
 
@@ -260,9 +297,11 @@ Trois pièges, les seuls :
 
 Enregistrez, fermez.
 
-> `saisio.env` contient vos secrets. Il est déjà exclu de GitHub : même en
-> lançant une sauvegarde du projet, il ne partira pas. Ne le copiez pas
-> ailleurs.
+> `saisio.env` contient vos secrets, et **le dépôt GitHub du projet est
+> public** : n'importe qui peut lire le code. Le fichier est déjà exclu du
+> dépôt (`.gitignore`), il ne partira donc jamais tout seul — mais ne le
+> recopiez pas ailleurs, et ne mettez jamais de vraie pièce client dans le
+> dossier du projet.
 
 ## B6. Installer les trois compléments
 
