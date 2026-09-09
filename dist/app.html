@@ -607,10 +607,11 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
 
 /* --- la décision --- */
 .wform{min-height:0;padding:18px 16px 14px;overflow-y:auto}
-.wgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px 12px}
+.wgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px 12px;align-items:end}
+.wgrid > *{display:flex;flex-direction:column;justify-content:flex-end;height:100%}
 .wgrid .w2{grid-column:1/-1}
 .wform label{display:flex;flex-direction:column;gap:5px;font-family:var(--display);
-  font-weight:600;font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  font-weight:600;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.015em}
 .wform label small{text-transform:none;letter-spacing:0;font-weight:500;font-size:11px;color:var(--muted)}
 .wform input,.wform select{background:var(--field);border:1px solid var(--field-line);
   border-radius:9px;padding:7px 10px;font-weight:600;font-size:13.5px;color:var(--ink);width:100%}
@@ -1456,7 +1457,7 @@ main.wrap{padding:16px 20px 16px;flex:1;min-width:0;min-height:0;
       ? '<label>Date de règlement <small>portée par la pièce</small>'
         +'<input type="text" class="js-paie num" inputmode="numeric" maxlength="10"'
         +' placeholder="JJ/MM/AAAA" value="'+(o.paye||'')+'"/></label>'
-      : '<label>Date de règlement<input value="'+o.dt+'" readonly/></label>';
+      : '<label>Date règlement<input value="'+o.dt+'" readonly/></label>';
     var sel='<select class="js-imput">'
       +o.opts.map(function(x){return '<option value="'+x[0]+'"'+(x[0]===o.cpt?' selected':'')+'>'+x[1]+'</option>';}).join('')
       +'<option value="__autre__">+ Autre compte…</option></select>';

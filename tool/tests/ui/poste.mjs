@@ -142,6 +142,47 @@ t('onglets de la gauche de Date à la droite de Statut', await p.evaluate(()=>{
   const l=document.querySelector('.wleft').getBoundingClientRect();
   return Math.abs(t.left-l.left)<2 && Math.abs(t.right-l.right)<3;}));
 
+// ---- les champs de la décision s'alignent, quel que soit le libellé ----
+// La propriété qui compte : deux champs CÔTE À CÔTE partagent le même bas,
+// même quand l'un des deux intitulés passe à la ligne.
+const alignes = async () => await p.evaluate(()=>{
+  // On reconstitue les RANGÉES de la grille (2 colonnes ; un bloc « w2 » en
+  // occupe deux) plutôt que de deviner par la distance : deux champs de la
+  // même rangée doivent avoir exactement le même bas.
+  const items=[...document.querySelector('.wgrid').children];
+  const rangees=[]; let cour=[], col=0;
+  items.forEach(function(el){
+    const large=el.classList.contains('w2') ? 2 : 1;
+    if(col+large>2){ rangees.push(cour); cour=[]; col=0; }
+    cour.push(el); col+=large;
+    if(col>=2){ rangees.push(cour); cour=[]; col=0; }
+  });
+  if(cour.length) rangees.push(cour);
+  let n=0;
+  for(const r of rangees){
+    const bas=r.map(function(el){
+      const i=el.querySelector('input'); return i ? Math.round(i.getBoundingClientRect().bottom) : null;
+    }).filter(function(x){return x!==null;});
+    n+=bas.length;
+    if(bas.length>1 && Math.max.apply(null,bas)-Math.min.apply(null,bas) > 1) return false;
+  }
+  return n;
+});
+await p.locator('.js-wstabs .optab').nth(0).click(); await p.waitForTimeout(200);
+await p.locator('.oprow').first().click(); await p.waitForTimeout(250);
+t('champs alignés — ligne du relevé', (await alignes())>=3, (await alignes())+' champs');
+await p.locator('.stp[data-go="1"]').click(); await p.waitForTimeout(150);
+await p.click('.js-tva[data-v="oui"]');            // ajoute la colonne « dont TVA »
+await p.locator('.stp[data-go="2"]').click(); await p.waitForTimeout(300);
+await p.locator('.oprow').first().click(); await p.waitForTimeout(250);
+t('champs alignés — avec la colonne TVA', (await alignes())>=4, (await alignes())+' champs');
+await p.locator('.js-wstabs .optab',{hasText:'Hors relevé'}).click(); await p.waitForTimeout(250);
+await p.locator('.oprow').first().click(); await p.waitForTimeout(250);
+t('champs alignés — facture hors relevé', (await alignes())>=4, (await alignes())+' champs');
+await p.locator('.stp[data-go="1"]').click(); await p.waitForTimeout(150);
+await p.click('.js-tva[data-v="non"]');
+await p.locator('.stp[data-go="2"]').click(); await p.waitForTimeout(300);
+
 // ---- remise à zéro de la démonstration ----
 const aTraiter=async()=>parseInt(
   (await p.locator('.js-wstabs .optab').nth(1).innerText()).replace(/\D/g,''),10);
