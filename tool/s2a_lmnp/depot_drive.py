@@ -48,6 +48,40 @@ PORTEE_DEPOT = ("https://www.googleapis.com/auth/drive",)
 MIME_DOSSIER = "application/vnd.google-apps.folder"
 
 
+class QuotaCompteService(RuntimeError):
+    """Un compte de service n'a AUCUN quota de stockage Google.
+
+    Il peut créer des dossiers — un dossier ne pèse rien — mais pas déposer un
+    fichier dans un « Mon Drive » : le fichier lui appartiendrait, et il n'a pas
+    un octet à lui. On voit donc l'arborescence se construire et pas une seule
+    pièce arriver, ce qui ressemble à tout sauf à un problème de quota.
+
+    Deux issues, et une seule ne demande aucun code :
+
+    1. **Drive partagé** (Google Workspace) : les fichiers y appartiennent à
+       l'organisation, pas à celui qui les dépose. Le compte de service y écrit
+       normalement. C'est aussi la bonne réponse comptable : les pièces des
+       clients appartiennent au cabinet, pas au collaborateur qui les a
+       importées ni à un robot.
+
+    2. **Délégation** (Workspace également) : le compte de service agit au nom
+       d'un utilisateur réel, et consomme SON quota.
+
+    Sur un compte Google gratuit, ni l'un ni l'autre n'existe : il faut alors
+    une connexion OAuth au nom de l'utilisateur.
+    """
+
+
+CONSEIL_QUOTA = (
+    "Un compte de service n'a aucun quota de stockage : il crée les dossiers "
+    "mais ne peut pas y déposer de fichier. Le dossier de sortie doit se "
+    "trouver dans un DRIVE PARTAGÉ (Google Workspace), où les fichiers "
+    "appartiennent à l'organisation. Déplacez-y « Documents générés par "
+    "l'application », ajoutez-y le compte de service comme Gestionnaire de "
+    "contenu, et reprenez l'identifiant du dossier."
+)
+
+
 def _google():
     try:
         from google.oauth2 import service_account
@@ -95,15 +129,25 @@ class DepotDrive:
         `canAddChildren` sans qu'on ait à tenter une écriture d'essai — donc
         sans laisser de fichier de test derrière soi."""
         meta = self.service.files().get(
-            fileId=self.racine_id, fields="id, name, capabilities/canAddChildren",
+            fileId=self.racine_id,
+            fields="id, name, driveId, capabilities/canAddChildren",
             supportsAllDrives=True).execute()
         peut = bool((meta.get("capabilities") or {}).get("canAddChildren"))
-        return {"ok": peut, "dossier": meta.get("name", ""),
-                "ecriture": peut,
-                "conseil": "" if peut else
-                           "le dossier « %s » est partagé au compte de service "
-                           "en Lecteur : passez-le en Éditeur."
-                           % meta.get("name", "")}
+        # `driveId` n'est renseigné que dans un Drive partagé. Sans lui, on est
+        # dans un « Mon Drive » : les dossiers s'y créeront (ils ne pèsent rien)
+        # et pas un seul fichier n'arrivera. Le dire AVANT de payer l'OCR, plutôt
+        # que de laisser une arborescence vide se construire.
+        partage = bool(meta.get("driveId"))
+        nom = meta.get("name", "")
+        if not peut:
+            conseil = ("le dossier « %s » est partagé au compte de service en "
+                       "Lecteur : passez-le en Éditeur." % nom)
+        elif not partage:
+            conseil = CONSEIL_QUOTA
+        else:
+            conseil = ""
+        return {"ok": peut and partage, "dossier": nom,
+                "ecriture": peut, "drive_partage": partage, "conseil": conseil}
 
     # -- arborescence -------------------------------------------------------
     def _chercher(self, nom: str, parent_id: str, dossier: bool):
@@ -168,10 +212,18 @@ class DepotDrive:
             return {"etat": "deja", "nom": nom}
         from googleapiclient.http import MediaFileUpload    # import tardif
         media = MediaFileUpload(chemin_local, resumable=False)
-        rep = self.service.files().create(
-            body={"name": nom, "parents": [dossier_id]},
-            media_body=media, fields="id, name",
-            supportsAllDrives=True).execute()
+        try:
+            rep = self.service.files().create(
+                body={"name": nom, "parents": [dossier_id]},
+                media_body=media, fields="id, name",
+                supportsAllDrives=True).execute()
+        except Exception as e:
+            # Google répond 403 « storageQuotaExceeded ». Le message d'origine
+            # renvoie vers deux pages d'aide en anglais ; il vaut mieux dire
+            # tout de suite quoi faire, dans les mots du cabinet.
+            if "storageQuota" in str(e) or "storage quota" in str(e):
+                raise QuotaCompteService(CONSEIL_QUOTA) from e
+            raise
         return {"etat": "depose", "nom": nom, "id": rep.get("id", "")}
 
 

@@ -25,7 +25,8 @@ from .sources import (PieceRef, SourcePieces, DossierLocal, pieces_neuves,
                       empreinte_fichier, empreinte_bytes)
 from .drive import (DriveGoogle, verifier_acces, resoudre_chemin,
                     DependanceManquante, PORTEE, SANS_ECRITURE)
-from .depot_drive import DepotDrive, deposer_plan, PORTEE_DEPOT
+from .depot_drive import (DepotDrive, deposer_plan, PORTEE_DEPOT,
+                          QuotaCompteService, CONSEIL_QUOTA)
 from .pipeline import traiter_dossier, ingerer, traiter_lot
 from .excel import journal_banque_xlsx, lignes_journal_banque, journaux_banque_depuis_fec
 from .rangement import (ranger, chemin, mois_de, resume as resume_rangement,
@@ -58,6 +59,7 @@ __all__ = [
     "DriveGoogle", "verifier_acces", "resoudre_chemin",
     "DependanceManquante", "PORTEE",
     "SANS_ECRITURE", "DepotDrive", "deposer_plan", "PORTEE_DEPOT",
+    "QuotaCompteService", "CONSEIL_QUOTA",
     "traiter_dossier", "ingerer", "traiter_lot",
     "journal_banque_xlsx", "lignes_journal_banque", "journaux_banque_depuis_fec",
     "revue_analytique", "reference", "preparer_relances",

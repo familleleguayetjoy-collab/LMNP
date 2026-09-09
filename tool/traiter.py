@@ -115,8 +115,13 @@ def main():
                         "le dossier est-il partagé au compte de service "
                         "(adresse en …iam.gserviceaccount.com) ? %s" % e)
         if not v["ok"]:
-            return stop("écriture refusée sur « %s »" % v["dossier"], v["conseil"])
-        ok("dossier de sortie", "« %s », accessible en écriture" % v["dossier"])
+            titre = ("écriture refusée sur « %s »" % v["dossier"]
+                     if not v["ecriture"] else
+                     "« %s » est dans un Mon Drive, pas dans un Drive partagé"
+                     % v["dossier"])
+            return stop(titre, v["conseil"])
+        ok("dossier de sortie", "« %s », Drive partagé, accessible en écriture"
+           % v["dossier"])
 
     # -- 1. le dossier du client -------------------------------------------
     try:
@@ -183,7 +188,12 @@ def main():
 
     # -- 5. dépôt ------------------------------------------------------------
     if depot is not None:
-        rap = deposer_plan(depot, plan, source, neuves, prefixe=a.client, ecrire=True)
+        from s2a_lmnp import QuotaCompteService
+        try:
+            rap = deposer_plan(depot, plan, source, neuves,
+                               prefixe=a.client, ecrire=True)
+        except QuotaCompteService as e:
+            return stop("dépôt impossible", str(e))
         ok("déposé", "%d fichier(s)" % len(rap["deposes"]))
         if rap["deja"]:
             ok("déjà présent, laissé tel quel", "%d fichier(s)" % len(rap["deja"]))

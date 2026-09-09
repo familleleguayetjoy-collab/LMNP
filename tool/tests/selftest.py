@@ -1108,7 +1108,8 @@ check("RIEN n'a été écrit" in _txt, "et il rappelle qu'il n'a rien écrit")
 shutil.rmtree(_bac, ignore_errors=True)
 
 print("37) Le dépôt dans le Drive de sortie")
-from s2a_lmnp import DepotDrive, deposer_plan, resoudre_chemin
+from s2a_lmnp import (DepotDrive, deposer_plan, resoudre_chemin,
+                      QuotaCompteService)
 
 
 class FauxDepot:
@@ -1122,6 +1123,8 @@ class FauxDepot:
                                   "dossier": True, "taille": 0}}
         self.creations, self.uploads, self.listages = 0, 0, 0
         self.editeur = True
+        self.drive_partage = True
+        self.quota = True
 
     def files(self):
         return self
@@ -1162,6 +1165,8 @@ class FauxDepot:
     def get(self, fileId=None, **kw):
         self._rep = {"id": fileId, "name": "SORTIE",
                      "capabilities": {"canAddChildren": self.editeur}}
+        if self.drive_partage:
+            self._rep["driveId"] = "0AShared"
         return self
 
     def create(self, body=None, media_body=None, **kw):
@@ -1169,6 +1174,11 @@ class FauxDepot:
         if dossier:
             self.creations += 1
         else:
+            if not self.quota:
+                # ce que Google renvoie vraiment : 403 storageQuotaExceeded.
+                raise RuntimeError(
+                    "<HttpError 403 …> Service Accounts do not have storage "
+                    "quota. … 'reason': 'storageQuotaExceeded'")
             self.uploads += 1
         i = "n%d" % len(self.noeuds)
         self.noeuds[i] = {"nom": body["name"], "parent": body["parents"][0],
@@ -1256,6 +1266,29 @@ check(not _vl["ok"] and "Éditeur" in _vl["conseil"],
       "un dossier partagé en Lecteur est refusé, en disant quoi corriger")
 check(_lect.creations == 0 and _lect.uploads == 0,
       "et le constat se fait sans écrire un fichier d'essai")
+
+# Le piège Google : un compte de service n'a pas de quota. Dans un « Mon Drive »
+# il crée les dossiers (qui ne pèsent rien) et pas un seul fichier n'arrive.
+# Le préalable doit le voir AVANT l'OCR ; sinon on paie la lecture pour rien.
+_mydrive = FauxDepot(); _mydrive.drive_partage = False
+_vm = DepotDrive("sortie", service=_mydrive).verifier()
+check(not _vm["ok"] and _vm["ecriture"],
+      "un Mon Drive est refusé alors même que l'écriture y semble autorisée")
+check("DRIVE PARTAGÉ" in _vm["conseil"],
+      "et le conseil nomme la seule issue qui ne demande pas de code")
+_vp = DepotDrive("sortie", service=FauxDepot()).verifier()
+check(_vp["ok"] and _vp["drive_partage"], "un Drive partagé, lui, passe")
+
+# et si on y arrive quand même (contrôle contourné, droits changés en route),
+# l'erreur de Google sort en français, pas en trace Python.
+_sq = FauxDepot(); _sq.quota = False
+_dsq = DepotDrive("sortie", service=_sq)
+_dq = _dsq.assurer_chemin("Exercice 2026")
+try:
+    _dsq.deposer(_p1, "edf.pdf", _dq); _vq = False
+except QuotaCompteService as _e:
+    _vq = "Drive partagé" in str(_e) or "DRIVE PARTAGÉ" in str(_e)
+check(_vq, "le 403 « pas de quota » devient un conseil, pas une trace Python")
 
 # racine="" : on dépose DANS le dossier de sortie, le plan doit donc être
 # relatif. Avec la racine, on recréait « Documents générés par l'application »
