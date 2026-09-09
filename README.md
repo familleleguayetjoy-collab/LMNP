@@ -255,6 +255,13 @@ python3 tool/traiter.py --client "LMNP POLO TEST" --exercice 2026            # �
 python3 tool/traiter.py --client "LMNP POLO TEST" --exercice 2026 --deposer  # dépose
 ```
 
+Le dépôt exige un espace de stockage : un compte de service n'en a aucun. Sur
+Google Workspace, le dossier de sortie va dans un **Drive partagé** ; sur un
+compte Gmail gratuit, où les Drive partagés n'existent pas, Saisio dépose **au
+nom de l'utilisateur** après `python3 tool/connexion_google.py` — une fois. La
+**lecture** reste dans tous les cas au compte de service, en `drive.readonly` :
+c'est le partage Drive, visible et révocable, qui borne ce que l'outil peut lire.
+
 Sans `--deposer`, rien n'est écrit nulle part. Le dépôt n'écrase ni ne supprime
 jamais rien, et relancer le même traitement ne duplique pas une pièce déjà
 déposée. `maj.ps1` met l'outil à jour sans toucher à `saisio.env` ni aux

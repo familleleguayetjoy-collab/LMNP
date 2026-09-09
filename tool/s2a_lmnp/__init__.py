@@ -25,6 +25,8 @@ from .sources import (PieceRef, SourcePieces, DossierLocal, pieces_neuves,
                       empreinte_fichier, empreinte_bytes)
 from .drive import (DriveGoogle, verifier_acces, resoudre_chemin,
                     DependanceManquante, PORTEE, SANS_ECRITURE)
+from . import oauth_google
+from .oauth_google import PORTEE_UTILISATEUR
 from .depot_drive import (DepotDrive, deposer_plan, PORTEE_DEPOT,
                           QuotaCompteService, CONSEIL_QUOTA)
 from .pipeline import traiter_dossier, ingerer, traiter_lot
@@ -60,6 +62,7 @@ __all__ = [
     "DependanceManquante", "PORTEE",
     "SANS_ECRITURE", "DepotDrive", "deposer_plan", "PORTEE_DEPOT",
     "QuotaCompteService", "CONSEIL_QUOTA",
+    "oauth_google", "PORTEE_UTILISATEUR",
     "traiter_dossier", "ingerer", "traiter_lot",
     "journal_banque_xlsx", "lignes_journal_banque", "journaux_banque_depuis_fec",
     "revue_analytique", "reference", "preparer_relances",

@@ -1290,6 +1290,51 @@ except QuotaCompteService as _e:
     _vq = "Drive partagé" in str(_e) or "DRIVE PARTAGÉ" in str(_e)
 check(_vq, "le 403 « pas de quota » devient un conseil, pas une trace Python")
 
+# --- dépôt au nom de l'utilisateur (Drive gratuit, pas de Drive partagé) -----
+# Le même « Mon Drive » qui bloque le compte de service passe au nom de
+# l'utilisateur : les fichiers lui appartiennent et consomment SON espace.
+_vu = DepotDrive("sortie", service=_mydrive, mode="utilisateur").verifier()
+check(_vu["ok"] and not _vu["drive_partage"] and _vu["mode"] == "utilisateur",
+      "au nom de l'utilisateur, un Mon Drive est accepté")
+check(DepotDrive("sortie", service=FauxDepot()).mode == "service",
+      "sans connexion enregistrée, on reste sur le compte de service")
+
+from s2a_lmnp import oauth_google as _og
+_vieux_jeton, _vieux_etat = _og.JETON, _og.DOSSIER_ETAT
+_bacj = tempfile.mkdtemp(prefix="saisio-oauth-")
+_og.DOSSIER_ETAT = _bacj
+_og.JETON = os.path.join(_bacj, "jeton_google.json")
+try:
+    check(not _og.jeton_present(), "sans jeton, aucune connexion n'est prétendue")
+    # Un traitement de nuit ne doit JAMAIS ouvrir un navigateur sur un poste que
+    # personne ne regarde : sans jeton, il refuse et dit quoi lancer à la main.
+    try:
+        _og.identifiants(interactif=False); _vi = ""
+    except RuntimeError as _e:
+        _vi = str(_e)
+    check("connexion_google" in _vi,
+          "sans jeton, un traitement refuse au lieu d'ouvrir un navigateur")
+    check(_og.oublier() is False, "oublier() sans jeton ne prétend rien effacer")
+    with open(_og.JETON, "w", encoding="utf-8") as _fh:
+        _fh.write('{"account": "paul@exemple.fr", "client_id": "x"}')
+    check(_og.jeton_present(), "un jeton posé est vu")
+    check(_og.compte_connecte() == "paul@exemple.fr",
+          "l'état affiche le compte connecté sans contacter Google")
+    check(_og.oublier() is True and not _og.jeton_present(),
+          "oublier() efface bien le jeton local")
+    os.environ["SAISIO_OAUTH_CLIENT"] = os.path.join(_bacj, "absent.json")
+    check(_og.chemin_client() == "",
+          "un chemin d'identifiants qui n'existe pas n'est pas retenu")
+    _cli = os.path.join(_bacj, "client_oauth.json")
+    with open(_cli, "w", encoding="utf-8") as _fh:
+        _fh.write("{}")
+    os.environ["SAISIO_OAUTH_CLIENT"] = _cli
+    check(_og.chemin_client() == _cli, "le fichier d'identifiants OAuth est trouvé")
+finally:
+    os.environ.pop("SAISIO_OAUTH_CLIENT", None)
+    _og.JETON, _og.DOSSIER_ETAT = _vieux_jeton, _vieux_etat
+    shutil.rmtree(_bacj, ignore_errors=True)
+
 # racine="" : on dépose DANS le dossier de sortie, le plan doit donc être
 # relatif. Avec la racine, on recréait « Documents générés par l'application »
 # à l'intérieur de « Documents générés par l'application ».

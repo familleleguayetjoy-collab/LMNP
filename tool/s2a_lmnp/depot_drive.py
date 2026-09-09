@@ -74,11 +74,11 @@ class QuotaCompteService(RuntimeError):
 
 CONSEIL_QUOTA = (
     "Un compte de service n'a aucun quota de stockage : il crée les dossiers "
-    "mais ne peut pas y déposer de fichier. Le dossier de sortie doit se "
-    "trouver dans un DRIVE PARTAGÉ (Google Workspace), où les fichiers "
-    "appartiennent à l'organisation. Déplacez-y « Documents générés par "
-    "l'application », ajoutez-y le compte de service comme Gestionnaire de "
-    "contenu, et reprenez l'identifiant du dossier."
+    "mais ne peut pas y déposer de fichier. Deux issues. Sur Google Workspace : "
+    "mettez le dossier de sortie dans un DRIVE PARTAGÉ, où les fichiers "
+    "appartiennent à l'organisation. Sur un compte Gmail gratuit, les Drive "
+    "partagés n'existent pas : connectez Saisio à votre compte pour qu'il "
+    "dépose en votre nom — lancez une fois  python tool/connexion_google.py"
 )
 
 
@@ -100,15 +100,31 @@ class DepotDrive:
     `racine_id` est l'identifiant du dossier « Documents générés par
     l'application », partagé au compte de service en **Éditeur**."""
 
-    def __init__(self, racine_id: str, cles: str = None, *, service=None):
+    def __init__(self, racine_id: str, cles: str = None, *, service=None,
+                 mode: str = "auto"):
         if not racine_id:
             raise ValueError("DepotDrive : identifiant du dossier de sortie manquant")
         self.racine_id = racine_id
         self._dossiers = {}               # chemin relatif -> identifiant Drive
         self._contenu = {}                # identifiant -> {nom: taille}
+        self.mode = mode
         if service is not None:
             self.service = service        # injection : tests et bouchons
+            if mode == "auto":
+                self.mode = "service"
             return
+        # « auto » : si une connexion utilisateur est enregistrée, on dépose en
+        # son nom. C'est la seule voie sur un Drive gratuit, où le compte de
+        # service n'a pas un octet à lui.
+        from . import oauth_google
+        if mode == "utilisateur" or (mode == "auto" and oauth_google.jeton_present()):
+            _, build = _google()
+            self.mode = "utilisateur"
+            self.service = build("drive", "v3",
+                                 credentials=oauth_google.identifiants(),
+                                 cache_discovery=False)
+            return
+        self.mode = "service"
         service_account, build = _google()
         chemin = cles or os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
         if not chemin:
@@ -139,15 +155,18 @@ class DepotDrive:
         # que de laisser une arborescence vide se construire.
         partage = bool(meta.get("driveId"))
         nom = meta.get("name", "")
+        # Un « Mon Drive » ne bloque que le compte de service : au nom de
+        # l'utilisateur, les fichiers lui appartiennent et consomment son espace.
+        quota = partage or self.mode == "utilisateur"
         if not peut:
-            conseil = ("le dossier « %s » est partagé au compte de service en "
-                       "Lecteur : passez-le en Éditeur." % nom)
-        elif not partage:
+            conseil = ("le dossier « %s » est partagé en Lecteur : "
+                       "passez-le en Éditeur." % nom)
+        elif not quota:
             conseil = CONSEIL_QUOTA
         else:
             conseil = ""
-        return {"ok": peut and partage, "dossier": nom,
-                "ecriture": peut, "drive_partage": partage, "conseil": conseil}
+        return {"ok": peut and quota, "dossier": nom, "ecriture": peut,
+                "drive_partage": partage, "mode": self.mode, "conseil": conseil}
 
     # -- arborescence -------------------------------------------------------
     def _chercher(self, nom: str, parent_id: str, dossier: bool):

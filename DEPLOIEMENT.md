@@ -446,6 +446,68 @@ leurs mains.
 `verifier_branchement.py` vérifie ; il ne travaille pas. La commande de tous
 les jours est **`traiter.py`**.
 
+## D0. Autoriser Saisio à déposer (compte Gmail gratuit)
+
+**À faire une seule fois, et seulement si votre Drive est un compte Gmail
+gratuit.** Sur Google Workspace, sautez cette étape : mettez simplement le
+dossier de sortie dans un **Drive partagé** et ajoutez-y le compte de service
+comme *Gestionnaire de contenu*.
+
+Pourquoi c'est nécessaire : **un compte de service ne possède aucun octet de
+stockage.** Il crée les dossiers — un dossier ne pèse rien — et ne peut déposer
+aucun fichier dans un « Mon Drive », parce que le fichier lui appartiendrait.
+Vous verriez l'arborescence se construire et pas une seule facture arriver.
+Google règle ça par les Drive partagés, qui n'existent pas sur un compte
+gratuit. Saisio doit donc déposer **en votre nom**, dans votre espace à vous.
+
+> **La lecture ne change pas.** Le dossier d'entrée reste lu par le compte de
+> service, en Lecteur. Ce qui borne ce que l'outil peut lire, c'est le partage
+> Drive — visible par tout le monde, révocable en un clic. On ne troque pas
+> cette garantie contre une commodité.
+
+### a. Créer l'identifiant OAuth
+
+1. **console.cloud.google.com**, projet `saisio` (vérifiez le sélecteur en haut).
+2. Menu ☰ → *APIs et services* → **Écran de consentement OAuth**. S'il n'est pas
+   configuré : type **Externe** → nom de l'application `Saisio` → votre adresse
+   comme e-mail d'assistance et de contact → *Enregistrer*.
+3. Toujours dans l'écran de consentement, section **Utilisateurs test** :
+   ajoutez votre propre adresse Google.
+4. Puis **Publier l'application** (bouton *Publier* / *Passer en production*).
+   C'est important : tant que l'application reste en *Test*, Google fait expirer
+   l'autorisation **au bout de 7 jours** et il faudrait se reconnecter chaque
+   semaine. En production non vérifiée, elle n'expire pas. Google affichera un
+   écran « application non validée » — c'est normal, c'est la vôtre.
+5. Menu ☰ → *APIs et services* → **Identifiants** → *Créer des identifiants* →
+   **ID client OAuth** → type **Application de bureau** → *Créer* → **Télécharger
+   le JSON**.
+
+### b. Poser le fichier et se connecter
+
+Renommez le fichier téléchargé en `client_oauth.json` et posez-le dans
+`C:\Users\<vous>\.saisio`. Si le dossier n'existe pas, créez-le :
+
+```powershell
+New-Item -ItemType Directory -Force "$HOME\.saisio" | Out-Null ; explorer "$HOME\.saisio"
+```
+
+Puis, une seule fois :
+
+```powershell
+cd $HOME\Documents\Saisio\LMNP ; python tool\connexion_google.py
+```
+
+Une fenêtre de navigateur s'ouvre. Choisissez le compte Google qui porte le
+Drive. À l'écran « Google n'a pas validé cette application », cliquez
+**Paramètres avancés** puis **Accéder à Saisio**.
+
+Pour vérifier plus tard : `python tool\connexion_google.py --etat`.
+Pour couper : `--oublier` en local, et *myaccount.google.com/permissions* côté
+Google.
+
+> Le jeton produit vaut un mot de passe : il ouvre votre Drive. Il reste dans
+> `~/.saisio`, ne part jamais sur GitHub, et ne quitte pas votre machine.
+
 ## D1. Ranger le Drive d'entrée
 
 ```

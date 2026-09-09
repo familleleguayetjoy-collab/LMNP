@@ -7,7 +7,9 @@
 #   - saisio.env      (vos réglages et vos secrets) n'est pas dans le
 #                     téléchargement, il reste donc en place ;
 #   - les manifestes  (~/.saisio) vivent hors du projet, pour qu'une mise à jour
-#                     ne fasse pas repayer l'OCR de tout l'historique.
+#                     ne fasse pas repayer l'OCR de tout l'historique ;
+#   - la connexion    Google (~/.saisio/jeton_google.json) reste en place, vous
+#                     n'avez pas à vous reconnecter.
 #
 # Le script s'arrête au premier problème plutôt que de laisser une installation
 # à moitié remplacée.
