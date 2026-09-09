@@ -6,7 +6,7 @@ jamais de l'IA. L'IA n'intervient que sur deux tâches, et seulement pour
 *proposer* (l'humain valide) : lire une facture, proposer un compte sur un
 fournisseur inconnu.
 
-## Ce qui marche déjà (testé, `python3 tool/tests/selftest.py` → 219 contrôles OK)
+## Ce qui marche déjà (testé, `python3 tool/tests/selftest.py` → 232 contrôles OK)
 
 | Module | Rôle | État |
 |---|---|---|
@@ -20,7 +20,8 @@ fournisseur inconnu.
 | `pipeline.py` | **Orchestrateur** : `ingerer()` (OCR des seules pièces neuves) + `traiter_dossier()` (codage → adaptation plan → rapprochement → résidu IA en 1 appel → Quadra + à-réclamer) + `traiter_lot()` (tous les dossiers d'un coup + **tableau de bord** : statut, taux d'auto-codage, coût IA estimé) | ✅ |
 | `controles.py` | **Revue analytique N vs N-1** : charge récurrente disparue, montant qui double, doublon, loyers incomplets — signale, ne corrige jamais | ✅ |
 | `relances.py` | **Relance client** des pièces manquantes avec **verrou de certitude** (certain → mail auto ; ponctuel/inconnu → à vérifier). Génère le brouillon ; l'envoi = connecteur mail | ✅ |
-| `sources.py` | **Ingestion** : interface `SourcePieces` + `DossierLocal` (dossier disque, simule le Drive). Le connecteur Google Drive se branchera sur la même interface | ✅ (local) ; ⛔ connecteur Drive à câbler |
+| `sources.py` | **Ingestion** : interface `SourcePieces` + `DossierLocal` (dossier disque) | ✅ |
+| `drive.py` | **Connecteur Google Drive** : compte de service, portée `drive.readonly` **uniquement**, aucune méthode d'écriture sur la source, descente `client/année/`, empreinte = sha256 du CONTENU téléchargé (pas le md5 de Drive, que le manifeste ne parle pas). Dépendance Google optionnelle et **non silencieuse** | ✅ testé sur un Drive bouché ; à éprouver sur le Drive réel |
 | `manifeste.py` | **Idempotence** : suivi des pièces déjà traitées par empreinte sha256 (un fichier renommé n'est pas re-OCR). JSON, sans contenu client | ✅ |
 | `ocr.py` | Contrat vision (les 3 pièges des vraies factures) | ✅ contrat ; implémentation réelle dans `client_anthropic.py` |
 | `ia.py` | **Couche IA** : contrat JSON entrée/sortie, résidu ambigu envoyé **en lot**, garde-fous (montant jamais touché, rien validé auto) | ✅ **interface + plomberie testées** |
@@ -224,7 +225,7 @@ locale `fr_FR`.
 ## Lancer les tests
 
 ```bash
-python3 tool/tests/selftest.py          # 219 contrôles sur le moteur
+python3 tool/tests/selftest.py          # 232 contrôles sur le moteur
 ```
 
 Et les tests d'interface de la maquette (vrai navigateur, 78 contrôles) :

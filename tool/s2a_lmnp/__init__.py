@@ -23,6 +23,8 @@ from .client_anthropic import ClientAnthropic
 from .manifeste import Manifeste
 from .sources import (PieceRef, SourcePieces, DossierLocal, pieces_neuves,
                       empreinte_fichier, empreinte_bytes)
+from .drive import (DriveGoogle, verifier_acces, DependanceManquante,
+                    PORTEE, SANS_ECRITURE)
 from .pipeline import traiter_dossier, ingerer, traiter_lot
 from .excel import journal_banque_xlsx, lignes_journal_banque, journaux_banque_depuis_fec
 from .rangement import (ranger, chemin, mois_de, resume as resume_rangement,
@@ -52,6 +54,8 @@ __all__ = [
     "COTE_MAX", "SEUIL_ALERTE_REPLI",
     "Manifeste", "PieceRef", "SourcePieces", "DossierLocal", "pieces_neuves",
     "empreinte_fichier", "empreinte_bytes",
+    "DriveGoogle", "verifier_acces", "DependanceManquante", "PORTEE",
+    "SANS_ECRITURE",
     "traiter_dossier", "ingerer", "traiter_lot",
     "journal_banque_xlsx", "lignes_journal_banque", "journaux_banque_depuis_fec",
     "revue_analytique", "reference", "preparer_relances",

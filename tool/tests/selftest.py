@@ -903,7 +903,85 @@ check(len(plan34.get(RACINE + "/Exercice 2026/2026-03/" + EN_ATTENTE, [])) == 1,
 check(sum(len(v) for v in plan34.values()) == 5, "aucune pièce perdue")
 check(plan34[dossier_autres][0]["motif"], "chaque pièce écartée garde son motif")
 
-print("33) Le relevé fixe la date de règlement de la facture (trésorerie)")
+print("33) Connecteur Drive : même interface, lecture seule, empreinte du contenu")
+from s2a_lmnp import (DriveGoogle, DependanceManquante, PORTEE, SANS_ECRITURE,
+                      SourcePieces, empreinte_bytes)
+
+check(SANS_ECRITURE and PORTEE == ("https://www.googleapis.com/auth/drive.readonly",),
+      "le connecteur ne demande QUE la lecture")
+check(not any(n.startswith(("supprimer", "ecrire", "televerser", "renommer"))
+              for n in dir(DriveGoogle)),
+      "aucune méthode d'écriture sur la source")
+try:
+    DriveGoogle(""); ko = False
+except ValueError:
+    ko = True
+check(ko, "un identifiant de dossier vide est refusé")
+
+# --- Drive bouché : on vérifie le comportement, pas l'API de Google ---------
+class FauxDrive:
+    """Reproduit le strict nécessaire de l'API v3 : arborescence + contenu."""
+    ARBRE = {
+        "racine": [
+            {"id": "d1", "name": "DUPONT", "mimeType": "application/vnd.google-apps.folder"},
+            {"id": "f9", "name": "notes.txt", "mimeType": "text/plain"},
+        ],
+        "d1": [
+            {"id": "d2", "name": "2026", "mimeType": "application/vnd.google-apps.folder"},
+        ],
+        "d2": [
+            {"id": "f1", "name": "edf.pdf", "mimeType": "application/pdf", "size": "12"},
+            {"id": "f2", "name": "brico.jpg", "mimeType": "image/jpeg", "size": "9"},
+            {"id": "f3", "name": "copie.pdf", "mimeType": "application/pdf", "size": "12"},
+        ],
+    }
+    CONTENU = {"f1": b"facture-edf", "f2": b"photo-bric", "f3": b"facture-edf"}
+    def __init__(self): self.appels = 0
+    def files(self): return self
+    def list(self, q="", **kw):
+        parent = q.split("'")[1]
+        self._rep = {"files": list(self.ARBRE.get(parent, []))}
+        return self
+    def get_media(self, fileId=None, **kw):
+        self.appels += 1
+        self._rep = self.CONTENU[fileId]
+        return self
+    def get(self, fileId=None, **kw):
+        self._rep = {"id": fileId, "name": "Input compta tréso"}
+        return self
+    def execute(self): return self._rep
+
+faux = FauxDrive()
+src = DriveGoogle("racine", service=faux)
+check(isinstance(src, SourcePieces), "DriveGoogle respecte l'interface SourcePieces")
+refs = src.lister()
+check(len(refs) == 3, "les 3 pièces lisibles sont vues, le .txt est ignoré")
+check(sorted(r.nom for r in refs)
+      == ["DUPONT/2026/brico.jpg", "DUPONT/2026/copie.pdf", "DUPONT/2026/edf.pdf"],
+      "le chemin client/année est conservé dans le nom")
+edf = [r for r in refs if r.nom.endswith("edf.pdf")][0]
+copie = [r for r in refs if r.nom.endswith("copie.pdf")][0]
+check(edf.empreinte == empreinte_bytes(b"facture-edf"),
+      "l'empreinte est le sha256 du CONTENU, pas un identifiant Drive")
+check(edf.empreinte == copie.empreinte,
+      "deux fichiers au contenu identique ont la même empreinte -> un seul OCR")
+check(os.path.exists(src.ouvrir(edf)), "ouvrir() rend un chemin local lisible")
+
+avant = faux.appels
+src.ouvrir(edf); src.ouvrir(copie)
+check(faux.appels == avant, "ouvrir() ne retélécharge pas ce qui est déjà là")
+
+# le manifeste filtre : une pièce déjà traitée ne repasse pas
+from s2a_lmnp import Manifeste, pieces_neuves
+man = Manifeste(os.path.join(tempfile.mkdtemp(), "m.json"))
+check(len(pieces_neuves(src, man)) == 3, "au 1er passage, tout est neuf")
+man.marquer(edf.empreinte, edf.nom)
+restant = pieces_neuves(src, man)
+check(len(restant) == 1 and all(not r.nom.endswith(".pdf") for r in restant),
+      "la pièce traitée ET son doublon de contenu sont écartés")
+check(src.nettoyer() >= 1, "les pièces temporaires sont effaçables en fin de traitement")
+
+print("34) Le relevé fixe la date de règlement de la facture (trésorerie)")
 # la pièce annonce le 28/12 ; la banque dit le 12/01 -> c'est la banque qui gagne
 f33 = Facture("EDF ENERGIE", D(2025, 12, 28), 69.34)
 f33.date_reglement = D(2025, 12, 28)          # ce que prétendait la pièce

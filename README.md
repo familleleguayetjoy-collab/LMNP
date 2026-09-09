@@ -159,7 +159,7 @@ optionnelles (Pillow, pypdfium2) servent au seul prétraitement des images et le
 absence est **signalée**, jamais silencieuse.
 
 ```bash
-python3 tool/tests/selftest.py        # 219 contrôles
+python3 tool/tests/selftest.py        # 232 contrôles
 python3 tool/demo/demo_pipeline_complet.py
 ```
 
@@ -176,7 +176,10 @@ Voir `tool/README.md` pour le détail des modules. En résumé :
   puis mois de règlement, puis statut ;
 - `cout.py` — coût réel mesuré sur `response.usage`, avec alerte par dossier ;
 - `manifeste.py` / `sources.py` — empreintes sha256 : une pièce n'est jamais
-  relue ni recomptabilisée deux fois.
+  relue ni recomptabilisée deux fois ;
+- `drive.py` — **le connecteur Google Drive**, même interface que le dossier
+  local : compte de service, portée `drive.readonly`, aucune méthode d'écriture
+  sur la source, empreinte = sha256 du contenu téléchargé.
 
 ### Rangement des sorties
 
@@ -223,14 +226,25 @@ sert de repli et le rangement est marqué comme estimé.
 
 | suite | ce qu'elle couvre |
 |---|---|
-| `tool/tests/selftest.py` | 219 contrôles sur le moteur — normalisation, FEC, codage, rapprochement, IA simulée, idempotence, classement, coût, trésorerie, rangement |
+| `tool/tests/selftest.py` | 232 contrôles sur le moteur — normalisation, FEC, codage, rapprochement, IA simulée, idempotence, classement, coût, trésorerie, rangement |
 | `tool/tests/ui/` | 142 contrôles d'interface pilotés dans un vrai navigateur, dont la vérification **du fichier ASCII réellement produit** et le fait que chacune des 8 règles pilote vraiment quelque chose (voir `tool/tests/ui/LISEZMOI.md`) |
 
 ---
 
+## Brancher — voir `DEPLOIEMENT.md`
+
+Quatre étapes, chacune vérifiable :
+
+```bash
+python3 tool/verifier_branchement.py        # moteur, clé API, Drive, bout en bout
+```
+
+Le script ne modifie rien et s'arrête au premier obstacle en disant quoi faire.
+La dernière étape lit de vraies pièces, les classe, les range et chiffre le
+coût — sans rien écrire ni sur le Drive ni dans le dossier d'entrée.
+
 ## Ce qui reste à câbler avant la mise en service
 
-- le **connecteur Google Drive** (Picker + `drive.file` en première intention) ;
 - le **connecteur Gmail** pour déposer les brouillons de relance ;
 - la **clé API** dans l'environnement de déploiement ;
 - la **campagne de calibrage** du classement sur 50 pièces réelles (objectif :
