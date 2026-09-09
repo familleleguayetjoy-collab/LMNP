@@ -389,7 +389,7 @@ et les premières pièces. C'est le moment de vérité du partage.
 | `appel à l'API refusé` | clé fausse ou compte sans crédit | recopiez la clé sans espace avant/après ; vérifiez *Billing* dans la console |
 | `connecteur indisponible` | les bibliothèques Google manquent | refaites B6 et lisez la fin du message |
 | `accès refusé` | le robot ne voit pas le dossier | le partage a été fait à la mauvaise adresse. Rouvrez le JSON, cherchez `"client_email"`, c'est **cette** adresse-là qu'il faut partager |
-| `aucune pièce lisible` | le dossier est vide **ou** le partage est sur un sous-dossier | déposez un PDF de test à la racine de *Input compta tréso* et relancez |
+| `aucune pièce lisible dans « … »` | regardez **le nom du dossier** que le script affiche : si c'est *Documents générés par l'application*, `SAISIO_DRIVE_ENTREE` pointe sur le dossier de sortie, qui est vide | reprenez l'identifiant dans l'URL de **Input compta tréso** ; sinon déposez un PDF de test à sa racine et relancez |
 
 Le script s'arrête toujours au premier obstacle et dit quoi faire. Il ne
 continue jamais en silence.

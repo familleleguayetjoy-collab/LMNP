@@ -152,9 +152,14 @@ def etape_drive(dossier_id: str, cles: str) -> bool:
     ok("lecture seule", "portée drive.readonly, aucune écriture possible")
     n = r["pieces_lisibles"]
     if n == 0:
-        return ko("aucune pièce lisible",
-                  "dossier vide, ou partage limité à un sous-dossier ? "
-                  "Vérifiez que le partage porte bien sur la racine.")
+        # Trois causes, et la première est la plus fréquente : SAISIO_DRIVE_ENTREE
+        # pointe sur le dossier de SORTIE, qui est vide tant que rien n'a été
+        # traité. Nommer le dossier atteint suffit à s'en rendre compte.
+        return ko("aucune pièce lisible dans « %s »" % r["dossier"],
+                  "est-ce bien le dossier d'ENTRÉE ? SAISIO_DRIVE_ENTREE pointe "
+                  "souvent par erreur sur le dossier de sortie, qui est vide. "
+                  "Sinon : dossier réellement vide, ou partage posé sur un "
+                  "sous-dossier au lieu de la racine.")
     ok("%d pièce(s) lisible(s)" % n, " · ".join(r["exemples"]))
     return True
 
