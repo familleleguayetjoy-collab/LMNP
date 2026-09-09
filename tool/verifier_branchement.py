@@ -190,7 +190,7 @@ def etape_bout(dossier_id: str, cles: str, local: str, limite: int) -> bool:
     ok("%d pièce(s) retenue(s) pour l'essai" % len(neuves),
        "sur %s" % quoi)
 
-    from s2a_lmnp import factures_depuis_ocr
+    from s2a_lmnp import ingerer
     try:
         from s2a_lmnp import ClientAnthropic
         client = ClientAnthropic()
@@ -199,15 +199,15 @@ def etape_bout(dossier_id: str, cles: str, local: str, limite: int) -> bool:
     except Exception as e:
         return ko("client IA indisponible",
                   "l'étape 2 doit passer d'abord (%s)" % e)
-    bruts = []
-    for ref in neuves:
-        try:
-            bruts.append(client.lire_facture(source.ouvrir(ref)))
-        except Exception as e:
-            return ko("lecture de « %s »" % ref.nom, str(e))
-    ok("%d pièce(s) lue(s) par l'OCR" % len(bruts))
-
-    factures, rejets = factures_depuis_ocr(bruts)
+    # On passe par `ingerer`, le même chemin qu'en production : il rattache
+    # chaque facture à son fichier d'origine et marque le manifeste. Refaire
+    # cette boucle ici avait déjà coûté un bug (`lire_facture` rend une LISTE
+    # de factures par fichier, un PDF pouvant en contenir plusieurs).
+    try:
+        factures, rejets = ingerer(source, man, client, pieces=neuves)
+    except Exception as e:
+        return ko("lecture des pièces", str(e))
+    ok("%d pièce(s) lue(s) par l'OCR" % len(neuves))
     ok("classement", "%d retenue(s), %d écartée(s)" % (len(factures), len(rejets)))
     for r in rejets:
         print("    %s· %s : %s%s" % (GRIS, r.get("fichier", "?"), r.get("motif", ""), FIN))

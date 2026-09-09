@@ -23,7 +23,7 @@ from .ia import resoudre_residu, facture_depuis_ocr, factures_depuis_ocr
 from .sources import pieces_neuves
 
 
-def ingerer(source, manifeste, client_ia, *, modele=None):
+def ingerer(source, manifeste, client_ia, *, modele=None, pieces=None, limite=None):
     """Amont : OCR des seules pièces NEUVES de la source, marquées ensuite dans
     le manifeste (on ne re-paye jamais l'OCR).
 
@@ -31,8 +31,14 @@ def ingerer(source, manifeste, client_ia, *, modele=None):
     d'un côté, et de l'autre TOUT ce qui n'a pas été retenu, avec son motif et
     son fichier d'origine — devis, relevé, contrat, photo illisible, montants
     incohérents. Aucune pièce n'est écartée en silence.
-    Sans client IA -> lève (rien à inventer côté OCR)."""
-    neuves = pieces_neuves(source, manifeste)
+    Sans client IA -> lève (rien à inventer côté OCR).
+
+    `pieces` : liste déjà établie, pour ne pas relister la source — sur un Drive,
+    lister télécharge, donc relister coûte. `limite` : n'en traiter que les N
+    premières, pour un essai de branchement."""
+    neuves = pieces_neuves(source, manifeste) if pieces is None else list(pieces)
+    if limite is not None:
+        neuves = neuves[:limite]
     factures, rejets = [], []
     for p in neuves:
         chemin = source.ouvrir(p)

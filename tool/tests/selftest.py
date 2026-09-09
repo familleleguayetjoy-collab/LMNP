@@ -1014,4 +1014,97 @@ check(f3x.date_reglement == D(2026, 3, 15),
       "règlements multiples -> la facture est datée du dernier")
 check(mois_de(f3x) == ("2026-03", False), "et rangée dans le mois du solde")
 
+print("36) L'ingestion et le script de vérification, sur une vraie boucle OCR")
+# Ce que la maison n'avait pas : le script que lance le débutant n'était couvert
+# par aucun test. Il refaisait à la main la boucle de `ingerer` — et se trompait :
+# `lire_facture` rend une LISTE de factures par fichier (un PDF peut en contenir
+# plusieurs), pas une facture. La liste de listes cassait le classement, chez
+# l'utilisateur, sur sa première pièce réelle.
+import contextlib, io, shutil, tempfile
+import s2a_lmnp as _S
+from s2a_lmnp import ingerer
+import verifier_branchement as _VB
+
+
+class FauxOCR:
+    """Respecte le contrat réel de ClientAnthropic.lire_facture : une LISTE."""
+
+    def lire_facture(self, chemin, modele=None):
+        nom = os.path.basename(chemin).lower()
+        if "devis" in nom:
+            return [{"categorie": "devis", "confiance_classement": 0.95}]
+        # un seul PDF, deux factures dedans : le cas qui a cassé
+        return [{"categorie": "facture_achat", "confiance_classement": 0.96,
+                 "confiance": 0.95, "fournisseur": "EDF",
+                 "date": "2026-03-01", "ttc": 57.79, "ht": 48.16, "tva": 9.63},
+                {"categorie": "facture_achat", "confiance_classement": 0.96,
+                 "confiance": 0.95, "fournisseur": "EDF",
+                 "date": "2026-04-01", "ttc": 61.20, "ht": 51.00, "tva": 10.20}]
+
+
+_bac = tempfile.mkdtemp(prefix="saisio-test-")
+for _n in ("edf.pdf", "devis-toiture.pdf"):
+    with open(os.path.join(_bac, _n), "wb") as _fh:
+        _fh.write(_n.encode())
+
+_src = DossierLocal(_bac)
+_man = Manifeste(os.path.join(_bac, "manifeste.json"))
+_fact, _rej = ingerer(_src, _man, FauxOCR())
+check(len(_fact) == 2, "un PDF qui contient deux factures en produit deux")
+check(all(f.fournisseur == "EDF" for f in _fact),
+      "les factures sont bien construites, pas des listes imbriquées")
+check(all(f.fichier == "edf.pdf" for f in _fact),
+      "chaque facture sait de quel fichier elle vient")
+check(all(f.empreinte for f in _fact), "et porte l'empreinte de ce fichier")
+check(len(_rej) == 1 and _rej[0]["fichier"] == "devis-toiture.pdf",
+      "le devis est écarté, avec son fichier d'origine")
+check("devis" in _rej[0]["motif"], "et avec un motif en clair")
+
+# deuxième passage : le manifeste a fait son travail, aucun OCR n'est repayé
+_f2, _r2 = ingerer(_src, _man, FauxOCR())
+check(_f2 == [] and _r2 == [], "au second passage, plus rien n'est relu")
+
+# `limite` et `pieces` : l'essai de branchement ne lit que N pièces, et ne
+# reliste pas la source (sur un Drive, lister télécharge : relister coûte).
+_man3 = Manifeste(os.path.join(_bac, "m3.json"))
+_f3, _r3 = ingerer(_src, _man3, FauxOCR(), limite=1)
+_vus = {f.fichier for f in _f3} | {r["fichier"] for r in _r3}
+check(_vus == {"devis-toiture.pdf"},
+      "limite=1 n'ouvre qu'un seul fichier — un seul OCR payé")
+_f3b, _r3b = ingerer(_src, _man3, FauxOCR(), limite=1)
+check({f.fichier for f in _f3b} == {"edf.pdf"},
+      "le passage suivant reprend là où le précédent s'était arrêté")
+
+
+class _SrcCompteuse(DossierLocal):
+    def __init__(self, d):
+        DossierLocal.__init__(self, d)
+        self.listages = 0
+
+    def lister(self):
+        self.listages += 1
+        return DossierLocal.lister(self)
+
+
+_sc = _SrcCompteuse(_bac)
+_man4 = Manifeste(os.path.join(_bac, "m4.json"))
+ingerer(_sc, _man4, FauxOCR(), pieces=pieces_neuves(_sc, _man4))
+check(_sc.listages == 1, "pieces= évite de relister la source une seconde fois")
+
+# --- le script que lance l'utilisateur, en entier ---------------------------
+_vrai_client = _S.ClientAnthropic
+_S.ClientAnthropic = FauxOCR
+try:
+    _sortie = io.StringIO()
+    with contextlib.redirect_stdout(_sortie):
+        _vert = _VB.etape_bout("", "", _bac, 3)
+finally:
+    _S.ClientAnthropic = _vrai_client
+_txt = _sortie.getvalue()
+check(_vert is True, "verifier_branchement --etape bout va au bout sur un dossier réel")
+check("2 retenue(s), 1 écartée(s)" in _txt,
+      "il annonce le bon classement (2 factures, 1 devis écarté)")
+check("RIEN n'a été écrit" in _txt, "et il rappelle qu'il n'a rien écrit")
+shutil.rmtree(_bac, ignore_errors=True)
+
 print("\n%d contrôles OK — moteur cohérent." % ok)
