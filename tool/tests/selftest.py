@@ -592,9 +592,13 @@ import zipfile as _zip, io as _io
 FEC27 = ("JournalCode|CompteNum|CompteLib|EcritureDate|EcritureLib|Debit|Credit\n"
          "BQ|606100|Energie|20250210|EDF energie|57,79|0,00\n")
 d27 = construire(parse_fec(FEC27))
-# une facture est reprise en banque, l'autre a été payée en perso (absente du relevé)
+# une facture est reprise en banque, l'autre a été payée en perso (absente du
+# relevé). « Payée en perso » doit être PORTÉ par la pièce : sans cette mention,
+# rien ne distingue une facture réglée en espèces d'une facture jamais réglée,
+# et le moteur ne doit pas trancher à sa place.
 facs27 = [Facture("EDF", D(2026, 1, 5), 69.34, 11.55),
           Facture("PLOMBERIE PERSO", D(2026, 1, 8), 240.00, 40.0)]
+facs27[1].payee, facs27[1].date_reglement = True, D(2026, 1, 8)
 ops27 = [Operation(D(2026, 1, 6), "EDF ENERGIE", 69.34, "D")]   # seule EDF est en banque
 res27 = traiter_dossier(facs27, ops27, d27, compte_banque="512", journal="BQ")
 check(len(res27["operations_od"]) == 1, "facture payée hors banque -> écriture d'OD")
@@ -808,6 +812,31 @@ check("Date de règlement absente" in ops32[0].a_confirmer,
 f33 = Facture("EDF", D(2026, 1, 5), 69.34, 11.55)
 f33.op = Operation(D(2026, 1, 6), "EDF ENERGIE", 69.34, "D")
 check(operations_od_factures([f33], d23) == [], "facture rapprochée en banque -> pas d'OD")
+
+# Pas de flux, pas d'écriture. Avec un relevé, une facture qui ne se déclare
+# PAS payée et qu'on n'y retrouve pas n'a jamais été réglée : lui passer une OD
+# créerait une charge que personne n'a décaissée. Elle reste ouverte.
+f34 = Facture("DECO LOCATION", D(2026, 9, 3), 651.60)
+check(operations_od_factures([f34], d23, seulement_payees=True) == [],
+      "facture sans règlement identifié -> AUCUNE écriture")
+f35 = Facture("AZUR MAINTENANCE", D(2026, 8, 25), 401.50)
+f35.payee, f35.date_reglement = True, D(2026, 8, 25)
+check(len(operations_od_factures([f35], d23, seulement_payees=True)) == 1,
+      "facture acquittée hors banque -> OD, elle")
+# sans banque, il n'y a pas de relevé pour contredire la pièce : on les prend
+# toutes, c'est le dossier réglé de bout en bout par l'exploitant.
+check(len(operations_od_factures([f34], d23)) == 1,
+      "sans banque, la même facture produit bien son OD")
+
+# et le même choix au niveau du pipeline, là où il compte vraiment
+from s2a_lmnp import traiter_dossier as _td
+_r34 = _td([f34], [Operation(D(2026, 9, 5), "AUTRE CHOSE", 12.0, "D")], d23,
+           avec_banque=True)
+check(_r34["operations_od"] == [],
+      "traiter_dossier avec banque : la facture jamais réglée ne sort pas")
+_r35 = _td([f34], [], d23, avec_banque=False)
+check(len(_r35["operations"]) == 1,
+      "traiter_dossier sans banque : elle sort, contrepartie 108")
 
 # la date de règlement remonte de l'OCR (« prélevé le ») jusqu'à la Facture
 brut31 = {"categorie": "facture_achat", "confiance_classement": 0.95,

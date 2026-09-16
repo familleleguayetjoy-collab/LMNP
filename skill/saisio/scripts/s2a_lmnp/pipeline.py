@@ -20,43 +20,6 @@ from .codage import coder
 from .rapprochement import rapprocher, manquants
 from .quadra import to_quadratus
 from .ia import resoudre_residu, facture_depuis_ocr, factures_depuis_ocr
-from .sources import pieces_neuves
-
-
-def ingerer(source, manifeste, client_ia, *, modele=None, pieces=None, limite=None):
-    """Amont : OCR des seules pièces NEUVES de la source, marquées ensuite dans
-    le manifeste (on ne re-paye jamais l'OCR).
-
-    Renvoie `(factures, rejets)` : les pièces classées comptables et cohérentes
-    d'un côté, et de l'autre TOUT ce qui n'a pas été retenu, avec son motif et
-    son fichier d'origine — devis, relevé, contrat, photo illisible, montants
-    incohérents. Aucune pièce n'est écartée en silence.
-    Sans client IA -> lève (rien à inventer côté OCR).
-
-    `pieces` : liste déjà établie, pour ne pas relister la source — sur un Drive,
-    lister télécharge, donc relister coûte. `limite` : n'en traiter que les N
-    premières, pour un essai de branchement."""
-    neuves = pieces_neuves(source, manifeste) if pieces is None else list(pieces)
-    if limite is not None:
-        neuves = neuves[:limite]
-    factures, rejets = [], []
-    for p in neuves:
-        chemin = source.ouvrir(p)
-        bruts = client_ia.lire_facture(chemin, modele=modele)
-        gardees, refusees = factures_depuis_ocr(bruts)
-        for f in gardees:
-            f.fichier = p.nom
-            f.empreinte = p.empreinte
-        factures.extend(gardees)
-        for r in refusees:
-            r["fichier"] = p.nom
-            r["empreinte"] = p.empreinte
-            rejets.append(r)
-        # La pièce est marquée traitée même si elle est rejetée : on ne re-paye
-        # pas l'OCR d'un devis à chaque passage. Le motif reste dans le rapport.
-        manifeste.marquer(p.empreinte, p.nom,
-                          retenues=len(gardees), rejetees=len(refusees))
-    return factures, rejets
 
 
 def traiter_dossier(factures, ops_banque, dico, *, client_ia=None, resolver=None,
