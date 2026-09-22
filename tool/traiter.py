@@ -75,14 +75,33 @@ def main():
                     help="ne lire que N pièces (0 = toutes)")
     ap.add_argument("--refaire", action="store_true",
                     help="rejouer des pièces déjà traitées (l'OCR est repayé)")
-    ap.add_argument("--entree", default=os.environ.get("SAISIO_DRIVE_ENTREE", ""))
-    ap.add_argument("--sortie", default=os.environ.get("SAISIO_DRIVE_SORTIE", ""))
+    # Entrée et sortie acceptent indifféremment un DOSSIER de l'ordinateur ou
+    # un identifiant Drive : si le chemin existe sur le disque, c'est un dossier.
+    # Une option de plus à comprendre serait une occasion de plus de se tromper.
+    ap.add_argument("--entree", default=os.environ.get("SAISIO_DRIVE_ENTREE", ""),
+                    help="dossier local, ou identifiant du dossier Drive d'entrée")
+    ap.add_argument("--sortie", default=os.environ.get("SAISIO_DRIVE_SORTIE", ""),
+                    help="dossier local, ou identifiant du dossier Drive de sortie")
     ap.add_argument("--cles", default=os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", ""))
     a = ap.parse_args()
 
-    from s2a_lmnp import (DriveGoogle, DepotDrive, deposer_plan, resoudre_chemin,
-                          Manifeste, pieces_neuves, ingerer, ranger,
-                          resume_rangement, Exercice, ClientAnthropic)
+    from s2a_lmnp import (DriveGoogle, DepotDrive, DepotLocal, deposer_plan,
+                          resoudre_chemin, DossierLocal, Manifeste, pieces_neuves,
+                          ingerer, ranger, resume_rangement, Exercice,
+                          ClientAnthropic)
+
+    def est_local(v):
+        """Un identifiant Drive est un jeton opaque sans séparateur ; un chemin
+        en a un, ou existe déjà, ou commence par ~ ou par une lettre de lecteur.
+        La distinction se fait donc toute seule, et l'utilisateur n'a pas une
+        option de plus à comprendre — donc pas une de plus à se tromper."""
+        v = (v or "").strip()
+        if not v:
+            return False
+        if os.path.isdir(os.path.expanduser(v)):
+            return True
+        return ("/" in v or "\\" in v or v.startswith("~")
+                or (len(v) > 2 and v[1] == ":"))
 
     print("\nSAISIO — %s, exercice %d" % (a.client, a.exercice))
     print("=" * 54)
@@ -105,38 +124,49 @@ def main():
     if a.deposer:
         if not a.sortie:
             return stop("dossier de sortie inconnu",
-                        "renseignez SAISIO_DRIVE_SORTIE dans saisio.env "
-                        "(l'identifiant est dans l'URL du dossier de sortie)")
+                        "passez --sortie \"C:\\...\\Sortie\" (un dossier de "
+                        "votre ordinateur), ou renseignez SAISIO_DRIVE_SORTIE "
+                        "dans saisio.env pour déposer sur le Drive")
         try:
-            depot = DepotDrive(a.sortie, a.cles)
+            local = est_local(a.sortie)
+            depot = DepotLocal(a.sortie) if local else DepotDrive(a.sortie, a.cles)
             v = depot.verifier()
         except Exception as e:
-            return stop("Drive de sortie inaccessible",
-                        "le dossier est-il partagé au compte de service "
-                        "(adresse en …iam.gserviceaccount.com) ? %s" % e)
+            return stop("dossier de sortie inaccessible",
+                        ("vérifiez le chemin : %s" % e) if est_local(a.sortie) else
+                        ("le dossier est-il partagé au compte de service "
+                         "(adresse en …iam.gserviceaccount.com) ? %s" % e))
         if not v["ok"]:
             titre = ("écriture refusée sur « %s »" % v["dossier"]
                      if not v["ecriture"] else
                      "« %s » est dans un Mon Drive, pas dans un Drive partagé"
                      % v["dossier"])
             return stop(titre, v["conseil"])
-        ok("dossier de sortie", "« %s », Drive partagé, accessible en écriture"
-           % v["dossier"])
+        ok("dossier de sortie", "« %s »%s" % (v["dossier"],
+           "" if v["mode"] == "local" else ", Drive, accessible en écriture"))
 
-    # -- 1. le dossier du client -------------------------------------------
-    try:
-        racine = DriveGoogle(a.entree, a.cles)
-    except Exception as e:
-        return stop("Drive d'entrée indisponible", str(e))
-    sous = a.sous_dossier or str(a.exercice)
-    chemin_client = "%s/%s" % (a.client, sous)
-    id_client = resoudre_chemin(racine, chemin_client)
-    if not id_client:
-        return stop("dossier « %s » introuvable dans le Drive d'entrée" % chemin_client,
-                    "vérifiez l'orthographe du client et qu'un sous-dossier "
-                    "« %s » existe (ou passez --sous-dossier)" % sous)
-    source = DriveGoogle(id_client, a.cles)
-    ok("dossier d'entrée", chemin_client)
+    # -- 1. les pièces du client -------------------------------------------
+    if est_local(a.entree):
+        # Dossier de l'ordinateur : on lit tout ce qu'il contient, y compris les
+        # sous-dossiers. Pas de client/année à résoudre — ce que l'utilisateur
+        # a mis dans ce dossier, c'est le dossier à traiter.
+        chemin_client = os.path.abspath(os.path.expanduser(a.entree))
+        source = DossierLocal(chemin_client)
+        ok("dossier d'entrée", chemin_client)
+    else:
+        try:
+            racine = DriveGoogle(a.entree, a.cles)
+        except Exception as e:
+            return stop("Drive d'entrée indisponible", str(e))
+        sous = a.sous_dossier or str(a.exercice)
+        chemin_client = "%s/%s" % (a.client, sous)
+        id_client = resoudre_chemin(racine, chemin_client)
+        if not id_client:
+            return stop("dossier « %s » introuvable dans le Drive d'entrée" % chemin_client,
+                        "vérifiez l'orthographe du client et qu'un sous-dossier "
+                        "« %s » existe (ou passez --sous-dossier)" % sous)
+        source = DriveGoogle(id_client, a.cles)
+        ok("dossier d'entrée", chemin_client)
 
     # -- 2. ce qui est neuf -------------------------------------------------
     os.makedirs(DOSSIER_ETAT, exist_ok=True)

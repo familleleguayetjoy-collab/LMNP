@@ -1388,6 +1388,46 @@ _rapc = deposer_plan(DepotDrive("sortie", service=_fd3),
 check(_rapc["dossiers"] == ["LMNP POLO TEST/Exercice 2026/2026-08/Traité"],
       "chemin final : client/exercice/mois/statut, sous le dossier de sortie")
 
+# --- dépôt dans un dossier de l'ordinateur ---------------------------------
+# Même contrat que le Drive : `deposer_plan` ne sait pas où il écrit.
+from s2a_lmnp import DepotLocal, nom_sur
+
+_bacl = tempfile.mkdtemp(prefix="saisio-local-")
+_dl = DepotLocal(os.path.join(_bacl, "sortie"))
+_vl2 = _dl.verifier()
+check(_vl2["ok"] and _vl2["mode"] == "local",
+      "un dossier de sortie local est créé et déclaré inscriptible")
+_rapl = deposer_plan(_dl, _plan, _src2, _refs, prefixe="DUPONT", ecrire=True)
+check(len(_rapl["deposes"]) == 1 and len(_rapl["manquants"]) == 1,
+      "le plan se dépose sur disque comme sur le Drive")
+_attendu = os.path.join(_dl.racine, "DUPONT", "Exercice 2026", "2026-03",
+                        "Traité", "edf.pdf")
+check(os.path.exists(_attendu), "la pièce est au bon endroit de l'arborescence")
+_rapl2 = deposer_plan(_dl, _plan, _src2, _refs, prefixe="DUPONT", ecrire=True)
+check(_rapl2["deposes"] == [] and len(_rapl2["deja"]) == 1,
+      "relancé, le dépôt local ne duplique rien")
+
+# Un nom de pièce venu d'un client ne doit pas pouvoir écrire hors du dossier
+# de sortie : c'est le seul endroit où une donnée externe choisit un chemin.
+check(nom_sur("../../secret.pdf") == "secret.pdf",
+      "un nom qui remonte d'un dossier est ramené à son seul nom de fichier")
+check("/" not in nom_sur("a/b.pdf") and ":" not in nom_sur('a:b?.pdf'),
+      "les caractères que Windows refuse sont remplacés")
+_dl.deposer(_p1, "../evade.pdf", _dl.assurer_chemin("../ailleurs"))
+check(not os.path.exists(os.path.join(_bacl, "evade.pdf")),
+      "et rien ne s'écrit au-dessus de la racine")
+
+# même nom, contenu différent : on garde les deux plutôt que d'en perdre une
+_p2b = os.path.join(_bacl, "autre.pdf")
+with open(_p2b, "wb") as _fh:
+    _fh.write(b"un contenu nettement plus long que le premier")
+_d1 = _dl.assurer_chemin("collision")
+_dl.deposer(_p1, "piece.pdf", _d1)
+_r2b = _dl.deposer(_p2b, "piece.pdf", _d1)
+check(_r2b["etat"] == "depose" and _r2b["nom"] == "piece (2).pdf",
+      "deux pièces différentes de même nom : les deux sont gardées")
+shutil.rmtree(_bacl, ignore_errors=True)
+
 # résolution CLIENT/année côté lecture : on ne crée rien, et on ne devine rien
 _srcd = DriveGoogle("racine", service=FauxDrive())
 check(resoudre_chemin(_srcd, "DUPONT/2026") == "d2",

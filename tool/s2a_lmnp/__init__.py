@@ -27,6 +27,7 @@ from .drive import (DriveGoogle, verifier_acces, resoudre_chemin,
                     DependanceManquante, PORTEE, SANS_ECRITURE)
 from . import oauth_google
 from .oauth_google import PORTEE_UTILISATEUR
+from .depot_local import DepotLocal, nom_sur
 from .depot_drive import (DepotDrive, deposer_plan, PORTEE_DEPOT,
                           QuotaCompteService, CONSEIL_QUOTA)
 from .pipeline import traiter_dossier, ingerer, traiter_lot
@@ -60,7 +61,7 @@ __all__ = [
     "empreinte_fichier", "empreinte_bytes",
     "DriveGoogle", "verifier_acces", "resoudre_chemin",
     "DependanceManquante", "PORTEE",
-    "SANS_ECRITURE", "DepotDrive", "deposer_plan", "PORTEE_DEPOT",
+    "SANS_ECRITURE", "DepotDrive", "DepotLocal", "nom_sur", "deposer_plan", "PORTEE_DEPOT",
     "QuotaCompteService", "CONSEIL_QUOTA",
     "oauth_google", "PORTEE_UTILISATEUR",
     "traiter_dossier", "ingerer", "traiter_lot",
